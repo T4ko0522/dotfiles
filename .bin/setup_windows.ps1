@@ -9,7 +9,6 @@ $targets = @(
   ".config/jgit",
   ".config/lazygit",
   ".config/mise",
-  ".config/nvim",
   ".config/starship.toml",
   ".config/stylua.toml",
   ".config/vim",
@@ -63,6 +62,20 @@ foreach ($rel in $targets) {
   $srcItem = Get-Item $src -Force
   New-Link -src $src -dst $dst -isDir $srcItem.PSIsContainer
   Write-Host "Linked: $dst -> $src"
+}
+
+# nvim: AppData\Local\nvim にリンク（Windows の Neovim 既定の設定場所）
+$localDir = [Environment]::GetFolderPath("LocalApplicationData")
+$nvimSrc = Join-Path $repo ".config/nvim"
+$nvimDst = Join-Path $localDir "nvim"
+if (Test-Path $nvimSrc) {
+  if (Remove-ExistingPath -path $nvimDst) {
+    $nvimSrcItem = Get-Item $nvimSrc -Force
+    New-Link -src $nvimSrc -dst $nvimDst -isDir $nvimSrcItem.PSIsContainer
+    Write-Host "Linked: $nvimDst -> $nvimSrc"
+  }
+} else {
+  Write-Host "Skip missing nvim source: $nvimSrc"
 }
 
 # yazi: AppData\Roaming\yazi\config にリンク（yazi の既定の設定場所）
