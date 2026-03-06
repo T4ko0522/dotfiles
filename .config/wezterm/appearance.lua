@@ -33,6 +33,8 @@ local appearance = {
   },
   -- Hide borders between tabs
   colors = {
+    -- 通常文字を明るく（暗い背景用）
+    foreground = "#e2e2e2",
     -- 青みがかった背景色（アクティブPaneで青く見える）
     background = "#1a1a2e",
     -- タブバー背景を透過
