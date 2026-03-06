@@ -7,8 +7,10 @@ return {
   },
   keys = { "<leader>a", desc = "Avante" },
   -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
-  build = "make",
-  -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
+  -- Windows では make が失敗するため Build.ps1 を使う (avante_templates 生成に必須)
+  build = vim.fn.has("win32") == 1
+      and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
+      or "make",
   dependencies = {
     "stevearc/dressing.nvim",
     "nvim-lua/plenary.nvim",
