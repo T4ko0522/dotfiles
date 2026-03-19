@@ -13,7 +13,6 @@ terraform = "latest"
 yarn = "latest"
 "npm:@antfu/ni" = "latest"
 "npm:@aikidosec/safe-chain" = "latest"
-"npm:@anthropic-ai/claude-code" = "latest"
 "npm:@google/gemini-cli" = "latest"
 "npm:@sasazame/ccresume" = "latest"
 "npm:ccusage" = "latest"
@@ -25,6 +24,7 @@ yarn = "latest"
 "npm:vde-layout" = "0.0.9"
 
 # CLI tools
+ghq = "latest"
 lazygit = "latest"
 starship = "latest"
 lsd = "latest"
@@ -39,12 +39,14 @@ sccache = "latest"
 cargo-binstall = "latest"
 "cargo:cargo-outdated" = "latest"
 "cargo:mergiraf" = "latest"
+jq = "latest"
+"github:jftuga/less-Windows" = { version = "latest", exe = "less" }
 
 # AI tools
 codex = "latest"
 claude = "latest"
-gemini = "latest"
 opencode = "latest"
+"npm:markdownlint-cli" = "latest"
 
 [settings]
 experimental = true
