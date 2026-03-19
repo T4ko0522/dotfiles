@@ -5,25 +5,28 @@ local act = wezterm.action
 wezterm.on("update-right-status", function(window, pane)
   local name = window:active_key_table()
   if name then
-    name = "TABLE: " .. name
+    window:set_right_status(wezterm.format({
+      { Background = { Color = "#e06c75" } },
+      { Foreground = { Color = "#282c34" } },
+      { Attribute = { Intensity = "Bold" } },
+      { Text = " " .. string.upper(name) .. " " },
+      "ResetAttributes",
+    }))
+  else
+    window:set_right_status("")
   end
-  window:set_right_status(name or "")
 end)
 
 return {
   keys = {
     -- コマンドパレット表示
     { key = "j", mods = "CTRL", action = act.ActivateCommandPalette },
-    -- Tab移動
-    { key = "Tab", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(1) },
-    { key = "Tab", mods = "CTRL", action = act.ActivateTabRelative(-1) },
-    -- Tab入れ替え
-    { key = "{", mods = "CTRL|SHIFT", action = act({ MoveTabRelative = -1 }) },
-    -- Tab新規作成
-    { key = "t", mods = "CTRL|SHIFT", action = act({ SpawnTab = "CurrentPaneDomain" }) },
-    -- Tabを閉じる
-    { key = "w", mods = "CTRL|SHIFT", action = act({ CloseCurrentTab = { confirm = true } }) },
-    { key = "}", mods = "CTRL|SHIFT", action = act({ MoveTabRelative = 1 }) },
+    -- Tab操作: Alt+a でモード切替（もう一度 Alt+a or Escape で終了）
+    {
+      key = "a",
+      mods = "ALT",
+      action = act.ActivateKeyTable({ name = "tab_ops", one_shot = false }),
+    },
 
     -- 画面フルスクリーン切り替え
     { key = "Enter", mods = "ALT", action = act.ToggleFullScreen },
@@ -57,16 +60,6 @@ return {
     { key = "0", mods = "ALT", action = act.ResetFontSize },
     { key = "0", mods = "CTRL|SHIFT", action = act.ResetFontSize },
 
-    -- タブ切替 Ctrl+Shift + 数字
-    { key = "1", mods = "CTRL|SHIFT", action = act.ActivateTab(0) },
-    { key = "2", mods = "CTRL|SHIFT", action = act.ActivateTab(1) },
-    { key = "3", mods = "CTRL|SHIFT", action = act.ActivateTab(2) },
-    { key = "4", mods = "CTRL|SHIFT", action = act.ActivateTab(3) },
-    { key = "5", mods = "CTRL|SHIFT", action = act.ActivateTab(4) },
-    { key = "6", mods = "CTRL|SHIFT", action = act.ActivateTab(5) },
-    { key = "7", mods = "CTRL|SHIFT", action = act.ActivateTab(6) },
-    { key = "8", mods = "CTRL|SHIFT", action = act.ActivateTab(7) },
-    { key = "9", mods = "CTRL|SHIFT", action = act.ActivateTab(-1) },
 
     -- コマンドパレット
     { key = "p", mods = "CTRL|SHIFT|ALT", action = act.ActivateCommandPalette },
@@ -76,6 +69,32 @@ return {
   -- キーテーブル
   -- https://wezfurlong.org/wezterm/config/key-tables.html
   key_tables = {
+    -- Tab操作: Alt+a でトグル
+    tab_ops = {
+      -- Tab移動
+      { key = "Tab", action = act.ActivateTabRelative(1) },
+      { key = "Tab", mods = "SHIFT", action = act.ActivateTabRelative(-1) },
+      -- Tab新規作成
+      { key = "t", action = act({ SpawnTab = "CurrentPaneDomain" }) },
+      -- Tabを閉じる
+      { key = "w", action = act({ CloseCurrentTab = { confirm = true } }) },
+      -- Tab入れ替え
+      { key = "[", action = act({ MoveTabRelative = -1 }) },
+      { key = "]", action = act({ MoveTabRelative = 1 }) },
+      -- タブ切替 数字
+      { key = "1", action = act.ActivateTab(0) },
+      { key = "2", action = act.ActivateTab(1) },
+      { key = "3", action = act.ActivateTab(2) },
+      { key = "4", action = act.ActivateTab(3) },
+      { key = "5", action = act.ActivateTab(4) },
+      { key = "6", action = act.ActivateTab(5) },
+      { key = "7", action = act.ActivateTab(6) },
+      { key = "8", action = act.ActivateTab(7) },
+      { key = "9", action = act.ActivateTab(-1) },
+      -- モード終了
+      { key = "a", mods = "ALT", action = "PopKeyTable" },
+      { key = "Escape", action = "PopKeyTable" },
+    },
     -- Pane操作: Alt+q を押してから各キーを押す
     pane_ops = {
       -- Pane作成
