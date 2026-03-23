@@ -57,6 +57,7 @@
 .config/codex/.personality_migration
 .config/codex/log/
 .config/codex/memories/
+.config/codex/rules/default.rules
 .config/codex/sessions/
 .config/codex/skills/
 .config/codex/sqlite/
