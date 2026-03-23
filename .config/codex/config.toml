@@ -3,3 +3,6 @@ model_reasoning_effort = "medium"
 
 [windows]
 sandbox = "elevated"
+
+[tui]
+theme = "monokai-extended-origin"
