@@ -30,18 +30,23 @@ sixel_fraction  = 15
 [opener]
 edit = [
 	{ run = 'cursor %s', orphan = true, desc = "Cursor", for = "windows" },
+	{ run = 'nvim "$@"', block = true, desc = "Neovim", for = "linux" },
 ]
 open = [
 	{ run = 'start "" "%s"', orphan = true, desc = "Open", for = "windows" },
+	{ run = 'xdg-open "$@"', orphan = true, desc = "Open", for = "linux" },
 ]
 reveal = [
 	{ run = 'explorer /select,"%s"', orphan = true, desc = "Reveal", for = "windows" },
+	{ run = 'xdg-open "$(dirname "$@")"', orphan = true, desc = "Reveal", for = "linux" },
 ]
 extract = [
 	{ run = 'ya pub extract --list %s', desc = "Extract here", for = "windows" },
+	{ run = 'ya pub extract --list "$@"', desc = "Extract here", for = "linux" },
 ]
 play = [
 	{ run = 'mpv --force-window %s', orphan = true, desc = "Play", for = "windows" },
+	{ run = 'mpv --force-window "$@"', orphan = true, desc = "Play", for = "linux" },
 ]
 
 [open]
