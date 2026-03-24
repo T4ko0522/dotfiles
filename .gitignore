@@ -79,3 +79,4 @@
 
 # yasb
 .config/yasb/yasb.log
+.config/yasb/.env
