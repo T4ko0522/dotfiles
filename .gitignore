@@ -41,7 +41,7 @@
 .config/claude/todos/
 .config/claude/file-history/
 .config/claude/history.jsonl
-.config\claude\mcp-needs-auth-cache.json
+.config/claude/mcp-needs-auth-cache.json
 .config/claude/shell-snapshots/
 .config/claude/plans/
 .config/claude/stats-cache.json
