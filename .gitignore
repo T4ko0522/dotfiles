@@ -41,6 +41,7 @@
 .config/claude/todos/
 .config/claude/file-history/
 .config/claude/history.jsonl
+.config\claude\mcp-needs-auth-cache.json
 .config/claude/shell-snapshots/
 .config/claude/plans/
 .config/claude/stats-cache.json
@@ -75,3 +76,6 @@
 .config/codex/state_*.sqlite
 .config/codex/state_*.sqlite*
 .config/codex/version.json
+
+# yasb
+.config/yasb/yasb.log
