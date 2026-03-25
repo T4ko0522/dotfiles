@@ -14,6 +14,16 @@ Import-Module Terminal-Icons -ErrorAction SilentlyContinue
 Remove-Item Alias:ni -Force -ErrorAction Ignore
 
 # ----------------------------------------------------------------------------
+# komorebi & yasb 自動起動
+# ----------------------------------------------------------------------------
+if (-not (Get-Process -Name komorebi -ErrorAction SilentlyContinue)) {
+    Start-Process komorebic -ArgumentList 'start --whkd' -WindowStyle Hidden
+}
+if (-not (Get-Process -Name yasb -ErrorAction SilentlyContinue)) {
+    Start-Process yasb -WindowStyle Hidden
+}
+
+# ----------------------------------------------------------------------------
 # PSReadLine設定（入力補完・予測入力）
 # ----------------------------------------------------------------------------
 
