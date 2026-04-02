@@ -19,12 +19,7 @@ $targets = @(
   @{ Src = ".config/wezterm";       Dst = ".config/wezterm" },
   @{ Src = ".config/yazi";          Dst = (Join-Path $roamingDir "yazi\config") },
   @{ Src = ".config/starship.toml"; Dst = ".config/starship.toml" },
-  @{ Src = ".config/yasb";          Dst = ".config/yasb" },
-  @{ Src = ".config/whkdrc";              Dst = ".config/whkdrc" },
-  @{ Src = ".config/applications.json";    Dst = "applications.json" },
-  @{ Src = ".config/komorebi.json";        Dst = "komorebi.json" },
-  @{ Src = ".config/komorebi.bar.json";    Dst = "komorebi.bar.json" },
-  @{ Src = ".config/komorebi_state_check.txt"; Dst = "komorebi_state_check.txt" }
+  @{ Src = ".config/yasb";          Dst = ".config/yasb" }
 )
 
 function Remove-ExistingPath($path) {
