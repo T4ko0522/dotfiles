@@ -22,6 +22,7 @@ yarn = "latest"
 "npm:oxfmt" = "latest"
 "npm:sdd-mcp" = "latest"
 "npm:vde-layout" = "0.0.9"
+"npm:markdownlint-cli" = "latest"
 
 # CLI tools
 ghq = "latest"
@@ -41,12 +42,6 @@ cargo-binstall = "latest"
 "cargo:mergiraf" = "latest"
 jq = "latest"
 "github:jftuga/less-Windows" = { version = "latest", exe = "less" }
-
-# AI tools
-codex = "latest"
-claude = "latest"
-opencode = "latest"
-"npm:markdownlint-cli" = "latest"
 
 [settings]
 experimental = true
