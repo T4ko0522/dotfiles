@@ -125,6 +125,17 @@ function cdtako {
     Set-Location "$env:USERPROFILE\Project\github.com\T4ko0522"
 }
 
+# Ctrl+F: ホーム以下のディレクトリをfzfで検索してcd
+Set-PSReadLineKeyHandler -Key Ctrl+f -ScriptBlock {
+    $dir = fd --type d --hidden --exclude .git --base-directory $env:USERPROFILE | fzf --reverse --border --height=40%
+    if ($dir) {
+        $fullPath = Join-Path $env:USERPROFILE $dir
+        [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
+        [Microsoft.PowerShell.PSConsoleReadLine]::Insert("cd '$fullPath'")
+        [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+    }
+}
+
 # ghqとpecoを使用してリポジトリに移動する関数
 # install: https://github.com/x-motemen/ghq
 # install: https://github.com/peco/peco
