@@ -19,7 +19,8 @@ $targets = @(
   @{ Src = ".config/wezterm";       Dst = ".config/wezterm" },
   @{ Src = ".config/yazi";          Dst = (Join-Path $roamingDir "yazi\config") },
   @{ Src = ".config/starship.toml"; Dst = ".config/starship.toml" },
-  @{ Src = ".config/yasb";          Dst = ".config/yasb" }
+  @{ Src = ".config/yasb";          Dst = ".config/yasb" },
+  @{ Src = ".config/cava";          Dst = ".config/cava" }
 )
 
 function Remove-ExistingPath($path) {
@@ -164,4 +165,5 @@ if (-not (Get-Module -ListAvailable -Name BurntToast)) {
   Write-Host "BurntToast module already installed."
 }
 
-Write-Host "Windows setup completed."
+Write-Host "Windows setup completed." -ForegroundColor Green
+& pwsh
