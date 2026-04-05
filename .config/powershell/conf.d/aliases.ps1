@@ -147,5 +147,9 @@ function touch {
     }
 }
 
+# Unix風 pwd（パス文字列のみ返す、スラッシュ区切り）
+Remove-Alias pwd -Force -ErrorAction Ignore
+function pwd { ($ExecutionContext.SessionState.Path.CurrentLocation.Path -replace '\\', '/') | Write-Host }
+
 function la { ls -a @args }
 function ll { ls @args }
