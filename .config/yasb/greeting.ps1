@@ -1,10 +1,3 @@
-$ErrorActionPreference = "Stop"
-
-$glaze = Get-Process glazewm -ErrorAction SilentlyContinue
-if ($glaze) {
-  exit 0
-}
-
 $hour = (Get-Date).Hour
 
 if ($hour -ge 5 -and $hour -lt 11) {
