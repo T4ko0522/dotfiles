@@ -12,7 +12,7 @@
 ## Description
 
 Windows用に作成されたdotfiles.  
-WSLを使用しない環境をWindows環境をLinux Likeにカスタマイズします。
+WSLを使用せずともWindows環境をLinux Likeにカスタマイズします。
 > このdotfilesは [mozumasuさんのdotfiles](https://github.com/mozumasu/dotfiles) を参考に作られています。
 
 ## Tools
