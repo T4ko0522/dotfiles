@@ -13,9 +13,9 @@ function cdtako {
     Set-Location "$env:USERPROFILE\Project\github.com\T4ko0522"
 }
 
-# ghqとpecoを使用してリポジトリに移動
+# ghqとfzfを使用してリポジトリに移動
 function ghcd() {
-    Set-Location "$(ghq root)/$(ghq list | peco)"
+    Set-Location "$(ghq root)/$(ghq list | fzf --reverse --border --height=40%)"
 }
 
 # yaziで移動したディレクトリにシェルもcdするラッパー
