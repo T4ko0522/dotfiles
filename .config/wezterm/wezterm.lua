@@ -18,7 +18,6 @@ config.font = wezterm.font_with_fallback({
 
 -- 背景の透過度
 config.window_background_opacity = 0.65
-config.prefer_egl = true
 
 -- タスク完了時の通知
 config.audible_bell = "SystemBeep"
