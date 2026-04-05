@@ -16,6 +16,9 @@ config.font = wezterm.font_with_fallback({
   "Cascadia Mono",
 })
 
+-- GPU レンダラー（OpenGLコンテキスト喪失対策）
+config.front_end = "WebGpu"
+
 -- 背景の透過度
 config.window_background_opacity = 0.65
 
