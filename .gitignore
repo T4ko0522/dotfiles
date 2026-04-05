@@ -77,6 +77,9 @@
 .config/codex/state_*.sqlite*
 .config/codex/version.json
 
+# PowerShell (Install-Module で入るモジュール)
+.config/powershell/Modules/
+
 # yasb
 .config/yasb/yasb.log
 .config/yasb/.env
