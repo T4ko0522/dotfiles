@@ -59,6 +59,14 @@ function ls {
     $sizeWidth = ($rows | ForEach-Object { $_.Size.Length } | Measure-Object -Maximum).Maximum
     $ownerWidth = ($rows | ForEach-Object { $_.Owner.Length } | Measure-Object -Maximum).Maximum
 
+    # ヘッダー
+    $hPerm  = 'Permission'.PadRight(10)
+    $hSize  = 'Size'.PadLeft($sizeWidth)
+    $hOwner = 'User'.PadRight($ownerWidth)
+    $hDate  = 'Date Modified'.PadRight(16)
+    $hName  = 'Name'
+    "${e}[1m${hPerm}  ${hSize}  ${hOwner}  ${hDate}  ${hName}${e}[0m"
+
     foreach ($row in $rows) {
         # Permission（Blue→Cyan→Green→Yellow グラデーション）
         $gradColors = @(
