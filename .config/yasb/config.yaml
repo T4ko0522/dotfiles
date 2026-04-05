@@ -46,8 +46,7 @@ bars:
         ]
       center:
         [
-          "glazewm_greeting",
-          "glazewm_workspaces",
+          "greeting",
           "active_window",
         ]
       right:
@@ -67,18 +66,18 @@ widgets:
       offline_label: "👋 Hi there!"
       hide_empty_workspaces: true
       hide_if_offline: true
-  glazewm_greeting:
+  greeting:
     type: "yasb.custom.CustomWidget"
     options:
       label: "👋 {data}"
       label_alt: "👋 {data}"
       label_placeholder: "👋 Hi there!"
-      class_name: "glazewm-greeting-widget"
+      class_name: "greeting-widget"
       exec_options:
-        run_cmd: "powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\takow\\.config\\yasb\\glazewm_greeting.ps1"
+        run_cmd: "powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\takow\\.config\\yasb\\greeting.ps1"
         run_interval: 60000
         return_format: "string"
-        hide_empty: true
+        hide_empty: false
         use_shell: true
   wallpaper:
     type: "yasb.wallpapers.WallpapersWidget"
