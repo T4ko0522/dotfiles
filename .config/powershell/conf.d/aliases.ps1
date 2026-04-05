@@ -5,17 +5,20 @@ Set-Alias open explorer
 # Unix風 ls（Permission, Size, User, Date Modified, Name）+ 色 + アイコン
 Remove-Item Alias:ls -Force -ErrorAction Ignore
 
-# Terminal-Icons グリフテーブルを事前構築（プロファイル読み込み時に1回だけ）
-$script:_lsGlyphs = $null
-$script:_lsTheme = $null
-if (Get-Module Terminal-Icons -ErrorAction SilentlyContinue) {
-    $script:_lsGlyphs = @{}
-    Get-TerminalIconsGlyphs | ForEach-Object { $script:_lsGlyphs[$_.Name] = $_.Value }
-    $script:_lsTheme = Get-TerminalIconsTheme
+# Terminal-Icons グリフテーブルの遅延ロード（OnIdle未完了時のフォールバック）
+function _ensureLsIcons {
+    if ($global:_lsGlyphs) { return }
+    Import-Module Terminal-Icons -ErrorAction SilentlyContinue
+    if (Get-Module Terminal-Icons -ErrorAction SilentlyContinue) {
+        $global:_lsGlyphs = @{}
+        Get-TerminalIconsGlyphs | ForEach-Object { $global:_lsGlyphs[$_.Name] = $_.Value }
+        $global:_lsTheme = Get-TerminalIconsTheme
+    }
 }
 
 function ls {
     param([switch]$a, [switch]$l)
+    _ensureLsIcons
     $path = ($args | Where-Object { $_ -notmatch '^-' } | Select-Object -First 1) ?? '.'
     $items = if ($a) {
         Get-ChildItem -Path $path -Force
@@ -75,17 +78,17 @@ function ls {
 
         # Icon (Terminal-Icons)
         $icon = ''
-        if ($script:_lsTheme -and $script:_lsGlyphs) {
+        if ($global:_lsTheme -and $global:_lsGlyphs) {
             $glyphName = $null
             if ($row.IsDir) {
-                $glyphName = $script:_lsTheme.Icon.Types.Directories.WellKnown[$row.Item.Name]
+                $glyphName = $global:_lsTheme.Icon.Types.Directories.WellKnown[$row.Item.Name]
                 if (-not $glyphName) { $glyphName = 'nf-custom-folder' }
             } else {
                 $ext = $row.Item.Extension.ToLower()
-                if ($ext) { $glyphName = $script:_lsTheme.Icon.Types.Files[$ext] }
+                if ($ext) { $glyphName = $global:_lsTheme.Icon.Types.Files[$ext] }
                 if (-not $glyphName) { $glyphName = 'nf-fa-file' }
             }
-            $g = $script:_lsGlyphs[$glyphName]
+            $g = $global:_lsGlyphs[$glyphName]
             if ($g) { $icon = "$g " }
         }
 
