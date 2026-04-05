@@ -45,6 +45,7 @@ zig = "latest"
 tree-sitter = "latest"
 jq = "latest"
 "github:jftuga/less-Windows" = { version = "latest", exe = "less" }
+fastfetch = "latest"
 
 [settings]
 experimental = true
