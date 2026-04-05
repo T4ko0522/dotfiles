@@ -105,5 +105,47 @@ function ls {
         "${perm}  ${e}[1;32m${size}${e}[0m  ${e}[38;2;224;102;255m${owner}${e}[0m  ${e}[36m${date}${e}[0m  ${nameColor}${icon}$($row.Item.Name)${e}[0m"
     }
 }
+# Unix風 rm（-r, -f, -rf 対応）
+Remove-Item Alias:rm -Force -ErrorAction Ignore
+function rm {
+    param([switch]$r, [switch]$f)
+    $paths = @($args | Where-Object { $_ -notmatch '^-' })
+    if (-not $paths) { Write-Error 'rm: missing operand'; return }
+    $params = @{}
+    if ($r) { $params['Recurse'] = $true }
+    if ($f) { $params['Force'] = $true; $params['ErrorAction'] = 'SilentlyContinue' }
+    foreach ($p in $paths) {
+        if (-not $f -and -not (Test-Path $p)) {
+            Write-Error "rm: cannot remove '$p': No such file or directory"
+            continue
+        }
+        Remove-Item -Path $p -Confirm:(-not $f) @params
+    }
+}
+
+# Unix風 mkdir（-p 対応、デフォルトで再帰作成）
+Remove-Item Alias:mkdir -Force -ErrorAction Ignore
+function mkdir {
+    param([switch]$p)
+    $paths = @($args | Where-Object { $_ -notmatch '^-' })
+    if (-not $paths) { Write-Error 'mkdir: missing operand'; return }
+    foreach ($d in $paths) {
+        New-Item -ItemType Directory -Path $d -Force | Out-Null
+    }
+}
+
+# Unix風 touch（存在すればタイムスタンプ更新、なければ作成）
+function touch {
+    $paths = @($args | Where-Object { $_ -notmatch '^-' })
+    if (-not $paths) { Write-Error 'touch: missing operand'; return }
+    foreach ($p in $paths) {
+        if (Test-Path $p) {
+            (Get-Item $p).LastWriteTime = Get-Date
+        } else {
+            New-Item -ItemType File -Path $p -Force | Out-Null
+        }
+    }
+}
+
 function la { ls -a @args }
 function ll { ls @args }
