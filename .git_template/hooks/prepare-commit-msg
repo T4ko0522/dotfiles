@@ -1,0 +1,43 @@
+#!/bin/sh
+# prepare-commit-msg: conventional commit prefix に gitmoji を自動挿入する
+# 例: "feat: add feature" → "feat: ✨ add feature"
+
+COMMIT_MSG_FILE="$1"
+COMMIT_SOURCE="$2"
+
+# merge, squash, amend 等はスキップ
+case "$COMMIT_SOURCE" in
+  merge|squash) exit 0 ;;
+esac
+
+# 先頭行を取得
+first_line=$(head -n1 "$COMMIT_MSG_FILE")
+
+# 既に gitmoji が含まれていればスキップ（二重挿入防止）
+case "$first_line" in
+  *✨*|*🐛*|*📝*|*💄*|*♻️*|*⚡️*|*✅*|*👷*|*🎡*|*🔧*|*🔥*|*🚀*) exit 0 ;;
+esac
+
+# prefix から gitmoji を決定
+emoji=""
+case "$first_line" in
+  feat:*)     emoji="✨" ;;
+  fix:*)      emoji="🐛" ;;
+  docs:*)     emoji="📝" ;;
+  style:*)    emoji="💄" ;;
+  refactor:*) emoji="♻️" ;;
+  perf:*)     emoji="⚡️" ;;
+  test:*)     emoji="✅" ;;
+  build:*)    emoji="👷" ;;
+  ci:*)       emoji="🎡" ;;
+  chore:*)    emoji="🔧" ;;
+  remove:*)   emoji="🔥" ;;
+  deploy:*)   emoji="🚀" ;;
+esac
+
+if [ -z "$emoji" ]; then
+  exit 0
+fi
+
+# "type: description" → "type: <emoji> description"
+sed -i "1s/^\([a-z]*:\) /\1 $emoji /" "$COMMIT_MSG_FILE"
