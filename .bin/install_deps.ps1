@@ -4,7 +4,7 @@ $ErrorActionPreference = "Stop"
 # install_deps.ps1 — mise install では入らない依存関係を自動インストール
 # =============================================================================
 # 使い方: pwsh -ExecutionPolicy Bypass -File .bin\install_deps.ps1
-# setup_windows.ps1 の先頭で自動呼び出しされる
+# setup_windows.ps1 とは独立して実行する
 
 # ---------------------------------------------------------------------------
 # Helper: コマンドの存在チェック
@@ -124,7 +124,8 @@ $wingetPackages = @(
   @{ Id = "Neovim.Neovim";          Name = "Neovim" },
   @{ Id = "GitHub.GitLFS";          Name = "git-lfs" },
   @{ Id = "dandavison.delta";       Name = "delta" },
-  @{ Id = "mpv.net";                Name = "mpv.net" }
+  @{ Id = "stax76.mpv.net";          Name = "mpv.net" },
+  @{ Id = "Anysphere.Cursor";       Name = "Cursor" }
 )
 
 foreach ($pkg in $wingetPackages) {
@@ -154,10 +155,24 @@ Install-FontFromGitHub `
   -assetPattern "PlemolJP_NF_*.zip" `
   -fontName "PlemolJP Console NF"
 
+Install-ScoopPackage -pkg "JetBrainsMono-NF-Propo" -name "JetBrainsMono NFP" -bucket "nerd-fonts"
+
 # Cascadia Mono は Windows 11 に標準搭載のため省略
 
 # =============================================================================
-# 5. git-lfs の初期化
+# 5. PowerShell モジュール
+# =============================================================================
+Write-Host "`n=== PowerShell modules ===" -ForegroundColor White
+
+if (-not (Get-Module -ListAvailable -Name Terminal-Icons)) {
+  Write-Host "[install] Terminal-Icons ..." -ForegroundColor Cyan
+  Install-Module -Name Terminal-Icons -Repository PSGallery -Scope CurrentUser -Force
+} else {
+  Write-Host "[skip] Terminal-Icons は既にインストール済み" -ForegroundColor DarkGray
+}
+
+# =============================================================================
+# 6. git-lfs の初期化
 # =============================================================================
 if (Test-CommandExists "git-lfs") {
   Write-Host "`n[setup] git-lfs install ..." -ForegroundColor Cyan
