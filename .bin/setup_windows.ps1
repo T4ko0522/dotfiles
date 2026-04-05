@@ -20,7 +20,8 @@ $targets = @(
   @{ Src = ".config/yazi";          Dst = (Join-Path $roamingDir "yazi\config") },
   @{ Src = ".config/starship.toml"; Dst = ".config/starship.toml" },
   @{ Src = ".config/yasb";          Dst = ".config/yasb" },
-  @{ Src = ".config/cava";          Dst = ".config/cava" }
+  @{ Src = ".config/cava";          Dst = ".config/cava" },
+  @{ Src = ".config/fastfetch";     Dst = ".config/fastfetch" }
 )
 
 function Remove-ExistingPath($path) {
