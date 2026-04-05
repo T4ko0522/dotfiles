@@ -120,6 +120,19 @@ if (Test-Path -LiteralPath $cursorRulesSrc) {
   Write-Host "Skip missing source: $cursorRulesSrc"
 }
 
+# Git hooks: prepare-commit-msg 等をテンプレートに配置
+$hooksSrc = Join-Path $repo ".git_template/hooks"
+if (Test-Path -LiteralPath $hooksSrc) {
+  $hooksDst = Join-Path $homeDir ".git_template/git-secrets/hooks"
+  if (-not (Test-Path -LiteralPath $hooksDst)) {
+    New-Item -ItemType Directory -Path $hooksDst -Force | Out-Null
+  }
+  Get-ChildItem -LiteralPath $hooksSrc -File | ForEach-Object {
+    Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $hooksDst $_.Name) -Force
+    Write-Host "Installed git hook: $($_.Name)"
+  }
+}
+
 Write-Host "Git template setup completed."
 
 # Ensure dotfiles .bin is available from PATH in all shells.
