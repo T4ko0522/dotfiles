@@ -52,10 +52,12 @@
 .config/claude/.credentials.json
 
 # codex
+.config/codex/.tmp
 .config/codex/.sandbox
 .config/codex/.sandbox*
 .config/codex/.codex-global-state.json
 .config/codex/.personality_migration
+.config/codex/cache/
 .config/codex/log/
 .config/codex/memories/
 .config/codex/rules/default.rules
