@@ -42,6 +42,7 @@ cargo-binstall = "latest"
 "cargo:mergiraf" = "latest"
 fd = "latest"
 zig = "latest"
+tree-sitter = "latest"
 jq = "latest"
 "github:jftuga/less-Windows" = { version = "latest", exe = "less" }
 
