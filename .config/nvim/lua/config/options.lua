@@ -100,11 +100,3 @@ vim.g.terminal_color_12 = "#178ec8" -- bright blue
 vim.g.terminal_color_13 = "#e24d8e" -- bright magenta
 vim.g.terminal_color_14 = "#00b39e" -- bright cyan
 vim.g.terminal_color_15 = "#fcf4dc" -- bright white
-
--- LSP hover/signature help のボーダー設定
-vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-  border = "rounded",
-})
-vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-  border = "rounded",
-})

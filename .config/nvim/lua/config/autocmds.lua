@@ -37,7 +37,7 @@ local function apply_transparent_bg()
     highlight SnacksNormalNC guibg=NONE ctermbg=NONE
   ]])
   for _, win in ipairs(vim.api.nvim_list_wins()) do
-    pcall(vim.api.nvim_win_set_option, win, "winblend", 0)
+    pcall(function() vim.wo[win].winblend = 0 end)
   end
 end
 
