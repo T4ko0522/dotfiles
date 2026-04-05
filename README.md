@@ -10,8 +10,10 @@
 ![sample](image.png)
 
 ## Description
-Windows用に作成されたdotfiles.
-WSLを使用しない環境をWindows環境をLinux Likeにカスタマイズします。
+
+Windows用に作成されたdotfiles.  
+WSLを使用しない環境をWindows環境をLinux .  
+> このdotfilesは [mozumasuさんのdotfiles](https://github.com/mozumasu/dotfiles) を参考に作られています。
 
 ## Tools
 
