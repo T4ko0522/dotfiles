@@ -38,7 +38,7 @@ function ls {
         } else {
             if ($ro) { '-r--r--r--' } else { '-rw-r--r--' }
         }
-        $size = if ($isDir) { '-' } else {
+        $size = if ($isDir) { ' -- ' } else {
             $s = $item.Length
             if ($s -ge 1GB) { '{0:F1}G' -f ($s / 1GB) }
             elseif ($s -ge 1MB) { '{0:F1}M' -f ($s / 1MB) }
