@@ -93,17 +93,14 @@ foreach ($entry in $targets) {
   Write-Host "Linked: $dst -> $src"
 }
 
-# PowerShell profile: リポジトリのプロファイルをクリーンして $PROFILE のコピー先に書き出す（リンクしない）。
-$profileSrc = Join-Path $repo ".config/powershell/Microsoft.PowerShell_profile.ps1"
+# PowerShell profile: ディレクトリごとjunctionでリンク（modules/も含めて参照可能にする）
+$profileSrc = Join-Path $repo ".config/powershell"
 $documentsDir = [Environment]::GetFolderPath("MyDocuments")
-$profileDst = Join-Path $documentsDir "PowerShell\\Microsoft.PowerShell_profile.ps1"
+$profileDst = Join-Path $documentsDir "PowerShell"
 if (Test-Path -LiteralPath $profileSrc) {
-  $profileParent = Split-Path -Parent $profileDst
-  if (-not (Test-Path -LiteralPath $profileParent)) {
-    New-Item -ItemType Directory -Path $profileParent -Force | Out-Null
-  }
   Remove-ExistingPath -path $profileDst | Out-Null
-  & (Join-Path $binDir "optim_pwsh_profile.ps1") -SourcePath $profileSrc -OutputPath $profileDst
+  New-Link -src $profileSrc -dst $profileDst -isDir $true
+  Write-Host "Linked: $profileDst -> $profileSrc"
 } else {
   Write-Host "Skip missing PowerShell profile source: $profileSrc"
 }
