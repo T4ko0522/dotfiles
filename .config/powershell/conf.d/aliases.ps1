@@ -55,9 +55,9 @@ function ls {
         }
     }
 
-    # カラム幅を計算
-    $sizeWidth = ($rows | ForEach-Object { $_.Size.Length } | Measure-Object -Maximum).Maximum
-    $ownerWidth = ($rows | ForEach-Object { $_.Owner.Length } | Measure-Object -Maximum).Maximum
+    # カラム幅を計算（ヘッダーラベル長を最小幅として保証）
+    $sizeWidth = [Math]::Max(4, ($rows | ForEach-Object { $_.Size.Length } | Measure-Object -Maximum).Maximum)
+    $ownerWidth = [Math]::Max(4, ($rows | ForEach-Object { $_.Owner.Length } | Measure-Object -Maximum).Maximum)
 
     # ヘッダー
     $hPerm  = 'Permission'.PadRight(10)
