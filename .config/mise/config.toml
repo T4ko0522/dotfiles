@@ -41,6 +41,7 @@ cargo-binstall = "latest"
 "cargo:cargo-outdated" = "latest"
 "cargo:mergiraf" = "latest"
 fd = "latest"
+zig = "latest"
 jq = "latest"
 "github:jftuga/less-Windows" = { version = "latest", exe = "less" }
 
