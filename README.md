@@ -4,8 +4,8 @@
 
 ## Description
 
-Windows用に作成されたdotfiles.
-WindowsをLinux Likeにカスタマイズします。
+Windows用に作成されたdotfiles.  
+WSLを使用せずともプレーンWindowsをLinux Likeにカスタマイズします。
 
 ## Dependency
 
