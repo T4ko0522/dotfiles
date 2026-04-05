@@ -94,14 +94,27 @@ foreach ($entry in $targets) {
   Write-Host "Linked: $dst -> $src"
 }
 
-# PowerShell profile: ディレクトリごとjunctionでリンク（modules/も含めて参照可能にする）
+# PowerShell profile: modules/ をjunctionでリンクし、プロファイルは最適化版を生成
 $profileSrc = Join-Path $repo ".config/powershell"
 $documentsDir = [Environment]::GetFolderPath("MyDocuments")
 $profileDst = Join-Path $documentsDir "PowerShell"
 if (Test-Path -LiteralPath $profileSrc) {
+  # 旧setupのディレクトリjunction等を除去してからクリーンに再構築
   Remove-ExistingPath -path $profileDst | Out-Null
-  New-Link -src $profileSrc -dst $profileDst -isDir $true
-  Write-Host "Linked: $profileDst -> $profileSrc"
+  New-Item -ItemType Directory -Path $profileDst -Force | Out-Null
+
+  # modules/ ディレクトリをjunctionでリンク（Terminal-Icons等が参照可能になる）
+  $modulesSrc = Join-Path $profileSrc "modules"
+  $modulesDst = Join-Path $profileDst "modules"
+  if (Test-Path -LiteralPath $modulesSrc) {
+    New-Link -src $modulesSrc -dst $modulesDst -isDir $true
+    Write-Host "Linked: $modulesDst -> $modulesSrc"
+  }
+
+  # conf.d をインライン展開した最適化プロファイルを $PROFILE に書き出す
+  $optimScript = Join-Path $binDir "optim_pwsh_profile.ps1"
+  $profileOut = Join-Path $profileDst "Microsoft.PowerShell_profile.ps1"
+  & $optimScript -SourcePath (Join-Path $profileSrc "Microsoft.PowerShell_profile.ps1") -OutputPath $profileOut
 } else {
   Write-Host "Skip missing PowerShell profile source: $profileSrc"
 }
