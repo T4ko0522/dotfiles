@@ -125,7 +125,8 @@ $wingetPackages = @(
   @{ Id = "GitHub.GitLFS";          Name = "git-lfs" },
   @{ Id = "dandavison.delta";       Name = "delta" },
   @{ Id = "stax76.mpv.net";          Name = "mpv.net" },
-  @{ Id = "Anysphere.Cursor";       Name = "Cursor" }
+  @{ Id = "Anysphere.Cursor";       Name = "Cursor" },
+  @{ Id = "Rustlang.Rustup";        Name = "Rustup" }
 )
 
 foreach ($pkg in $wingetPackages) {
