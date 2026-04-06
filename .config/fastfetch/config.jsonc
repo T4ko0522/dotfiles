@@ -13,18 +13,24 @@
     }
   },
   "modules": [
-    "title",
+    {
+      "type": "title",
+      "color": {
+        "1": "38;5;208",
+        "2": "38;5;214"
+      }
+    },
     "separator",
-    "os",
-    "host",
-    "kernel",
-    "uptime",
-    "shell",
-    "terminal",
-    "cpu",
-    "gpu",
-    "memory",
-    "disk",
-    "battery"
+    { "type": "os", "key": "OS", "keyColor": "38;5;208" },
+    { "type": "host", "key": "Host", "keyColor": "38;5;208" },
+    { "type": "kernel", "key": "Kernel", "keyColor": "38;5;208" },
+    { "type": "uptime", "key": "Uptime", "keyColor": "38;5;208" },
+    { "type": "shell", "key": "Shell", "keyColor": "38;5;208" },
+    { "type": "terminal", "key": "Terminal", "keyColor": "38;5;208" },
+    { "type": "cpu", "key": "CPU", "keyColor": "38;5;208" },
+    { "type": "gpu", "key": "GPU", "keyColor": "38;5;208" },
+    { "type": "memory", "key": "Memory", "keyColor": "38;5;208" },
+    { "type": "disk", "key": "Disk", "keyColor": "38;5;208" },
+    { "type": "battery", "key": "Battery", "keyColor": "38;5;208" }
   ]
 }
