@@ -140,6 +140,9 @@ return {
           },
         },
         sources = {
+          explorer = {
+            hidden = true,
+          },
           git_log_file = {
             focus = "list", -- Default focus to the list
             win = {
