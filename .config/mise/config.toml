@@ -7,6 +7,7 @@ go = "latest"
 pnpm = "latest"
 python = "3.13.3"
 uv = "latest"
+golangci-lint = "latest"
 terraform = "latest"
 
 # npm packages
