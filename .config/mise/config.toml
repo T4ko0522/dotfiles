@@ -24,6 +24,7 @@ yarn = "latest"
 "npm:sdd-mcp" = "latest"
 "npm:vde-layout" = "0.0.9"
 "npm:markdownlint-cli" = "latest"
+"npm:@openai/codex" = "latest"
 
 # CLI tools
 ghq = "latest"
