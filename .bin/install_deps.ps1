@@ -17,13 +17,13 @@ function Test-CommandExists($cmd) {
 # Helper: winget パッケージのインストール（未インストール時のみ）
 # ---------------------------------------------------------------------------
 function Install-WingetPackage($id, $name) {
-  $installed = winget list --id $id --accept-source-agreements 2>$null
-  if ($installed -match [regex]::Escape($id)) {
+  winget list --id $id --exact --accept-source-agreements 2>&1 | Out-Null
+  if ($LASTEXITCODE -eq 0) {
     Write-Host "[skip] $name は既にインストール済み" -ForegroundColor DarkGray
     return
   }
   Write-Host "[install] $name ($id) ..." -ForegroundColor Cyan
-  winget install --id $id --accept-package-agreements --accept-source-agreements --silent
+  winget install --id $id --exact --accept-package-agreements --accept-source-agreements --silent
   if ($LASTEXITCODE -ne 0) {
     Write-Host "[warn] $name のインストールに失敗しました" -ForegroundColor Yellow
   }
@@ -120,13 +120,13 @@ $wingetPackages = @(
   @{ Id = "Git.Git";                Name = "Git" },
   @{ Id = "Microsoft.PowerShell";   Name = "PowerShell 7" },
   @{ Id = "jdx.mise";               Name = "mise" },
-  @{ Id = "wez.wezterm";            Name = "WezTerm" },
+  @{ Id = "wez.wezterm.nightly";     Name = "WezTerm" },
   @{ Id = "Neovim.Neovim";          Name = "Neovim" },
   @{ Id = "GitHub.GitLFS";          Name = "git-lfs" },
   @{ Id = "dandavison.delta";       Name = "delta" },
-  @{ Id = "stax76.mpv.net";          Name = "mpv.net" },
-  @{ Id = "Anysphere.Cursor";       Name = "Cursor" },
-  @{ Id = "Rustlang.Rustup";        Name = "Rustup" }
+  @{ Id = "mpv.net";                  Name = "mpv.net" },
+  @{ Id = "Rustlang.Rustup";        Name = "Rustup" },
+  @{ Id = "karlstav.cava";         Name = "cava" }
 )
 
 foreach ($pkg in $wingetPackages) {
@@ -138,10 +138,8 @@ foreach ($pkg in $wingetPackages) {
 # =============================================================================
 Write-Host "`n=== scoop packages ===" -ForegroundColor White
 
-Install-ScoopPackage -pkg "git-secrets" -name "git-secrets"
 Install-ScoopPackage -pkg "mingw"       -name "MinGW (gcc for TreeSitter)"
 Install-ScoopPackage -pkg "yasb"        -name "YASB"  -bucket "extras"
-Install-ScoopPackage -pkg "cava"        -name "cava" -bucket "extras"
 
 # =============================================================================
 # 4. フォント
@@ -181,7 +179,7 @@ if (Test-CommandExists "git-lfs") {
 }
 
 # =============================================================================
-# 6. PATH の更新を反映（新規インストール分）
+# 7. PATH の更新を反映（新規インストール分）
 # =============================================================================
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" +
             [System.Environment]::GetEnvironmentVariable("Path", "User")
