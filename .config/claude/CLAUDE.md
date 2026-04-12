@@ -11,6 +11,11 @@
 
 - If user requests or requirements are unclear, repeatedly use `user_input` to delve deeper and clarify ambiguities.
 
+# Git Commit Policy
+
+- Stick to one feature per commit. Do not group multiple changes into a single commit.
+-Commit messages should follow the Conventional Commits and gitmoji format.
+
 # Design Principles
 
 - There is no need to implement with minimal changes; prioritize conciseness and correctness of design.
