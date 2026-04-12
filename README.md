@@ -39,7 +39,7 @@ git clone https://github.com/T4ko0522/dotfiles
 cd dotfiles
 
 # 2. 依存関係のインストール
-pwsh -ExecutionPolicy Bypass -File .\.bin\install_deps.ps1
+powershell -ExecutionPolicy Bypass -File .\.bin\install_deps.ps1
 
 # 3. シンボリックリンク・設定の配置
 pwsh -ExecutionPolicy Bypass -File .\.bin\setup_windows.ps1
