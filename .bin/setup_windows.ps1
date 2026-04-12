@@ -179,5 +179,17 @@ if (-not (Get-Module -ListAvailable -Name BurntToast)) {
   Write-Host "BurntToast module already installed."
 }
 
+# mise trust & install（未実行の場合のみ）
+if (Get-Command "mise" -ErrorAction SilentlyContinue) {
+  $miseConfig = Join-Path $repo "mise.toml"
+  if (Test-Path $miseConfig) {
+    Write-Host "`n=== mise setup ===" -ForegroundColor White
+    mise trust $miseConfig
+    mise install
+  }
+} else {
+  Write-Host "mise が見つかりません。install_deps.ps1 を先に実行してください。" -ForegroundColor Yellow
+}
+
 Write-Host "Windows setup completed." -ForegroundColor Green
 & pwsh
