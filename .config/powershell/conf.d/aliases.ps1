@@ -27,6 +27,8 @@ function ls {
     }
     $items = @($items | Sort-Object { -not $_.PSIsContainer }, Name)
 
+    if ($items.Count -eq 0) { Write-Host '-'; return }
+
     $e = [char]0x1b
 
     # 各アイテムのデータを事前計算
