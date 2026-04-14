@@ -1,0 +1,12 @@
+color:
+  theme: custom
+
+date:
+  format: "%Y-%m-%d %H:%M"
+
+icons:
+  when: auto
+  theme: fancy
+
+sorting:
+  dir-grouping: first

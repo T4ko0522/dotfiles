@@ -1,0 +1,8 @@
+alias vi="nvim"
+alias ls="lsd"
+alias la="lsd -a"
+alias ll="lsd -la"
+alias cat="bat"
+alias grep="rg"
+alias find="fd"
+alias open="xdg-open"
