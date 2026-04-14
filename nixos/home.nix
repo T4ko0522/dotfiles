@@ -47,7 +47,7 @@ in
       ignoreDups = true;
       ignoreAllDups = true;
     };
-    initExtra = ''
+    initContent = ''
       source "${wslConfig}/zsh/rc.zsh"
     '';
   };
