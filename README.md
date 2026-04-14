@@ -29,7 +29,23 @@ WSLを使用せずともWindows環境をLinux Likeにカスタマイズします
 
 ## Dependency
 
-依存関係は `install_deps.ps1` と `mise install` で自動インストールされます。
+以下を事前にインストールしてください。ランタイム・CLIツールは `mise install` で追加されます。
+
+- [Git](https://git-scm.com/)
+- [PowerShell 7](https://github.com/PowerShell/PowerShell)
+- [mise](https://mise.jdx.dev/)
+- [WezTerm Nightly](https://wezfurlong.org/wezterm/)
+- [Neovim](https://neovim.io/)
+- [Git LFS](https://git-lfs.com/)
+- [delta](https://github.com/dandavison/delta)
+- [mpv.net](https://github.com/mpvnet-player/mpv.net)
+- [Rustup](https://rustup.rs/)
+- [cava](https://github.com/karlstav/cava)
+- [MinGW](https://www.mingw-w64.org/) (TreeSitter ビルド用)
+- [YASB](https://github.com/amnweb/yasb)
+- [PlemolJP Console NF](https://github.com/yuru7/PlemolJP)
+- [JetBrainsMono NFP](https://www.jetbrains.com/lp/mono/) (Nerd Fonts版)
+- [Terminal-Icons](https://github.com/devblackops/Terminal-Icons) (PSモジュール)
 
 ## Setup
 
@@ -37,9 +53,6 @@ WSLを使用せずともWindows環境をLinux Likeにカスタマイズします
 # 1. Clone
 git clone https://github.com/T4ko0522/dotfiles
 cd dotfiles
-
-# 2. 依存関係のインストール
-powershell -ExecutionPolicy Bypass -File .\.bin\install_deps.ps1
 
 # 3. シンボリックリンク・設定の配置
 pwsh -ExecutionPolicy Bypass -File .\.bin\setup_windows.ps1
