@@ -26,44 +26,55 @@ yz() {
 }
 
 # WSL ↔ Windows ファイル同期
-# パスを自動変換して rsync で同期する
-#   wsync push [path]  — WSL → Windows
-#   wsync pull [path]  — Windows → WSL
+#   wsync push [local]          — 自動検出で WSL → Windows
+#   wsync pull [local]          — 自動検出で Windows → WSL
+#   wsync push [src] [dst]      — 明示的に src → dst
+#   wsync pull [dst] [src]      — 明示的に src → dst
 wsync() {
   local WIN_HOME="/mnt/c/Users/takow"
   local WSL_HOME="$HOME"
   local direction="$1"
-  local target="${2:-$(pwd)}"
+  local path1="${2:-$(pwd)}"
+  local path2="$3"
 
-  # 末尾スラッシュを正規化
-  target="${target%/}"
+  path1="${path1%/}"
+  [[ -n "$path2" ]] && path2="${path2%/}"
 
-  # ミラーパスを自動検出
-  local mirror
-  if [[ "$target" == "$WSL_HOME"* ]]; then
-    mirror="${WIN_HOME}${target#$WSL_HOME}"
-  elif [[ "$target" == "$WIN_HOME"* ]]; then
-    mirror="${WSL_HOME}${target#$WIN_HOME}"
+  local src dst
+  if [[ -n "$path2" ]]; then
+    # 明示的に2パス指定
+    case "$direction" in
+      push) src="$path1"; dst="$path2" ;;
+      pull) src="$path2"; dst="$path1" ;;
+    esac
   else
-    echo "error: パスが $WSL_HOME または $WIN_HOME 配下ではありません"
-    echo "usage: wsync push|pull [path]"
-    return 1
+    # 自動検出
+    local mirror
+    if [[ "$path1" == "$WSL_HOME"* ]]; then
+      mirror="${WIN_HOME}${path1#$WSL_HOME}"
+    elif [[ "$path1" == "$WIN_HOME"* ]]; then
+      mirror="${WSL_HOME}${path1#$WIN_HOME}"
+    else
+      echo "error: パスの自動検出ができません。2つのパスを明示してください"
+      echo "usage: wsync push|pull [local] [remote]"
+      return 1
+    fi
+    case "$direction" in
+      push) src="$path1"; dst="$mirror" ;;
+      pull) src="$mirror"; dst="$path1" ;;
+    esac
   fi
 
   case "$direction" in
-    push)
-      echo "$target/ → $mirror/"
-      rsync -av --delete --exclude='.git' "$target/" "$mirror/"
-      ;;
-    pull)
-      echo "$mirror/ → $target/"
-      rsync -av --delete --exclude='.git' "$mirror/" "$target/"
+    push|pull)
+      echo "$src/ → $dst/"
+      rsync -av --delete --exclude='.git' "$src/" "$dst/"
       ;;
     *)
-      echo "usage: wsync push|pull [path]"
-      echo "  push  WSL → Windows"
-      echo "  pull  Windows → WSL"
-      echo "  path  省略時はカレントディレクトリ"
+      echo "usage: wsync push|pull [local] [remote]"
+      echo "  push  local → remote"
+      echo "  pull  remote → local"
+      echo "  パス省略時は自動検出（~/... ↔ /mnt/c/Users/takow/...）"
       ;;
   esac
 }
