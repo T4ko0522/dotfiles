@@ -1,6 +1,7 @@
 add_newline = true
 
 format = """
+$username\
 $directory\
 $git_branch\
 $git_status\
@@ -54,7 +55,13 @@ style = 'fg:#6c3483'
 disabled = false
 time_format = '%R'
 format = ' [$time]($style)'
-style = 'fg:#7c3aed'
+style = 'fg:#b48ead'
+
+[username]
+show_always = true
+format = '[$user]($style) in '
+style_user = 'bold fg:#d19afc'
+style_root = 'bold fg:#e06c75'
 
 [character]
 success_symbol = '[>>](bold fg:#c778dd)'
