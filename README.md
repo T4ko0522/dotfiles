@@ -11,7 +11,7 @@
 
 ## Description
 
-WindowsをNativeでUnixライクのように使えるように作成されたDotfiles。
+WindowsをNativeでUnixライクのように使えるように作成されたDotfiles。  
 WSLはNixOSをサポートしています。
 > このdotfilesは [mozumasuさんのdotfiles](https://github.com/mozumasu/dotfiles) を参考に作られています。
 
