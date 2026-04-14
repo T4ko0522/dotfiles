@@ -11,8 +11,8 @@
 
 ## Description
 
-Windows用に作成されたdotfiles.  
-WSLを使用せずともWindows環境をLinux Likeにカスタマイズします。
+WindowsをNativeでUnixライクのように使えるように作成されたDotfiles。
+WSLはNixOSをサポートしています。
 > このdotfilesは [mozumasuさんのdotfiles](https://github.com/mozumasu/dotfiles) を参考に作られています。
 
 ## Tools
