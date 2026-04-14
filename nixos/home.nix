@@ -4,6 +4,7 @@
 }:
 let
   dotfiles = ../.config;
+  wslConfig = ./.config;
 in
 {
   home.username = "takow";
@@ -16,30 +17,45 @@ in
     yazi
     mise
     ghq
-    peco
+    fzf
+    fd
+    lsd
+    bat
+    ripgrep
     fastfetch
+    gh
   ];
 
   # 共通設定への symlink
   xdg.configFile = {
     "nvim".source = "${dotfiles}/nvim";
-    "starship.toml".source = "${dotfiles}/starship.toml";
+    "starship.toml".source = "${wslConfig}/starship.toml";
     "lazygit".source = "${dotfiles}/lazygit";
     "yazi".source = "${dotfiles}/yazi";
     "mise/config.toml".source = "${dotfiles}/mise/config.toml";
+    "lsd".source = "${wslConfig}/lsd";
   };
 
-  programs.bash = {
+  programs.zsh = {
     enable = true;
+    autosuggestion.enable = true;
+    syntaxHighlighting.enable = true;
+    enableCompletion = true;
+    history = {
+      size = 16384;
+      save = 16384;
+      ignoreDups = true;
+      ignoreAllDups = true;
+    };
     initExtra = ''
-      eval "$(starship init bash)"
-      eval "$(mise activate bash)"
+      source "${wslConfig}/zsh/rc.zsh"
     '';
   };
 
   programs.git = {
     enable = true;
-    userName = "T4ko0522";
+    signing.format = null;
+    settings.user.name = "T4ko0522";
   };
 
   home.stateVersion = "24.11";

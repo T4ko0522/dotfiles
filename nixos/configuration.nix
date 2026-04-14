@@ -17,6 +17,9 @@
 
   i18n.defaultLocale = "ja_JP.UTF-8";
 
+  programs.zsh.enable = true;
+  users.users.takow.shell = pkgs.zsh;
+
   environment.systemPackages = with pkgs; [
     git
     curl
@@ -26,6 +29,7 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
+    backupFileExtension = "bak";
     users.takow = import ./home.nix;
   };
 
