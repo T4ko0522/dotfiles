@@ -16,3 +16,9 @@ jq = "latest"
 "github:jftuga/less-Windows" = { version = "latest", exe = "less" }
 fastfetch = "latest"
 gh = "latest"
+
+# NixOSでビルド不可のツール（ソースビルドにgcc/Rust必要、FHS非互換）
+python = "3.13.3"
+dotnet = "latest"
+"cargo:cargo-outdated" = "latest"
+"cargo:mergiraf" = "latest"

@@ -3,10 +3,8 @@
 node = "lts"
 bun = "latest"
 deno = "latest"
-dotnet = "latest"
 go = "latest"
 pnpm = "latest"
-python = "3.13.3"
 uv = "latest"
 zig = "latest"
 
@@ -32,10 +30,6 @@ yarn = "latest"
 "npm:vde-layout" = "0.0.9"
 "npm:markdownlint-cli" = "latest"
 "npm:@openai/codex" = "latest"
-
-# cargo tools
-"cargo:cargo-outdated" = "latest"
-"cargo:mergiraf" = "latest"
 
 [settings]
 experimental = true
