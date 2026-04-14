@@ -14,7 +14,8 @@
 # Git Commit Policy
 
 - Stick to one feature per commit. Do not group multiple changes into a single commit.
--Commit messages should follow the Conventional Commits and gitmoji format.
+- Commit messages should follow the Conventional Commits and gitmoji format.
+- Commit messages must be written in Japanese by default. Use English only when explicitly requested.
 
 # Design Principles
 
