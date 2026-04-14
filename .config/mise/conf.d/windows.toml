@@ -1,0 +1,18 @@
+[tools]
+# CLI tools (WSLではNixで管理)
+ghq = "latest"
+lazygit = "latest"
+starship = "latest"
+lsd = "latest"
+fzf = "latest"
+bat = "latest"
+ripgrep = "latest"
+yazi = "latest"
+difftastic = "latest"
+hyperfine = "latest"
+1password = "latest"
+fd = "latest"
+jq = "latest"
+"github:jftuga/less-Windows" = { version = "latest", exe = "less" }
+fastfetch = "latest"
+gh = "latest"

@@ -1,4 +1,5 @@
 [tools]
+# Languages & runtimes
 node = "lts"
 bun = "latest"
 deno = "latest"
@@ -7,8 +8,14 @@ go = "latest"
 pnpm = "latest"
 python = "3.13.3"
 uv = "latest"
+zig = "latest"
+
+# Build tools
 golangci-lint = "latest"
 terraform = "latest"
+sccache = "latest"
+cargo-binstall = "latest"
+tree-sitter = "latest"
 
 # npm packages
 yarn = "latest"
@@ -26,29 +33,9 @@ yarn = "latest"
 "npm:markdownlint-cli" = "latest"
 "npm:@openai/codex" = "latest"
 
-# CLI tools
-ghq = "latest"
-lazygit = "latest"
-starship = "latest"
-lsd = "latest"
-fzf = "latest"
-bat = "latest"
-ripgrep = "latest"
-yazi = "latest"
-difftastic = "latest"
-hyperfine = "latest"
-1password = "latest"
-sccache = "latest"
-cargo-binstall = "latest"
+# cargo tools
 "cargo:cargo-outdated" = "latest"
 "cargo:mergiraf" = "latest"
-fd = "latest"
-zig = "latest"
-tree-sitter = "latest"
-jq = "latest"
-"github:jftuga/less-Windows" = { version = "latest", exe = "less" }
-fastfetch = "latest"
-gh = "latest"
 
 [settings]
 experimental = true
