@@ -17,6 +17,15 @@
 
   i18n.defaultLocale = "ja_JP.UTF-8";
 
+  programs.nix-ld.enable = true;
+  programs.nix-ld.libraries = with pkgs; [
+    stdenv.cc.cc.lib
+    zlib
+    openssl
+    icu
+    curl
+  ];
+
   programs.zsh.enable = true;
   users.users.takow.shell = pkgs.zsh;
 
