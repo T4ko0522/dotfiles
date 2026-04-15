@@ -68,6 +68,7 @@ wsync() {
   case "$direction" in
     push|pull)
       echo "$src/ → $dst/"
+      mkdir -p "$dst"
       rsync -av --delete --exclude='.git' "$src/" "$dst/"
       ;;
     *)
@@ -82,7 +83,8 @@ wsync() {
 # git init 時に .cursorrules を自動配置
 git() {
   command git "$@"
-  if [[ "$1" == "init" ]] && [[ $? -eq 0 ]]; then
+  local ret=$?
+  if [[ "$1" == "init" ]] && [[ $ret -eq 0 ]]; then
     local rules="$HOME/.git_template/git-secrets/.cursorrules"
     if [[ -f "$rules" ]]; then
       cp "$rules" ./.cursorrules
