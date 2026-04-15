@@ -32,7 +32,7 @@ in
     "starship.toml".source = "${wslConfig}/starship.toml";
     "lazygit".source = "${dotfiles}/lazygit";
     "yazi".source = "${dotfiles}/yazi";
-    "mise/config.toml".source = "${dotfiles}/mise/config.toml";
+    "mise/config.toml".text = builtins.readFile "${dotfiles}/mise/config.toml";
     "lsd".source = "${wslConfig}/lsd";
   };
 

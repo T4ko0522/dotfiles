@@ -2,6 +2,8 @@
 eval "$(starship init zsh)"
 
 # mise
+# /mnt/c 配下の mise config を無視（Windows用 conf.d の誤読み込み・二重読み込み防止）
+export MISE_IGNORED_CONFIG_PATHS="/mnt/c"
 if command -v mise &>/dev/null; then
   eval "$(mise activate zsh)"
 fi
