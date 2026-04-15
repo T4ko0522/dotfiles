@@ -1,8 +1,7 @@
 color:
   theme: custom
 
-date:
-  format: "%Y-%m-%d %H:%M"
+date: "+%Y-%m-%d %H:%M"
 
 icons:
   when: auto
