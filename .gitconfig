@@ -34,3 +34,5 @@
 [user]
 	email = tako.renraku1@gmail.com
 	name = T4ko0522
+[safe]
+	directory = %(prefix)///wsl.localhost/NixOS/home/takow/dotfiles
