@@ -10,9 +10,6 @@ Register-EngineEvent -SourceIdentifier PowerShell.OnIdle -MaxTriggerCount 1 -Act
     }
 } | Out-Null
 
-# Claude Code のデフォルト effort を max に設定
-$env:CLAUDE_CODE_EFFORT_LEVEL = "max"
-
 # https://github.com/antfu-collective/ni とNew-Itemの競合を無効化
 Remove-Item Alias:ni -Force -ErrorAction Ignore
 
