@@ -13,6 +13,14 @@ esac
 # 先頭行を取得
 first_line=$(head -n1 "$COMMIT_MSG_FILE")
 
+# "ngm " プレフィックス付きなら gitmoji をスキップし、プレフィックスだけ除去
+case "$first_line" in
+  ngm\ *)
+    sed -i '1s/^ngm //' "$COMMIT_MSG_FILE"
+    exit 0
+    ;;
+esac
+
 # 既に gitmoji が含まれていればスキップ（二重挿入防止）
 case "$first_line" in
   *✨*|*🐛*|*📝*|*💄*|*♻️*|*⚡️*|*✅*|*👷*|*🎡*|*🔧*|*🔥*|*🚀*) exit 0 ;;
