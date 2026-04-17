@@ -8,9 +8,6 @@ if command -v mise &>/dev/null; then
   eval "$(mise activate zsh)"
 fi
 
-# Environment
-export CLAUDE_CODE_EFFORT_LEVEL="max"
-
 # fzf マゼンタテーマ
 export FZF_DEFAULT_OPTS="
   --color=fg:#c0caf5,bg:-1,hl:#c778dd
