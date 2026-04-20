@@ -58,7 +58,7 @@
     "huggingface-skills@claude-plugins-official": true,
     "lua-lsp@claude-plugins-official": true
   },
-  "effortLevel": "high",
+  "effortLevel": "xhigh",
   "autoUpdatesChannel": "stable",
   "skipDangerousModePermissionPrompt": true
 }
