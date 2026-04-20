@@ -1,31 +1,35 @@
-# Response Language
+# 回答言語
 
-- Always respond to the user in Japanese, regardless of the input language.
-- Internal thinking may be in any language.
+- 入力された言語にかかわらず、常に日本語で回答してください。
+- 内部的な思考はどの言語で行っても構いません。
 
-# Sub-agents and Task Delegation
+# サブエージェントとタスクの委任
 
-- If sub-agents are usable and independent contexts are enabled for tasks (such as refactoring, reviewing, wide-ranging exploration, searching on the web or in documents), or if you want to execute tasks in parallel, utilize sub-agents to delegate processing.
+- リファクタリング、レビュー、広範な調査、ウェブやドキュメントの検索など、サブエージェントが利用可能でタスクごとに独立したコンテキストを有効にできる場合、あるいはタスクを並行して実行したい場合は、サブエージェントを活用して処理を委任してください。
 
-# Clarifying Requirements
+# 開発スタイル
+- TDD で開発する（探索 → Red → Green → Refactoring）
+- KPI やカバレッジ目標が与えられたら、達成するまで試行する。
+- ユーザーの要望や要件が不明確な場合は、質問を繰り返し詳細を掘り下げ、曖昧な点を明確にしてください。
 
-- If user requests or requirements are unclear, repeatedly use `user_input` to delve deeper and clarify ambiguities.
+# Gitコミットポリシー
 
-# Git Commit Policy
+- 1コミットにつき1機能をできる限り守ってください。
+- コミットメッセージは「Conventional Commits」の形式に従ってください。自動的にgitmojiが付与されるフックがあるため、手動でgitmojiを追加しないでください。
+- コミットメッセージは原則として日本語で記述してください。英語での記述は、明示的にリクエストされた場合のみ行ってください。
 
-- Stick to one feature per commit. Do not group multiple changes into a single commit.
-- Commit messages should follow the Conventional Commits format. A hook automatically prepends a gitmoji, so do not add one manually.
-- Commit messages must be written in Japanese by default. Use English only when explicitly requested.
+# 設計原則
 
-# Design Principles
+- 最小限の変更で実装することに固執せず、設計の簡潔さと正確さを優先してください。
+- コントラクト層（API/型）を厳密に定義し、実装層は再生成可能に保つようにしてください。
+- 関心の分離を保ってください。
+- 状態とロジックを分離してください。
+- 可読性と保守性を重視してください。
+- ユーザーから明示的な要望がない限り、後方互換性のための補助機能や代替経路の実装は行わないでください。
 
-- There is no need to implement with minimal changes; prioritize conciseness and correctness of design.
-- Adhere to the YAGNI principle, KISS principle, and DRY principle.
-- Do not implement auxiliary functions or alternative paths for backward compatibility unless explicitly requested by the user.
+# パッケージマネージャー
 
-# Package Manager
-
-- If the project's package manager is known, use it directly (e.g., `pnpm`, `pnpm dlx`).
-- If unknown, use `@antfu/ni` commands:
-  - `ni` (install), `nr` (run), `nlx` (exec), `nu` (upgrade), `nun` (uninstall)
-- Do not use `pnpm create` / `npm create`; set up the project manually.
+- プロジェクトのパッケージマネージャーが判明している場合は、それを直接使用してください（例：`pnpm`、`pnpm dlx`）。
+- 不明な場合は、`@antfu/ni` のコマンドを使用してください。
+  - `ni` (インストール)、`nr` (実行)、`nlx` (実行)、`nu` (アップグレード)、`nun` (アンインストール)
+- `pnpm create` や `npm create` は使用せず、プロジェクトの手動セットアップを行ってください。
