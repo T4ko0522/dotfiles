@@ -34,7 +34,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File $USERPROFILE/.claude/claude_notify.ps1",
+            "command": "~/.claude/claude_notify.sh",
             "timeout": 10
           }
         ]
