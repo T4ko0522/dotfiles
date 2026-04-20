@@ -61,3 +61,16 @@ pwsh -ExecutionPolicy Bypass -File .\.bin\setup_windows.ps1
 mise trust
 mise install
 ```
+
+## Claude Code Switch
+
+```powershell
+# native installer -> claude
+pwsh -ExecutionPolicy Bypass -File .\.bin\switch_claude_code.ps1 native
+
+# mise npm install -> claude
+pwsh -ExecutionPolicy Bypass -File .\.bin\switch_claude_code.ps1 npm
+
+# show current launcher status
+pwsh -ExecutionPolicy Bypass -File .\.bin\switch_claude_code.ps1 status
+```
