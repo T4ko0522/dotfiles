@@ -83,6 +83,9 @@
 .config/codex/logs_2.sqlite-shm
 .config/codex/logs_2.sqlite-wal
 
+# vendor binaries
+.bin/snoretoast.exe
+
 # PowerShell (Install-Module で入るモジュール)
 .config/powershell/Modules/
 

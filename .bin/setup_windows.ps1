@@ -149,6 +149,27 @@ if (Test-Path -LiteralPath $hooksSrc) {
 
 Write-Host "Git template setup completed."
 
+# snoretoast: Windows toast notification CLI (node-notifier にバンドルされたビルドを取得)
+$snoretoastDst = Join-Path $binDir "snoretoast.exe"
+if (-not (Test-Path -LiteralPath $snoretoastDst)) {
+  Write-Host "Installing snoretoast..."
+  $tmpDir = Join-Path ([System.IO.Path]::GetTempPath()) "snoretoast-install"
+  try {
+    New-Item -ItemType Directory -Path $tmpDir -Force | Out-Null
+    Push-Location $tmpDir
+    & npm pack node-notifier --silent 2>$null
+    $tgz = Get-ChildItem "node-notifier-*.tgz" | Select-Object -First 1
+    tar -xzf $tgz.Name
+    Copy-Item "package/vendor/snoreToast/snoretoast-x64.exe" $snoretoastDst
+    Pop-Location
+    Write-Host "Installed: $snoretoastDst"
+  } catch {
+    Write-Host "Warning: Failed to install snoretoast: $_" -ForegroundColor Yellow
+  } finally {
+    if (Test-Path $tmpDir) { Remove-Item -Recurse -Force $tmpDir -ErrorAction SilentlyContinue }
+  }
+}
+
 # Ensure dotfiles .bin is available from PATH in all shells.
 $userPath = [Environment]::GetEnvironmentVariable("Path", "User")
 $pathItems = @()
@@ -167,15 +188,6 @@ if ($pathItems -notcontains $binDir) {
   Write-Host "Added to user PATH: $binDir"
 } else {
   Write-Host "Already in user PATH: $binDir"
-}
-
-# Ensure BurntToast module is available for Claude Code notification hooks.
-if (-not (Get-Module -ListAvailable -Name BurntToast)) {
-  Write-Host "Installing BurntToast module for Claude Code notifications..."
-  Install-Module -Name BurntToast -Scope CurrentUser -Force -SkipPublisherCheck
-  Write-Host "BurntToast module installed."
-} else {
-  Write-Host "BurntToast module already installed."
 }
 
 # mise trust & install（未実行の場合のみ）
