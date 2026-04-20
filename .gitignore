@@ -78,6 +78,10 @@
 .config/codex/state_*.sqlite
 .config/codex/state_*.sqlite*
 .config/codex/version.json
+.config/codex/installation_id
+.config/codex/logs_2.sqlite
+.config/codex/logs_2.sqlite-shm
+.config/codex/logs_2.sqlite-wal
 
 # PowerShell (Install-Module で入るモジュール)
 .config/powershell/Modules/
