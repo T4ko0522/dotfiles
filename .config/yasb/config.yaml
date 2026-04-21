@@ -42,7 +42,8 @@ bars:
           "cpu",
           "memory",
           "traffic",
-          "media",
+          "battery",
+          "brightness",
         ]
       center:
         [
@@ -54,6 +55,7 @@ bars:
           "weather",
           "clock",
           "cava",
+          "media",
           "volume",
           "wifi",
           "disk",
@@ -380,6 +382,38 @@ widgets:
           "\udb82\udd25",  # Icon for 41-80% strength
           "\udb82\udd28"   # Icon for 81-100% strength
         ]
+  battery:
+    type: "yasb.battery.BatteryWidget"
+    options:
+      label: "<span>{icon}</span> {percent}%"
+      label_alt: "<span>{icon}</span> {percent}% | {time_remaining}"
+      update_interval: 5000
+      callbacks:
+        on_left: "toggle_label"
+        on_middle: "do_nothing"
+        on_right: "exec cmd.exe /c start ms-settings:batterysaver"
+      container_padding:
+        top: 0
+        left: 4
+        bottom: 0
+        right: 4
+  brightness:
+    type: "yasb.brightness.BrightnessWidget"
+    options:
+      label: "<span>{icon}</span> {percent}%"
+      label_alt: "<span>{icon}</span> Brightness {percent}%"
+      tooltip: true
+      scroll_step: 1
+      hide_unsupported: true
+      callbacks:
+        on_left: "toggle_label"
+        on_middle: "do_nothing"
+        on_right: "do_nothing"
+      container_padding:
+        top: 0
+        left: 4
+        bottom: 0
+        right: 4
   update_check:
     type: "yasb.update_check.UpdateCheckWidget"
     options:
