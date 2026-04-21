@@ -26,6 +26,7 @@ WSLはNixOSをサポートしています。
 | File Manager | [yazi](https://github.com/sxyazi/yazi) |
 | Dev Tools | [mise](https://mise.jdx.dev/) (Node, Bun, Deno, Go, Python, .NET, Terraform, etc.) |
 | Status Bar | [YASB](https://github.com/amnweb/yasb) |
+| Window Manager | [komorebi](https://github.com/LGUG2Z/komorebi) + [whkd](https://github.com/LGUG2Z/whkd) |
 
 ## Dependency
 
@@ -43,6 +44,7 @@ WSLはNixOSをサポートしています。
 - [cava](https://github.com/karlstav/cava)
 - [MinGW](https://www.mingw-w64.org/) (TreeSitter ビルド用)
 - [YASB](https://github.com/amnweb/yasb)
+- [komorebi](https://github.com/LGUG2Z/komorebi) / [whkd](https://github.com/LGUG2Z/whkd) (`scoop install komorebi whkd`)
 - [PlemolJP Console NF](https://github.com/yuru7/PlemolJP)
 - [JetBrainsMono NFP](https://www.jetbrains.com/lp/mono/) (Nerd Fonts版)
 - [Terminal-Icons](https://github.com/devblackops/Terminal-Icons) (PSモジュール)
