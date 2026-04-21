@@ -24,7 +24,7 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 })
 vim.api.nvim_set_hl(0, "SpellCap", {})
 
--- 背景透過を維持（Zenモードで:w後も透明を保つ）
+-- 背景透過を維持（colorscheme 適用時のみで十分。保存時の全窓巡回は行わない）
 local function apply_transparent_bg()
   vim.cmd([[
     highlight Normal guibg=NONE ctermbg=NONE
@@ -36,13 +36,9 @@ local function apply_transparent_bg()
     highlight SnacksNormal guibg=NONE ctermbg=NONE
     highlight SnacksNormalNC guibg=NONE ctermbg=NONE
   ]])
-  for _, win in ipairs(vim.api.nvim_list_wins()) do
-    pcall(function() vim.wo[win].winblend = 0 end)
-  end
 end
 
-vim.api.nvim_create_autocmd({ "BufWritePost", "ColorScheme" }, {
-  pattern = "*",
+vim.api.nvim_create_autocmd("ColorScheme", {
   callback = function()
     vim.schedule(apply_transparent_bg)
   end,

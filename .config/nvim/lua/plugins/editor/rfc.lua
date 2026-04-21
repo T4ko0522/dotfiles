@@ -1,3 +1,3 @@
 return {
-  "mhinz/vim-rfc",
+  { "mhinz/vim-rfc", cmd = { "RFC" } },
 }

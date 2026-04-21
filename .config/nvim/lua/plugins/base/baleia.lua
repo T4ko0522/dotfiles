@@ -1,8 +1,9 @@
 return {
   "m00qek/baleia.nvim",
   version = "*",
-  -- Keep plugin lazy, but expose commands/autocmds early.
-  -- We lazy-require baleia in callbacks as needed.
+  -- defaults.lazy=true の元では、`init` を発火させるため起動時ロードを明示する。
+  -- 重い baleia.setup() は ensure_baleia() で初回利用時まで遅延している。
+  lazy = false,
   init = function()
     ---@class BaleiaObj
     ---@field once fun(buffer: integer)

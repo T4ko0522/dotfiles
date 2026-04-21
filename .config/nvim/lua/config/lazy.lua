@@ -53,9 +53,10 @@ require("lazy").setup({
     { import = "plugins.plamo-translate" },
   },
   defaults = {
-    -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
-    -- If you know what you're doing, you can set this to `true` to have all your custom plugins lazy-loaded by default.
-    lazy = false,
+    -- カスタムプラグインもデフォルトで遅延ロードする。
+    -- 個別に event/cmd/keys/ft/lazy=false を指定しない限り VeryLazy 扱いにならないため、
+    -- 各プラグイン側で必要な発火条件を明示する。
+    lazy = true,
     -- It's recommended to leave version=false for now, since a lot the plugin that support versioning,
     -- have outdated releases, which may break your Neovim install.
     version = false, -- always use the latest git commit
@@ -63,9 +64,9 @@ require("lazy").setup({
   },
   install = { colorscheme = { "zenbones", "tokyonight", "habamax" } },
   checker = {
-    enabled = true, -- check for plugin updates periodically
-    notify = false, -- notify on update
-  }, -- automatically check for plugin updates
+    enabled = false, -- 起動時/定期 fetch を止める（必要なら :Lazy sync で手動更新）
+    notify = false,
+  },
   performance = {
     rtp = {
       -- disable some rtp plugins
