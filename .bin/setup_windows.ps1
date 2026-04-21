@@ -21,7 +21,11 @@ $targets = @(
   @{ Src = ".config/starship.toml"; Dst = ".config/starship.toml" },
   @{ Src = ".config/yasb";          Dst = ".config/yasb" },
   @{ Src = ".config/cava";          Dst = ".config/cava" },
-  @{ Src = ".config/fastfetch";     Dst = ".config/fastfetch" }
+  @{ Src = ".config/fastfetch";     Dst = ".config/fastfetch" },
+  @{ Src = ".config/komorebi/komorebi.json";     Dst = "komorebi.json" },
+  @{ Src = ".config/komorebi/komorebi.bar.json"; Dst = "komorebi.bar.json" },
+  @{ Src = ".config/komorebi/applications.json"; Dst = "applications.json" },
+  @{ Src = ".config/whkdrc";        Dst = ".config/whkdrc" }
 )
 
 function Remove-ExistingPath($path) {
