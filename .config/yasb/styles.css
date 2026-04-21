@@ -125,6 +125,42 @@
     border-radius: 5px;
 }
 
+/***---------------------------------      • Komorebi Workspaces •      ---------------------------***/
+
+.komorebi-workspaces {
+    margin: 0;
+}
+.komorebi-workspaces .widget-container {
+    background-color: var(--mantle);
+    margin: 3px 0px 3px 0px;
+    border-radius: 8px;
+    padding: 0 4px;
+}
+.komorebi-workspaces .offline-status {
+    color: var(--text);
+    font-size: 12px;
+    padding: 0 8px;
+    font-weight: 600;
+}
+.komorebi-workspaces .ws-btn {
+    border: none;
+    background-color: transparent;
+    color: var(--overlay0);
+    margin: 0 2px;
+    padding: 0 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    min-width: 16px;
+}
+.komorebi-workspaces .ws-btn.populated {
+    color: var(--subtext0);
+}
+.komorebi-workspaces .ws-btn.active {
+    color: var(--base);
+    background-color: var(--mauve);
+    font-weight: 700;
+}
+
 /***---------------------------------      • Audio Widget •      ----------------------------------***/
 
 .audio-menu {
