@@ -1,0 +1,96 @@
+{
+  "$schema": "https://raw.githubusercontent.com/LGUG2Z/komorebi/v0.1.40/schema.json",
+  "app_specific_configuration_path": "$Env:USERPROFILE/applications.json",
+  "window_hiding_behaviour": "Cloak",
+  "cross_monitor_move_behaviour": "Insert",
+  "window_container_behaviour": "Create",
+  "window_handling_behaviour": "Async",
+  "unmanaged_window_operation_behaviour": "NoOp",
+  "default_workspace_padding": 1,
+  "default_container_padding": 4,
+  "border": true,
+  "border_width": 3,
+  "border_offset": -1,
+  "border_style": "Rounded",
+  "mouse_follows_focus": true,
+  "stackbar": {
+    "height": 30,
+    "mode": "OnStack",
+    "tabs": {
+      "width": 200
+    }
+  },
+  "animation": {
+    "enabled": true,
+    "style": "EaseOutCubic",
+    "duration": 200,
+    "fps": 60
+  },
+  "transparency": true,
+  "transparency_alpha": 245,
+  "theme": {
+    "palette": "Base16",
+    "name": "TokyoNightDark",
+    "single_border": "Base0E",
+    "stack_border": "Base08",
+    "monocle_border": "Base0D",
+    "floating_border": "Base09",
+    "unfocused_border": "Base03",
+    "bar_accent": "Base0E"
+  },
+  "display_index_preferences": {
+    "0": "CMN1556-4&243a609a&0&UID8388688",
+    "1": "IOD43EE-5&26d74eb9&0&UID4354"
+  },
+  "ignore_rules": [
+    { "kind": "Title", "id": "Nani Translate", "matching_strategy": "Contains" }
+  ],
+  "monitors": [
+    {
+      "workspaces": [
+        {
+          "name": "I",
+          "layout": "BSP",
+          "workspace_rules": [
+            { "kind": "Exe", "id": "wezterm-gui.exe", "matching_strategy": "Equals" }
+          ]
+        },
+        {
+          "name": "II",
+          "layout": "Grid",
+          "workspace_rules": [
+            { "kind": "Exe", "id": "Discord.exe", "matching_strategy": "Equals" }
+          ]
+        },
+        {
+          "name": "III",
+          "layout": "Columns",
+          "workspace_rules": [
+            { "kind": "Exe", "id": "slack.exe",   "matching_strategy": "Equals" },
+            { "kind": "Exe", "id": "Spotify.exe", "matching_strategy": "Equals" }
+          ]
+        }
+      ]
+    },
+    {
+      "workspaces": [
+        {
+          "name": "V",
+          "layout": "BSP",
+          "workspace_rules": [
+            { "kind": "Exe", "id": "Code.exe",  "matching_strategy": "Equals" },
+            { "kind": "Exe", "id": "brave.exe", "matching_strategy": "Equals" }
+          ]
+        },
+        { "name": "VI", "layout": "BSP" },
+        {
+          "name": "VII",
+          "layout": "BSP",
+          "workspace_rules": [
+            { "kind": "Exe", "id": "chrome.exe", "matching_strategy": "Equals" }
+          ]
+        }
+      ]
+    }
+  ]
+}
