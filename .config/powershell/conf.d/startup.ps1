@@ -13,6 +13,12 @@ Register-EngineEvent -SourceIdentifier PowerShell.OnIdle -MaxTriggerCount 1 -Act
 # https://github.com/antfu-collective/ni とNew-Itemの競合を無効化
 Remove-Item Alias:ni -Force -ErrorAction Ignore
 
+# komorebi + whkd 自動起動
+if ((Get-Command komorebic -ErrorAction SilentlyContinue) -and
+    -not (Get-Process -Name komorebi -ErrorAction SilentlyContinue)) {
+    Start-Process komorebic -ArgumentList 'start', '--whkd' -WindowStyle Hidden
+}
+
 # yasb 自動起動
 if (-not (Get-Process -Name yasb -ErrorAction SilentlyContinue)) {
     Start-Process yasb -WindowStyle Hidden
