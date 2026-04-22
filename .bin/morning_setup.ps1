@@ -9,6 +9,9 @@
 
 $ErrorActionPreference = "Continue"
 
+# モニター index の動的補正（自宅／職場で外部モニターが変わるため）
+& (Join-Path $PSScriptRoot "apply_monitor_preferences.ps1")
+
 function Start-IfNotRunning {
     param(
         [Parameter(Mandatory)][string]   $ProcessName,
