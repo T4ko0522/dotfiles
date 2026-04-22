@@ -25,7 +25,10 @@ $targets = @(
   @{ Src = ".config/komorebi/komorebi.json";     Dst = "komorebi.json" },
   @{ Src = ".config/komorebi/komorebi.bar.json"; Dst = "komorebi.bar.json" },
   @{ Src = ".config/komorebi/applications.json"; Dst = "applications.json" },
-  @{ Src = ".config/whkdrc";        Dst = ".config/whkdrc" }
+  @{ Src = ".config/whkdrc";        Dst = ".config/whkdrc" },
+  @{ Src = ".config/vscode/settings.json";    Dst = (Join-Path $roamingDir "Code\User\settings.json") },
+  @{ Src = ".config/vscode/keybindings.json"; Dst = (Join-Path $roamingDir "Code\User\keybindings.json") },
+  @{ Src = ".config/vscode/snippets";         Dst = (Join-Path $roamingDir "Code\User\snippets") }
 )
 
 function Remove-ExistingPath($path) {
