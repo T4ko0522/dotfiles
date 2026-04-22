@@ -1,6 +1,22 @@
 local wezterm = require("wezterm")
 local act = wezterm.action
 
+-- フォントサイズを 0.5 単位で増減（IncreaseFontSize/DecreaseFontSize は 10% 単位なので別実装）
+local function adjust_font_size(window, delta)
+  local overrides = window:get_config_overrides() or {}
+  local current = overrides.font_size or window:effective_config().font_size
+  overrides.font_size = current + delta
+  window:set_config_overrides(overrides)
+end
+
+wezterm.on("font-size-increase-half", function(window, _)
+  adjust_font_size(window, 0.5)
+end)
+
+wezterm.on("font-size-decrease-half", function(window, _)
+  adjust_font_size(window, -0.5)
+end)
+
 -- Show which key table is active in the status area
 wezterm.on("update-right-status", function(window, pane)
   local name = window:active_key_table()
@@ -56,6 +72,9 @@ return {
     { key = ";", mods = "CTRL|SHIFT", action = act.IncreaseFontSize },
     { key = "-", mods = "ALT", action = act.DecreaseFontSize },
     { key = "-", mods = "CTRL|SHIFT", action = act.DecreaseFontSize },
+    -- フォントサイズを 0.5 ずつ変更
+    { key = ";", mods = "CTRL", action = act.EmitEvent("font-size-increase-half") },
+    { key = "-", mods = "CTRL", action = act.EmitEvent("font-size-decrease-half") },
     -- フォントサイズのリセット
     { key = "0", mods = "ALT", action = act.ResetFontSize },
     { key = "0", mods = "CTRL|SHIFT", action = act.ResetFontSize },
