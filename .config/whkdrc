@@ -22,12 +22,18 @@ alt + p                 : komorebic focus right
 win + shift + oem_4     : komorebic cycle-focus previous # oem_4 is [
 win + shift + oem_6     : komorebic cycle-focus next # oem_6 is ]
 
-# Move (re-arrange) windows (win + uiop)
-win + u                 : komorebic move left
-win + i                 : komorebic move down
-win + o                 : komorebic move up
-win + p                 : komorebic move right
+# Preselect split direction for next window (win + uiop) — 次に開くウィンドウの配置先を指定
+win + u                 : komorebic preselect-direction left
+win + i                 : komorebic preselect-direction down
+win + o                 : komorebic preselect-direction up
+win + p                 : komorebic preselect-direction right
 win + shift + return    : komorebic promote
+
+# Swap/move focused window with neighbor (win + shift + uiop)
+win + shift + u         : komorebic move left
+win + shift + i         : komorebic move down
+win + shift + o         : komorebic move up
+win + shift + p         : komorebic move right
 
 # Stack windows
 win + left              : komorebic stack left
