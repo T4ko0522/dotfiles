@@ -1,0 +1,48 @@
+[
+    {
+        "key": "shift+enter",
+        "command": "workbench.action.terminal.sendSequence",
+        "args": { "text": "\u001b\r" },
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+=",
+        "command": "settings.cycle",
+        "args": {
+            "id": "fontSizeIncrement",
+            "settings": [
+                { "key": "editor.fontSize", "value": "+=0.5" }
+            ]
+        }
+    },
+    {
+        "key": "ctrl+-",
+        "command": "settings.cycle",
+        "args": {
+            "id": "fontSizeDecrement",
+            "settings": [
+                { "key": "editor.fontSize", "value": "-=0.5" }
+            ]
+        }
+    },
+    {
+        "key": "alt+down",
+        "command": "gotoNextPreviousMember.nextMember",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "alt+up",
+        "command": "gotoNextPreviousMember.previousMember",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "alt+down",
+        "command": "-editor.action.moveLinesDownAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "alt+up",
+        "command": "-editor.action.moveLinesUpAction",
+        "when": "editorTextFocus && !editorReadonly"
+    }
+]

@@ -1,0 +1,56 @@
+{
+    "workbench.iconTheme": "material-icon-theme",
+    "workbench.colorCustomizations": {},
+    "vsicons.dontShowNewVersionMessage": true,
+    "explorer.confirmDragAndDrop": false,
+    "terminal.integrated.enableMultiLinePasteWarning": false,
+    "explorer.confirmDelete": false,
+    "git.autofetch": true,
+    "git.suggestSmartCommit": false,
+    "javascript.updateImportsOnFileMove.enabled": "never",
+    "explorer.confirmPasteNative": false,
+    "git.confirmSync": false,
+    "workbench.startupEditor": "none",
+    "git-graph.fileEncoding": "utf-8",
+    "editor.fontFamily": "'UDEV Gothic NF', 'PlemolJP Console NF'",
+    "editor.fontSize": 14,
+    "workbench.colorTheme": "Dracula Theme",
+    "workbench.settings.useSplitJSON": true,
+    "security.workspace.trust.untrustedFiles": "open",
+    "[typescript]": {
+        "editor.tabSize": 2,
+        "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+    },
+    "[typescriptreact]": {
+        "editor.tabSize": 2
+    },
+    "githubPullRequests.createOnPublishBranch": "never",
+    "files.associations": {
+        "*.tsx": "typescriptreact",
+        "*.ts": "typescript"
+    },
+    "workbench.editorAssociations": {
+        "*.pkl": "default"
+    },
+    "docker.extension.enableComposeLanguageServer": false,
+    "editor.minimap.enabled": true,
+    "indentRainbow.indicatorStyle": "light",
+    "indentRainbow.lightIndicatorStyleLineWidth": 1,
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "window.confirmSaveUntitledWorkspace": false,
+    "go.toolsManagement.autoUpdate": true,
+    "githubPullRequests.pullBranch": "never",
+    "json.schemaDownload.trustedDomains": {
+        "https://schemastore.azurewebsites.net/": true,
+        "https://raw.githubusercontent.com/microsoft/vscode/": true,
+        "https://raw.githubusercontent.com/devcontainers/spec/": true,
+        "https://www.schemastore.org/": true,
+        "https://json.schemastore.org/": true,
+        "https://json-schema.org/": true,
+        "https://developer.microsoft.com/json-schemas/": true,
+        "https://biomejs.dev": true
+    },
+    "security.allowedUNCHosts": [
+        "wsl.localhost"
+    ]
+}
