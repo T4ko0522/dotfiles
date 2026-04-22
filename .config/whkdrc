@@ -15,10 +15,10 @@ win + q                 : komorebic close
 win + m                 : komorebic minimize
 
 # Focus windows (alt + uiop)
-alt + u                 : komorebic focus left
-alt + i                 : komorebic focus down
-alt + o                 : komorebic focus up
-alt + p                 : komorebic focus right
+alt + left              : komorebic focus left
+alt + down              : komorebic focus down
+alt + up                : komorebic focus up
+alt + right             : komorebic focus right
 win + shift + oem_4     : komorebic cycle-focus previous # oem_4 is [
 win + shift + oem_6     : komorebic cycle-focus next # oem_6 is ]
 
