@@ -179,14 +179,18 @@ function module.apply_to_config(config)
     -- タイトルの整形
     local title = " " .. wezterm.truncate_right(title_text, max_width) .. " "
 
-    -- Claude ステータス
-    local claude_status_text = ""
-    local claude_status_color = nil
-    if claude_status.is_claude(process_name, pane_title) then
-      local status = claude_status.get_status(pane_title)
-      local s = claude_status.STATUS[status]
-      claude_status_text = "   " .. s.icon .. " "
-      claude_status_color = s.color
+    -- Claude ステータス（タブ内の全ペインを走査してセッション分を列挙）
+    local claude_statuses = {}
+    for _, pane_info in ipairs(tab.panes) do
+      local p_name = basename(pane_info.foreground_process_name or "")
+      local p_title = pane_info.title or ""
+      if claude_status.is_claude(p_name, p_title) then
+        local status = claude_status.get_status(p_title)
+        local s = claude_status.STATUS[status]
+        if s then
+          table.insert(claude_statuses, s)
+        end
+      end
     end
 
     local tab_elements = {
@@ -199,10 +203,14 @@ function module.apply_to_config(config)
       { Text = icon },
     }
 
-    -- Claude ステータスをアイコン直後に挿入
-    if claude_status_color then
-      table.insert(tab_elements, { Foreground = { Color = claude_status_color } })
-      table.insert(tab_elements, { Text = claude_status_text })
+    -- Claude ステータスをアイコン直後に挿入（セッション数だけアイコンを並べる）
+    if #claude_statuses > 0 then
+      for i, s in ipairs(claude_statuses) do
+        table.insert(tab_elements, { Foreground = { Color = s.color } })
+        local prefix = (i == 1) and "   " or " "
+        table.insert(tab_elements, { Text = prefix .. s.icon })
+      end
+      table.insert(tab_elements, { Text = " " })
     end
 
     table.insert(tab_elements, { Background = { Color = background } })
