@@ -26,26 +26,26 @@ case "$first_line" in
   *✨*|*🐛*|*📝*|*💄*|*♻️*|*⚡️*|*✅*|*👷*|*🎡*|*🔧*|*🔥*|*🚀*) exit 0 ;;
 esac
 
-# prefix から gitmoji を決定
+# prefix から gitmoji を決定（scope 付き "type(scope):" にも対応）
 emoji=""
 case "$first_line" in
-  feat:*)     emoji="✨" ;;
-  fix:*)      emoji="🐛" ;;
-  docs:*)     emoji="📝" ;;
-  style:*)    emoji="💄" ;;
-  refactor:*) emoji="♻️" ;;
-  perf:*)     emoji="⚡️" ;;
-  test:*)     emoji="✅" ;;
-  build:*)    emoji="👷" ;;
-  ci:*)       emoji="🎡" ;;
-  chore:*)    emoji="🔧" ;;
-  remove:*)   emoji="🔥" ;;
-  deploy:*)   emoji="🚀" ;;
+  feat:*|feat\(*\):*)         emoji="✨" ;;
+  fix:*|fix\(*\):*)           emoji="🐛" ;;
+  docs:*|docs\(*\):*)         emoji="📝" ;;
+  style:*|style\(*\):*)       emoji="💄" ;;
+  refactor:*|refactor\(*\):*) emoji="♻️" ;;
+  perf:*|perf\(*\):*)         emoji="⚡️" ;;
+  test:*|test\(*\):*)         emoji="✅" ;;
+  build:*|build\(*\):*)       emoji="👷" ;;
+  ci:*|ci\(*\):*)             emoji="🎡" ;;
+  chore:*|chore\(*\):*)       emoji="🔧" ;;
+  remove:*|remove\(*\):*)     emoji="🔥" ;;
+  deploy:*|deploy\(*\):*)     emoji="🚀" ;;
 esac
 
 if [ -z "$emoji" ]; then
   exit 0
 fi
 
-# "type: description" → "type: <emoji> description"
-sed -i "1s/^\([a-z]*:\) /\1 $emoji /" "$COMMIT_MSG_FILE"
+# "type: description" または "type(scope): description" → prefix の直後に emoji を挿入
+sed -i "1s/^\([a-z][a-z]*\(([^)]*)\)\{0,1\}:\) /\1 $emoji /" "$COMMIT_MSG_FILE"
