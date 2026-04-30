@@ -60,5 +60,6 @@
   },
   "effortLevel": "xhigh",
   "autoUpdatesChannel": "stable",
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "dark-daltonized"
 }
