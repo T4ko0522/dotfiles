@@ -435,7 +435,8 @@ widgets:
         enabled: true
         label: "<span>\uf0ab</span>{count}"
         interval: 180
-        exclude: []
+        exclude:
+          - "Unity.Unity"
       windows_update:
         enabled: false
         label: "<span>\uf0ab</span>{count}"
