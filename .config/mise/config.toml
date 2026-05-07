@@ -1,12 +1,15 @@
 [tools]
 # Languages & runtimes
-node = "lts"
-bun = "latest"
-deno = "latest"
-go = "latest"
-pnpm = "latest"
-uv = "latest"
 zig = "latest"
+go = "latest"
+rust = "latest"
+node = "lts"
+deno = "latest"
+bun = "latest"
+pnpm = "latest"
+yarn = "latest"
+aube = "latest"
+uv = "latest"
 
 # Build tools
 golangci-lint = "latest"
@@ -16,7 +19,6 @@ cargo-binstall = "latest"
 tree-sitter = "latest"
 
 # npm packages
-yarn = "latest"
 "npm:@antfu/ni" = "latest"
 "npm:@aikidosec/safe-chain" = "latest"
 "npm:@google/gemini-cli" = "latest"
