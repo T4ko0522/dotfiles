@@ -60,6 +60,7 @@
 .config/codex/cache/
 .config/codex/log/
 .config/codex/memories/
+.config/codex/plugins/
 .config/codex/rules/default.rules
 .config/codex/sessions/
 .config/codex/skills/
@@ -82,6 +83,7 @@
 .config/codex/logs_2.sqlite
 .config/codex/logs_2.sqlite-shm
 .config/codex/logs_2.sqlite-wal
+.config/codex/.codex-global-state.json.bak
 
 # vendor binaries
 .bin/snoretoast.exe
