@@ -40,10 +40,12 @@
   },
   "display_index_preferences": {
     "0": "CMN1556-4&243a609a&0&UID8388688",
-    "1": "IOD43EE-5&26d74eb9&0&UID4354"
+    "1": "DELF144-5&26d74eb9&0&UID4354"
   },
   "ignore_rules": [
-    { "kind": "Title", "id": "Nani Translate", "matching_strategy": "Contains" }
+    { "kind": "Exe", "id": "Nani.exe", "matching_strategy": "Equals" },
+    { "kind": "Exe", "id": "Docker Desktop.exe", "matching_strategy": "Equals" },
+    { "kind": "Exe", "id": "WindowsTerminal.exe", "matching_strategy": "Equals" }
   ],
   "monitors": [
     {
