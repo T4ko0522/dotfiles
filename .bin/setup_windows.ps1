@@ -127,21 +127,6 @@ if (Test-Path -LiteralPath $profileSrc) {
   Write-Host "Skip missing PowerShell profile source: $profileSrc"
 }
 
-# Ensure git-init template includes .cursorrules so new repos get it automatically.
-$cursorRulesSrc = Join-Path $repo ".cursorrules"
-if (Test-Path -LiteralPath $cursorRulesSrc) {
-  $gitTemplateDir = Join-Path $homeDir ".git_template/git-secrets"
-  if (-not (Test-Path -LiteralPath $gitTemplateDir)) {
-    New-Item -ItemType Directory -Path $gitTemplateDir -Force | Out-Null
-  }
-
-  $cursorRulesDst = Join-Path $gitTemplateDir ".cursorrules"
-  Copy-Item -LiteralPath $cursorRulesSrc -Destination $cursorRulesDst -Force
-  Write-Host "Installed git template file: $cursorRulesDst"
-} else {
-  Write-Host "Skip missing source: $cursorRulesSrc"
-}
-
 # Git hooks: core.hooksPath で参照するディレクトリにリンク
 $hooksSrc = Join-Path $repo ".git_template/hooks"
 if (Test-Path -LiteralPath $hooksSrc) {
