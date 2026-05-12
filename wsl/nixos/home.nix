@@ -3,53 +3,75 @@
   ...
 }:
 let
-  dotfiles = ../.config;
+  dotfiles = ../../.config;
   wslConfig = ./.config;
 in
 {
   home.username = "takow";
   home.homeDirectory = "/home/takow";
 
+  home.sessionVariables = {
+    EDITOR = "nvim";
+    VISUAL = "nvim";
+  };
+
   home.packages = with pkgs; [
+    # Editor
     neovim
-    starship
+
+    # Shell / Prompt / Plugins
+    sheldon
+
+    # Dev tooling
     lazygit
-    yazi
-    mise
+    gh
     ghq
-    fzf
-    fd
+    difftastic
+
+    # File operations
+    yazi
     lsd
     bat
+    fd
     ripgrep
+    fzf
+    gomi # 安全な rm 代替
+
+    # System
     fastfetch
-    gh
+    wslu # `wslview` (open alias で使用)
   ];
 
-  # 共通設定への symlink
+  # 設定ファイルの symlink
+  #   共通 (Windows と共有): dotfiles/.config 配下
+  #   WSL 専用: wsl/nixos/.config 配下
   xdg.configFile = {
     "nvim".source = "${dotfiles}/nvim";
     "starship.toml".source = "${wslConfig}/starship.toml";
     "lazygit".source = "${dotfiles}/lazygit";
     "yazi".source = "${dotfiles}/yazi";
-    "mise/config.toml".text = builtins.readFile "${dotfiles}/mise/config.toml";
     "lsd".source = "${wslConfig}/lsd";
+    "sheldon/plugins.toml".source = "${wslConfig}/sheldon/plugins.toml";
   };
 
   programs.zsh = {
     enable = true;
-    autosuggestion.enable = true;
-    syntaxHighlighting.enable = true;
-    enableCompletion = true;
+    enableCompletion = false; # rc.zsh 側で compinit を制御
     history = {
       size = 16384;
       save = 16384;
       ignoreDups = true;
       ignoreAllDups = true;
+      share = true;
     };
     initContent = ''
       source "${wslConfig}/zsh/rc.zsh"
     '';
+  };
+
+  programs.starship = {
+    enable = true;
+    enableZshIntegration = true;
   };
 
   programs.git = {

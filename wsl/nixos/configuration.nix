@@ -6,6 +6,9 @@
   wsl = {
     enable = true;
     defaultUser = "takow";
+    # Windows FS マウント (/mnt/c) のパーミッションを drwxr-xr-x / -rw-r--r-- に固定
+    # (デフォルトの 0777 だと lsd が other-writable/executable と判定して緑色になる)
+    wslConf.automount.options = "metadata,umask=22,fmask=11";
   };
 
   nix.settings.experimental-features = [

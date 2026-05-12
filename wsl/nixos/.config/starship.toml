@@ -1,5 +1,9 @@
 add_newline = true
 
+# /mnt/c (Windows FS) 上でのスキャン timeout を緩和
+scan_timeout = 100
+command_timeout = 1000
+
 format = """
 $username\
 $directory\
