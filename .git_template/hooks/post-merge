@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# post-merge: branch 指定された submodule をリモート先端に追従させる
+# (.gitmodules で `branch = ...` が設定されたものが対象)
+
+set -e
+
+repo_root="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+[ -f "$repo_root/.gitmodules" ] || exit 0
+
+# branch 指定がある submodule のみ更新 (それ以外は通常の pin 動作のまま)
+git -C "$repo_root" config -f .gitmodules --get-regexp '^submodule\..*\.branch$' 2>/dev/null \
+  | awk '{print $1}' \
+  | sed -E 's/^submodule\.(.*)\.branch$/\1/' \
+  | while read -r name; do
+      path="$(git -C "$repo_root" config -f .gitmodules --get "submodule.$name.path")"
+      [ -n "$path" ] || continue
+      git -C "$repo_root" submodule update --init --remote --merge -- "$path" 2>/dev/null || true
+    done
