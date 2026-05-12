@@ -10,6 +10,8 @@ pnpm = "latest"
 yarn = "latest"
 aube = "latest"
 uv = "latest"
+python = "3.13.3"
+dotnet = "latest"
 
 # Build tools
 golangci-lint = "latest"
@@ -17,6 +19,30 @@ terraform = "latest"
 sccache = "latest"
 cargo-binstall = "latest"
 tree-sitter = "latest"
+
+# CLI tools
+ghq = "latest"
+lazygit = "latest"
+starship = "latest"
+lsd = "latest"
+fzf = "latest"
+bat = "latest"
+ripgrep = "latest"
+yazi = "latest"
+difftastic = "latest"
+hyperfine = "latest"
+1password = "latest"
+fd = "latest"
+jq = "latest"
+"github:jftuga/less-Windows" = { version = "latest", exe = "less" }
+fastfetch = "latest"
+gh = "latest"
+just = "latest"
+kubectl = "latest"
+
+# cargo packages
+"cargo:cargo-outdated" = "latest"
+"cargo:mergiraf" = "latest"
 
 # npm packages
 "npm:@antfu/ni" = "latest"
