@@ -27,8 +27,8 @@ tool-pipeline スキルが各フェーズで生成する 7 ファイルのテン
 | 2a: 設計 | system-designer | opus | pending | 02-system-design.md |
 | 2b: QA 計画 | qa-architect | sonnet | pending | 03-qa-plan.md |
 | 3: タスク分解 | task-decomposer | sonnet | pending | 04-task-breakdown.md |
-| 4: 実装 | codex:rescue | GPT-5.4 | pending | 05-implementation-log.md |
-| 5: 品質チェック | codex:rescue | GPT-5.4 | pending | 06-quality-report.md |
+| 4: 実装 | codex:rescue | gpt-5.5 | pending | 05-implementation-log.md |
+| 5: 品質チェック | codex:rescue | gpt-5.5 | pending | 06-quality-report.md |
 
 ステータス値: `pending` / `running` / `done` / `failed`
 

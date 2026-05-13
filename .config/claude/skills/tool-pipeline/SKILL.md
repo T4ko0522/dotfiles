@@ -20,9 +20,9 @@ Phase 2（並列）:
     ↓
 Phase 3: タスク分解       [task-decomposer / sonnet]
     ↓
-Phase 4: Codex 実装       [codex:rescue / GPT-5.4]
+Phase 4: Codex 実装       [codex:rescue / gpt-5.5]
     ↓
-Phase 5: 品質チェック     [codex:rescue / GPT-5.4]
+Phase 5: 品質チェック     [codex:rescue / gpt-5.5]
     ↓
   ★ Auto Gate 3: BLOCKER 判定
     ├── BLOCKER なし → 完了報告
