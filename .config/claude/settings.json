@@ -85,6 +85,7 @@
     }
   },
   "effortLevel": "xhigh",
+  "advisorModel": "opus",
   "autoUpdatesChannel": "stable",
   "skipDangerousModePermissionPrompt": true,
   "theme": "dark-daltonized"
