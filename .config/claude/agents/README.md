@@ -108,6 +108,20 @@ Phase 5  統合 (オーケストレーター責務)
 > 実装/テスト/ドキュメント/セキュリティは Opus と Codex の両方からレビューを取り、
 > 観点の偏りを抑える。
 
+### 補足: tool-pipeline スキル用エージェント (4)
+
+以下の 4 つは Agent Teams パイプラインの一部ではなく、**`tool-pipeline` スキル**（Go / TypeScript / ShellScript 限定の軽量開発パイプライン）から呼び出される独立した subagent。
+ディレクトリの都合で同じ `agents/` 配下に置かれているが、Agent Teams のフェーズには登場しない。
+
+| Agent                  | Model  | 役割                                          |
+| ---------------------- | ------ | --------------------------------------------- |
+| `requirements-analyst` | sonnet | tool-pipeline Phase 1: 要件定義の構造化         |
+| `system-designer`      | opus   | tool-pipeline Phase 2a: コードレベルの設計書    |
+| `qa-architect`         | sonnet | tool-pipeline Phase 2b: QA 計画・品質チェック計画 |
+| `task-decomposer`      | sonnet | tool-pipeline Phase 3: Codex 向けタスク分解     |
+
+詳細は `~/.claude/skills/tool-pipeline/SKILL.md` を参照。
+
 ---
 
 ## 成果物配置
