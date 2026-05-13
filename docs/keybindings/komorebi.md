@@ -3,6 +3,7 @@
 設定ファイル: [`.config/whkdrc`](../../.config/whkdrc) / [`.config/komorebi/komorebi.json`](../../.config/komorebi/komorebi.json)
 
 前提:
+
 - シェルは `powershell`
 - `Win` = Windows キー
 

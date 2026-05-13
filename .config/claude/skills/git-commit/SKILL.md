@@ -55,12 +55,12 @@ refactor(claude): Git コミット規約を skill に分離
 ## ngm プレフィックス（gitmoji 挿入スキップ）
 
 通常 `feat:` / `fix:` 等のメッセージは prepare-commit-msg フックが自動で gitmoji を挿入するが、
-**意図的に gitmoji を付けたくない場合は メッセージ先頭に `ngm ` を付ける**（ngm = no gitmoji）。
+**意図的に gitmoji を付けたくない場合は メッセージ先頭に `ngm` を付ける**（ngm = no gitmoji）。
 
 ### フックの挙動
 
-1. メッセージ先頭が `ngm ` で始まるか判定
-2. その場合は `ngm ` プレフィックスを取り除いて gitmoji 挿入をスキップ
+1. メッセージ先頭が `ngm` で始まるか判定
+2. その場合は `ngm` プレフィックスを取り除いて gitmoji 挿入をスキップ
 3. それ以外は通常どおり type に応じた gitmoji を先頭に挿入
 
 ### 使うケース
@@ -118,6 +118,7 @@ refactor(claude): Git コミット規約を skill に分離
 3. **メッセージ作成**: 各グループに Conventional Commits 形式の日本語メッセージを作成（gitmoji は付けない）
 4. **ステージ**: `git add <specific-files>` でグループ単位（`git add -A` / `git add .` は避ける — `.env` 等の意図しないファイル混入リスク）
 5. **コミット**: HEREDOC でメッセージを渡す
+
    ```bash
    git commit -m "$(cat <<'EOF'
    feat(scope): 概要
@@ -126,6 +127,7 @@ refactor(claude): Git コミット規約を skill に分離
    EOF
    )"
    ```
+
 6. **検証**: `git status` でコミット成功を確認
 7. 次グループがあれば 4-6 を繰り返し
 

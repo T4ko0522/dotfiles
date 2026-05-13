@@ -1,12 +1,14 @@
 # WezTerm キーバインド
 
 設定ファイル:
+
 - [`.config/wezterm/keymaps.lua`](../../.config/wezterm/keymaps.lua)
 - [`.config/wezterm/workspace.lua`](../../.config/wezterm/workspace.lua)
 - [`.config/wezterm/modules/opacity.lua`](../../.config/wezterm/modules/opacity.lua)
 - [`.config/wezterm/modules/aws_profile.lua`](../../.config/wezterm/modules/aws_profile.lua)
 
 前提:
+
 - Leader キー: `Ctrl+q`（タイムアウト 2000 ms）
 - デフォルトキー: 無効化 (`disable_default_key_bindings = true`)
 - 現在有効な key table 名は、右ステータスバーに赤背景で表示されます
