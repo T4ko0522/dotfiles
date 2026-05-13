@@ -62,6 +62,18 @@ mise trust
 mise install
 ```
 
+## Markdown Lint
+
+`markdownlint-cli2` で Markdown を検査する。設定は `.markdownlint-cli2.jsonc`。
+
+```powershell
+# ルートで全 *.md をチェック
+markdownlint-cli2
+
+# 自動修正
+markdownlint-cli2 --fix
+```
+
 ## Claude Code Switch
 
 ```powershell
