@@ -9,12 +9,15 @@
 ## ワークスペース構成
 
 `Win+1/2/3` は **フォーカス中モニターのみ** を切り替える (`focus-workspace` 単数形)。
+`Win+F1/F2/F3` は **M1 へフォーカスを移しつつ** IV/V/VI に切り替える (`focus-monitor-workspace 1 N`)。
 
 | Index | M0 `CMN1556` (メイン) | M1 `DELF144` (拡張) |
 |---|---|---|
-| 0 (`Win+1`) | **I** / BSP — WezTerm | **IV** / BSP — VSCode, Brave (プライベート) |
-| 1 (`Win+2`) | **II** / Grid — Discord | **V** / BSP — Chrome (ビジネス) |
-| 2 (`Win+3`) | **III** / Columns — Slack, Spotify | **VI** / BSP — Mattermost |
+| 0 (`Win+1` / `Win+F1`) | **I** / BSP — WezTerm | **IV** / BSP — VSCode, Brave (プライベート) |
+| 1 (`Win+2` / `Win+F2`) | **II** / Grid — Discord | **V** / BSP — Chrome (ビジネス) |
+| 2 (`Win+3` / `Win+F3`) | **III** / Columns — Slack, Spotify | **VI** / BSP — Mattermost |
+
+> `Win+F1/F2/F3` はモニターをまたいで M1 側の作業に直接ジャンプしたい時に使う。M0 を見たまま M1 側だけ切り替えたい場合は使えない (フォーカスが M1 に移る)。
 
 ### 配置ポリシー
 
@@ -91,7 +94,8 @@
 | キー | 動作 |
 | --- | --- |
 | `Win+1`〜`Win+3` | フォーカス中モニターのワークスペース 0〜2 にフォーカス |
-| `Win+Shift+1`〜`Win+Shift+8` | アクティブウィンドウを対応ワークスペースへ移動 |
+| `Win+F1`〜`Win+F3` | M1 へフォーカスを移しつつ M1 のワークスペース 0〜2 (IV/V/VI) に切替 |
+| `Win+Alt+1`〜`Win+Alt+3` | アクティブウィンドウをフォーカス中モニターのワークスペース 0〜2 へ移動 |
 
 ## マルチモニター
 

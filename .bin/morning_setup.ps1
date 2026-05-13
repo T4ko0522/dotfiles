@@ -9,8 +9,7 @@
 
 $ErrorActionPreference = "Continue"
 
-# モニター index の動的補正（自宅／職場で外部モニターが変わるため）
-& (Join-Path $PSScriptRoot "apply_monitor_preferences.ps1")
+# モニター index の動的補正は komorebi_start.ps1 が起動時に行うのでここでは不要。
 
 function Start-IfNotRunning {
     param(
@@ -77,7 +76,7 @@ Start-IfNotRunning `
 # WS VI / M1 — Mattermost
 Start-IfNotRunning `
     -ProcessName "Mattermost" `
-    -Path        "$env:LOCALAPPDATA\Programs\mattermost-desktop\Mattermost.exe"
+    -Path        "C:\Program Files\Mattermost\Mattermost.exe"
 
 # 起動完了後に両モニターを WS 1 へ
 Start-Sleep -Seconds 2

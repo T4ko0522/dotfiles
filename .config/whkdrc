@@ -1,4 +1,4 @@
-.shell powershell
+.shell pwsh
 
 # Reload komorebi configuration
 win + r                 : komorebic reload-configuration
@@ -55,7 +55,7 @@ win + t                 : komorebic toggle-float
 win + shift + f         : komorebic toggle-monocle
 
 # Window manager options
-win + shift + r         : komorebic stop --whkd; Start-Sleep -Seconds 2; Start-Process komorebic -ArgumentList 'start','--whkd' -WindowStyle Hidden
+win + shift + r         : komorebic stop --whkd; Start-Sleep -Seconds 2; & "$env:USERPROFILE\Project\github.com\t4ko0522\dotfiles\.bin\komorebi_start.ps1"
 win + z                 : komorebic toggle-pause
 
 # Layouts
@@ -66,6 +66,11 @@ win + y                 : komorebic flip-layout vertical
 win + 1                 : komorebic focus-workspace 0           # WS 1: M0:I=wezterm         / M1:IV=vscode+brave(私)
 win + 2                 : komorebic focus-workspace 1           # WS 2: M0:II=discord        / M1:V=chrome(業)
 win + 3                 : komorebic focus-workspace 2           # WS 3: M0:III=slack+spotify / M1:VI=mattermost
+
+# M1 のワークスペースへ直接切替 (フォーカスも M1 へ移動)
+win + f1                : komorebic focus-monitor-workspace 1 0 # WS 4 (M1:IV): vscode+brave
+win + f2                : komorebic focus-monitor-workspace 1 1 # WS 5 (M1:V):  chrome
+win + f3                : komorebic focus-monitor-workspace 1 2 # WS 6 (M1:VI): mattermost
 
 # Move current window to a workspace on the focused monitor
 win + alt + 1           : komorebic move-to-workspace 0

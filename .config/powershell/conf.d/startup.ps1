@@ -16,10 +16,15 @@ Register-EngineEvent -SourceIdentifier PowerShell.OnIdle -MaxTriggerCount 1 -Act
 # https://github.com/antfu-collective/ni とNew-Itemの競合を無効化
 Remove-Item Alias:ni -Force -ErrorAction Ignore
 
-# komorebi + whkd 自動起動
+# komorebi + whkd 自動起動 (接続モニターに合わせた一時設定で起動)
 if ((Get-Command komorebic -ErrorAction SilentlyContinue) -and
     -not (Get-Process -Name komorebi -ErrorAction SilentlyContinue)) {
-    Start-Process komorebic -ArgumentList 'start', '--whkd' -WindowStyle Hidden
+    $startScript = "$env:USERPROFILE\Project\github.com\t4ko0522\dotfiles\.bin\komorebi_start.ps1"
+    if (Test-Path -LiteralPath $startScript) {
+        & $startScript
+    } else {
+        Start-Process komorebic -ArgumentList 'start', '--whkd' -WindowStyle Hidden
+    }
 }
 
 # yasb 自動起動
