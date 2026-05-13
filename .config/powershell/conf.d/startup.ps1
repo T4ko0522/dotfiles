@@ -1,3 +1,6 @@
+# Claude Code: Agent Teams 実験機能を有効化
+$env:CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = '1'
+
 # Terminal-Icons をアイドル時にバックグラウンドロード（プロンプト表示後に実行）
 $global:_lsGlyphs = $null
 $global:_lsTheme = $null
