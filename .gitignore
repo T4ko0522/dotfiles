@@ -50,6 +50,7 @@
 .config/claude/telemetry/
 .config/claude/backups/
 .config/claude/.credentials.json
+.config/claude/.last-cleanup
 
 # codex
 .config/codex/.tmp
