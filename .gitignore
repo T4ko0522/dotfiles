@@ -12,6 +12,7 @@
 .config/claude/debug/
 .config/claude/plugins/
 .config/claude/projects/
+.config/claude/session-env/
 .config/claude/statsig/
 .config/claude/sessions/
 .config/claude/skills/*
