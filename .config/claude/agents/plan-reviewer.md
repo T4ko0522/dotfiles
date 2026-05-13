@@ -76,7 +76,7 @@ tools: Read, Grep, Glob, Bash, Write
    5. TDD として成立しているか
    指摘を BLOCKER / MUST / NICE で分類し、日本語で出力せよ。
    PROMPT
-   } | "$CODEX_BIN" exec --model gpt-5-codex --skip-git-repo-check -
+   } | "$CODEX_BIN" exec --model gpt-5-codex --sandbox read-only --skip-git-repo-check -
    ```
 3. 出力を取得し、Codex の所見をそのまま貼る + 先頭に日本語の「要旨」を追加する。
 

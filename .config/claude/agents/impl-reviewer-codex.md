@@ -75,7 +75,7 @@ tools: Read, Grep, Glob, Bash, Write
    5. テスト容易性
    BLOCKER / MUST / NICE で分類し、日本語で出力せよ。
    PROMPT
-   } | "$CODEX_BIN" exec --model gpt-5-codex --skip-git-repo-check -
+   } | "$CODEX_BIN" exec --model gpt-5-codex --sandbox read-only --skip-git-repo-check -
    ```
 4. 出力を `reviews/3_impl.codex.md` に貼る。
 

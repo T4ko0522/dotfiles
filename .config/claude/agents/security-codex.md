@@ -81,7 +81,7 @@ tools: Read, Grep, Glob, Bash, Write
    - プロンプト注入 / 出力盲信 (該当時)
    BLOCKER / MUST / NICE で日本語出力。
    PROMPT
-   } | "$CODEX_BIN" exec --model gpt-5-codex --skip-git-repo-check -
+   } | "$CODEX_BIN" exec --model gpt-5-codex --sandbox read-only --skip-git-repo-check -
    ```
 3. 結果を `reviews/4_security.codex.md` に貼る。
 

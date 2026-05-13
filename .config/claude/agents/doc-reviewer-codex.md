@@ -65,7 +65,7 @@ tools: Read, Grep, Glob, Bash, Write
    5. 抜け (引数説明 / 制約 / 例外パスなど)
    BLOCKER / MUST / NICE で日本語出力。
    PROMPT
-   } | "$CODEX_BIN" exec --model gpt-5-codex --skip-git-repo-check -
+   } | "$CODEX_BIN" exec --model gpt-5-codex --sandbox read-only --skip-git-repo-check -
    ```
 3. 出力を `reviews/3_doc.codex.md` に貼る。
 
