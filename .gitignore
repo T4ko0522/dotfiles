@@ -48,7 +48,7 @@
 .config/codex/skills/
 .config/codex/sqlite/
 .config/codex/tmp/
-.config/codex/vendor_imports/skills-curated-cache.json
+.config/codex/vendor_imports/
 .config/codex/auth.json
 .config/codex/cap_sid
 .config/codex/config.toml.bak-*
