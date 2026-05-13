@@ -4,9 +4,9 @@ local module = {}
 local appearance = {
   color_scheme = "Solarized Dark Higher Contrast",
 
-  -- タイトルバーは使わず、最小化・最大化・閉じるをタブバー内に表示（透明のまま）
-  window_decorations = "INTEGRATED_BUTTONS | RESIZE",
-  integrated_title_buttons = { "Hide", "Maximize", "Close" }, -- 最小化, 最大化, 閉じる
+  -- タイトルバーとウィンドウボタン（最小化・最大化・閉じる）を非表示
+  window_decorations = "RESIZE",
+  integrated_title_buttons = {},
   window_close_confirmation = "NeverPrompt", -- AlwaysPrompt or NeverPrompt
 
   -- Pane
