@@ -17,6 +17,7 @@
 .config/claude/skills/*
 !.config/claude/skills/git-commit
 !.config/claude/skills/markdown-session-format/
+!.config/claude/skills/team
 !.config/claude/skills/tool-pipeline
 .config/claude/tasks/
 .config/claude/todos/
