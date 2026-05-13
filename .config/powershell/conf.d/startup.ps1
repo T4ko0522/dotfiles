@@ -36,3 +36,8 @@ if (Get-Command starship -ErrorAction SilentlyContinue) {
         Invoke-Expression $initScript
     }
 }
+
+# fastfetch でシステム情報を表示（インタラクティブセッションのみ）
+if ($Host.Name -eq 'ConsoleHost' -and (Get-Command fastfetch -ErrorAction SilentlyContinue)) {
+    fastfetch
+}
