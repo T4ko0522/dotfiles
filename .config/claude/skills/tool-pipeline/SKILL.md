@@ -44,17 +44,25 @@ Phase 5: 品質チェック     [codex:rescue / gpt-5.5]
 ```
 $SKILL_DIR/
 ├── SKILL.md                       ← この文書
-├── agents/
-│   ├── requirements-analyst.md    ← Phase 1 用エージェント定義
-│   ├── system-designer.md         ← Phase 2a 用
-│   ├── qa-architect.md            ← Phase 2b 用
-│   └── task-decomposer.md         ← Phase 3 用
 └── references/
-    ├── artifact-templates.md      ← 6 ファイル分のテンプレート集約
+    ├── artifact-templates.md      ← 7 ファイル分のテンプレート集約 + feedback/loop-N.md テンプレ
     └── tui-guidelines.md          ← Go TUI 開発規約（任意）
 ```
 
-各エージェントは Claude Code のサブエージェントとして `Agent` ツールから `subagent_type` に指定して呼び出す。エージェント定義の実体は `$SKILL_DIR/agents/*.md`。
+### サブエージェント配置
+
+エージェント定義は `~/.claude/agents/` 配下に置く（Claude Code の subagent 探索パス）。
+このリポでは `.config/claude/agents/` に実体があり、`setup_windows.ps1` で `~/.claude/agents/` にリンクされる。
+
+| エージェント名 | 使用フェーズ | モデル |
+|---|---|---|
+| `requirements-analyst` | Phase 1 | sonnet |
+| `system-designer` | Phase 2a | opus |
+| `qa-architect` | Phase 2b | sonnet |
+| `task-decomposer` | Phase 3 | sonnet |
+
+各エージェントは `Agent` ツールから `subagent_type` に上記の名前を指定して呼び出す。
+スキル本体には `agents/` を持たず、`references/` のテンプレートのみを格納する。
 
 ### 外部依存
 
@@ -74,7 +82,22 @@ $SKILL_DIR/
 | `/codex:rescue` 未導入 | Phase 4 開始時に検知して停止、導入を促す |
 | エージェント定義ファイル欠落 | Phase 開始時に Read で検知して停止 |
 | Agent タイムアウト / 失敗 | 同 Phase を 1 回だけリトライ、再失敗で停止 |
-| Phase 2 並列タスクの片方失敗 | もう一方の完了を待ち、両方の結果を見て続行可否を判定 |
+| Phase 2 並列タスクの片方失敗 | `02-system-design.md` 失敗は即停止（後段が成立しない）。`03-qa-plan.md` のみ失敗は **縮退モード** で続行可（後述） |
+
+### Codex 経路と書き込み権限
+
+- Phase 4 / 5 で使う `/codex:rescue` は内部で `codex-companion task` を呼び出し、**デフォルトで `--write` が付与される**（書き込み可能）。
+- 同リポの Agent Teams レビュー系エージェント（`plan-reviewer` / `*-codex`）は `codex exec --sandbox read-only` で **read-only 実行**するが、tool-pipeline はこの経路を使わないため衝突しない。
+- Phase 5 の品質チェックも `/codex:rescue` 経由で行う。Codex がカバレッジファイル等の一時生成物を書き込むため write-capable で動かす必要がある。
+
+### `/codex:rescue` の呼び出し方
+
+メイン Claude は **Skill ツール**（または slash command として `/codex:rescue ...`）経由で起動すること。
+
+- 推奨: `Skill({skill: "codex:rescue", args: "<タスク本文>"})`
+- 非推奨: `Agent({subagent_type: "codex:codex-rescue", ...})` の直叩き
+  - 直叩きは `/codex:rescue` の command 側で行われる resume 判定・`--write` デフォルト付与・モデル選択などの auto-routing をスキップする可能性がある
+  - codex-rescue subagent はあくまで「forwarder」であり、command 側のロジックを通すのが正しい呼び出し
 
 ---
 
@@ -101,19 +124,51 @@ $SKILL_DIR/
 パイプライン開始時に以下を初期化する:
 
 ```
-PROJECT_ROOT = pwd（カレントディレクトリ）
+PROJECT_ROOT = pwd（カレントディレクトリの絶対パス）
 PIPELINE_DIR = $PROJECT_ROOT/docs/pipeline
 SKILL_DIR    = $HOME/.claude/skills/tool-pipeline
 loop_count   = 0
 max_loops    = 2
 ```
 
+### 変数置換ルール（重要）
+
+サブエージェントはシェルではないため、prompt 内で `$SKILL_DIR` `$PIPELINE_DIR` `$PROJECT_ROOT` 等を **そのまま渡しても展開されない**。
+メイン Claude が Agent ツールを呼び出す前に、prompt 文字列内のこれらの変数を **絶対パスへ置換** すること。
+
+例（Windows 環境）:
+
+```
+$SKILL_DIR     → C:\Users\<user>\.claude\skills\tool-pipeline
+$PIPELINE_DIR  → C:\Users\<user>\Project\<repo>\docs\pipeline
+$PROJECT_ROOT  → C:\Users\<user>\Project\<repo>
+```
+
+例（POSIX 環境）:
+
+```
+$SKILL_DIR     → /home/<user>/.claude/skills/tool-pipeline
+$PIPELINE_DIR  → /home/<user>/Project/<repo>/docs/pipeline
+$PROJECT_ROOT  → /home/<user>/Project/<repo>
+```
+
+以降の Phase 説明では可読性のため `$SKILL_DIR` 等の表記を残すが、**Agent 呼び出し時には必ず実パスに置換する**。
+
 ### Step 0: 初期化
 
-1. `$PIPELINE_DIR/feedback` を Bash で作成する:
+1. `$PIPELINE_DIR/feedback` を作成する。実行 OS に合わせて Bash または PowerShell を選ぶ:
+
+   POSIX (Linux / macOS / WSL):
    ```bash
    mkdir -p "$PROJECT_ROOT/docs/pipeline/feedback"
    ```
+
+   Windows (PowerShell 7+):
+   ```powershell
+   New-Item -ItemType Directory -Force -Path "$PROJECT_ROOT\docs\pipeline\feedback" | Out-Null
+   ```
+
+   メイン Claude は環境（`$env:OS` / `uname` 等）を判定して使い分けること。判定不能な場合は PowerShell を試し、失敗したら Bash にフォールバックする。
 
 2. `$SKILL_DIR/references/artifact-templates.md` を Read し、`00-manifest.md` テンプレートを取得する
 
@@ -267,6 +322,17 @@ requirements-analyst エージェントは `[要確認]` を抑えるよう指�
 
 両ファイルの存在を Read で確認する。成果物が揃っていれば自動的に Phase 3 へ進む。
 
+### Phase 2 縮退モード（03-qa-plan.md のみ失敗時）
+
+`02-system-design.md` は生成されたが `03-qa-plan.md` の生成に失敗した場合、ユーザーに通知し続行 / 中断を選ばせる。続行を選んだ場合は以下の縮退挙動に切り替える:
+
+1. **Phase 3 (task-decomposer)**: 入力から `03-qa-plan.md` を除外し、設計書のみから分解する。各タスクの検証コマンドは task-decomposer の判断で最小限（言語標準の lint + test 実行）を生成する。
+2. **Phase 5 (品質チェック)**: `/codex:rescue` への prompt で「`03-qa-plan.md` が無いため、検出した言語に対する標準ツール（Go: `go test ./... && go vet ./...` / TS: `tsc --noEmit && vitest run` / Shell: `shellcheck` + `bats`）で品質チェックを行う」と明示する。
+3. **原因分類マッピング**: デフォルトのマッピング（lint = 実装起因 / unit-test = 実装起因 / acceptance-test = 要件起因 / integration-test = 設計起因）を Phase 5 prompt に直書きして渡す。
+4. **00-manifest.md**: Phase 2b ステータスを `skipped` として記録し、縮退モードである旨を備考に記す。
+
+縮退モードはあくまで暫定運用。次回ループ前に `qa-architect` を手動で再実行することを推奨する。
+
 ---
 
 ## Phase 3: タスク分解
@@ -376,11 +442,16 @@ PASS 条件: BLOCKER 指摘ゼロ。MAJOR / MINOR は記録のみで PASS 扱い
 4. BLOCKER がある場合は原因分類（要件起因 / 設計起因 / 実装起因）を記載する。
    分類は 03-qa-plan.md セクション 9「失敗 → 原因分類マッピング」に従う。
    マッピングにないチェックの失敗のみ Codex の判断で分類する。
+5. **各 BLOCKER に `same_problem_key` を必須で記載する**。
+   形式: `<影響ファイル（リポルートからの相対パス、行番号なし）>::<検証コマンド ID>::<原因分類>`
+   例: `internal/scanner/scanner.go::unit-test::実装起因`
+   このキーは振動検出（Auto Gate 3）で利用される。
 
 【出力先】
 $PIPELINE_DIR/06-quality-report.md
 （テンプレートは $SKILL_DIR/references/artifact-templates.md の
-「06-quality-report.md」セクションに従う）
+「06-quality-report.md」セクションに従う。
+各 BLOCKER に `same_problem_key` フィールドが含まれていることを必ず確認すること）
 ```
 
 **完了確認**: `$PIPELINE_DIR/06-quality-report.md` が生成されたことを確認する。
@@ -414,27 +485,28 @@ Go TUI ツールの場合は `go-tui-reviewer` エージェントでアーキテ
    手動で修正して再実行するか、現状で受け入れるかを判断してください。
    ```
 
-2. **振動検出**: `loop_count >= 1` の場合、前回ループ（`feedback/loop-{loop_count}.md`）の
-   BLOCKER ID 集合と今回の `06-quality-report.md` の BLOCKER ID 集合を比較する。
-   両集合の積集合が前回集合の **50% 以上** を占める場合は振動と判定し、
-   ユーザーに報告してループを中断する:
+2. **振動検出**: `loop_count >= 1` の場合、前回ループと今回の BLOCKER を **`same_problem_key`** で比較する。
+   `same_problem_key` は `06-quality-report.md` の各 BLOCKER に記録される **`<影響ファイル>::<検証コマンド ID>::<原因分類>`** 形式のキー
+   （例: `internal/scanner/scanner.go::unit-test::実装起因`）。
+   BLOCKER ID (`BLK-NNN`) は毎ループ振り直される可能性があるため、ID ではなく `same_problem_key` を同一性判定に使う。
 
-   判定式: `|前回 BLOCKER ID ∩ 今回 BLOCKER ID| / |前回 BLOCKER ID| >= 0.5`
+   判定式: `|前回 same_problem_key 集合 ∩ 今回 same_problem_key 集合| / |前回 same_problem_key 集合| >= 0.5`
 
-   完全一致だけでなく、過半数が同じ問題を引きずっている場合を振動とみなす。
-   タスク ID で対応する検証コマンドが同じ場合も「同一問題」として ID 一致扱いにする。
+   前回 BLOCKER の過半数が同じ問題を引きずっている場合を振動とみなし、ユーザーに報告してループを中断する:
 
    ```
-   振動を検出しました（前回 BLOCKER の {percent}% が今回も残存）。
+   振動を検出しました（前回 BLOCKER の {percent}% が今回も同じ same_problem_key で残存）。
 
    【振動している BLOCKER】
-   （重複している BLOCKER ID と影響範囲を列挙）
+   （重複している same_problem_key と影響範囲を列挙）
 
    【前回ループの結果】
    （feedback/loop-{loop_count}.md の要約）
 
    手動介入を推奨します。
    ```
+
+   `06-quality-report.md` に `same_problem_key` が記録されていない古い形式の場合は、影響ファイル + 検証コマンド ID の 2 要素で代替判定する。
 
 3. **原因分類で戻り先を決定**（最も上流のフェーズを優先）:
 

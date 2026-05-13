@@ -1,6 +1,6 @@
 # Artifact Templates
 
-tool-pipeline スキルが各フェーズで生成する 7 ファイルのテンプレート集約。
+tool-pipeline スキルが各フェーズで生成する 7 ファイル（`00-manifest.md` 〜 `06-quality-report.md`）+ フィードバックループ用 `feedback/loop-N.md` のテンプレート集約。
 各エージェントは該当セクションを Read し、その構造に従って `$PIPELINE_DIR/` に書き出す。
 
 ---
@@ -421,6 +421,9 @@ go vet ./internal/domain/...
 
 - **原因分類**: 実装起因 / 設計起因 / 要件起因
 - **影響範囲**: `internal/scanner/scanner.go:42-58`
+- **影響ファイル（同一性判定用）**: `internal/scanner/scanner.go`（リポジトリルートからの相対パス、行番号は含めない）
+- **検証コマンド ID**: `unit-test`（03-qa-plan.md セクション 5 の `checks[].id`）
+- **same_problem_key**: `internal/scanner/scanner.go::unit-test::実装起因`（上記 3 要素を `::` で連結）
 - **再現**: `go test ./internal/scanner/`
 - **修正案**: <Codex 向けの修正方針>
 
