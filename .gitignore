@@ -25,6 +25,7 @@
 !.config/claude/skills/shadcn/*
 !.config/claude/skills/slidev/*
 !.config/claude/skills/swiftui-pro/*
+!.config/claude/skills/tool-pipeline
 !.config/claude/skills/tsdown/*
 !.config/claude/skills/turborepo/*
 !.config/claude/skills/unocss/*
