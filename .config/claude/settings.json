@@ -5,8 +5,13 @@
       "Bash",
       "Read",
       "Read(.env.example)",
+      "Read(**/.env.example)",
       "Edit",
+      "Edit(.env.example)",
+      "Edit(**/.env.example)",
       "Write",
+      "Write(.env.example)",
+      "Write(**/.env.example)",
       "WebFetch",
       "WebSearch",
       "mcp__chrome-devtools",
@@ -23,8 +28,13 @@
       "Read(.env.development)",
       "Read(**/credentials.json)",
       "Edit(.env)",
-      "Edit(.env.*)",
-      "Write(.env*)"
+      "Edit(.env.local)",
+      "Edit(.env.production)",
+      "Edit(.env.development)",
+      "Write(.env)",
+      "Write(.env.local)",
+      "Write(.env.production)",
+      "Write(.env.development)"
     ]
   },
   "hooks": {
