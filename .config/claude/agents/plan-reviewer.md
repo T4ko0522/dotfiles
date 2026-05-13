@@ -24,8 +24,14 @@ tools: Read, Grep, Glob, Bash, Write
    # Plan Review (Codex)
    Codex CLI 未導入のためスキップ。
    ```
-2. プロンプトは実ファイルの内容を標準入力で渡す。波括弧形式の未展開プレースホルダを残さない:
+2. オーケストレーターから受け取った SLUG を変数に代入し、実ファイルを標準入力で渡す。`<slug>` をリテラル展開しない:
    ```bash
+   SLUG="${SLUG:?SLUG is required (orchestrator must pass it)}"
+   PLAN_DIR="docs/plans/$SLUG"
+   REVIEWS_DIR="$PLAN_DIR/reviews"
+   OUT="$REVIEWS_DIR/2_plan.codex.md"
+   mkdir -p "$REVIEWS_DIR"
+
    if command -v codex >/dev/null 2>&1; then
      CODEX_BIN=codex
    elif command -v codex.exe >/dev/null 2>&1; then
@@ -37,35 +43,43 @@ tools: Read, Grep, Glob, Bash, Write
    fi
 
    if [ -z "$CODEX_BIN" ]; then
-     cat > docs/plans/<slug>/reviews/2_plan.codex.md <<'MARKDOWN'
+     cat > "$OUT" <<'MARKDOWN'
    # Plan Review (Codex)
-   Codex CLI 未導入のためスキップ。
+
+   Status: SKIPPED
+   Reason: codex CLI not found
+   Risk: independent second review was not performed (DEGRADED)
    MARKDOWN
      exit 0
    fi
 
+   # Codex 外部送信 preflight (詳細は agents/README.md):
+   # - secrets / credentials / private data の混入を確認
+   # - 含む場合はオーケストレーターにエスカレーションし送信しない
+
+   RAW="$(mktemp)"
    {
      cat <<'PROMPT'
    以下は計画ドキュメント (2_plan.md) と関連入力です。
 
    ---0_brief.md---
    PROMPT
-     cat docs/plans/<slug>/0_brief.md
+     cat "$PLAN_DIR/0_brief.md"
      cat <<'PROMPT'
 
    ---0_acceptance.md---
    PROMPT
-     cat docs/plans/<slug>/0_acceptance.md
+     cat "$PLAN_DIR/0_acceptance.md"
      cat <<'PROMPT'
 
    ---1_explore.md---
    PROMPT
-     cat docs/plans/<slug>/1_explore.md
+     cat "$PLAN_DIR/1_explore.md"
      cat <<'PROMPT'
 
    ---2_plan.md---
    PROMPT
-     cat docs/plans/<slug>/2_plan.md
+     cat "$PLAN_DIR/2_plan.md"
      cat <<'PROMPT'
 
    観点:
@@ -76,7 +90,23 @@ tools: Read, Grep, Glob, Bash, Write
    5. TDD として成立しているか
    指摘を BLOCKER / MUST / NICE で分類し、日本語で出力せよ。
    PROMPT
-   } | "$CODEX_BIN" exec --model gpt-5-codex --sandbox read-only --skip-git-repo-check -
+   } | "$CODEX_BIN" exec \
+         --model gpt-5-codex \
+         --sandbox read-only \
+         --skip-git-repo-check \
+         --output-last-message "$RAW" \
+         -
+
+   {
+     echo "# Plan Review (Codex)"
+     echo
+     echo "## 要旨"
+     echo "- BLOCKER / MUST / NICE はオーケストレーターが集計"
+     echo
+     echo "## Codex output"
+     cat "$RAW"
+   } > "$OUT"
+   rm -f "$RAW"
    ```
 3. 出力を取得し、Codex の所見をそのまま貼る + 先頭に日本語の「要旨」を追加する。
 

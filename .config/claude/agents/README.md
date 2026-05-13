@@ -39,9 +39,10 @@ Phase 2  計画 + 計画レビュー
         │
         ▼  ★ User Gate (計画確定をユーザーに確認)
         ▼
-Phase 3  実装 / テスト / ドキュメント (並列)
-   ├── implementer     [sonnet]      → 3_impl.md  + コード差分
-   ├── tester          [sonnet]      → 3_test.md  + テスト差分
+Phase 3  実装 / テスト / ドキュメント (並列、ただし contract → red → green は順序遵守)
+   ├── implementer     [sonnet]      → 3_contract.md (型/シグネチャ先出し)
+   │                                 → 3_impl.md  + コード差分 (Red 確認後に Green 実装)
+   ├── tester          [sonnet]      → 3_test.md  + テスト差分 (3_contract.md を元に Red 着手)
    └── doc-writer      [sonnet]      → 3_doc.md   (構成案は並列、最終反映は 3_impl.md 後)
         │
         ▼
@@ -119,6 +120,7 @@ docs/plans/2026-05-13-gemini-support/
 ├── 0_acceptance.md        ← 受入条件
 ├── 1_explore.md           ← explorer
 ├── 2_plan.md              ← planner
+├── 3_contract.md          ← implementer (型 / シグネチャ / エラー型 — tester が Red を書くための入力)
 ├── 3_impl.md              ← implementer のメモ
 ├── 3_test.md              ← tester のメモ
 ├── 3_doc.md               ← doc-writer のメモ
@@ -160,7 +162,27 @@ docs/plans/2026-05-13-gemini-support/
 Codex 系レビュー (`*-codex`, `plan-reviewer`, `security-codex`) は **Sonnet がオーケストレーター** となり、
 `codex exec` を Bash 経由で呼び出して GPT-5 系モデルの所見を取得する。
 
+### SLUG 受け渡し規約
+
+オーケストレーターは Codex 系 reviewer を起動するとき、プロンプト内で **SLUG を明示する**。
+サブエージェントは Bash の最初で受け取った値を変数に代入し、`<slug>` をリテラル展開しない。
+
+```
+オーケストレーター → reviewer プロンプト例:
+  SLUG=2026-05-13-gemini-client
+  以下を実行: ...
+```
+
+### 共通テンプレート
+
 ```bash
+# --- 1. 入力受け取り (必須) ----------------------------------
+SLUG="${SLUG:?SLUG is required (orchestrator must pass it)}"
+PLAN_DIR="docs/plans/$SLUG"
+REVIEWS_DIR="$PLAN_DIR/reviews"
+mkdir -p "$REVIEWS_DIR"
+
+# --- 2. Codex CLI 検出 ---------------------------------------
 if command -v codex >/dev/null 2>&1; then
   CODEX_BIN=codex
 elif command -v codex.exe >/dev/null 2>&1; then
@@ -171,37 +193,83 @@ else
   CODEX_BIN=
 fi
 
+OUT="$REVIEWS_DIR/3_impl.codex.md"
+
 if [ -z "$CODEX_BIN" ]; then
-  cat > docs/plans/<slug>/reviews/3_impl.codex.md <<'MARKDOWN'
+  cat > "$OUT" <<'MARKDOWN'
 # Impl Review (Codex)
-Codex CLI 未導入のためスキップ。
+
+Status: SKIPPED
+Reason: codex CLI not found
+Risk: independent second review was not performed (DEGRADED)
 MARKDOWN
   exit 0
 fi
 
+# --- 3. 外部送信前 preflight ---------------------------------
+# secrets / credentials / private data を Codex に渡す前に必ず確認する。
+# 詳細は「Codex 外部送信 preflight」セクション参照。
+
+# --- 4. Codex 実行 -------------------------------------------
+RAW="$(mktemp)"
 {
   cat <<'PROMPT'
 以下は実装メモと受入条件です。
 
 ---3_impl.md---
 PROMPT
-  cat docs/plans/<slug>/3_impl.md
+  cat "$PLAN_DIR/3_impl.md"
   cat <<'PROMPT'
 
 ---0_acceptance.md---
 PROMPT
-  cat docs/plans/<slug>/0_acceptance.md
+  cat "$PLAN_DIR/0_acceptance.md"
   cat <<'PROMPT'
 
 上記の計画と実装メモをレビューせよ。BLOCKER/MUST/NICE で分類し日本語で出力。
 PROMPT
-} | "$CODEX_BIN" exec --model gpt-5-codex --skip-git-repo-check -
+} | "$CODEX_BIN" exec \
+      --model gpt-5-codex \
+      --sandbox read-only \
+      --skip-git-repo-check \
+      --output-last-message "$RAW" \
+      -
+
+# --- 5. 結果保存 ---------------------------------------------
+{
+  echo "# Impl Review (Codex)"
+  echo
+  echo "## 要旨"
+  echo "- BLOCKER / MUST / NICE はオーケストレーターが集計"
+  echo
+  echo "## Codex output"
+  cat "$RAW"
+} > "$OUT"
+rm -f "$RAW"
 ```
 
 `codex` / `codex.exe` 不在時は、Codex 系エージェントは冒頭で可用性を確認し、
-不在時は `reviews/*.codex.md` に「Codex 未導入のためスキップ」と明記して終了する。
+不在時は `reviews/*.codex.md` に「Codex 未導入のためスキップ (DEGRADED)」と明記して終了する。
 
 > Codex 出力をそのまま貼り付ける際は、観点を要約した「日本語の要旨」も先頭に付与する。
+
+---
+
+## Codex 外部送信 preflight
+
+Codex 系 reviewer は `git diff`、実装メモ、依存マニフェストを `codex exec` 経由で
+**外部 (Codex CLI 上の OpenAI モデル) に送信** する。以下を必ず確認する。
+
+1. **シークレット混入**: `git diff` 内に API キー / トークン / 秘密鍵 / パスワードが含まれないこと
+   (`grep -E 'AKIA|sk-|ghp_|xox[bp]-|-----BEGIN' ` などで事前スキャン)
+2. **`.env` / `credentials.*` / `*.pem` / `*.key`**: これらのパスが diff に出ていたら **Codex に渡さない**
+3. **顧客データ / 本番ログ / 個人情報**: 含まれる場合はユーザー許可を得るかスキップ
+4. **private / confidential リポジトリ**: 外部送信して良いか不明な場合はスキップし、`reviews/*.codex.md` に
+   `Status: SKIPPED (privacy)` と明記
+5. **巨大ロックファイル** (`package-lock.json`, `pnpm-lock.yaml`, `Cargo.lock`, `uv.lock` など) は
+   `--stat` のみ送るか、`name-only` での依存変更検出に留める
+
+判定に迷う場合は **オーケストレーターにエスカレーション** し、勝手に送信しない。
 
 ---
 
@@ -213,6 +281,57 @@ PROMPT
 4. **ユーザーゲート**: Phase 2 終了時に計画と Codex レビュー要旨を提示し、承認を得てから Phase 3 へ進む。
 5. **統合**: 各レビューを集約。BLOCKER があれば該当 Phase をリトライする。`SendMessage` が使える場合は同 agentId に再依頼し、使えない場合は同じ agent を新規起動して過去成果物を読み込ませる。
 6. **完了**: `5_final.md` を生成し、ユーザーに変更差分と未対応事項を簡潔に報告する。
+
+---
+
+## `5_final.md` フォーマット (必須項目)
+
+Phase 5 でオーケストレーターが生成する統合レポート。Codex 系 reviewer がスキップされた場合や
+Opus/Codex どちらかが欠落した場合は、**冒頭の Review mode 表で DEGRADED を明示**する。
+
+```markdown
+# Final Summary — <slug>
+
+## Review mode
+| Reviewer            | Status    | Reason                |
+| ------------------- | --------- | --------------------- |
+| plan-reviewer       | completed | -                     |
+| impl-reviewer-opus  | completed | -                     |
+| impl-reviewer-codex | SKIPPED   | codex CLI not found   |
+| test-reviewer-opus  | completed | -                     |
+| test-reviewer-codex | SKIPPED   | codex CLI not found   |
+| doc-reviewer-opus   | completed | -                     |
+| doc-reviewer-codex  | SKIPPED   | codex CLI not found   |
+| security-opus       | completed | -                     |
+| security-codex      | SKIPPED   | secrets in preflight  |
+| performance         | completed | -                     |
+| doc-auditor         | skipped   | not required          |
+
+## Mode 判定
+- Full review (Opus + Codex 二重): あり
+- DEGRADED (片系統のみ): impl / test / doc / security
+- 主要リスク: 独立した二票化が機能しなかった成果物では片寄りの可能性
+
+## 集約結果
+- BLOCKER: N 件 (すべて対応済 / 残 N 件)
+- MUST: N 件 (対応 N 件 / 残 N 件)
+- NICE: N 件 (将来課題)
+
+## 変更差分サマリ
+- 主要な変更ファイルと意図 (3〜7 行)
+
+## 未対応事項 / 残課題
+- ...
+
+## リトライ履歴
+- Phase 3R で BLOCKER 検出 → implementer 再起動 (1 回目)
+- Phase 4 で BLOCKER 検出 → security レビュー再取得 (該当時)
+```
+
+**ルール**:
+- 一つでも `SKIPPED` がある場合は `## Mode 判定` で **DEGRADED** と明記する。
+- `DEGRADED` の理由は Reason 列にできるだけ具体的に書く (`codex CLI not found`, `secrets in preflight`, `privacy` など)。
+- BLOCKER がリトライ上限 (2 回) に達した場合はステータスを `BLOCKER_REMAINING` とし、ユーザーへエスカレーションを明記する。
 
 ---
 

@@ -16,11 +16,12 @@ tools: Read, Grep, Glob, Bash, Write, Edit
 ## 入力
 - `docs/plans/<slug>/2_plan.md`
 - `docs/plans/<slug>/0_acceptance.md`
+- `docs/plans/<slug>/3_contract.md` — **implementer が先出しするコントラクト (必読)**
 
-## ワークフロー
-1. テスト方針と受入条件を読み、テスト一覧を `3_test.md` に列挙する (テーブル形式)。
-2. **Red 段階**: 失敗するテストを先に書く。implementer がコントラクトを定義したらすぐ Red を書ける状態にしておく。
-3. implementer の実装が進んだら順次実行し、結果を更新。
+## ワークフロー (contract → red → green)
+1. テスト方針と受入条件、`3_contract.md` を読み、テスト一覧を `3_test.md` に列挙する (テーブル形式)。
+2. **Red 段階**: `3_contract.md` のシグネチャ / 型 / エラー型に基づいて失敗するテストを書く。`3_contract.md` が無い場合は implementer に提示を依頼し、書かれるまで待機する (推測でシグネチャを決めない)。
+3. implementer の実装 (Green) が進んだら順次実行し、結果を更新。
 4. **Green 確認**: 全テスト緑化を確認したら `3_test.md` 末尾にカバレッジ / 実行サマリを貼る。
 5. テスト戦略上の課題 (モック過多、固定値依存など) は `## 補足` に記録。
 

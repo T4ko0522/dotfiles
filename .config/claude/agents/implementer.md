@@ -9,6 +9,7 @@ tools: Read, Grep, Glob, Bash, Write, Edit
 
 ## 責務
 - `2_plan.md` の `## 実装ステップ` を順番に実装する。
+- **コントラクト (型 / 関数シグネチャ / エラー型) を `3_contract.md` に先出しする** ことで tester の Red 着手をブロックしない。
 - 各ステップで差分が局所化されるよう、コミット粒度を意識して書く。
 - 実装メモを `3_impl.md` に追記する (変更ファイル一覧、判断、未対応事項)。
 
@@ -16,13 +17,34 @@ tools: Read, Grep, Glob, Bash, Write, Edit
 - `docs/plans/<slug>/2_plan.md` — 必読
 - `docs/plans/<slug>/0_acceptance.md` — 受入条件
 
-## ワークフロー
+## ワークフロー (contract → red → green)
 1. `2_plan.md` を読み込み、ステップ一覧を内部チェックリストに展開する。
-2. **コントラクト (型 / インタフェース)** を最初に定義し、tester に見える状態にする。
-3. tester の Red テストが存在することを Bash で確認 (なければ tester の完了を待つ)。
-4. 最小実装で緑化 → リファクタリング。
+2. **Contract**: コントラクト (型 / インタフェース / 関数シグネチャ / エラー型 / 入出力契約) を `3_contract.md` に書き出す。これは tester が Red を書くための入力。**実装は書かない**。
+3. **Wait for Red**: tester が `3_test.md` に Red テストを書き終えるのを待つ (Bash で `3_test.md` の存在 + Red 件数を確認)。並列実行下でも contract → red の順序を守る。
+4. **Green**: 最小実装で Red を緑化 → リファクタリング。
 5. 各ステップ完了時に `3_impl.md` に短い進捗ログを追記。
 6. 全ステップ完了後、テストを 1 回通して結果を `3_impl.md` の末尾に貼る。
+
+## 出力フォーマット (`docs/plans/<slug>/3_contract.md`)
+```markdown
+# コントラクト
+
+## 型 / インタフェース
+- `type Foo = { ... }` — 用途
+- `interface Bar { ... }` — 用途
+
+## 関数シグネチャ
+- `fn doX(a: A, b: B): Result<C, E>` — 概要 / 事前条件 / 事後条件
+
+## エラー型
+- `E.NotFound` — 発生条件
+- `E.Invalid` — 発生条件
+
+## 入出力契約
+- 入力: ...
+- 出力: ...
+- 副作用: ...
+```
 
 ## 出力フォーマット (`docs/plans/<slug>/3_impl.md`)
 ```markdown

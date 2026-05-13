@@ -18,8 +18,14 @@ tools: Read, Grep, Glob, Bash, Write
 
 ## ワークフロー
 1. Bash で `codex` を確認する。Windows では `codex.exe` / `where.exe codex` も試す。不在ならスキップを記述して終了する。
-2. doc-writer の変更要旨、関連 diff、実装メモを標準入力で渡して実行する。波括弧形式の未展開プレースホルダを残さない:
+2. オーケストレーターから受け取った SLUG を変数に代入し、変更要旨 / 関連 diff / 実装メモを標準入力で渡す。`<slug>` をリテラル展開しない。ドキュメント差分は `git diff --name-only` から **計画ドキュメント (`docs/plans/`) を除外** して抽出する:
    ```bash
+   SLUG="${SLUG:?SLUG is required (orchestrator must pass it)}"
+   PLAN_DIR="docs/plans/$SLUG"
+   REVIEWS_DIR="$PLAN_DIR/reviews"
+   OUT="$REVIEWS_DIR/3_doc.codex.md"
+   mkdir -p "$REVIEWS_DIR"
+
    if command -v codex >/dev/null 2>&1; then
      CODEX_BIN=codex
    elif command -v codex.exe >/dev/null 2>&1; then
@@ -31,30 +37,50 @@ tools: Read, Grep, Glob, Bash, Write
    fi
 
    if [ -z "$CODEX_BIN" ]; then
-     cat > docs/plans/<slug>/reviews/3_doc.codex.md <<'MARKDOWN'
+     cat > "$OUT" <<'MARKDOWN'
    # Doc Review (Codex)
-   Codex CLI 未導入のためスキップ。
+
+   Status: SKIPPED
+   Reason: codex CLI not found
+   Risk: independent second review was not performed (DEGRADED)
    MARKDOWN
      exit 0
    fi
 
+   # Codex 外部送信 preflight (詳細は agents/README.md)
+
+   # 実ドキュメント差分: docs/plans/ (チーム成果物) は除外し、README と docs/ 配下の Markdown を拾う
+   DOC_FILES="$(git diff --name-only \
+     | grep -E '(^README(\.[A-Za-z0-9_-]+)?\.md$|^docs/(?!plans/)|\.md$)' \
+     | grep -v '^docs/plans/' \
+     || true)"
+
+   RAW="$(mktemp)"
    {
      cat <<'PROMPT'
    以下は doc-writer の変更要旨 / 実ドキュメント差分 / 関連実装メモです。
 
    ---3_doc.md---
    PROMPT
-     cat docs/plans/<slug>/3_doc.md
+     cat "$PLAN_DIR/3_doc.md"
      cat <<'PROMPT'
 
-   ---docs diff---
+   ---changed doc files---
    PROMPT
-     git diff -- README.md docs/ '*.md'
+     echo "$DOC_FILES"
+     cat <<'PROMPT'
+
+   ---git diff (doc files only)---
+   PROMPT
+     if [ -n "$DOC_FILES" ]; then
+       # shellcheck disable=SC2086
+       git diff -- $DOC_FILES
+     fi
      cat <<'PROMPT'
 
    ---3_impl.md (参考)---
    PROMPT
-     cat docs/plans/<slug>/3_impl.md
+     cat "$PLAN_DIR/3_impl.md"
      cat <<'PROMPT'
 
    観点:
@@ -65,7 +91,23 @@ tools: Read, Grep, Glob, Bash, Write
    5. 抜け (引数説明 / 制約 / 例外パスなど)
    BLOCKER / MUST / NICE で日本語出力。
    PROMPT
-   } | "$CODEX_BIN" exec --model gpt-5-codex --sandbox read-only --skip-git-repo-check -
+   } | "$CODEX_BIN" exec \
+         --model gpt-5-codex \
+         --sandbox read-only \
+         --skip-git-repo-check \
+         --output-last-message "$RAW" \
+         -
+
+   {
+     echo "# Doc Review (Codex)"
+     echo
+     echo "## 要旨"
+     echo "- BLOCKER / MUST / NICE はオーケストレーターが集計"
+     echo
+     echo "## Codex output"
+     cat "$RAW"
+   } > "$OUT"
+   rm -f "$RAW"
    ```
 3. 出力を `reviews/3_doc.codex.md` に貼る。
 

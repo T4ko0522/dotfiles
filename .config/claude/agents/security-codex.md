@@ -18,8 +18,14 @@ tools: Read, Grep, Glob, Bash, Write
 
 ## ワークフロー
 1. Bash で `codex` を確認する。Windows では `codex.exe` / `where.exe codex` も試す。不在ならスキップを記述して終了する。
-2. Codex CLI には `codex exec review` サブコマンドもあるが、本エージェントは一貫性のため `codex exec` を使う:
+2. Codex CLI には `codex exec review` サブコマンドもあるが、本エージェントは一貫性のため `codex exec` を使う。`<slug>` をリテラル展開せず SLUG 変数経由で扱う。巨大ロックファイルは原文を送らず `--stat` のみに留める:
    ```bash
+   SLUG="${SLUG:?SLUG is required (orchestrator must pass it)}"
+   PLAN_DIR="docs/plans/$SLUG"
+   REVIEWS_DIR="$PLAN_DIR/reviews"
+   OUT="$REVIEWS_DIR/4_security.codex.md"
+   mkdir -p "$REVIEWS_DIR"
+
    if command -v codex >/dev/null 2>&1; then
      CODEX_BIN=codex
    elif command -v codex.exe >/dev/null 2>&1; then
@@ -31,20 +37,45 @@ tools: Read, Grep, Glob, Bash, Write
    fi
 
    if [ -z "$CODEX_BIN" ]; then
-     cat > docs/plans/<slug>/reviews/4_security.codex.md <<'MARKDOWN'
+     cat > "$OUT" <<'MARKDOWN'
    # Security Review (Codex)
-   Codex CLI 未導入のためスキップ。
+
+   Status: SKIPPED
+   Reason: codex CLI not found
+   Risk: independent second review was not performed (DEGRADED)
    MARKDOWN
      exit 0
    fi
 
+   # Codex 外部送信 preflight (詳細は agents/README.md):
+   # - git diff に AKIA / sk- / ghp_ / xox[bp]- / -----BEGIN などのシークレットが含まれないこと
+   # - .env / credentials.* / *.pem / *.key が diff に出ていたら送信しない
+   # - private repository の場合はユーザー許可を得るかスキップ
+   SECRET_HITS="$(git diff | grep -E 'AKIA[0-9A-Z]{16}|sk-[A-Za-z0-9]{20,}|ghp_[A-Za-z0-9]{20,}|xox[bp]-[A-Za-z0-9-]+|-----BEGIN [A-Z ]+PRIVATE KEY-----' || true)"
+   if [ -n "$SECRET_HITS" ]; then
+     cat > "$OUT" <<'MARKDOWN'
+   # Security Review (Codex)
+
+   Status: SKIPPED
+   Reason: potential secrets detected in diff (preflight)
+   Risk: Codex review not performed; manual secret review required (DEGRADED)
+   MARKDOWN
+     exit 0
+   fi
+
+   # 依存マニフェスト: 小さいもの (package.json / go.mod / Cargo.toml / pyproject.toml) は原文
+   # 大きいロックファイルは --stat / 変更件数だけに留め、原文を Codex に送らない
+   LIGHT_MANIFESTS="package.json go.mod Cargo.toml pyproject.toml requirements.txt"
+   HEAVY_LOCKS="pnpm-lock.yaml package-lock.json yarn.lock bun.lockb bun.lock go.sum Cargo.lock uv.lock"
+
+   RAW="$(mktemp)"
    {
      cat <<'PROMPT'
    以下は変更の概要 / diff / 主要な依存です。
 
    ---3_impl.md---
    PROMPT
-     cat docs/plans/<slug>/3_impl.md
+     cat "$PLAN_DIR/3_impl.md"
      cat <<'PROMPT'
 
    ---git diff --stat---
@@ -52,21 +83,26 @@ tools: Read, Grep, Glob, Bash, Write
      git diff --stat
      cat <<'PROMPT'
 
-   ---git diff---
+   ---git diff (excluding lockfiles)---
    PROMPT
-     git diff
+     # shellcheck disable=SC2086
+     git diff -- . $(printf ":(exclude)%s " $HEAVY_LOCKS)
      cat <<'PROMPT'
 
-   ---deps---
+   ---light manifests---
    PROMPT
-     for f in package.json pnpm-lock.yaml package-lock.json yarn.lock bun.lockb bun.lock go.mod go.sum Cargo.toml Cargo.lock pyproject.toml requirements.txt uv.lock; do
+     for f in $LIGHT_MANIFESTS; do
        if [ -f "$f" ]; then
-         cat <<PROMPT
-   ---$f---
-   PROMPT
+         printf '\n---%s---\n' "$f"
          cat "$f"
        fi
      done
+     cat <<'PROMPT'
+
+   ---heavy lockfile changes (stat only)---
+   PROMPT
+     # shellcheck disable=SC2086
+     git diff --stat -- $HEAVY_LOCKS 2>/dev/null || true
      cat <<'PROMPT'
 
    観点 (OWASP Top 10 + LLM 固有):
@@ -81,7 +117,23 @@ tools: Read, Grep, Glob, Bash, Write
    - プロンプト注入 / 出力盲信 (該当時)
    BLOCKER / MUST / NICE で日本語出力。
    PROMPT
-   } | "$CODEX_BIN" exec --model gpt-5-codex --sandbox read-only --skip-git-repo-check -
+   } | "$CODEX_BIN" exec \
+         --model gpt-5-codex \
+         --sandbox read-only \
+         --skip-git-repo-check \
+         --output-last-message "$RAW" \
+         -
+
+   {
+     echo "# Security Review (Codex)"
+     echo
+     echo "## 要旨"
+     echo "- BLOCKER / MUST / NICE はオーケストレーターが集計"
+     echo
+     echo "## Codex output"
+     cat "$RAW"
+   } > "$OUT"
+   rm -f "$RAW"
    ```
 3. 結果を `reviews/4_security.codex.md` に貼る。
 
