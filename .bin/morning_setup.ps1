@@ -59,20 +59,25 @@ Start-IfNotRunning `
     -ProcessName "Spotify" `
     -Path        "$env:APPDATA\Spotify\Spotify.exe"
 
-# WS V / M1 — VSCode
+# WS IV / M1 — VSCode
 Start-IfNotRunning `
     -ProcessName "Code" `
     -Path        "$env:LOCALAPPDATA\Programs\Microsoft VS Code\Code.exe"
 
-# WS V / M1 — Brave
+# WS IV / M1 — Brave (プライベート用ブラウザ)
 Start-IfNotRunning `
     -ProcessName "brave" `
     -Path        "C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
 
-# WS VII / M1 — Chrome
+# WS V / M1 — Chrome (ビジネス用ブラウザ)
 Start-IfNotRunning `
     -ProcessName "chrome" `
     -Path        "C:\Program Files\Google\Chrome\Application\chrome.exe"
+
+# WS VI / M1 — Mattermost
+Start-IfNotRunning `
+    -ProcessName "Mattermost" `
+    -Path        "$env:LOCALAPPDATA\Programs\mattermost-desktop\Mattermost.exe"
 
 # 起動完了後に両モニターを WS 1 へ
 Start-Sleep -Seconds 2

@@ -1,10 +1,40 @@
 # komorebi + whkd キーバインド
 
-設定ファイル: [`.config/whkdrc`](../../.config/whkdrc)
+設定ファイル: [`.config/whkdrc`](../../.config/whkdrc) / [`.config/komorebi/komorebi.json`](../../.config/komorebi/komorebi.json)
 
 前提:
 - シェルは `powershell`
 - `Win` = Windows キー
+
+## ワークスペース構成
+
+`Win+1/2/3` は **フォーカス中モニターのみ** を切り替える (`focus-workspace` 単数形)。
+
+| Index | M0 `CMN1556` (メイン) | M1 `DELF144` (拡張) |
+|---|---|---|
+| 0 (`Win+1`) | **I** / BSP — WezTerm | **IV** / BSP — VSCode, Brave (プライベート) |
+| 1 (`Win+2`) | **II** / Grid — Discord | **V** / BSP — Chrome (ビジネス) |
+| 2 (`Win+3`) | **III** / Columns — Slack, Spotify | **VI** / BSP — Mattermost |
+
+### 配置ポリシー
+
+- **M0 = コミュニケーション・開発端末**
+  - I: ターミナル作業 (WezTerm)
+  - II: 通話・チャット (Discord)
+  - III: ワークチャット系 + BGM (Slack, Spotify)
+- **M1 = 広い作業領域**
+  - IV: コーディング + プライベートブラウジング (VSCode, Brave)
+  - V: ビジネス用ブラウジング (Chrome)
+  - VI: ビジネスチャット専用 (Mattermost)
+- **ブラウザの役割分担**
+  - **Brave = プライベート**: 私用閲覧・SNS・動画・課金記事の送り込み防止
+  - **Chrome = ビジネス**: Google Workspace, 業務ツール, 顧客サービス
+
+ワークスペース名は `I, II, III` (M0) と `IV, V, VI` (M1) で連番。`Win+3` を押した時に表示される名前 (III or VI) で、どちらのモニターを操作中か即時に判別できる。
+
+### 起動スクリプト
+
+`Alt+Insert` で [`.bin/morning_setup.ps1`](../../.bin/morning_setup.ps1) を実行すると上記アプリを一括起動し、`workspace_rules` が自動配置する。
 
 ## 基本
 
@@ -60,15 +90,15 @@
 
 | キー | 動作 |
 | --- | --- |
-| `Win+1`〜`Win+8` | ワークスペース 0〜7 にフォーカス |
+| `Win+1`〜`Win+3` | フォーカス中モニターのワークスペース 0〜2 にフォーカス |
 | `Win+Shift+1`〜`Win+Shift+8` | アクティブウィンドウを対応ワークスペースへ移動 |
 
 ## マルチモニター
 
 | キー | 動作 |
 | --- | --- |
-| `Win+,` | モニター 0 (メイン: WezTerm/Discord/Spotify) |
-| `Win+.` | モニター 1 (サブ: VSCode/Browser) |
+| `Win+,` | モニター 0 (メイン: WezTerm / Discord / Slack+Spotify) |
+| `Win+.` | モニター 1 (拡張: VSCode+Brave / Chrome / Mattermost) |
 | `Win+Shift+,` / `Win+Shift+.` | ウィンドウをモニター 0 / 1 へ移動 |
 | `Win+n` | 次のモニターへ |
 | `Win+Shift+n` | 前のモニターへ |

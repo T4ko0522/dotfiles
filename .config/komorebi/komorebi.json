@@ -77,19 +77,25 @@
     {
       "workspaces": [
         {
-          "name": "V",
+          "name": "IV",
           "layout": "BSP",
           "workspace_rules": [
             { "kind": "Exe", "id": "Code.exe",  "matching_strategy": "Equals" },
             { "kind": "Exe", "id": "brave.exe", "matching_strategy": "Equals" }
           ]
         },
-        { "name": "VI", "layout": "BSP" },
         {
-          "name": "VII",
+          "name": "V",
           "layout": "BSP",
           "workspace_rules": [
             { "kind": "Exe", "id": "chrome.exe", "matching_strategy": "Equals" }
+          ]
+        },
+        {
+          "name": "VI",
+          "layout": "BSP",
+          "workspace_rules": [
+            { "kind": "Exe", "id": "Mattermost.exe", "matching_strategy": "Equals" }
           ]
         }
       ]

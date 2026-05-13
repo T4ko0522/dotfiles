@@ -62,10 +62,10 @@ win + z                 : komorebic toggle-pause
 win + x                 : komorebic flip-layout horizontal
 win + y                 : komorebic flip-layout vertical
 
-# Workspaces (両モニター同時切替 — focus-workspaces は全モニターを同じ index へ)
-win + 1                 : komorebic focus-workspaces 0          # WS 1: M0=wezterm, M1=vscode+brave
-win + 2                 : komorebic focus-workspaces 1          # WS 2: (M1 empty)
-win + 3                 : komorebic focus-workspaces 2          # WS 3: M0=slack/spotify, M1=chrome
+# Workspaces (フォーカス中モニターのみ切替 — focus-workspace は単数形)
+win + 1                 : komorebic focus-workspace 0           # WS 1: M0:I=wezterm         / M1:IV=vscode+brave(私)
+win + 2                 : komorebic focus-workspace 1           # WS 2: M0:II=discord        / M1:V=chrome(業)
+win + 3                 : komorebic focus-workspace 2           # WS 3: M0:III=slack+spotify / M1:VI=mattermost
 
 # Move current window to a workspace on the focused monitor
 win + alt + 1           : komorebic move-to-workspace 0
@@ -73,8 +73,8 @@ win + alt + 2           : komorebic move-to-workspace 1
 win + alt + 3           : komorebic move-to-workspace 2
 
 # Monitors (multi-monitor focus/move)
-win + oem_comma         : komorebic focus-monitor 0      # , — main (WezTerm/Discord/Spotify)
-win + oem_period        : komorebic focus-monitor 1      # . — sub (VSCode/Browser)
+win + oem_comma         : komorebic focus-monitor 0      # , — M0 main (wezterm / discord / slack+spotify)
+win + oem_period        : komorebic focus-monitor 1      # . — M1 sub  (vscode+brave / chrome / mattermost)
 win + shift + oem_comma : komorebic move-to-monitor 0
 win + shift + oem_period: komorebic move-to-monitor 1
 win + n                 : komorebic cycle-monitor next
