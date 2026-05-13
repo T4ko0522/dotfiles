@@ -1,5 +1,5 @@
 ---
-name: system-designer
+name: tp-system-designer
 description: 要件定義からシステム設計書を作成する専門家。アーキテクチャ・コンポーネント・データモデル・CLI/API・エラーハンドリングを Codex が直接実装できる粒度まで具体化する。tool-pipeline スキルの Phase 2a で使用。
 model: opus
 tools:

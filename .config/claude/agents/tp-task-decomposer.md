@@ -1,5 +1,5 @@
 ---
-name: task-decomposer
+name: tp-task-decomposer
 description: 設計書と QA 計画から Codex が実装可能なタスクへ分解する専門家。依存関係を整理し並列実行可能なグループにまとめ、各タスクに Codex 向け実装指示を付ける。tool-pipeline スキルの Phase 3 で使用。
 model: sonnet
 tools:

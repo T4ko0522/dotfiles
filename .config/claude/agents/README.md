@@ -11,6 +11,7 @@ Opus / Sonnet / Codex CLI を組み合わせて二重レビューを行う。
 ユーザー入力に「**チームで**」が含まれる場合に本パイプラインを起動する。
 
 例:
+
 - 「チームで gemini API 対応を実装して」
 - 「チームでこのリファクタリングをレビューして」
 - 「チームでパフォーマンス改善を進めて」
@@ -30,36 +31,36 @@ Phase 0  初期化 (キックオフ)
         │
         ▼
 Phase 1  探索 (並列なし / 高速)
-   └── explorer        [sonnet]      → 1_explore.md
+   └── at-explorer        [sonnet]      → 1_explore.md
         │
         ▼
 Phase 2  計画 + 計画レビュー
-   ├── planner         [opus]        → 2_plan.md
-   └── plan-reviewer   [sonnet→codex]→ reviews/2_plan.codex.md
+   ├── at-planner         [opus]        → 2_plan.md
+   └── at-plan-reviewer   [sonnet→codex]→ reviews/2_plan.codex.md
         │
         ▼  ★ User Gate (計画確定をユーザーに確認)
         ▼
 Phase 3  実装 / テスト / ドキュメント (並列、ただし contract → red → green は順序遵守)
-   ├── implementer     [sonnet]      → 3_contract.md (型/シグネチャ先出し)
+   ├── at-implementer     [sonnet]      → 3_contract.md (型/シグネチャ先出し)
    │                                 → 3_impl.md  + コード差分 (Red 確認後に Green 実装)
-   ├── tester          [sonnet]      → 3_test.md  + テスト差分 (3_contract.md を元に Red 着手)
-   └── doc-writer      [sonnet]      → 3_doc.md   (構成案は並列、最終反映は 3_impl.md 後)
+   ├── at-tester          [sonnet]      → 3_test.md  + テスト差分 (3_contract.md を元に Red 着手)
+   └── at-doc-writer      [sonnet]      → 3_doc.md   (構成案は並列、最終反映は 3_impl.md 後)
         │
         ▼
 Phase 3R レビュー (各成果物を Opus + Codex で二重レビュー / 並列)
-   ├── impl-reviewer-opus   [opus]   → reviews/3_impl.opus.md
-   ├── impl-reviewer-codex  [sonnet] → reviews/3_impl.codex.md
-   ├── test-reviewer-opus   [opus]   → reviews/3_test.opus.md
-   ├── test-reviewer-codex  [sonnet] → reviews/3_test.codex.md
-   ├── doc-reviewer-opus    [opus]   → reviews/3_doc.opus.md
-   └── doc-reviewer-codex   [sonnet] → reviews/3_doc.codex.md
+   ├── at-impl-reviewer-opus   [opus]   → reviews/3_impl.opus.md
+   ├── at-impl-reviewer-codex  [sonnet] → reviews/3_impl.codex.md
+   ├── at-test-reviewer-opus   [opus]   → reviews/3_test.opus.md
+   ├── at-test-reviewer-codex  [sonnet] → reviews/3_test.codex.md
+   ├── at-doc-reviewer-opus    [opus]   → reviews/3_doc.opus.md
+   └── at-doc-reviewer-codex   [sonnet] → reviews/3_doc.codex.md
         │
         ▼
 Phase 4  仕上げ監査 (必要に応じて並列)
-   ├── security-opus   [opus]        → reviews/4_security.opus.md
-   ├── security-codex  [sonnet]      → reviews/4_security.codex.md
-   ├── performance     [sonnet]      → 4_performance.md
-   └── doc-auditor     [sonnet]      → reviews/4_doc-audit.md
+   ├── at-security-opus   [opus]        → reviews/4_security.opus.md
+   ├── at-security-codex  [sonnet]      → reviews/4_security.codex.md
+   ├── at-performance     [sonnet]      → 4_performance.md
+   └── at-doc-auditor     [sonnet]      → reviews/4_doc-audit.md
         │
         ▼
 Phase 5  統合 (オーケストレーター責務)
@@ -68,7 +69,7 @@ Phase 5  統合 (オーケストレーター責務)
    └── 5_final.md に最終サマリと未対応事項を記録
 
 オンデマンド:
-  analyzer   [opus]   ← バグ調査・障害分析・5 Whys 用 / 任意フェーズで挿入
+  at-analyzer   [opus]   ← バグ調査・障害分析・5 Whys 用 / 任意フェーズで挿入
 ```
 
 ---
@@ -76,35 +77,38 @@ Phase 5  統合 (オーケストレーター責務)
 ## エージェント一覧
 
 ### 作業系 (7)
+
 | Agent          | Model  | 役割                                  |
 | -------------- | ------ | ------------------------------------- |
-| `explorer`     | sonnet | コードベース探索・現状把握            |
-| `planner`      | opus   | 仕様策定と実装計画                    |
-| `implementer`  | sonnet | コード実装                            |
-| `tester`       | sonnet | テスト設計・実行                      |
-| `doc-writer`   | sonnet | ドキュメント作成                      |
-| `doc-auditor`  | sonnet | 既存ドキュメントの整合性監査          |
-| `performance`  | sonnet | パフォーマンス分析・改善提案          |
+| `at-explorer`     | sonnet | コードベース探索・現状把握            |
+| `at-planner`      | opus   | 仕様策定と実装計画                    |
+| `at-implementer`  | sonnet | コード実装                            |
+| `at-tester`       | sonnet | テスト設計・実行                      |
+| `at-doc-writer`   | sonnet | ドキュメント作成                      |
+| `at-doc-auditor`  | sonnet | 既存ドキュメントの整合性監査          |
+| `at-performance`  | sonnet | パフォーマンス分析・改善提案          |
 
 ### レビュー系 (9) — 二重レビュー (Opus と Codex は同期しない)
+
 | Agent                  | Claude Model | 外部レビュー | レビュー対象              |
 | ---------------------- | ------------ | ------------ | ------------------------- |
-| `plan-reviewer`        | sonnet       | Codex CLI    | 計画 (Opus に対する独立票) |
-| `impl-reviewer-opus`   | opus         | なし         | 実装                       |
-| `impl-reviewer-codex`  | sonnet       | Codex CLI    | 実装                       |
-| `test-reviewer-opus`   | opus         | なし         | テスト                     |
-| `test-reviewer-codex`  | sonnet       | Codex CLI    | テスト                     |
-| `doc-reviewer-opus`    | opus         | なし         | ドキュメント               |
-| `doc-reviewer-codex`   | sonnet       | Codex CLI    | ドキュメント               |
-| `security-opus`        | opus         | なし         | セキュリティ監査           |
-| `security-codex`       | sonnet       | Codex CLI    | セキュリティ監査           |
+| `at-plan-reviewer`        | sonnet       | Codex CLI    | 計画 (Opus に対する独立票) |
+| `at-impl-reviewer-opus`   | opus         | なし         | 実装                       |
+| `at-impl-reviewer-codex`  | sonnet       | Codex CLI    | 実装                       |
+| `at-test-reviewer-opus`   | opus         | なし         | テスト                     |
+| `at-test-reviewer-codex`  | sonnet       | Codex CLI    | テスト                     |
+| `at-doc-reviewer-opus`    | opus         | なし         | ドキュメント               |
+| `at-doc-reviewer-codex`   | sonnet       | Codex CLI    | ドキュメント               |
+| `at-security-opus`        | opus         | なし         | セキュリティ監査           |
+| `at-security-codex`       | sonnet       | Codex CLI    | セキュリティ監査           |
 
 ### オンデマンド (1)
+
 | Agent      | Model | 役割                          |
 | ---------- | ----- | ----------------------------- |
-| `analyzer` | opus  | 根本原因分析・5 Whys・障害切分 |
+| `at-analyzer` | opus  | 根本原因分析・5 Whys・障害切分 |
 
-> **二重レビューの方針**: planner が Opus のため `plan-reviewer` は Codex 単独。
+> **二重レビューの方針**: at-planner が Opus のため `at-plan-reviewer` は Codex 単独。
 > 実装/テスト/ドキュメント/セキュリティは Opus と Codex の両方からレビューを取り、
 > 観点の偏りを抑える。
 
@@ -115,10 +119,10 @@ Phase 5  統合 (オーケストレーター責務)
 
 | Agent                  | Model  | 役割                                          |
 | ---------------------- | ------ | --------------------------------------------- |
-| `requirements-analyst` | sonnet | tool-pipeline Phase 1: 要件定義の構造化         |
-| `system-designer`      | opus   | tool-pipeline Phase 2a: コードレベルの設計書    |
-| `qa-architect`         | sonnet | tool-pipeline Phase 2b: QA 計画・品質チェック計画 |
-| `task-decomposer`      | sonnet | tool-pipeline Phase 3: Codex 向けタスク分解     |
+| `tp-requirements-analyst` | sonnet | tool-pipeline Phase 1: 要件定義の構造化         |
+| `tp-system-designer`      | opus   | tool-pipeline Phase 2a: コードレベルの設計書    |
+| `tp-qa-architect`         | sonnet | tool-pipeline Phase 2b: QA 計画・品質チェック計画 |
+| `tp-task-decomposer`      | sonnet | tool-pipeline Phase 3: Codex 向けタスク分解     |
 
 詳細は `~/.claude/skills/tool-pipeline/SKILL.md` を参照。
 
@@ -132,13 +136,13 @@ Phase 5  統合 (オーケストレーター責務)
 docs/plans/2026-05-13-gemini-support/
 ├── 0_brief.md             ← ユーザー要求の要約
 ├── 0_acceptance.md        ← 受入条件
-├── 1_explore.md           ← explorer
-├── 2_plan.md              ← planner
-├── 3_contract.md          ← implementer (型 / シグネチャ / エラー型 — tester が Red を書くための入力)
-├── 3_impl.md              ← implementer のメモ
-├── 3_test.md              ← tester のメモ
-├── 3_doc.md               ← doc-writer のメモ
-├── 4_performance.md       ← performance
+├── 1_explore.md           ← at-explorer
+├── 2_plan.md              ← at-planner
+├── 3_contract.md          ← at-implementer (型 / シグネチャ / エラー型 — at-tester が Red を書くための入力)
+├── 3_impl.md              ← at-implementer のメモ
+├── 3_test.md              ← at-tester のメモ
+├── 3_doc.md               ← at-doc-writer のメモ
+├── 4_performance.md       ← at-performance
 ├── 5_final.md             ← 統合サマリ
 └── reviews/
     ├── 2_plan.codex.md
@@ -173,7 +177,7 @@ docs/plans/2026-05-13-gemini-support/
 
 ## Codex CLI 連携
 
-Codex 系レビュー (`*-codex`, `plan-reviewer`, `security-codex`) は **Sonnet がオーケストレーター** となり、
+Codex 系レビュー (`*-codex`, `at-plan-reviewer`, `at-security-codex`) は **Sonnet がオーケストレーター** となり、
 `codex exec` を Bash 経由で呼び出して GPT-5 系モデルの所見を取得する。
 
 ### SLUG 受け渡し規約
@@ -275,7 +279,7 @@ Codex 系 reviewer は `git diff`、実装メモ、依存マニフェストを `
 **外部 (Codex CLI 上の OpenAI モデル) に送信** する。以下を必ず確認する。
 
 1. **シークレット混入**: `git diff` 内に API キー / トークン / 秘密鍵 / パスワードが含まれないこと
-   (`grep -E 'AKIA|sk-|ghp_|xox[bp]-|-----BEGIN' ` などで事前スキャン)
+   (`grep -E 'AKIA|sk-|ghp_|xox[bp]-|-----BEGIN'` などで事前スキャン)
 2. **`.env` / `credentials.*` / `*.pem` / `*.key`**: これらのパスが diff に出ていたら **Codex に渡さない**
 3. **顧客データ / 本番ログ / 個人情報**: 含まれる場合はユーザー許可を得るかスキップ
 4. **private / confidential リポジトリ**: 外部送信して良いか不明な場合はスキップし、`reviews/*.codex.md` に
@@ -309,17 +313,17 @@ Opus/Codex どちらかが欠落した場合は、**冒頭の Review mode 表で
 ## Review mode
 | Reviewer            | Status    | Reason                |
 | ------------------- | --------- | --------------------- |
-| plan-reviewer       | completed | -                     |
-| impl-reviewer-opus  | completed | -                     |
-| impl-reviewer-codex | SKIPPED   | codex CLI not found   |
-| test-reviewer-opus  | completed | -                     |
-| test-reviewer-codex | SKIPPED   | codex CLI not found   |
-| doc-reviewer-opus   | completed | -                     |
-| doc-reviewer-codex  | SKIPPED   | codex CLI not found   |
-| security-opus       | completed | -                     |
-| security-codex      | SKIPPED   | secrets in preflight  |
-| performance         | completed | -                     |
-| doc-auditor         | skipped   | not required          |
+| at-plan-reviewer       | completed | -                     |
+| at-impl-reviewer-opus  | completed | -                     |
+| at-impl-reviewer-codex | SKIPPED   | codex CLI not found   |
+| at-test-reviewer-opus  | completed | -                     |
+| at-test-reviewer-codex | SKIPPED   | codex CLI not found   |
+| at-doc-reviewer-opus   | completed | -                     |
+| at-doc-reviewer-codex  | SKIPPED   | codex CLI not found   |
+| at-security-opus       | completed | -                     |
+| at-security-codex      | SKIPPED   | secrets in preflight  |
+| at-performance         | completed | -                     |
+| at-doc-auditor         | skipped   | not required          |
 
 ## Mode 判定
 - Full review (Opus + Codex 二重): あり
@@ -338,11 +342,12 @@ Opus/Codex どちらかが欠落した場合は、**冒頭の Review mode 表で
 - ...
 
 ## リトライ履歴
-- Phase 3R で BLOCKER 検出 → implementer 再起動 (1 回目)
+- Phase 3R で BLOCKER 検出 → at-implementer 再起動 (1 回目)
 - Phase 4 で BLOCKER 検出 → security レビュー再取得 (該当時)
 ```
 
 **ルール**:
+
 - 一つでも `SKIPPED` がある場合は `## Mode 判定` で **DEGRADED** と明記する。
 - `DEGRADED` の理由は Reason 列にできるだけ具体的に書く (`codex CLI not found`, `secrets in preflight`, `privacy` など)。
 - BLOCKER がリトライ上限 (2 回) に達した場合はステータスを `BLOCKER_REMAINING` とし、ユーザーへエスカレーションを明記する。
@@ -357,6 +362,6 @@ User: チームで Gemini API クライアントを追加して。
 
 Claude: スラッグを gemini-client とし Phase 0 を開始します。
         → docs/plans/2026-05-13-gemini-client/ を作成
-        → explorer を起動
+        → at-explorer を起動
         ...
 ```

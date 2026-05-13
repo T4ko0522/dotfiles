@@ -12,17 +12,18 @@
 - ユーザー入力に「**チームで**」が含まれている場合、または `/team <task>` の形式で指示された場合は、`~/.claude/agents/README.md` に定義されたマルチエージェントパイプラインを起動してください。
 - 起動時のフロー:
   1. **Phase 0**: スラッグを決め `docs/plans/YYYY-MM-DD-<slug>/` を作成し、`0_brief.md` と `0_acceptance.md` を書く。
-  2. **Phase 1**: `explorer` を起動して `1_explore.md` を取得。
-  3. **Phase 2**: `planner` で `2_plan.md` → `plan-reviewer` で `reviews/2_plan.codex.md`。完了後、計画とレビュー要旨をユーザーに提示して承認を得る (User Gate)。
-  4. **Phase 3**: `implementer` / `tester` / `doc-writer` を **並列**で起動。`doc-writer` は計画ベースの構成案を先に作り、実ドキュメントへの最終反映は `3_impl.md` 完了後に行う。
+  2. **Phase 1**: `at-explorer` を起動して `1_explore.md` を取得。
+  3. **Phase 2**: `at-planner` で `2_plan.md` → `at-plan-reviewer` で `reviews/2_plan.codex.md`。完了後、計画とレビュー要旨をユーザーに提示して承認を得る (User Gate)。
+  4. **Phase 3**: `at-implementer` / `at-tester` / `at-doc-writer` を **並列**で起動。`at-doc-writer` は計画ベースの構成案を先に作り、実ドキュメントへの最終反映は `3_impl.md` 完了後に行う。
   5. **Phase 3R**: 各成果物に対し `*-reviewer-opus` と `*-reviewer-codex` を並列で起動。
-  6. **Phase 4**: `security-opus` / `security-codex` / `performance` / `doc-auditor` を必要に応じて並列起動。
+  6. **Phase 4**: `at-security-opus` / `at-security-codex` / `at-performance` / `at-doc-auditor` を必要に応じて並列起動。
   7. **Phase 5**: レビューを集約し `5_final.md` を作成。BLOCKER があれば該当 Phase へ最大 2 回までリトライ。リトライは可能なら `SendMessage` で同 agentId に再依頼し、使えない実行環境では同じ agent を新規起動して過去成果物ファイルを明示的に読ませる。
 - 「チームで」を含まない通常依頼は、メイン Claude が単独で処理する (パイプラインを勝手に起動しない)。
-- Codex 系エージェント (`plan-reviewer`, `*-codex`) は内部で `codex exec --model gpt-5-codex` を Bash 呼び出しする。Codex CLI は `codex` / `codex.exe` / `where.exe codex` で確認し、不在時は該当レビューをスキップ扱いとし、不在を明記する。
+- Codex 系エージェント (`at-plan-reviewer`, `*-codex`) は内部で `codex exec --model gpt-5-codex` を Bash 呼び出しする。Codex CLI は `codex` / `codex.exe` / `where.exe codex` で確認し、不在時は該当レビューをスキップ扱いとし、不在を明記する。
 - すべてのエージェントは出力を日本語で行う。
 
 # 開発スタイル
+
 - TDD で開発する（探索 → Red → Green → Refactoring）
 - KPI やカバレッジ目標が与えられたら、達成するまで試行する。
 - ユーザーの要望や要件が不明確な場合は、質問を繰り返し詳細を掘り下げ、曖昧な点を明確にしてください。

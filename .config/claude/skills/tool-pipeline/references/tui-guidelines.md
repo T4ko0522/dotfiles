@@ -1,6 +1,6 @@
 # Go TUI Guidelines
 
-Go で TUI ツールを開発する際の共通規約。`system-designer` と Codex（実装フェーズ）が参照する。
+Go で TUI ツールを開発する際の共通規約。`tp-system-designer` と Codex（実装フェーズ）が参照する。
 
 ## 技術スタック
 

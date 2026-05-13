@@ -8,17 +8,17 @@ description: Go/TypeScript/ShellScript 限定の軽量開発パイプライン�
 ## 概要
 
 ```
-Phase 1: 要件定義         [requirements-analyst / sonnet]
+Phase 1: 要件定義         [tp-requirements-analyst / sonnet]
     ↓
   ★ Auto Gate 1: 要確認マーカーチェック（自動通過、人間承認なし）
     ↓
 Phase 2（並列）:
-  ├── 2a: 設計            [system-designer / opus]
-  └── 2b: QA 計画         [qa-architect / sonnet]
+  ├── 2a: 設計            [tp-system-designer / opus]
+  └── 2b: QA 計画         [tp-qa-architect / sonnet]
     ↓
   ★ Auto Gate 2: 成果物確認（自動通過）
     ↓
-Phase 3: タスク分解       [task-decomposer / sonnet]
+Phase 3: タスク分解       [tp-task-decomposer / sonnet]
     ↓
 Phase 4: Codex 実装       [codex:rescue / gpt-5.5]
     ↓
@@ -56,10 +56,10 @@ $SKILL_DIR/
 
 | エージェント名 | 使用フェーズ | モデル |
 |---|---|---|
-| `requirements-analyst` | Phase 1 | sonnet |
-| `system-designer` | Phase 2a | opus |
-| `qa-architect` | Phase 2b | sonnet |
-| `task-decomposer` | Phase 3 | sonnet |
+| `tp-requirements-analyst` | Phase 1 | sonnet |
+| `tp-system-designer` | Phase 2a | opus |
+| `tp-qa-architect` | Phase 2b | sonnet |
+| `tp-task-decomposer` | Phase 3 | sonnet |
 
 各エージェントは `Agent` ツールから `subagent_type` に上記の名前を指定して呼び出す。
 スキル本体には `agents/` を持たず、`references/` のテンプレートのみを格納する。
@@ -87,7 +87,7 @@ $SKILL_DIR/
 ### Codex 経路と書き込み権限
 
 - Phase 4 / 5 で使う `/codex:rescue` は内部で `codex-companion task` を呼び出し、**デフォルトで `--write` が付与される**（書き込み可能）。
-- 同リポの Agent Teams レビュー系エージェント（`plan-reviewer` / `*-codex`）は `codex exec --sandbox read-only` で **read-only 実行**するが、tool-pipeline はこの経路を使わないため衝突しない。
+- 同リポの Agent Teams レビュー系エージェント（`at-plan-reviewer` / `*-codex`）は `codex exec --sandbox read-only` で **read-only 実行**するが、tool-pipeline はこの経路を使わないため衝突しない。
 - Phase 5 の品質チェックも `/codex:rescue` 経由で行う。Codex がカバレッジファイル等の一時生成物を書き込むため write-capable で動かす必要がある。
 
 ### `/codex:rescue` の呼び出し方
@@ -159,11 +159,13 @@ $PROJECT_ROOT  → /home/<user>/Project/<repo>
 1. `$PIPELINE_DIR/feedback` を作成する。実行 OS に合わせて Bash または PowerShell を選ぶ:
 
    POSIX (Linux / macOS / WSL):
+
    ```bash
    mkdir -p "$PROJECT_ROOT/docs/pipeline/feedback"
    ```
 
    Windows (PowerShell 7+):
+
    ```powershell
    New-Item -ItemType Directory -Force -Path "$PROJECT_ROOT\docs\pipeline\feedback" | Out-Null
    ```
@@ -175,22 +177,24 @@ $PROJECT_ROOT  → /home/<user>/Project/<repo>
 3. `$PIPELINE_DIR/00-manifest.md` を Write で生成する（実行日時、プロジェクトパスを記入）
 
 4. ユーザーに要件のヒアリングを行う:
+
    ```
    ツールパイプラインを開始します。
    作りたいものの要件を教えてください。
    （概要、目的、Go / TypeScript / ShellScript のどれを使うか、制約があれば合わせて記載してください）
    ```
+
    ユーザーの回答を `user_requirements` として保持する。
 
 ---
 
 ## Phase 1: 要件定義
 
-`requirements-analyst` エージェントを **sonnet** モデルで起動する。
+`tp-requirements-analyst` エージェントを **sonnet** モデルで起動する。
 
 ```
 Agent ツール呼び出し:
-  subagent_type: requirements-analyst
+  subagent_type: tp-requirements-analyst
   model: sonnet
   prompt: |
     以下のユーザー要件をもとに要件定義書を作成してください。
@@ -235,7 +239,7 @@ Agent ツール呼び出し:
 
 `[推論]` マーカーの件数は閾値判定の対象外（合理的仮定として扱う）。
 
-requirements-analyst エージェントは `[要確認]` を抑えるよう指示済み（判断が本当に必要なときのみ `[要確認]`、合理的仮定で埋められるものは `[推論]` を使う）。
+tp-requirements-analyst エージェントは `[要確認]` を抑えるよう指示済み（判断が本当に必要なときのみ `[要確認]`、合理的仮定で埋められるものは `[推論]` を使う）。
 
 ---
 
@@ -245,7 +249,7 @@ requirements-analyst エージェントは `[要確認]` を抑えるよう指�
 
 ```
 [並列 A] Agent ツール呼び出し:
-  subagent_type: system-designer
+  subagent_type: tp-system-designer
   model: opus
   prompt: |
     要件定義書をもとにシステム設計書を作成してください。
@@ -282,7 +286,7 @@ requirements-analyst エージェントは `[要確認]` を抑えるよう指�
     6. 設計判断を ADR 形式で記録する
 
 [並列 B] Agent ツール呼び出し:
-  subagent_type: qa-architect
+  subagent_type: tp-qa-architect
   model: sonnet
   prompt: |
     要件定義書をもとに品質保証計画を作成してください。
@@ -326,22 +330,22 @@ requirements-analyst エージェントは `[要確認]` を抑えるよう指�
 
 `02-system-design.md` は生成されたが `03-qa-plan.md` の生成に失敗した場合、ユーザーに通知し続行 / 中断を選ばせる。続行を選んだ場合は以下の縮退挙動に切り替える:
 
-1. **Phase 3 (task-decomposer)**: 入力から `03-qa-plan.md` を除外し、設計書のみから分解する。各タスクの検証コマンドは task-decomposer の判断で最小限（言語標準の lint + test 実行）を生成する。
+1. **Phase 3 (tp-task-decomposer)**: 入力から `03-qa-plan.md` を除外し、設計書のみから分解する。各タスクの検証コマンドは tp-task-decomposer の判断で最小限（言語標準の lint + test 実行）を生成する。
 2. **Phase 5 (品質チェック)**: `/codex:rescue` への prompt で「`03-qa-plan.md` が無いため、検出した言語に対する標準ツール（Go: `go test ./... && go vet ./...` / TS: `tsc --noEmit && vitest run` / Shell: `shellcheck` + `bats`）で品質チェックを行う」と明示する。
 3. **原因分類マッピング**: デフォルトのマッピング（lint = 実装起因 / unit-test = 実装起因 / acceptance-test = 要件起因 / integration-test = 設計起因）を Phase 5 prompt に直書きして渡す。
 4. **00-manifest.md**: Phase 2b ステータスを `skipped` として記録し、縮退モードである旨を備考に記す。
 
-縮退モードはあくまで暫定運用。次回ループ前に `qa-architect` を手動で再実行することを推奨する。
+縮退モードはあくまで暫定運用。次回ループ前に `tp-qa-architect` を手動で再実行することを推奨する。
 
 ---
 
 ## Phase 3: タスク分解
 
-`task-decomposer` エージェントを **sonnet** モデルで起動する。
+`tp-task-decomposer` エージェントを **sonnet** モデルで起動する。
 
 ```
 Agent ツール呼び出し:
-  subagent_type: task-decomposer
+  subagent_type: tp-task-decomposer
   model: sonnet
   prompt: |
     設計書と QA 計画をもとに、Codex が実装可能なタスクに分解してください。
@@ -473,6 +477,7 @@ Go TUI ツールの場合は `go-tui-reviewer` エージェントでアーキテ
 ### BLOCKER あり → フィードバックループ
 
 1. **ループ上限チェック**: `loop_count >= max_loops`（2 回）の場合はユーザーに報告して終了:
+
    ```
    フィードバックループが最大回数（2 回）に達しました。
 
@@ -528,6 +533,7 @@ Go TUI ツールの場合は `go-tui-reviewer` エージェントでアーキテ
 6. `00-manifest.md` のフィードバックループ履歴を更新する。
 
 7. 戻り先フェーズを再実行する。エージェントの prompt 冒頭に以下を追加する:
+
    ```
    【フィードバックループ {loop_count} 回目】
    前回の成果物に対して品質チェックで BLOCKER が検出されました。
@@ -544,6 +550,7 @@ Go TUI ツールの場合は `go-tui-reviewer` エージェントでアーキテ
 1. `00-manifest.md` の全 Phase ステータスを完了に更新する
 
 2. ユーザーに最終報告を表示する:
+
    ```
    --- パイプライン完了 ---
 

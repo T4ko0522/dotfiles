@@ -1,5 +1,5 @@
 ---
-name: qa-architect
+name: tp-qa-architect
 description: 要件定義からテスト戦略・品質基準・静的解析ルールを設計する専門家。Phase 5 で Codex が実行する品質チェックコマンド一覧を確定させる。tool-pipeline スキルの Phase 2b で使用。
 model: sonnet
 tools:

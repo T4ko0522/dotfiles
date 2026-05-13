@@ -23,10 +23,10 @@ tool-pipeline スキルが各フェーズで生成する 7 ファイル（`00-ma
 
 | Phase | エージェント | モデル | ステータス | 成果物 |
 |-------|------------|--------|------------|--------|
-| 1: 要件定義 | requirements-analyst | sonnet | pending | 01-requirements.md |
-| 2a: 設計 | system-designer | opus | pending | 02-system-design.md |
-| 2b: QA 計画 | qa-architect | sonnet | pending | 03-qa-plan.md |
-| 3: タスク分解 | task-decomposer | sonnet | pending | 04-task-breakdown.md |
+| 1: 要件定義 | tp-requirements-analyst | sonnet | pending | 01-requirements.md |
+| 2a: 設計 | tp-system-designer | opus | pending | 02-system-design.md |
+| 2b: QA 計画 | tp-qa-architect | sonnet | pending | 03-qa-plan.md |
+| 3: タスク分解 | tp-task-decomposer | sonnet | pending | 04-task-breakdown.md |
 | 4: 実装 | codex:rescue | gpt-5.5 | pending | 05-implementation-log.md |
 | 5: 品質チェック | codex:rescue | gpt-5.5 | pending | 06-quality-report.md |
 
@@ -112,6 +112,7 @@ tool-pipeline スキルが各フェーズで生成する 7 ファイル（`00-ma
 ## ディレクトリ構造
 
 ```
+
 cmd/<tool-name>/
   main.go
 internal/
@@ -120,6 +121,7 @@ internal/
   ...
 pkg/        # 公開 API がある場合のみ
 tests/
+
 ```
 
 ## 主要コンポーネント
@@ -197,6 +199,7 @@ Exit codes:
 - **トレードオフ**: <失うもの・リスク>
 
 ### ADR-002: ...
+
 ```
 
 ---
@@ -281,7 +284,8 @@ classification:
     reason: "<このチェックが失敗したらこの分類になる理由>"
 ```
 
-詳細・優先順位ルールは `qa-architect` エージェント定義の「失敗 → 原因分類マッピング」を参照。
+詳細・優先順位ルールは `tp-qa-architect` エージェント定義の「失敗 → 原因分類マッピング」を参照。
+
 ```
 
 ---
@@ -294,9 +298,11 @@ classification:
 ## タスク依存グラフ
 
 ```
+
 Group A ── Group B ── Group D
    │           │
    └─→ Group C ┘     └─→ Group E
+
 ```
 
 ## タスクグループ一覧
@@ -328,12 +334,14 @@ go vet ./internal/domain/...
 ```
 
 **受け入れ基準**:
+
 - 上記コマンド PASS
 - <その他>
 
 ---
 
 ### T-002: ...
+
 ```
 
 ---

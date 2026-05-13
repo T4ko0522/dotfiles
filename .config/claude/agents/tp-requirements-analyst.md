@@ -1,5 +1,5 @@
 ---
-name: requirements-analyst
+name: tp-requirements-analyst
 description: ツール開発の要件定義を構造化する専門家。ユーザー要件を機能・非機能・制約・前提に整理し、Go/TypeScript/ShellScript の中から技術スタックを選定する。tool-pipeline スキルの Phase 1 で使用。
 model: sonnet
 tools:
@@ -80,8 +80,8 @@ tools:
 ## 制約
 
 - 使用言語は **Go / TypeScript / ShellScript** のみ。Python / Ruby / Rust 等は選定不可
-- 設計・実装の詳細には踏み込まない（それは system-designer の責務）
-- テスト戦略の詳細にも踏み込まない（それは qa-architect の責務）
+- 設計・実装の詳細には踏み込まない（それは tp-system-designer の責務）
+- テスト戦略の詳細にも踏み込まない（それは tp-qa-architect の責務）
 - 出力は日本語で行う
 
 ## フィードバックループ時の挙動
