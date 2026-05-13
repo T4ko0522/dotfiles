@@ -67,13 +67,20 @@
     "rust-analyzer-lsp@claude-plugins-official": true,
     "huggingface-skills@claude-plugins-official": true,
     "lua-lsp@claude-plugins-official": true,
-    "cook@claude-code-cookbook": true
+    "cook@claude-code-cookbook": true,
+    "codex@openai-codex": true
   },
   "extraKnownMarketplaces": {
     "claude-code-cookbook": {
       "source": {
         "source": "github",
         "repo": "wasabeef/claude-code-cookbook"
+      }
+    },
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
       }
     }
   },
