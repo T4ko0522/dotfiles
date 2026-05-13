@@ -1608,13 +1608,6 @@
         "id": "TeamsWebView",
         "matching_strategy": "Equals"
       }
-    ],
-    "object_name_change": [
-      {
-        "kind": "Class",
-        "id": "TeamsWebView",
-        "matching_strategy": "Equals"
-      }
     ]
   },
   "Microsoft Teams classic": {
@@ -1986,11 +1979,6 @@
     "ignore": [
       {
         "kind": "Exe",
-        "id": "PowerToys",
-        "matching_strategy": "StartsWith"
-      },
-      {
-        "kind": "Exe",
         "id": "PowerToys.ColorPickerUI.exe",
         "matching_strategy": "Equals"
       },
@@ -2028,11 +2016,6 @@
         "kind": "Exe",
         "id": "PowerToys.FileLocksmithUI.exe",
         "matching_strategy": "Equals"
-      },
-      {
-        "kind": "Exe",
-        "id": "Microsoft.CmdPal",
-        "matching_strategy": "StartsWith"
       },
       {
         "kind": "Exe",
@@ -2414,11 +2397,6 @@
       }
     ],
     "ignore": [
-      {
-        "kind": "Exe",
-        "id": "steam.exe",
-        "matching_strategy": "Equals"
-      },
       [
         {
           "kind": "Exe",
@@ -3079,6 +3057,15 @@
       {
         "kind": "Class",
         "id": "WeChatMainWndForPC",
+        "matching_strategy": "Equals"
+      }
+    ]
+  },
+  "WezTerm": {
+    "object_name_change": [
+      {
+        "kind": "Exe",
+        "id": "wezterm-gui.exe",
         "matching_strategy": "Equals"
       }
     ]
