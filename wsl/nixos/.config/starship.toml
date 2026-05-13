@@ -20,7 +20,7 @@ $time\
 
 [fill]
 symbol = '─'
-style = 'fg:#6c3483'
+style = 'fg:#769ff0'
 
 [directory]
 truncation_length = 6
@@ -29,45 +29,45 @@ truncate_to_repo = false
 home_symbol = '~'
 read_only = ' ro'
 format = '[$path]($style)[$read_only]($read_only_style) '
-style = 'bold fg:#c778dd'
+style = 'bold fg:#80EBDF'
 read_only_style = 'fg:#e06c75'
 
 [git_branch]
 symbol = ''
 format = 'on [$symbol $branch]($style) '
-style = 'fg:#b48ead'
+style = 'fg:#89dceb'
 
 [git_status]
 format = '[$all_status$ahead_behind]($style)'
-style = 'fg:#e5c07b'
+style = 'fg:#ffcb6b'
 
 [direnv]
 disabled = false
 format = '[$symbol$allowed]($style) '
-style = 'fg:#d19a66'
+style = 'fg:#e0af68'
 
 [python]
 format = '[py $virtualenv]($style) '
-style = 'fg:#e5c07b'
+style = 'fg:#ffcb6b'
 
 [cmd_duration]
 min_time = 1
 format = '[$duration]($style)'
-style = 'fg:#6c3483'
+style = 'fg:#769ff0'
 
 [time]
 disabled = false
 time_format = '%R'
 format = ' [$time]($style)'
-style = 'fg:#b48ead'
+style = 'fg:#89dceb'
 
 [username]
 show_always = true
 format = '[$user]($style) in '
-style_user = 'bold fg:#d19afc'
+style_user = 'bold fg:#80EBDF'
 style_root = 'bold fg:#e06c75'
 
 [character]
-success_symbol = '[>>](bold fg:#c778dd)'
+success_symbol = '[>>](bold fg:#80EBDF)'
 error_symbol = '[>>](bold fg:#e06c75)'
 vimcmd_symbol = '[<<](bold fg:#98c379)'

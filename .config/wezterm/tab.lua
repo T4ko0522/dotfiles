@@ -15,21 +15,21 @@ local ICONS = {
   zoom = wezterm.nerdfonts.md_magnify,
 }
 
--- Icon colors
+-- Icon colors (Catppuccin Mocha 系の紫テーマに合わせて調整)
 local ICON_COLORS = {
-  docker = "#4169e1",
-  neovim = "#57A143",
-  ssh = "#ff6b6b",
+  docker = "#89b4fa", -- Blue
+  neovim = "#a6e3a1", -- Green
+  ssh = "#f38ba8",    -- Red/Pink
 }
 
 -- Tab colors
 local TAB_COLORS = {
-  foreground_inactive = "#a0a9cb",
-  background_inactive = "#1a1a2e",
-  foreground_active = "#313244",
-  background_active = "#80EBDF",
-  background_ssh_active = "#ff6b6b",
-  foreground_ssh_active = "#ffffff",
+  foreground_inactive = "#a6adc8", -- Subtext0
+  background_inactive = "#1e1e2e", -- Base
+  foreground_active = "#1e1e2e",   -- Base（アクティブタブ文字）
+  background_active = "#cba6f7",   -- Mauve（ラベンダー）
+  background_ssh_active = "#f38ba8",
+  foreground_ssh_active = "#1e1e2e",
 }
 
 -- Tab decorations

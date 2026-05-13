@@ -6,9 +6,9 @@ local module = {}
 -- =============================================================================
 
 local WORKSPACE_COLORS = {
-  default = "#afeeee",
-  copy_mode = "#ffd700",
-  setting_mode = "#39FF14",
+  default = "#cba6f7",      -- Mauve（ラベンダー）
+  copy_mode = "#f9e2af",    -- Yellow
+  setting_mode = "#a6e3a1", -- Green
 }
 
 -- 前回の色を記録（不要な更新を避けるため）

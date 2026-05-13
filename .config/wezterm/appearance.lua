@@ -2,7 +2,7 @@ local wezterm = require("wezterm")
 local module = {}
 
 local appearance = {
-  color_scheme = "Solarized Dark Higher Contrast",
+  color_scheme = "Catppuccin Mocha",
 
   -- タイトルバーとウィンドウボタン（最小化・最大化・閉じる）を非表示
   window_decorations = "RESIZE",
@@ -11,11 +11,10 @@ local appearance = {
 
   -- Pane
   -- 非アクティブPaneを暗くして視認性を向上
-  -- アクティブPaneは青みがかった背景、非アクティブは暗くする
   inactive_pane_hsb = {
-    hue = 0.9, -- 色相を少しシフト（青みを抑える）
-    saturation = 0.9,
-    brightness = 1.0,
+    hue = 1.0,
+    saturation = 0.85,
+    brightness = 0.85,
   },
 
   -- Tab
@@ -33,20 +32,19 @@ local appearance = {
   },
   -- Hide borders between tabs
   colors = {
-    -- 通常文字を明るく（暗い背景用）
-    foreground = "#e2e2e2",
-    -- 青みがかった背景色（アクティブPaneで青く見える）
-    background = "#1a1a2e",
+    -- Catppuccin Mocha ベースの紫系配色
+    foreground = "#cdd6f4", -- Text
+    background = "#1e1e2e", -- Base（深い紫みの黒）
     -- タブバー背景を透過
     tab_bar = {
       background = "none",
       inactive_tab_edge = "none",
     },
-    cursor_bg = "#80EBDF",
-    cursor_fg = "#000000",
-    cursor_border = "#80EBDF",
-    selection_bg = "#1670c9",
-    selection_fg = "#dedede",
+    cursor_bg = "#f5c2e7", -- Pink
+    cursor_fg = "#1e1e2e",
+    cursor_border = "#f5c2e7",
+    selection_bg = "#585b70", -- Surface2
+    selection_fg = "#cdd6f4",
   },
 }
 
