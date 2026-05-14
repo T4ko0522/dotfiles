@@ -68,7 +68,7 @@
           "name": "III",
           "layout": "Columns",
           "workspace_rules": [
-            { "kind": "Exe", "id": "slack.exe",   "matching_strategy": "Equals" },
+            { "kind": "Exe", "id": "Slack.exe",   "matching_strategy": "Equals" },
             { "kind": "Exe", "id": "Spotify.exe", "matching_strategy": "Equals" }
           ]
         }
@@ -80,15 +80,15 @@
           "name": "IV",
           "layout": "BSP",
           "workspace_rules": [
-            { "kind": "Exe", "id": "Code.exe",  "matching_strategy": "Equals" },
-            { "kind": "Exe", "id": "brave.exe", "matching_strategy": "Equals" }
+            { "kind": "Exe", "id": "Code.exe", "matching_strategy": "Equals" }
           ]
         },
         {
           "name": "V",
           "layout": "BSP",
           "workspace_rules": [
-            { "kind": "Exe", "id": "chrome.exe", "matching_strategy": "Equals" }
+            { "kind": "Exe", "id": "chrome.exe", "matching_strategy": "Equals" },
+            { "kind": "Exe", "id": "brave.exe",  "matching_strategy": "Equals" }
           ]
         },
         {
