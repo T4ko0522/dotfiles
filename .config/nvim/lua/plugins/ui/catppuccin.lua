@@ -1,10 +1,11 @@
 return {
   {
     "catppuccin/nvim",
-    enabled = false,
-    lazy = true, -- この指定がないと反映されない
+    lazy = false, -- colorscheme として最優先で読み込む
+    priority = 1000,
     name = "catppuccin",
     opts = {
+      flavour = "mocha",
       integrations = {
         aerial = true,
         alpha = true,
