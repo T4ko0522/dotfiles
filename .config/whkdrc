@@ -3,9 +3,6 @@
 # Reload komorebi configuration
 win + r                 : komorebic reload-configuration
 
-# Show whkd shortcut overlay
-win + oem_2             : komorebic toggle-shortcuts # oem_2 is /
-
 # App shortcuts - these require shell to be pwsh / powershell
 # The apps will be focused if open, or launched if not open
 # win + f                 : if ($wshell.AppActivate('Firefox') -eq $False) { start firefox }
