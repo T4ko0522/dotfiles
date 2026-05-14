@@ -50,6 +50,8 @@ return {
 
     -- コピーモード
     { key = "c", mods = "LEADER", action = act.ActivateCopyMode },
+    -- QuickSelect: URL / hash / IP / path 等を正規表現で抽出して 1 文字キーで選択
+    { key = "Space", mods = "CTRL|SHIFT", action = act.QuickSelect },
     -- コピー
     { key = "c", mods = "CTRL", action = act.CopyTo("Clipboard") },
     -- 貼り付け
@@ -176,6 +178,11 @@ return {
       { key = "f", mods = "NONE", action = act.CopyMode({ JumpForward = { prev_char = false } }) },
       { key = "T", mods = "NONE", action = act.CopyMode({ JumpBackward = { prev_char = true } }) },
       { key = "F", mods = "NONE", action = act.CopyMode({ JumpBackward = { prev_char = false } }) },
+      -- 検索: / で case-sensitive, ? で case-insensitive を開始し、n/N で巡回
+      { key = "/", mods = "NONE", action = act.Search({ CaseSensitiveString = "" }) },
+      { key = "?", mods = "NONE", action = act.Search({ CaseInSensitiveString = "" }) },
+      { key = "n", mods = "NONE", action = act.CopyMode("NextMatch") },
+      { key = "N", mods = "NONE", action = act.CopyMode("PriorMatch") },
       -- 一番下へ
       { key = "G", mods = "NONE", action = act.CopyMode("MoveToScrollbackBottom") },
       -- 一番上へ
@@ -193,8 +200,12 @@ return {
       { key = "v", mods = "NONE", action = act.CopyMode({ SetSelectionMode = "Cell" }) },
       { key = "v", mods = "ALT", action = act.CopyMode({ SetSelectionMode = "Block" }) },
       { key = "V", mods = "NONE", action = act.CopyMode({ SetSelectionMode = "Line" }) },
-      -- コピー
-      { key = "y", mods = "NONE", action = act.CopyTo("Clipboard") },
+      -- コピー（コピー後に CopyMode を自動終了）
+      {
+        key = "y",
+        mods = "NONE",
+        action = act.Multiple({ { CopyTo = "Clipboard" }, { CopyMode = "Close" } }),
+      },
 
       -- コピーモードを終了
       {
