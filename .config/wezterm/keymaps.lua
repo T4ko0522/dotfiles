@@ -77,8 +77,6 @@ return {
     { key = "0", mods = "CTRL|SHIFT", action = act.ResetFontSize },
 
 
-    -- コマンドパレット
-    { key = "p", mods = "CTRL|SHIFT|ALT", action = act.ActivateCommandPalette },
     -- 設定再読み込み
     { key = "r", mods = "CTRL|SHIFT|ALT", action = act.ReloadConfiguration },
   },
