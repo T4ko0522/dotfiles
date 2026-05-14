@@ -1,9 +1,12 @@
 # Neovim キーバインド
 
-設定ファイル: [`.config/nvim/lua/config/keymaps.lua`](../../.config/nvim/lua/config/keymaps.lua)
+設定ファイル:
+
+- [`.config/nvim/lua/config/keymaps.lua`](../../.config/nvim/lua/config/keymaps.lua)
+- [`.config/nvim/lua/config/options.lua`](../../.config/nvim/lua/config/options.lua) (リーダーキー設定)
 
 > LazyVim の既定キーマップ (<https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua>) に加え、以下のカスタムを設定しています。
-> `<leader>` は Neovim のリーダーキー (デフォルト `<Space>`) です。
+> `<leader>` は Neovim のリーダーキー、本リポジトリでは **`,`** に変更しています (LazyVim デフォルトは `<Space>`)。`<localleader>` は `\` のまま。
 
 ## 編集
 
@@ -16,6 +19,7 @@
 | `+` | Normal | インクリメント (旧 `<C-a>`) |
 | `-` | Normal | デクリメント (旧 `<C-x>`) |
 | `#` | Normal | カーソル下の単語を `:%s/word//g` に流し込む |
+| `;,` | Normal / Visual / Operator | `f` / `t` / `F` / `T` の逆方向リピート (リーダー化で失われた `,` の代替) |
 
 ## ウィンドウ / タブ
 
@@ -51,6 +55,17 @@
 | `gh` | カーソル下の URL / ファイルを開く |
 | `gx` | URL か `arn:aws:...` を判定し、ARN なら AWS コンソールへ |
 | `<leader>gR` | カーソル下の `org/repo` を GitHub で開く |
+
+## Markdown プレビュー
+
+| キー / コマンド | 動作 |
+| --- | --- |
+| `<leader>mp` | peek.nvim で既定ブラウザにプレビュー表示 (トグル) |
+| `:PeekOpen` / `:PeekClose` / `:PeekToggle` | peek.nvim の明示コマンド |
+| `<leader>cp` | markdown-preview.nvim でブラウザにプレビュー表示 (トグル) |
+| `:MarkdownPreview` / `:MarkdownPreviewStop` / `:MarkdownPreviewToggle` | markdown-preview.nvim の明示コマンド |
+
+> peek.nvim は Deno + 既定ブラウザベース、markdown-preview.nvim は Node ベース。両方共存しているので好みで使い分け。
 
 ## スクロール (独自 `zz` サイクル)
 
