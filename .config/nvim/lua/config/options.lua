@@ -2,6 +2,12 @@
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
 -- Add any additional options here
 
+-- Leader キーをカンマに変更（プラグイン読み込み前に設定する必要がある）
+-- ノーマルモードの `,` (f/t の逆方向リピート) は失われるため、代替として ";," を割当
+vim.g.mapleader = ","
+vim.g.maplocalleader = "\\"
+vim.keymap.set({ "n", "x", "o" }, ";,", ",", { desc = "Repeat f/F/t/T (reverse)" })
+
 -- クリップボード連携を無効化（TextYankPostでヤンク時のみ連携する）
 -- LazyVimのデフォルト: vim.opt.clipboard = "unnamedplus"
 vim.opt.clipboard = ""
