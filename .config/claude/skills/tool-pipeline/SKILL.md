@@ -49,6 +49,19 @@ $SKILL_DIR/
     └── tui-guidelines.md          ← Go TUI 開発規約（任意）
 ```
 
+`references/` は **オンデマンドで読む**。SKILL.md 本体やメイン Claude の prompt に丸ごと埋め込まない。各 Phase のサブエージェントが自身で該当セクションだけを Read する設計にしてあり、コンテキスト消費を Phase 単位に閉じ込める意図がある。読み出すタイミングは下表のとおり。
+
+| ファイル / セクション | Read するタイミング |
+|---|---|
+| `artifact-templates.md` 内 `00-manifest.md` | Step 0（manifest 生成前） |
+| 同 `01-requirements.md` | Phase 1（`tp-requirements-analyst`） |
+| 同 `02-system-design.md` | Phase 2a（`tp-system-designer`） |
+| 同 `03-qa-plan.md` | Phase 2b（`tp-qa-architect`） |
+| 同 `04-task-breakdown.md` | Phase 3（`tp-task-decomposer`） |
+| 同 `06-quality-report.md` | Phase 5（`/codex:rescue`） |
+| 同 `feedback/loop-N.md` | フィードバックループ発動時 |
+| `tui-guidelines.md` | Go TUI を設計・実装する Phase でのみ |
+
 ### サブエージェント配置
 
 エージェント定義は `~/.claude/agents/` 配下に置く（Claude Code の subagent 探索パス）。
@@ -98,6 +111,20 @@ $SKILL_DIR/
 - 非推奨: `Agent({subagent_type: "codex:codex-rescue", ...})` の直叩き
   - 直叩きは `/codex:rescue` の command 側で行われる resume 判定・`--write` デフォルト付与・モデル選択などの auto-routing をスキップする可能性がある
   - codex-rescue subagent はあくまで「forwarder」であり、command 側のロジックを通すのが正しい呼び出し
+
+### Safety boundaries
+
+skill 起動中にメイン Claude / サブエージェント / Codex が踏み越えてはいけない境界。各 Phase の prompt や `/codex:rescue` への依頼にも、必要に応じてこれらを明示する。
+
+| 境界 | ルール |
+|------|------|
+| 書き込み範囲（Phase 1〜3） | `tp-*` サブエージェントは `$PIPELINE_DIR` 配下のみ書き込む。プロジェクト本体のソースコード・設定ファイルには触らない |
+| 書き込み範囲（Phase 4） | プロジェクトのソース変更は `/codex:rescue` 経由のみ。Phase 1〜3 のサブエージェントが直接 Edit / Write することは禁止 |
+| 書き込み範囲（Phase 5） | `/codex:rescue` が品質チェック過程で生成するカバレッジ等の一時ファイルは許容。レポート本体は `$PIPELINE_DIR/06-quality-report.md` に限定 |
+| 破壊的操作 | `rm -rf`, `git reset --hard`, `git clean -fd`, force push, ブランチ削除はユーザーの明示指示なしには実行しない。fix-up が必要な場合は中断して相談する |
+| Codex 失敗の扱い | `/codex:rescue` 未導入・タイムアウト・実行失敗時は、その時点までの成果物（`05-implementation-log.md` 等）を必ず Write してから停止する。パイプライン全体を巻き戻さない |
+| ループ打ち切り | フィードバックループは最大 2 回。前回 BLOCKER の 50% 以上が同一 `same_problem_key` で残るときは振動とみなして即中断する（Auto Gate 3 参照） |
+| 自動承認の範囲 | Auto Gate 1〜3 は成果物の存在と BLOCKER の有無のみで判定する。受け入れ条件の充足判定や設計の妥当性判断はユーザーに委ねる |
 
 ---
 
@@ -212,6 +239,11 @@ Agent ツール呼び出し:
     【出力先】
     $PIPELINE_DIR/01-requirements.md
 
+    【書き込み境界】
+    Write / Edit は $PIPELINE_DIR 配下のみ許可します。
+    プロジェクト本体のソースコード・設定ファイル・README 等への
+    Write / Edit は禁止です（探索のための Read / Grep / Glob / Bash 読み取り系は可）。
+
     【テンプレート参照】
     $SKILL_DIR/references/artifact-templates.md の「01-requirements.md」セクションを
     Read して、そのテンプレートに従って出力してください。
@@ -273,6 +305,11 @@ tp-requirements-analyst エージェントは `[要確認]` を抑えるよう�
     【出力先】
     $PIPELINE_DIR/02-system-design.md
 
+    【書き込み境界】
+    Write / Edit は $PIPELINE_DIR 配下のみ許可します。
+    プロジェクト本体のソースコード・設定ファイル・README 等への
+    Write / Edit は禁止です（探索のための Read / Grep / Glob / Bash 読み取り系は可）。
+
     【テンプレート参照】
     $SKILL_DIR/references/artifact-templates.md の「02-system-design.md」セクションを
     Read し、テンプレートに従ってください。
@@ -307,6 +344,11 @@ tp-requirements-analyst エージェントは `[要確認]` を抑えるよう�
     【出力先】
     $PIPELINE_DIR/03-qa-plan.md
 
+    【書き込み境界】
+    Write / Edit は $PIPELINE_DIR 配下のみ許可します。
+    プロジェクト本体のソースコード・設定ファイル・README 等への
+    Write / Edit は禁止です（探索のための Read / Grep / Glob / Bash 読み取り系は可）。
+
     【テンプレート参照】
     $SKILL_DIR/references/artifact-templates.md の「03-qa-plan.md」セクションを
     Read し、テンプレートに従ってください。
@@ -328,12 +370,23 @@ tp-requirements-analyst エージェントは `[要確認]` を抑えるよう�
 
 ### Phase 2 縮退モード（03-qa-plan.md のみ失敗時）
 
-`02-system-design.md` は生成されたが `03-qa-plan.md` の生成に失敗した場合、ユーザーに通知し続行 / 中断を選ばせる。続行を選んだ場合は以下の縮退挙動に切り替える:
+`02-system-design.md` は生成されたが `03-qa-plan.md` の生成に失敗した場合、ユーザーに通知し続行 / 中断を選ばせる。続行を選んだ場合、**Phase 3 / 4 / 5 の通常フローを壊さないため、メイン Claude が最小版 `03-qa-plan.md` を自動生成して通常フローに載せる**。
 
-1. **Phase 3 (tp-task-decomposer)**: 入力から `03-qa-plan.md` を除外し、設計書のみから分解する。各タスクの検証コマンドは tp-task-decomposer の判断で最小限（言語標準の lint + test 実行）を生成する。
-2. **Phase 5 (品質チェック)**: `/codex:rescue` への prompt で「`03-qa-plan.md` が無いため、検出した言語に対する標準ツール（Go: `go test ./... && go vet ./...` / TS: `tsc --noEmit && vitest run` / Shell: `shellcheck` + `bats`）で品質チェックを行う」と明示する。
-3. **原因分類マッピング**: デフォルトのマッピング（lint = 実装起因 / unit-test = 実装起因 / acceptance-test = 要件起因 / integration-test = 設計起因）を Phase 5 prompt に直書きして渡す。
-4. **00-manifest.md**: Phase 2b ステータスを `skipped` として記録し、縮退モードである旨を備考に記す。
+1. **メイン Claude が `03-qa-plan.md` を Write で生成する**。内容は以下:
+   - 冒頭に注記: `> このファイルは tp-qa-architect の失敗により縮退モードで自動生成されました。次回ループ前の手動再生成を推奨します。`
+   - テスト戦略: 「言語標準の lint + test 実行のみ」
+   - 品質チェックコマンド一覧（Phase 1 で確定した言語に対応するもののみ記載）:
+     - Go: `go test ./...` / `go vet ./...` / `golangci-lint run`
+     - TypeScript: `tsc --noEmit` / `vitest run`（または `jest`） / `eslint .`
+     - ShellScript: `shellcheck **/*.sh` / `bats tests/`
+   - 失敗 → 原因分類マッピング（セクション 9 相当）:
+     - lint 系 = 実装起因
+     - unit-test 系 = 実装起因
+     - acceptance-test 系 = 要件起因
+     - integration-test 系 = 設計起因
+   - PASS 条件: 「BLOCKER 指摘ゼロ」
+2. **`00-manifest.md`**: Phase 2b ステータスを `degraded` として記録し、備考に「縮退モード: 最小版 03-qa-plan.md を自動生成」と記す。
+3. **以降の Phase 3 / 4 / 5**: 通常フローのまま進める（特別な分岐は不要）。
 
 縮退モードはあくまで暫定運用。次回ループ前に `tp-qa-architect` を手動で再実行することを推奨する。
 
@@ -364,6 +417,11 @@ Agent ツール呼び出し:
 
     【出力先】
     $PIPELINE_DIR/04-task-breakdown.md
+
+    【書き込み境界】
+    Write / Edit は $PIPELINE_DIR 配下のみ許可します。
+    プロジェクト本体のソースコード・設定ファイル・README 等への
+    Write / Edit は禁止です（探索のための Read / Grep / Glob / Bash 読み取り系は可）。
 
     【テンプレート参照】
     $SKILL_DIR/references/artifact-templates.md の「04-task-breakdown.md」セクションを
@@ -433,6 +491,18 @@ FOR EACH グループ（Group A, B, C...）:
 【技術スタック制約】
 使用できる言語は Go / TypeScript / ShellScript のみです。
 
+【書き込み境界（重要）】
+このフェーズは品質チェックのみを行います。発見した問題があっても、ここでは修正しないでください。
+- 許可される書き込み:
+  - $PIPELINE_DIR/06-quality-report.md（品質レポート本体）
+  - カバレッジ・テスト結果ファイルなど検証コマンドの副産物（一時生成物）
+- 禁止される書き込み:
+  - プロジェクトのソースコード（実装ファイル）への Edit / Write
+  - テストコードへの Edit / Write（テスト失敗を「直す」ことは禁止。失敗事実を記録するのみ）
+  - 設定ファイル・依存定義（go.mod / package.json / 等）への Edit / Write
+修正は次フェーズ（フィードバックループ → 戻り先 Phase）で行います。
+ここで修正すると品質ゲートの結果が汚れ、振動検出も狂うため、必ず守ってください。
+
 【品質チェックコマンド】
 （03-qa-plan.md のセクション 5 から品質チェックコマンド一覧を転記）
 
@@ -463,6 +533,9 @@ $PIPELINE_DIR/06-quality-report.md
 
 Go TUI ツールの場合は `go-tui-reviewer` エージェントでアーキテクチャレビューを追加実施し、
 `/tui-check` で全ツールのガイドライン準拠を確認する。
+いずれも **任意依存**。`go-tui-reviewer` エージェント定義または `/tui-check` コマンドが未導入のときは、
+当該レビューを **スキップして** Phase 5 を完了扱いとする。`00-manifest.md` の備考に
+「TUI レビュー: スキップ（未導入: go-tui-reviewer / tui-check のいずれか）」と記録する。
 
 ---
 

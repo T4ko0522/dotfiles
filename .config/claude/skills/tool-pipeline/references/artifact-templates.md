@@ -30,7 +30,10 @@ tool-pipeline スキルが各フェーズで生成する 7 ファイル（`00-ma
 | 4: 実装 | codex:rescue | gpt-5.5 | pending | 05-implementation-log.md |
 | 5: 品質チェック | codex:rescue | gpt-5.5 | pending | 06-quality-report.md |
 
-ステータス値: `pending` / `running` / `done` / `failed`
+ステータス値: `pending` / `running` / `done` / `failed` / `skipped` / `degraded`
+
+- `skipped`: 任意依存の未導入などで実行を意図的に省略した（例: TUI レビュー未導入時）
+- `degraded`: 主成果物の代わりに縮退モードで最小版を自動生成した（例: Phase 2b の縮退）
 
 ## フィードバックループ履歴
 
