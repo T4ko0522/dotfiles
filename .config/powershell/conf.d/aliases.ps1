@@ -70,11 +70,11 @@ function ls {
     "${e}[1;38;2;180;190;254m${hPerm}  ${hSize}  ${hOwner}  ${hDate}  ${hName}${e}[0m"
 
     foreach ($row in $rows) {
-        # Permission（Catppuccin Mocha: Lavender→Blue→Sapphire→Sky→Teal→Green→Yellow→Peach）
+        # Permission（Catppuccin Mocha: Lavender→Blue→Sapphire→Sky→Teal→Green→Yellow→Peach→Maroon→Red）
         $gradColors = @(
             @(180,190,254), @(137,180,250), @(116,199,236), @(137,220,235),
-            @(148,226,213), @(166,227,161), @(207,232,163), @(249,226,175),
-            @(250,206,153), @(250,179,135)
+            @(148,226,213), @(166,227,161), @(249,226,175), @(250,179,135),
+            @(235,160,172), @(243,139,168)
         )
         $perm = -join (0..9 | ForEach-Object {
             $c = $row.RawPerm[$_]; $rgb = $gradColors[$_]
@@ -102,8 +102,8 @@ function ls {
             if ($g) { $icon = "$g " }
         }
 
-        # Catppuccin Mocha: Dir=Mauve, Exec=Green, Other=Text
-        $nameColor = if ($row.IsDir) { "${e}[1;38;2;203;166;247m" } elseif ($row.Item.Extension -match '\.(exe|cmd|bat|ps1|sh)$') { "${e}[1;38;2;166;227;161m" } else { "${e}[38;2;205;214;244m" }
+        # Catppuccin Mocha: Dir=Pink, Exec=Teal, Other=Rosewater（最も明度の高い系統で揃え、bold で前面に）
+        $nameColor = if ($row.IsDir) { "${e}[1;38;2;245;194;231m" } elseif ($row.Item.Extension -match '\.(exe|cmd|bat|ps1|sh)$') { "${e}[1;38;2;148;226;213m" } else { "${e}[1;38;2;245;224;220m" }
 
         "${perm}  ${e}[1;38;2;166;227;161m${size}${e}[0m  ${e}[38;2;203;166;247m${owner}${e}[0m  ${e}[38;2;137;220;235m${date}${e}[0m  ${nameColor}${icon}$($row.Item.Name)${e}[0m"
     }
