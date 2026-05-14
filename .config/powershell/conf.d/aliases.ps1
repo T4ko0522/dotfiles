@@ -67,18 +67,18 @@ function ls {
     $hOwner = 'User'.PadRight($ownerWidth)
     $hDate  = 'Date Modified'.PadRight(16)
     $hName  = 'Name'
-    "${e}[1m${hPerm}  ${hSize}  ${hOwner}  ${hDate}  ${hName}${e}[0m"
+    "${e}[1;38;2;180;190;254m${hPerm}  ${hSize}  ${hOwner}  ${hDate}  ${hName}${e}[0m"
 
     foreach ($row in $rows) {
-        # Permission（Blue→Cyan→Green→Yellow グラデーション）
+        # Permission（Catppuccin Mocha: Lavender→Blue→Sapphire→Sky→Teal→Green→Yellow→Peach）
         $gradColors = @(
-            @(70,130,255), @(35,175,237), @(0,220,220), @(27,220,180),
-            @(53,220,140), @(80,220,100), @(133,220,87), @(187,220,73),
-            @(213,220,67), @(240,220,60)
+            @(180,190,254), @(137,180,250), @(116,199,236), @(137,220,235),
+            @(148,226,213), @(166,227,161), @(207,232,163), @(249,226,175),
+            @(250,206,153), @(250,179,135)
         )
         $perm = -join (0..9 | ForEach-Object {
             $c = $row.RawPerm[$_]; $rgb = $gradColors[$_]
-            if ($c -eq '-') { "${e}[90m-${e}[0m" }
+            if ($c -eq '-') { "${e}[38;2;108;112;134m-${e}[0m" }
             else { "${e}[38;2;$($rgb[0]);$($rgb[1]);$($rgb[2])m${c}${e}[0m" }
         })
 
@@ -102,9 +102,10 @@ function ls {
             if ($g) { $icon = "$g " }
         }
 
-        $nameColor = if ($row.IsDir) { "${e}[1;34m" } elseif ($row.Item.Extension -match '\.(exe|cmd|bat|ps1|sh)$') { "${e}[1;32m" } else { "${e}[0m" }
+        # Catppuccin Mocha: Dir=Mauve, Exec=Green, Other=Text
+        $nameColor = if ($row.IsDir) { "${e}[1;38;2;203;166;247m" } elseif ($row.Item.Extension -match '\.(exe|cmd|bat|ps1|sh)$') { "${e}[1;38;2;166;227;161m" } else { "${e}[38;2;205;214;244m" }
 
-        "${perm}  ${e}[1;32m${size}${e}[0m  ${e}[38;2;224;102;255m${owner}${e}[0m  ${e}[36m${date}${e}[0m  ${nameColor}${icon}$($row.Item.Name)${e}[0m"
+        "${perm}  ${e}[1;38;2;166;227;161m${size}${e}[0m  ${e}[38;2;203;166;247m${owner}${e}[0m  ${e}[38;2;137;220;235m${date}${e}[0m  ${nameColor}${icon}$($row.Item.Name)${e}[0m"
     }
 }
 # Unix風 rm（-r, -f, -rf 対応）
