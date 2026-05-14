@@ -26,6 +26,30 @@ customCommands:
 gui:
   language: "ja"
   showIcons: true
+  # Catppuccin Mocha (https://github.com/catppuccin/lazygit)
+  theme:
+    activeBorderColor:
+      - "#a6e3a1"
+      - bold
+    inactiveBorderColor:
+      - "#cdd6f4"
+    searchingActiveBorderColor:
+      - "#f9e2af"
+      - bold
+    optionsTextColor:
+      - "#89b4fa"
+    selectedLineBgColor:
+      - "#313244"
+    cherryPickedCommitBgColor:
+      - "#94e2d5"
+    cherryPickedCommitFgColor:
+      - "#1e1e2e"
+    unstagedChangesColor:
+      - "#f38ba8"
+    defaultFgColor:
+      - "#cdd6f4"
+  authorColors:
+    "*": "#b4befe"
 # log customize
 git:
   branchLogCmd: "git log --graph --color=always --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' {{branchName}} --"
