@@ -43,7 +43,7 @@ local appearance = {
     cursor_bg = "#f5c2e7", -- Pink
     cursor_fg = "#1e1e2e",
     cursor_border = "#f5c2e7",
-    selection_bg = "#585b70", -- Surface2
+    selection_bg = "#b06080", -- 落ち着いた薄めのピンク
     selection_fg = "#cdd6f4",
   },
 }
