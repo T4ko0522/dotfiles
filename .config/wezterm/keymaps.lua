@@ -17,15 +17,16 @@ wezterm.on("font-size-decrease-half", function(window, _)
   adjust_font_size(window, -0.5)
 end)
 
--- Show which key table is active in the status area
+-- Show which key table / leader state is active in the status area
 wezterm.on("update-right-status", function(window, pane)
   local name = window:active_key_table()
-  if name then
+  local label = name and string.upper(name) or (window:leader_is_active() and "LEADER" or nil)
+  if label then
     window:set_right_status(wezterm.format({
       { Background = { Color = "#e06c75" } },
       { Foreground = { Color = "#282c34" } },
       { Attribute = { Intensity = "Bold" } },
-      { Text = " " .. string.upper(name) .. " " },
+      { Text = " " .. label .. " " },
       "ResetAttributes",
     }))
   else
@@ -48,22 +49,16 @@ return {
     { key = "Enter", mods = "ALT", action = act.ToggleFullScreen },
 
     -- コピーモード
-    -- { key = 'X', mods = 'LEADER', action = act.ActivateKeyTable{ name = 'copy_mode', one_shot =false }, },
-    { key = "[", mods = "LEADER", action = act.ActivateCopyMode },
+    { key = "c", mods = "LEADER", action = act.ActivateCopyMode },
     -- コピー
     { key = "c", mods = "CTRL", action = act.CopyTo("Clipboard") },
     -- 貼り付け
     { key = "v", mods = "CTRL", action = act.PasteFrom("Clipboard") },
 
-    -- Pane操作: Alt+q を押してから各キーを押す
+    -- Pane操作: Alt+q を押してから各キーを押す（Ctrl+q は Leader に予約済み）
     {
       key = "q",
       mods = "ALT",
-      action = act.ActivateKeyTable({ name = "pane_ops", timeout_milliseconds = 2000 }),
-    },
-    {
-      key = "q",
-      mods = "CTRL",
       action = act.ActivateKeyTable({ name = "pane_ops", timeout_milliseconds = 2000 }),
     },
 
