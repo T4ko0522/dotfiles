@@ -64,9 +64,13 @@
 
 | キー | 動作 |
 | --- | --- |
-| `Win+u` / `Win+i` / `Win+o` / `Win+p` | 左 / 下 / 上 / 右のウィンドウにフォーカス |
+| `Alt+←` / `Alt+↓` / `Alt+↑` / `Alt+→` | 左 / 下 / 上 / 右のウィンドウにフォーカス (モニター境界を越える) |
 | `Win+Shift+[` | 前のウィンドウへ (`cycle-focus previous`) |
 | `Win+Shift+]` | 次のウィンドウへ (`cycle-focus next`) |
+
+> `Alt+矢印` の方向フォーカスは `cross_boundary_behaviour: "Monitor"` により Windows が認識する物理配置 (X/Y 座標) を基準にモニター境界を越える。laptop と外部モニターの左右関係は Windows の「ディスプレイの配置」設定で決まり、それを komorebi が自動追従するため、外部モニターを差し替えても `komorebi.json` 側は変更不要。
+
+> 注: `Win+u/i/o/p` は方向フォーカスではなく `preselect-direction` (次に開くウィンドウの配置先指定)。
 
 ## ウィンドウ移動
 

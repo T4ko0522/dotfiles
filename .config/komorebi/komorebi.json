@@ -3,6 +3,7 @@
   "app_specific_configuration_path": "$Env:USERPROFILE/applications.json",
   "window_hiding_behaviour": "Cloak",
   "cross_monitor_move_behaviour": "Insert",
+  "cross_boundary_behaviour": "Monitor",
   "window_container_behaviour": "Create",
   "window_handling_behaviour": "Async",
   "unmanaged_window_operation_behaviour": "NoOp",
