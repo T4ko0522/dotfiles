@@ -55,11 +55,11 @@ return {
     -- 貼り付け
     { key = "v", mods = "CTRL", action = act.PasteFrom("Clipboard") },
 
-    -- Pane操作: Alt+q を押してから各キーを押す（Ctrl+q は Leader に予約済み）
+    -- Pane操作: Alt+q を押してモードに入り、hjkl 等を連続で押せる（Esc またはタイムアウトで抜ける）
     {
       key = "q",
       mods = "ALT",
-      action = act.ActivateKeyTable({ name = "pane_ops", timeout_milliseconds = 2000 }),
+      action = act.ActivateKeyTable({ name = "pane_ops", one_shot = false, timeout_milliseconds = 2000 }),
     },
 
     -- フォントサイズ切替
@@ -116,11 +116,11 @@ return {
       { key = "r", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
       -- Paneを閉じる
       { key = "x", action = act({ CloseCurrentPane = { confirm = true } }) },
-      -- Pane移動
-      { key = "h", action = act.ActivatePaneDirection("Left") },
-      { key = "l", action = act.ActivatePaneDirection("Right") },
-      { key = "k", action = act.ActivatePaneDirection("Up") },
-      { key = "j", action = act.ActivatePaneDirection("Down") },
+      -- Pane移動（移動と同時に pane_ops を抜けて即シェル入力に戻る）
+      { key = "h", action = act.Multiple({ act.ActivatePaneDirection("Left"), act.PopKeyTable }) },
+      { key = "l", action = act.Multiple({ act.ActivatePaneDirection("Right"), act.PopKeyTable }) },
+      { key = "k", action = act.Multiple({ act.ActivatePaneDirection("Up"), act.PopKeyTable }) },
+      { key = "j", action = act.Multiple({ act.ActivatePaneDirection("Down"), act.PopKeyTable }) },
       -- Pane選択
       { key = "[", action = act.PaneSelect },
       -- 選択中のPaneのみ表示
