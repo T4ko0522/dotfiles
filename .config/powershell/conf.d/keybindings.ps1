@@ -4,11 +4,11 @@ Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
 Set-PSReadLineOption -MaximumHistoryCount 16384
 Set-PSReadLineOption -BellStyle None
 Set-PSReadLineOption -Colors @{
-    Command              = "Green"
-    Error                = "Red"
-    InlinePrediction      = "Magenta"
-    ListPrediction        = "Magenta"
-    ListPredictionSelected = "#e066ff"
+    Command                = "#a6e3a1" # Catppuccin Mocha: Green
+    Error                  = "#f38ba8" # Mocha: Red
+    InlinePrediction       = "#cba6f7" # Mocha: Mauve
+    ListPrediction         = "#cba6f7" # Mocha: Mauve
+    ListPredictionSelected = "#f5c2e7" # Mocha: Pink
 }
 
 # Ctrl+F: ホーム以下のディレクトリをfzfで検索してcd

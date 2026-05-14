@@ -328,7 +328,7 @@
 }
 
 .calendar .calendar-table::item:selected {
-	color: #4c4f69;
+	color: var(--base);
 	background: var(--mauve);
 	border-radius: 8px;
 }
@@ -367,8 +367,8 @@
 	font-weight: 600;
 }
 .home-menu .menu-item:hover {
-	background-color: #cba6f4;
-	color: #181825;
+	background-color: var(--mauve);
+	color: var(--mantle);
 	margin: 4px 6px;
 	border-radius: 4px;
 }
@@ -587,7 +587,7 @@ color: rgb(203, 166, 247);
     color: rgb(203, 166, 247);
 }
 .notes-menu .delete-button {
-    color: #ff6b6b;
+    color: var(--red);
     background: transparent;
     border: none;
     font-size: 8px;
@@ -718,7 +718,7 @@ Example: "Windows Media" becomes "windows-media" */
 }
 .media-menu .btn.disabled:hover,
 .media-menu .btn.disabled {
-    color: #4e525c;
+    color: var(--surface2);
     background-color: rgba(0, 0, 0, 0);
 }
 
