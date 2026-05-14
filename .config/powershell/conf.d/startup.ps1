@@ -17,13 +17,22 @@ Register-EngineEvent -SourceIdentifier PowerShell.OnIdle -MaxTriggerCount 1 -Act
 Remove-Item Alias:ni -Force -ErrorAction Ignore
 
 # komorebi + whkd 自動起動 (接続モニターに合わせた一時設定で起動)
-if ((Get-Command komorebic -ErrorAction SilentlyContinue) -and
-    -not (Get-Process -Name komorebi -ErrorAction SilentlyContinue)) {
-    $startScript = "$env:USERPROFILE\Project\github.com\t4ko0522\dotfiles\.bin\komorebi_start.ps1"
-    if (Test-Path -LiteralPath $startScript) {
-        & $startScript
-    } else {
-        Start-Process komorebic -ArgumentList 'start', '--whkd' -WindowStyle Hidden
+# プロセス存在だけで判定するとゾンビ時に skip してしまうため、socket 応答で生死判定する。
+if (Get-Command komorebic -ErrorAction SilentlyContinue) {
+    $komorebiAlive = $false
+    if (Get-Process -Name komorebi -ErrorAction SilentlyContinue) {
+        komorebic state 2>$null | Out-Null
+        $komorebiAlive = ($LASTEXITCODE -eq 0)
+    }
+    if (-not $komorebiAlive) {
+        # ゾンビ komorebi/whkd を掃除してから起動
+        Get-Process -Name komorebi, whkd -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+        $startScript = "$env:USERPROFILE\Project\github.com\t4ko0522\dotfiles\.bin\komorebi_start.ps1"
+        if (Test-Path -LiteralPath $startScript) {
+            & $startScript
+        } else {
+            Start-Process komorebic -ArgumentList 'start', '--whkd' -WindowStyle Hidden
+        }
     }
 }
 
