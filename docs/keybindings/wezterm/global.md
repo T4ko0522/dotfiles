@@ -2,7 +2,7 @@
 
 key table に入っていない通常状態で常時有効なキーバインド。
 
-定義箇所: [`.config/wezterm/keymaps.lua`](../../../.config/wezterm/keymaps.lua) の `keys` テーブル / [`modules/aws_profile.lua`](../../../.config/wezterm/modules/aws_profile.lua)
+定義箇所: [`.config/wezterm/keymaps.lua`](../../../.config/wezterm/keymaps.lua) の `keys` テーブル
 
 ## コマンドパレット / 設定
 
@@ -21,7 +21,7 @@ key table に入っていない通常状態で常時有効なキーバインド�
 | `Ctrl+v` | クリップボードから貼り付け |
 | `Ctrl+Shift+Space` | QuickSelect 起動（URL / git hash / IP / path 等を 1 文字キーで選択） |
 
-QuickSelect の追加パターンは [`wezterm.lua`](../../../.config/wezterm/wezterm.lua) の `config.quick_select_patterns` で定義。現在は AWS ARN を追加。
+QuickSelect の追加パターンは [`wezterm.lua`](../../../.config/wezterm/wezterm.lua) の `config.quick_select_patterns` で定義可能（現在は未設定で WezTerm 既定パターンのみ）。
 
 ## フォントサイズ
 
@@ -39,7 +39,6 @@ QuickSelect の追加パターンは [`wezterm.lua`](../../../.config/wezterm/we
 | --- | --- | --- |
 | `Leader → c` | `copy_mode` | [copy-mode.md](./copy-mode.md) |
 | `Leader → w` | `workspace_mode`（fuzzy 選択メニュー併発） | [workspace.md](./workspace.md) |
-| `Leader → p` | AWS プロファイル fuzzy 選択（`export AWS_PROFILE=...` を入力） | — |
 
 ## モード起動 (直接)
 

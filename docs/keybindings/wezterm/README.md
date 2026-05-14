@@ -6,7 +6,6 @@
 - [`.config/wezterm/keymaps.lua`](../../../.config/wezterm/keymaps.lua) — グローバル / `tab_ops` / `pane_ops` / `resize_pane` / `activate_pane` / `copy_mode`
 - [`.config/wezterm/workspace.lua`](../../../.config/wezterm/workspace.lua) — ワークスペース / `workspace_mode`
 - [`.config/wezterm/modules/opacity.lua`](../../../.config/wezterm/modules/opacity.lua) — `setting_mode`
-- [`.config/wezterm/modules/aws_profile.lua`](../../../.config/wezterm/modules/aws_profile.lua) — AWS プロファイル選択
 
 ## 前提
 
@@ -19,7 +18,7 @@
 
 | カテゴリ | リンク | 概要 |
 | --- | --- | --- |
-| グローバル | [`global.md`](./global.md) | コマンドパレット / コピペ / フォント / フルスクリーン / QuickSelect / Leader 直接アクション |
+| グローバル | [`global.md`](./global.md) | コマンドパレット / コピペ / フォント / フルスクリーン / QuickSelect |
 | ワークスペース | [`workspace.md`](./workspace.md) | scratch トグル / ワークスペース選択 / `workspace_mode` |
 | タブ | [`tabs.md`](./tabs.md) | `tab_ops` モード |
 | ペイン | [`panes.md`](./panes.md) | `pane_ops` / `resize_pane` / `activate_pane` モード |

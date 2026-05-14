@@ -29,12 +29,6 @@ config.visual_bell = {
   fade_out_duration_ms = 0,
 }
 
--- QuickSelect patterns (SUPER + Space)
-config.quick_select_patterns = {
-  -- AWS ARN
-  "\\barn:[\\w\\-]+:[\\w\\-]+:[\\w\\-]*:[0-9]*:[\\w\\-/:]+",
-}
-
 local keymaps = require("keymaps")
 if type(keymaps.apply_to_config) == "function" then
   keymaps.apply_to_config(config)
@@ -51,7 +45,6 @@ require("statusbar").apply_to_config(config)
 
 -- オプショナルモジュール（keymapsの後に読み込む）
 require("modules.opacity").apply_to_config(config)
-require("modules.aws_profile").apply_to_config(config)
 require("modules.wsl").apply_to_config(config)
 
 return config
