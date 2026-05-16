@@ -47,7 +47,7 @@ function ls {
             elseif ($s -ge 1KB) { '{0:F1}K' -f ($s / 1KB) }
             else { '{0}B' -f $s }
         }
-        $owner = try { ((Get-Acl $item.FullName).Owner -split '\\')[-1] } catch { '-' }
+        $owner = try { ((Get-Acl -LiteralPath $item.FullName -ErrorAction Stop).Owner -split '\\')[-1] } catch { '-' }
         [PSCustomObject]@{
             Item    = $item
             IsDir   = $isDir
