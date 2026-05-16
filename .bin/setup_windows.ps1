@@ -19,6 +19,7 @@ $targets = @(
   @{ Src = ".config/wezterm";       Dst = ".config/wezterm" },
   @{ Src = ".config/yazi";          Dst = (Join-Path $roamingDir "yazi\config") },
   @{ Src = ".config/starship.toml"; Dst = ".config/starship.toml" },
+  @{ Src = ".config/ccwin-notify/config.toml"; Dst = ".config/ccwin-notify/config.toml" },
   @{ Src = ".config/yasb";          Dst = ".config/yasb" },
   @{ Src = ".config/cava";          Dst = ".config/cava" },
   @{ Src = ".config/fastfetch";     Dst = ".config/fastfetch" },
