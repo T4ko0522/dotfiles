@@ -18,6 +18,7 @@ Remove-Item Alias:ni -Force -ErrorAction Ignore
 
 # komorebi + whkd 自動起動 (接続モニターに合わせた一時設定で起動)
 # プロセス存在だけで判定するとゾンビ時に skip してしまうため、socket 応答で生死判定する。
+# 起動本体は別プロセス(pwsh -NoProfile)に投げて profile 読み込みをブロックしない。
 if (Get-Command komorebic -ErrorAction SilentlyContinue) {
     $komorebiAlive = $false
     if (Get-Process -Name komorebi -ErrorAction SilentlyContinue) {
@@ -29,7 +30,7 @@ if (Get-Command komorebic -ErrorAction SilentlyContinue) {
         Get-Process -Name komorebi, whkd -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
         $startScript = "$env:USERPROFILE\Project\github.com\t4ko0522\dotfiles\.bin\komorebi_start.ps1"
         if (Test-Path -LiteralPath $startScript) {
-            & $startScript
+            Start-Process -FilePath 'pwsh' -ArgumentList '-NoLogo', '-NoProfile', '-NonInteractive', '-WindowStyle', 'Hidden', '-File', $startScript -WindowStyle Hidden
         } else {
             Start-Process komorebic -ArgumentList 'start', '--whkd' -WindowStyle Hidden
         }

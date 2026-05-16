@@ -6,7 +6,7 @@ local config = wezterm.config_builder()
 
 -- 設定ファイルの変更を自動で読み込む
 config.automatically_reload_config = true
-config.default_prog = { "C:\\Program Files\\PowerShell\\7\\pwsh.exe" }
+config.default_prog = { "C:\\Program Files\\PowerShell\\7\\pwsh.exe", "-NoLogo" }
 config.default_cwd = wezterm.home_dir .. "\\Project"
 
 -- font
