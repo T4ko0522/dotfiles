@@ -46,7 +46,8 @@
   "ignore_rules": [
     { "kind": "Exe", "id": "Nani.exe", "matching_strategy": "Equals" },
     { "kind": "Exe", "id": "Docker Desktop.exe", "matching_strategy": "Equals" },
-    { "kind": "Exe", "id": "WindowsTerminal.exe", "matching_strategy": "Equals" }
+    { "kind": "Exe", "id": "WindowsTerminal.exe", "matching_strategy": "Equals" },
+    { "kind": "Exe", "id": "explorer.exe", "matching_strategy": "Equals" }
   ],
   "monitors": [
     {
