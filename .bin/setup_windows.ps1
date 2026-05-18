@@ -19,7 +19,7 @@ $targets = @(
   @{ Src = ".config/wezterm";       Dst = ".config/wezterm" },
   @{ Src = ".config/yazi";          Dst = (Join-Path $roamingDir "yazi\config") },
   @{ Src = ".config/starship.toml"; Dst = ".config/starship.toml" },
-  @{ Src = ".config/ccwin-notify/config.toml"; Dst = ".config/ccwin-notify/config.toml" },
+  @{ Src = ".config/ccwin-notify";  Dst = ".config/ccwin-notify" },
   @{ Src = ".config/yasb";          Dst = ".config/yasb" },
   @{ Src = ".config/cava";          Dst = ".config/cava" },
   @{ Src = ".config/fastfetch";     Dst = ".config/fastfetch" },
@@ -41,7 +41,8 @@ function Remove-ExistingPath($path) {
   try {
     Remove-Item -LiteralPath $path -Force -Recurse -ErrorAction Stop
   } catch {
-    # ロック中のファイルがある場合、個別に削除を試みる（ログファイル等をスキップ）
+    # 過去に管理者で作られた壊れた reparse point は Remove-Item が Access denied になる。
+    # cmd /c rmdir|del は別経路で reparse point を消せるため最終フォールバックに使う。
     if (Test-Path -LiteralPath $path -PathType Container) {
       Get-ChildItem -LiteralPath $path -Recurse -Force | Sort-Object { $_.FullName.Length } -Descending | ForEach-Object {
         try { Remove-Item -LiteralPath $_.FullName -Force -ErrorAction Stop } catch {
@@ -49,11 +50,13 @@ function Remove-ExistingPath($path) {
         }
       }
       try { Remove-Item -LiteralPath $path -Force -ErrorAction Stop } catch {
-        Write-Host "Warning: Could not remove directory (locked files remain): $path" -ForegroundColor Yellow
-        return $false
+        & cmd.exe /c "rmdir /S /Q `"$path`"" 2>&1 | Out-Null
       }
     } else {
-      Write-Host "Warning: Could not remove locked file: $path" -ForegroundColor Yellow
+      & cmd.exe /c "del /F /Q `"$path`"" 2>&1 | Out-Null
+    }
+    if (Test-Path -LiteralPath $path) {
+      Write-Host "Warning: Could not remove path: $path" -ForegroundColor Yellow
       return $false
     }
   }
@@ -67,12 +70,29 @@ function New-Link($src, $dst, $isDir) {
     return
   }
 
+  # Developer Mode 無効 + 非管理者で SymbolicLink を作ると、`l` フラグだけ立った
+  # 解決不能な reparse point が残ることがある (実害: os.Stat で Access denied)。
+  # 作成直後に LinkType/Target が解決できなければ巻き戻し、HardLink → Copy の順で再試行する。
   try {
-    New-Item -ItemType SymbolicLink -Path $dst -Target $src | Out-Null
+    New-Item -ItemType SymbolicLink -Path $dst -Target $src -ErrorAction Stop | Out-Null
+    $created = Get-Item -LiteralPath $dst -Force
+    if (-not $created.LinkType -or -not $created.Target) {
+      Remove-Item -LiteralPath $dst -Force -ErrorAction SilentlyContinue
+      throw "SymbolicLink created but unresolvable"
+    }
+    return
   } catch {
-    Write-Host "SymbolicLink failed, fallback to HardLink: $dst"
-    New-Item -ItemType HardLink -Path $dst -Target $src | Out-Null
+    Write-Host "SymbolicLink failed ($($_.Exception.Message)), trying HardLink: $dst" -ForegroundColor Yellow
   }
+
+  try {
+    New-Item -ItemType HardLink -Path $dst -Target $src -ErrorAction Stop | Out-Null
+    return
+  } catch {
+    Write-Host "HardLink failed ($($_.Exception.Message)), falling back to Copy: $dst" -ForegroundColor Yellow
+  }
+
+  Copy-Item -LiteralPath $src -Destination $dst -Force
 }
 
 foreach ($entry in $targets) {
