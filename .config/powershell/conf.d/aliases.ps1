@@ -156,3 +156,18 @@ function pwd { ($ExecutionContext.SessionState.Path.CurrentLocation.Path -replac
 
 function la { ls -a @args }
 function ll { ls @args }
+
+# fastfetch を呼んだ後に現在再生中曲を丸いアルバムアートで表示するラッパー
+function fastfetch {
+    $exe = Get-Command fastfetch.exe -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+    if (-not $exe) {
+        Write-Error "fastfetch.exe not found in PATH"
+        return
+    }
+    & $exe.Source @args
+    $script = Join-Path $HOME ".config/fastfetch/show_music.py"
+    if (Test-Path $script) {
+        python $script 2>$null
+    }
+}
+function ff { fastfetch @args }
