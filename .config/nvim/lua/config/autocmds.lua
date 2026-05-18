@@ -44,6 +44,10 @@ vim.api.nvim_create_autocmd("ColorScheme", {
   end,
 })
 
+-- autocmds.lua は VeryLazy で読まれるが、その時点で colorscheme は既に適用済みで
+-- ColorScheme イベントは発火しない。初回起動でも透過が効くよう直接 1 回呼ぶ。
+apply_transparent_bg()
+
 vim.api.nvim_create_user_command("CountCleanTextLength", function()
   local bufnr = 0
   local mode = vim.fn.mode()
