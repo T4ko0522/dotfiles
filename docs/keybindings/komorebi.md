@@ -38,7 +38,7 @@
 
 ### 起動スクリプト
 
-`Alt+Insert` で [`.bin/morning_setup.ps1`](../../.bin/morning_setup.ps1) を実行すると上記アプリを一括起動し、`workspace_rules` が自動配置する。
+pwsh 起動時 ([`.config/powershell/conf.d/startup.ps1`](../../.config/powershell/conf.d/startup.ps1)) に komorebi が未起動なら [`.config/komorebi/komorebi_start.ps1`](../../.config/komorebi/komorebi_start.ps1) が走り、モニター適応 → komorebi/whkd 起動 → [`morning_setup.ps1`](../../.config/komorebi/morning_setup.ps1) による常用アプリ一括起動まで一気通貫で行う (`workspace_rules` が配置を担当)。2 回目以降の pwsh タブ起動では komorebi の生存を socket 応答で確認し、何もしない。
 
 ## 基本
 
@@ -50,7 +50,6 @@
 | `Win+m` | ウィンドウを最小化 |
 | `Win+t` | フローティング切替 |
 | `Win+Shift+f` | モノクル (最大化) 切替 |
-| `Win+Shift+r` | komorebi を再起動 (`stop --whkd` → 2 秒待機 → `start --whkd`) |
 | `Win+z` | komorebi の一時停止トグル |
 
 ## レイアウト

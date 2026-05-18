@@ -52,7 +52,6 @@ win + t                 : komorebic toggle-float
 win + shift + f         : komorebic toggle-monocle
 
 # Window manager options
-win + shift + r         : komorebic stop --whkd; Start-Sleep -Seconds 2; & "$env:USERPROFILE\Project\github.com\t4ko0522\dotfiles\.bin\komorebi_start.ps1"
 win + z                 : komorebic toggle-pause
 
 # Layouts
@@ -81,6 +80,3 @@ win + shift + oem_comma : komorebic move-to-monitor 0
 win + shift + oem_period: komorebic move-to-monitor 1
 win + n                 : komorebic cycle-monitor next
 win + shift + n         : komorebic cycle-monitor previous
-
-# Morning setup — 常用アプリを一括起動してワークスペースへ自動振り分け
-alt + insert            : & "$env:USERPROFILE\Project\github.com\t4ko0522\dotfiles\.bin\morning_setup.ps1"

@@ -28,7 +28,7 @@ if (Get-Command komorebic -ErrorAction SilentlyContinue) {
     if (-not $komorebiAlive) {
         # ゾンビ komorebi/whkd を掃除してから起動
         Get-Process -Name komorebi, whkd -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
-        $startScript = "$env:USERPROFILE\Project\github.com\t4ko0522\dotfiles\.bin\komorebi_start.ps1"
+        $startScript = "$env:USERPROFILE\Project\github.com\t4ko0522\dotfiles\.config\komorebi\komorebi_start.ps1"
         if (Test-Path -LiteralPath $startScript) {
             Start-Process -FilePath 'pwsh' -ArgumentList '-NoLogo', '-NoProfile', '-NonInteractive', '-WindowStyle', 'Hidden', '-File', $startScript -WindowStyle Hidden
         } else {

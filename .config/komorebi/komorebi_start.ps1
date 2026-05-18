@@ -1,5 +1,6 @@
-# komorebi + whkd を「実機モニターに合わせた display_index_preferences」で起動する。
-# startup.ps1 と Win+Shift+r から共通で呼ばれる唯一の起動経路。
+# komorebi + whkd + 常用アプリ一括起動を「実機モニターに合わせた
+# display_index_preferences」で行う、朝の作業環境立ち上げの唯一の経路。
+# pwsh 起動時に startup.ps1 から komorebi 未起動時のみ呼ばれる。
 #
 # 注意: `komorebic start --config <path>` は内部で `--config="path"` の形に連結して
 # komorebi.exe に渡すため clap で reject される。これを避けるために komorebi.exe を
@@ -48,4 +49,13 @@ if ($whkdPath) {
         Start-Process -FilePath $whkdPath -WindowStyle Hidden
         Write-Host "[start] whkd" -ForegroundColor Cyan
     }
+}
+
+# 常用アプリを一括起動して両モニターを WS1 に整列
+# komorebi 未起動 → 起動の流れでだけ走るので、作業中の pwsh タブ起動では
+# 二度目の WS リセットは発生しない。
+$morningSetup = Join-Path $scriptDir "morning_setup.ps1"
+if (Test-Path -LiteralPath $morningSetup) {
+    Write-Host "[start] morning_setup" -ForegroundColor Cyan
+    & $morningSetup
 }
