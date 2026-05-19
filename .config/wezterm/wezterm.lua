@@ -19,6 +19,11 @@ config.font = wezterm.font_with_fallback({
 -- GPU レンダラー（OpenGLコンテキスト喪失対策）
 config.front_end = "WebGpu"
 
+-- komorebi 等のタイル WM とのリサイズ ping-pong 抑止
+-- (WM_SIZE 再入による ntdll スタックオーバーフロー 0xc00000fd 対策)
+config.adjust_window_size_when_changing_font_size = false
+config.use_resize_increments = false
+
 -- 背景の透過度
 config.window_background_opacity = 0.7
 
