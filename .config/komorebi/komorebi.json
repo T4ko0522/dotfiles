@@ -5,7 +5,7 @@
   "cross_monitor_move_behaviour": "Insert",
   "cross_boundary_behaviour": "Monitor",
   "window_container_behaviour": "Create",
-  "window_handling_behaviour": "Async",
+  "window_handling_behaviour": "Sync",
   "unmanaged_window_operation_behaviour": "NoOp",
   "default_workspace_padding": 1,
   "default_container_padding": 4,
