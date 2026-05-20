@@ -29,7 +29,10 @@ $targets = @(
   @{ Src = ".config/whkdrc";        Dst = ".config/whkdrc" },
   @{ Src = ".config/vscode/settings.json";    Dst = (Join-Path $roamingDir "Code\User\settings.json") },
   @{ Src = ".config/vscode/keybindings.json"; Dst = (Join-Path $roamingDir "Code\User\keybindings.json") },
-  @{ Src = ".config/vscode/snippets";         Dst = (Join-Path $roamingDir "Code\User\snippets") }
+  @{ Src = ".config/vscode/snippets";         Dst = (Join-Path $roamingDir "Code\User\snippets") },
+  @{ Src = ".config/zed/settings.json";       Dst = (Join-Path $roamingDir "Zed\settings.json") },
+  @{ Src = ".config/zed/keymap.json";         Dst = (Join-Path $roamingDir "Zed\keymap.json") },
+  @{ Src = ".config/zed/tasks.json";          Dst = (Join-Path $roamingDir "Zed\tasks.json") }
 )
 
 function Remove-ExistingPath($path) {
