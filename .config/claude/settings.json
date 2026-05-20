@@ -128,9 +128,15 @@
       }
     }
   },
+  "language": "Japanese",
   "effortLevel": "xhigh",
   "advisorModel": "opus",
   "autoUpdatesChannel": "stable",
+  "voice": {
+    "enabled": false,
+    "mode": "hold"
+  },
   "skipDangerousModePermissionPrompt": true,
-  "theme": "dark-daltonized"
+  "theme": "dark-daltonized",
+  "voiceEnabled": false
 }
