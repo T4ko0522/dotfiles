@@ -146,6 +146,7 @@ return {
 
       -- Cancel the mode by pressing escape
       { key = "Enter", action = "PopKeyTable" },
+      { key = "Escape", action = "PopKeyTable" },
     },
     activate_pane = {
       { key = "h", action = act.ActivatePaneDirection("Left") },
