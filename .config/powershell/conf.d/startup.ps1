@@ -42,6 +42,24 @@ if (-not (Get-Process -Name yasb -ErrorAction SilentlyContinue)) {
     Start-Process yasb -WindowStyle Hidden
 }
 
+# ccwin-notify daemon 自動起動
+# daemon.port の PID 再利用で誤判定するのを避けるため、プロセス名で生死判定する。
+if (-not (Get-Process -Name ccwin -ErrorAction SilentlyContinue)) {
+    $ccwinCandidates = @(
+        "$env:USERPROFILE\Project\github.com\t4ko0522\ccwin-notify\bin\ccwin.exe",
+        "$env:USERPROFILE\Project\github.com\t4ko0522\ccwin-notify\ccwin.exe",
+        "$env:USERPROFILE\Project\github.com\t4ko0522\ccwin-notify\ccwin-dev.exe",
+        "$env:USERPROFILE\scoop\apps\ccwin\current\ccwin.exe"
+    )
+    $ccwinExe = $ccwinCandidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+    if (-not $ccwinExe -and (Get-Command ccwin -ErrorAction SilentlyContinue)) {
+        $ccwinExe = (Get-Command ccwin).Source
+    }
+    if ($ccwinExe) {
+        Start-Process -FilePath $ccwinExe -ArgumentList 'daemon' -WindowStyle Hidden
+    }
+}
+
 # Starship プロンプト初期化（キャッシュで高速化）
 if (Get-Command starship -ErrorAction SilentlyContinue) {
     $starshipCache = Join-Path $env:LOCALAPPDATA "starship_init.ps1"
