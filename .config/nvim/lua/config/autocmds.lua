@@ -24,29 +24,9 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 })
 vim.api.nvim_set_hl(0, "SpellCap", {})
 
--- 背景透過を維持（colorscheme 適用時のみで十分。保存時の全窓巡回は行わない）
-local function apply_transparent_bg()
-  vim.cmd([[
-    highlight Normal guibg=NONE ctermbg=NONE
-    highlight NormalNC guibg=NONE ctermbg=NONE
-    highlight NormalFloat guibg=NONE ctermbg=NONE
-    highlight FloatBorder guibg=NONE ctermbg=NONE
-    highlight VertSplit guibg=NONE ctermbg=NONE
-    highlight SnacksBackdrop guibg=NONE ctermbg=NONE
-    highlight SnacksNormal guibg=NONE ctermbg=NONE
-    highlight SnacksNormalNC guibg=NONE ctermbg=NONE
-  ]])
-end
-
-vim.api.nvim_create_autocmd("ColorScheme", {
-  callback = function()
-    vim.schedule(apply_transparent_bg)
-  end,
-})
-
--- autocmds.lua は VeryLazy で読まれるが、その時点で colorscheme は既に適用済みで
--- ColorScheme イベントは発火しない。初回起動でも透過が効くよう直接 1 回呼ぶ。
-apply_transparent_bg()
+-- 背景透過は catppuccin プラグインの init で ColorScheme autocmd を登録している
+-- (plugins/ui/catppuccin.lua)。autocmds.lua は VeryLazy 読込で colorscheme 適用後となり
+-- ColorScheme イベントを取り逃すため、ここには置かない。
 
 vim.api.nvim_create_user_command("CountCleanTextLength", function()
   local bufnr = 0
