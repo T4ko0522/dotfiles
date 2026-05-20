@@ -63,6 +63,11 @@ Start-IfNotRunning `
     -ProcessName "Code" `
     -Path        "$env:LOCALAPPDATA\Programs\Microsoft VS Code\Code.exe"
 
+# WS IV / M1 — Zed
+Start-IfNotRunning `
+    -ProcessName "Zed" `
+    -Path        "$env:LOCALAPPDATA\Programs\Zed\Zed.exe"
+
 # WS IV / M1 — Brave (プライベート用ブラウザ)
 Start-IfNotRunning `
     -ProcessName "brave" `

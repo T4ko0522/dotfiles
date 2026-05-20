@@ -82,7 +82,8 @@
           "name": "IV",
           "layout": "BSP",
           "workspace_rules": [
-            { "kind": "Exe", "id": "Code.exe", "matching_strategy": "Equals" }
+            { "kind": "Exe", "id": "Code.exe", "matching_strategy": "Equals" },
+            { "kind": "Exe", "id": "Zed.exe",  "matching_strategy": "Equals" }
           ]
         },
         {
