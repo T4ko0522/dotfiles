@@ -17,6 +17,7 @@
   "vim": {
     "use_system_clipboard": "on_yank"
   },
+  "close_panel_on_toggle": true,
   "minimap": {
     "show": "auto"
   },

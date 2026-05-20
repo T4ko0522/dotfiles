@@ -55,12 +55,11 @@
       // ===== Leader (,) chord =====
       ", ,": "file_finder::Toggle",            // Find Files
       ", /": "pane::DeploySearch",             // Grep (Project Search)
-      ", e": "project_panel::ToggleFocus",     // Explorer
+      ", e": "project_panel::Toggle",          // Explorer (visibility toggle)
       ", f f": "file_finder::Toggle",          // Find Files
       ", f r": "file_finder::Toggle",          // Recent Files (Zed では file_finder と統合)
-      ", g g": "git_panel::ToggleFocus",       // LazyGit の代替 (Git Panel)
-      ", g G": "git_panel::ToggleFocus",
-      ", n n": "notification_panel::ToggleFocus",
+      ", g": "git_panel::Toggle",              // Git Panel (visibility toggle)
+      ", n n": "notification_panel::Toggle",
       ", x x": "diagnostics::Deploy"
     }
   },
@@ -79,7 +78,7 @@
     "bindings": {
       ", ,": "file_finder::Toggle",
       ", /": "pane::DeploySearch",
-      ", e": "project_panel::ToggleFocus"
+      ", e": "project_panel::Toggle"
     }
   }
 ]
