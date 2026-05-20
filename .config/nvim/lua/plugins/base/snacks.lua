@@ -66,25 +66,39 @@ return {
     opts = {
       scroll = { enabled = false },
       dashboard = {
+        row = 0,
         preset = {
-          header = [[
-        ,.=:!!t3Z3z.,
-       :tt:::tt333EE3
-       Et:::ztt33EEEL @Ee.,      ..,
-      ;tt:::tt333EE7 ;EEEEEEttttt33#
-     :Et:::zt333EEQ. $EEEEEttttt33QL
-     it::::tt333EEF @EEEEEEttttt33F      ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗
-    ;3=*^```"*4EEV :EEEEEEttttt33@.      ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║
-    ,.=::::!t=., ` @EEEEEEtttz33QF       ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║
-   ;::::::::zt33)   "4EEEtttji3P*        ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║
-  :t::::::::tt33. :Z3z..  `` ,..g.       ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
-  i::::::::zt33F AEEEtttt::::ztF         ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝
- ;:::::::::t33V ;EEEttttt::::t3
- E::::::::zt33L @EEEtttt::::z3F
-{3=*^```"*4E3) ;EEEtttt:::::tZ`
-             ` :EEEEtttt::::z7
-                "VEzjt:;;z>*`
-]],
+          header = (function()
+            local lines = {
+              [[        ,.=:!!t3Z3z.,]],
+              [[       :tt:::tt333EE3]],
+              [[       Et:::ztt33EEEL @Ee.,      ..,]],
+              [[      ;tt:::tt333EE7 ;EEEEEEttttt33#]],
+              [[     :Et:::zt333EEQ. $EEEEEttttt33QL]],
+              [[     it::::tt333EEF @EEEEEEttttt33F]],
+              [[    ;3=*^```"*4EEV :EEEEEEttttt33@.   ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗]],
+              [[    ,.=::::!t=., ` @EEEEEEtttz33QF    ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║]],
+              [[   ;::::::::zt33)   "4EEEtttji3P*     ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║]],
+              [[  :t::::::::tt33. :Z3z..  `` ,..g.    ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║]],
+              [[  i::::::::zt33F AEEEtttt::::ztF      ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║]],
+              [[ ;:::::::::t33V ;EEEttttt::::t3       ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝]],
+              [[ E::::::::zt33L @EEEtttt::::z3F]],
+              [[{3=*^```"*4E3) ;EEEtttt:::::tZ`]],
+              [[             ` :EEEEtttt::::z7]],
+              [[                "VEzjt:;;z>*`]],
+            }
+            local max_w = 0
+            for _, l in ipairs(lines) do
+              local w = vim.fn.strdisplaywidth(l)
+              if w > max_w then
+                max_w = w
+              end
+            end
+            for i, l in ipairs(lines) do
+              lines[i] = l .. string.rep(" ", max_w - vim.fn.strdisplaywidth(l))
+            end
+            return table.concat(lines, "\n")
+          end)(),
           keys = {
             {
               icon = " ",
