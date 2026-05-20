@@ -47,6 +47,13 @@ keymap("n", "<C-j>", function()
   vim.diagnostic.goto_next()
 end, opts)
 
+-- 10 行/文字単位の高速移動 (Alt+hjkl)
+-- LazyVim デフォルトの Alt+j/k (行入れ替え) は上書きされる
+keymap({ "n", "x" }, "<A-h>", "10h", { desc = "Move 10 chars left" })
+keymap({ "n", "x" }, "<A-j>", "10j", { desc = "Move 10 lines down" })
+keymap({ "n", "x" }, "<A-k>", "10k", { desc = "Move 10 lines up" })
+keymap({ "n", "x" }, "<A-l>", "10l", { desc = "Move 10 chars right" })
+
 -- lazydocker
 if vim.fn.executable("lazydocker") == 1 then
   vim.keymap.set("n", "<leader>d", function()
