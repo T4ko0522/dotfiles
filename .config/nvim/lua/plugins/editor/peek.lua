@@ -4,6 +4,7 @@ return {
   cmd = { "PeekOpen", "PeekClose", "PeekToggle" },
   keys = {
     { "<leader>mp", "<cmd>PeekToggle<CR>", desc = "Markdown Preview (peek)", ft = "markdown" },
+    { "<C-S-v>", "<cmd>PeekToggle<CR>", desc = "Markdown Preview (peek)", ft = "markdown", mode = { "n", "i" } },
   },
   config = function()
     local peek = require("peek")

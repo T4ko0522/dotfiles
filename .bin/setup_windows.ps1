@@ -165,27 +165,6 @@ if (Test-Path -LiteralPath $hooksSrc) {
 
 Write-Host "Git template setup completed."
 
-# snoretoast: Windows toast notification CLI (node-notifier にバンドルされたビルドを取得)
-$snoretoastDst = Join-Path $binDir "snoretoast.exe"
-if (-not (Test-Path -LiteralPath $snoretoastDst)) {
-  Write-Host "Installing snoretoast..."
-  $tmpDir = Join-Path ([System.IO.Path]::GetTempPath()) "snoretoast-install"
-  try {
-    New-Item -ItemType Directory -Path $tmpDir -Force | Out-Null
-    Push-Location $tmpDir
-    & npm pack node-notifier --silent 2>$null
-    $tgz = Get-ChildItem "node-notifier-*.tgz" | Select-Object -First 1
-    tar -xzf $tgz.Name
-    Copy-Item "package/vendor/snoreToast/snoretoast-x64.exe" $snoretoastDst
-    Pop-Location
-    Write-Host "Installed: $snoretoastDst"
-  } catch {
-    Write-Host "Warning: Failed to install snoretoast: $_" -ForegroundColor Yellow
-  } finally {
-    if (Test-Path $tmpDir) { Remove-Item -Recurse -Force $tmpDir -ErrorAction SilentlyContinue }
-  }
-}
-
 # Ensure dotfiles .bin is available from PATH in all shells.
 $userPath = [Environment]::GetEnvironmentVariable("Path", "User")
 $pathItems = @()
