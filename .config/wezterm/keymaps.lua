@@ -49,7 +49,9 @@ return {
     { key = "Enter", mods = "ALT", action = act.ToggleFullScreen },
 
     -- コピーモード
-    { key = "c", mods = "LEADER", action = act.ActivateCopyMode },
+    { key = "v", mods = "LEADER", action = act.ActivateCopyMode },
+    -- Paneサイズ調整モード（pane_ops を経由せず直接起動）
+    { key = "s", mods = "LEADER", action = act.ActivateKeyTable({ name = "resize_pane", one_shot = false }) },
     -- QuickSelect: URL / hash / IP / path 等を正規表現で抽出して 1 文字キーで選択
     { key = "Space", mods = "CTRL|SHIFT", action = act.QuickSelect },
     -- コピー
@@ -151,7 +153,7 @@ return {
       { key = "k", action = act.ActivatePaneDirection("Up") },
       { key = "j", action = act.ActivatePaneDirection("Down") },
     },
-    -- copyモード leader + [
+    -- copyモード LEADER + v
     copy_mode = {
       -- 移動
       { key = "h", mods = "NONE", action = act.CopyMode("MoveLeft") },
