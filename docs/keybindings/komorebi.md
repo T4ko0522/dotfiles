@@ -14,7 +14,7 @@
 
 | Index | M0 `CMN1556` (メイン) | M1 `DELF144` (拡張) |
 |---|---|---|
-| 0 (`Win+1` / `Win+F1`) | **I** / BSP — WezTerm | **IV** / BSP — VSCode, Brave (プライベート) |
+| 0 (`Win+1` / `Win+F1`) | **I** / BSP — WezTerm | **IV** / BSP — VSCode, Zed, Brave (プライベート) |
 | 1 (`Win+2` / `Win+F2`) | **II** / Grid — Discord | **V** / BSP — Chrome (ビジネス) |
 | 2 (`Win+3` / `Win+F3`) | **III** / Columns — Slack, Spotify | **VI** / BSP — Mattermost |
 
@@ -27,7 +27,7 @@
   - II: 通話・チャット (Discord)
   - III: ワークチャット系 + BGM (Slack, Spotify)
 - **M1 = 広い作業領域**
-  - IV: コーディング + プライベートブラウジング (VSCode, Brave)
+  - IV: コーディング + プライベートブラウジング (VSCode, Zed, Brave)
   - V: ビジネス用ブラウジング (Chrome)
   - VI: ビジネスチャット専用 (Mattermost)
 - **ブラウザの役割分担**
@@ -106,7 +106,7 @@ pwsh 起動時 ([`.config/powershell/conf.d/startup.ps1`](../../.config/powershe
 | キー | 動作 |
 | --- | --- |
 | `Win+,` | モニター 0 (メイン: WezTerm / Discord / Slack+Spotify) |
-| `Win+.` | モニター 1 (拡張: VSCode+Brave / Chrome / Mattermost) |
+| `Win+.` | モニター 1 (拡張: VSCode+Zed+Brave / Chrome / Mattermost) |
 | `Win+Shift+,` / `Win+Shift+.` | ウィンドウをモニター 0 / 1 へ移動 |
 | `Win+n` | 次のモニターへ |
 | `Win+Shift+n` | 前のモニターへ |
