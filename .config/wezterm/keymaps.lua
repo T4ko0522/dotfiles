@@ -58,6 +58,8 @@ return {
     { key = "c", mods = "CTRL", action = act.CopyTo("Clipboard") },
     -- 貼り付け
     { key = "v", mods = "CTRL", action = act.PasteFrom("Clipboard") },
+    -- Ctrl+Shift+V を F24 として Neovim に送る（Markdown プレビュー トグル用、衝突回避）
+    { key = "v", mods = "CTRL|SHIFT", action = act.SendKey({ key = "F24" }) },
 
     -- Pane操作: Alt+q を押してモードに入り、hjkl 等を連続で押せる（Esc またはタイムアウトで抜ける）
     {
