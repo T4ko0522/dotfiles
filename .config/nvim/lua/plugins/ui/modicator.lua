@@ -14,10 +14,14 @@ return {
       highlights = {
         defaults = { bold = true },
       },
+      -- lualine integration を切る: 有効だと lualine の mode_section の色を取りに行くが
+      -- タイミング次第で Normal モード時に暗い色を引いてしまう。OFF にすると Normal は
+      -- CursorLineNr (catppuccin.lua の autocmd で lavender=#b4befe に固定) を継承し、
+      -- Insert/Visual/Replace 等は Question/String/WarningMsg にフォールバックリンクされ
+      -- Catppuccin Mocha パレット由来の明るい色が自動的に適用される。
       integration = {
         lualine = {
-          enabled = true,
-          mode_section = "a",
+          enabled = false,
         },
       },
     },
