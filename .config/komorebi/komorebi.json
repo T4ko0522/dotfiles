@@ -55,7 +55,7 @@
         {
           "name": "I",
           "layout": "BSP",
-          "workspace_rules": [
+          "initial_workspace_rules": [
             { "kind": "Exe", "id": "wezterm-gui.exe", "matching_strategy": "Equals" }
           ]
         },
