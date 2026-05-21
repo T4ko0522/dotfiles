@@ -11,11 +11,11 @@ win + r                 : komorebic reload-configuration
 win + q                 : komorebic close
 win + m                 : komorebic minimize
 
-# Focus windows (alt + uiop)
-alt + left              : komorebic focus left
-alt + down              : komorebic focus down
-alt + up                : komorebic focus up
-alt + right             : komorebic focus right
+# Focus windows within workspace
+win + left              : komorebic focus left
+win + down              : komorebic focus down
+win + up                : komorebic focus up
+win + right             : komorebic focus right
 win + shift + oem_4     : komorebic cycle-focus previous # oem_4 is [
 win + shift + oem_6     : komorebic cycle-focus next # oem_6 is ]
 
@@ -33,10 +33,6 @@ win + shift + o         : komorebic move up
 win + shift + p         : komorebic move right
 
 # Stack windows
-win + left              : komorebic stack left
-win + down              : komorebic stack down
-win + up                : komorebic stack up
-win + right             : komorebic stack right
 win + oem_1             : komorebic unstack # oem_1 is ;
 win + oem_4             : komorebic cycle-stack previous # oem_4 is [
 win + oem_6             : komorebic cycle-stack next # oem_6 is ]

@@ -61,13 +61,15 @@ pwsh 起動時 ([`.config/powershell/conf.d/startup.ps1`](../../.config/powershe
 
 ## フォーカス移動
 
+ワークスペース内に閉じた方向フォーカス。
+
 | キー | 動作 |
 | --- | --- |
-| `Alt+←` / `Alt+↓` / `Alt+↑` / `Alt+→` | 左 / 下 / 上 / 右のウィンドウにフォーカス (モニター境界を越える) |
+| `Win+←` / `Win+↓` / `Win+↑` / `Win+→` | 左 / 下 / 上 / 右のウィンドウにフォーカス |
 | `Win+Shift+[` | 前のウィンドウへ (`cycle-focus previous`) |
 | `Win+Shift+]` | 次のウィンドウへ (`cycle-focus next`) |
 
-> `Alt+矢印` の方向フォーカスは `cross_boundary_behaviour: "Monitor"` により Windows が認識する物理配置 (X/Y 座標) を基準にモニター境界を越える。laptop と外部モニターの左右関係は Windows の「ディスプレイの配置」設定で決まり、それを komorebi が自動追従するため、外部モニターを差し替えても `komorebi.json` 側は変更不要。
+> `cross_boundary_behaviour: "Workspace"` によりフォーカス移動は同一ワークスペース内に閉じる。モニター切替は `Win+,` / `Win+.` を使う。
 
 > 注: `Win+u/i/o/p` は方向フォーカスではなく `preselect-direction` (次に開くウィンドウの配置先指定)。
 
@@ -82,9 +84,10 @@ pwsh 起動時 ([`.config/powershell/conf.d/startup.ps1`](../../.config/powershe
 
 | キー | 動作 |
 | --- | --- |
-| `Win+←/↓/↑/→` | 各方向にスタック |
 | `Win+;` | スタックを解除 |
 | `Win+[` / `Win+]` | スタック内の前 / 次 |
+
+> 方向キーによるスタック作成 (`komorebic stack <direction>`) は廃止し、`Win+←/↓/↑/→` はフォーカス移動に再割り当て。スタックを組みたい場合は CLI から `komorebic stack <direction>` を直接実行する (現状 `window_container_behaviour: "Create"` のため `move` ではスタックにならない点に注意)。
 
 ## リサイズ
 
