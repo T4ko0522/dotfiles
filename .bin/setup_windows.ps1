@@ -194,7 +194,7 @@ if (Get-Command "mise" -ErrorAction SilentlyContinue) {
     mise install
   }
 } else {
-  Write-Host "mise が見つかりません。install_deps.ps1 を先に実行してください。" -ForegroundColor Yellow
+  Write-Host "mise が見つかりません。bootstrap.ps1 を先に実行してください。" -ForegroundColor Yellow
 }
 
 Write-Host "Windows setup completed." -ForegroundColor Green
