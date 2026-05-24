@@ -19,7 +19,7 @@
   6. **Phase 4**: `at-security-opus` / `at-security-codex` / `at-performance` / `at-doc-auditor` を必要に応じて並列起動。
   7. **Phase 5**: レビューを集約し `5_final.md` を作成。BLOCKER があれば該当 Phase へ最大 2 回までリトライ。リトライは可能なら `SendMessage` で同 agentId に再依頼し、使えない実行環境では同じ agent を新規起動して過去成果物ファイルを明示的に読ませる。
 - 「チームで」を含まない通常依頼は、メイン Claude が単独で処理する (パイプラインを勝手に起動しない)。
-- Codex 系エージェント (`at-plan-reviewer`, `*-codex`) は内部で `codex exec --model gpt-5-codex` を Bash 呼び出しする。Codex CLI は `codex` / `codex.exe` / `where.exe codex` で確認し、不在時は該当レビューをスキップ扱いとし、不在を明記する。
+- Codex 系エージェント (`at-plan-reviewer`, `*-codex`) は内部で `codex exec --model gpt-5.5 -c model_reasoning_effort="medium"` を Bash 呼び出しする。Codex CLI は `codex` / `codex.exe` / `where.exe codex` で確認し、不在時は該当レビューをスキップ扱いとし、不在を明記する。
 - すべてのエージェントは出力を日本語で行う。
 
 # 開発スタイル

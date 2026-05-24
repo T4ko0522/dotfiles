@@ -247,7 +247,8 @@ PROMPT
 上記の計画と実装メモをレビューせよ。BLOCKER/MUST/NICE で分類し日本語で出力。
 PROMPT
 } | "$CODEX_BIN" exec \
-      --model gpt-5-codex \
+      --model gpt-5.5 \
+      -c model_reasoning_effort="medium" \
       --sandbox read-only \
       --skip-git-repo-check \
       --output-last-message "$RAW" \

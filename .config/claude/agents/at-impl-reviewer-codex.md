@@ -96,7 +96,8 @@ tools: Read, Grep, Glob, Bash, Write
    BLOCKER / MUST / NICE で分類し、日本語で出力せよ。
    PROMPT
    } | "$CODEX_BIN" exec \
-         --model gpt-5-codex \
+         --model gpt-5.5 \
+         -c model_reasoning_effort="medium" \
          --sandbox read-only \
          --skip-git-repo-check \
          --output-last-message "$RAW" \
