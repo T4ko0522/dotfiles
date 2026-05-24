@@ -16,6 +16,19 @@ Register-EngineEvent -SourceIdentifier PowerShell.OnIdle -MaxTriggerCount 1 -Act
 # https://github.com/antfu-collective/ni とNew-Itemの競合を無効化
 Remove-Item Alias:ni -Force -ErrorAction Ignore
 
+# モニター構成変更後の手動再セットアップ。
+# pwsh 起動後にモニターを抜き差ししたとき、display_index_preferences を実機に
+# 合わせて patch し直すには komorebi 自体を起こし直す必要があるためのショートカット。
+function Restart-Komorebi {
+    $startScript = "$env:USERPROFILE\Project\github.com\t4ko0522\dotfiles\.config\komorebi\komorebi_start.ps1"
+    if (-not (Test-Path -LiteralPath $startScript)) {
+        Write-Error "komorebi_start.ps1 が見つかりません: $startScript"
+        return
+    }
+    Get-Process -Name komorebi, whkd -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+    & $startScript
+}
+
 # komorebi + whkd 自動起動 (接続モニターに合わせた一時設定で起動)
 # プロセス存在だけで判定するとゾンビ時に skip してしまうため、socket 応答で生死判定する。
 # 起動本体は別プロセス(pwsh -NoProfile)に投げて profile 読み込みをブロックしない。
