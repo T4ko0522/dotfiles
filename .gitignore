@@ -56,6 +56,7 @@
 .config/codex/config.toml.bak-*
 .config/codex/history.jsonl
 .config/codex/logs_1.sqlite
+.config/codex/goals_*
 .config/codex/logs_1.sqlite*
 .config/codex/models_cache.json
 .config/codex/sandbox.log
