@@ -21,6 +21,34 @@ case "$first_line" in
     ;;
 esac
 
+# "gm " プレフィックス付きなら conventional type を gitmoji に置換 (type を残さない)
+# 例: "gm feat: add" → "✨ add" / "gm fix(auth): bug" → "🐛 bug"
+case "$first_line" in
+  gm\ *)
+    sed -i '1s/^gm //' "$COMMIT_MSG_FILE"
+    first_line=$(head -n1 "$COMMIT_MSG_FILE")
+    emoji=""
+    case "$first_line" in
+      feat:*|feat\(*\):*)         emoji="✨" ;;
+      fix:*|fix\(*\):*)           emoji="🐛" ;;
+      docs:*|docs\(*\):*)         emoji="📝" ;;
+      style:*|style\(*\):*)       emoji="💄" ;;
+      refactor:*|refactor\(*\):*) emoji="♻️" ;;
+      perf:*|perf\(*\):*)         emoji="⚡️" ;;
+      test:*|test\(*\):*)         emoji="✅" ;;
+      build:*|build\(*\):*)       emoji="👷" ;;
+      ci:*|ci\(*\):*)             emoji="🎡" ;;
+      chore:*|chore\(*\):*)       emoji="🔧" ;;
+      remove:*|remove\(*\):*)     emoji="🔥" ;;
+      deploy:*|deploy\(*\):*)     emoji="🚀" ;;
+    esac
+    if [ -n "$emoji" ]; then
+      sed -i "1s/^[a-z][a-z]*\(([^)]*)\)\{0,1\}: /$emoji /" "$COMMIT_MSG_FILE"
+    fi
+    exit 0
+    ;;
+esac
+
 # 既に gitmoji が含まれていればスキップ（二重挿入防止）
 case "$first_line" in
   *✨*|*🐛*|*📝*|*💄*|*♻️*|*⚡️*|*✅*|*👷*|*🎡*|*🔧*|*🔥*|*🚀*) exit 0 ;;
