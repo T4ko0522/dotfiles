@@ -58,11 +58,6 @@ Start-IfNotRunning `
     -ProcessName "Spotify" `
     -Path        "$env:APPDATA\Spotify\Spotify.exe"
 
-# WS IV / M1 — VSCode
-Start-IfNotRunning `
-    -ProcessName "Code" `
-    -Path        "$env:LOCALAPPDATA\Programs\Microsoft VS Code\Code.exe"
-
 # WS IV / M1 — Zed
 Start-IfNotRunning `
     -ProcessName "Zed" `
