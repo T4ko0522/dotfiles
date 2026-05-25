@@ -49,6 +49,9 @@
     { "kind": "Exe", "id": "WindowsTerminal.exe", "matching_strategy": "Equals" },
     { "kind": "Exe", "id": "explorer.exe", "matching_strategy": "Equals" }
   ],
+  "object_name_change_applications": [
+    { "kind": "Exe", "id": "Mattermost.exe", "matching_strategy": "Equals" }
+  ],
   "monitors": [
     {
       "workspaces": [
