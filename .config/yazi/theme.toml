@@ -5,7 +5,8 @@
 #   peach     #fab387  cmd_duration アクセント
 #   surface0  #313244  アクセント上の前景
 #   dark_bg   #1d2230  git status の暗背景
-# UI 配色のみを最小限上書きする。filetype / icon はデフォルトに委ねる。
+# UI 配色を最小限上書きしつつ、filetype はファイル種別の色を公式 Catppuccin Mocha
+# flavor の値で定義する。icon はデフォルトに委ねる。
 
 [flavor]
 dark  = ""
@@ -49,6 +50,37 @@ border_style  = { fg = "#b4befe" }
 
 # Highlighting
 syntect_theme = ""
+
+# : }}}
+
+
+# : Filetype {{{
+
+# ファイル種別ごとの文字色。公式 catppuccin-mocha flavor の rules に準拠。
+#   teal   #94e2d5  image
+#   yellow #f9e2af  audio / video
+#   pink   #f5c2e7  archive
+#   green  #a6e3a1  document (pdf / doc / rtf)
+#   overlay2 #9399b2  欠落 / 失効した仮想ファイル
+#   text   #cdd6f4  フォールバック (通常ファイル)
+#   mauve  #cba6f7  ディレクトリ (UI アクセントに統一)
+[filetype]
+rules = [
+	# Image
+	{ mime = "image/*", fg = "#94e2d5" },
+	# Media
+	{ mime = "{audio,video}/*", fg = "#f9e2af" },
+	# Archive
+	{ mime = "application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}", fg = "#f5c2e7" },
+	# Document
+	{ mime = "application/{pdf,doc,rtf}", fg = "#a6e3a1" },
+	# Virtual file system
+	{ mime = "vfs/{absent,stale}", fg = "#9399b2" },
+	# Fallback
+	{ url = "*",  fg = "#cdd6f4" },
+	# ディレクトリは UI アクセント (mauve) に統一
+	{ url = "*/", fg = "#cba6f7" },
+]
 
 # : }}}
 
