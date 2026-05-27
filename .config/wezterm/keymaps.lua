@@ -115,9 +115,9 @@ return {
     },
     -- Pane操作: Alt+q を押してから各キーを押す
     pane_ops = {
-      -- Pane作成
-      { key = "d", action = act.SplitVertical({ domain = "CurrentPaneDomain" }) },
-      { key = "r", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
+      -- Pane作成（分割と同時に pane_ops を抜けて即シェル入力に戻る）
+      { key = "d", action = act.Multiple({ act.SplitVertical({ domain = "CurrentPaneDomain" }), act.PopKeyTable }) },
+      { key = "r", action = act.Multiple({ act.SplitHorizontal({ domain = "CurrentPaneDomain" }), act.PopKeyTable }) },
       -- Paneを閉じる
       { key = "x", action = act({ CloseCurrentPane = { confirm = true } }) },
       -- Pane移動（移動と同時に pane_ops を抜けて即シェル入力に戻る）
@@ -220,5 +220,24 @@ return {
       { key = "c", mods = "ALT", action = act.CopyMode("Close") },
       { key = "q", mods = "NONE", action = act.CopyMode("Close") },
     },
+  },
+  -- マウスバインド: 選択しただけでは自動コピーしない（コピーは Ctrl+C / コピーモードの y で明示的に）
+  -- ※ disable_default_mouse_bindings はしないので、ここで上書きしない操作はデフォルトのまま
+  mouse_bindings = {
+    -- 左クリック単発: 選択中はコピーせず選択を維持し、リンク上ならリンクを開く
+    {
+      event = { Up = { streak = 1, button = "Left" } },
+      mods = "NONE",
+      action = wezterm.action_callback(function(window, pane)
+        local sel = window:get_selection_text_for_pane(pane)
+        if not sel or sel == "" then
+          window:perform_action(act.OpenLinkAtMouseCursor, pane)
+        end
+        -- 選択がある場合は何もしない（自動コピーを無効化、ハイライトは維持）
+      end),
+    },
+    -- ダブルクリック(単語) / トリプルクリック(行) の選択でも自動コピーしない
+    { event = { Up = { streak = 2, button = "Left" } }, mods = "NONE", action = act.Nop },
+    { event = { Up = { streak = 3, button = "Left" } }, mods = "NONE", action = act.Nop },
   },
 }
