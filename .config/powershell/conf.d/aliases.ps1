@@ -16,6 +16,21 @@ function _ensureLsIcons {
     }
 }
 
+# ファイル所有者名を取得（Owner セクションのみ取得 + SID→名前をセッションキャッシュ。Get-Acl 全体取得より約7倍高速）
+function _getOwnerName {
+    param($item)
+    if (-not $global:_lsOwnerCache) { $global:_lsOwnerCache = @{} }
+    try {
+        $sid = [System.IO.FileSystemAclExtensions]::GetAccessControl($item, [System.Security.AccessControl.AccessControlSections]::Owner).GetOwner([System.Security.Principal.SecurityIdentifier]).Value
+        $name = $global:_lsOwnerCache[$sid]
+        if (-not $name) {
+            $name = (New-Object System.Security.Principal.SecurityIdentifier($sid)).Translate([System.Security.Principal.NTAccount]).Value
+            $global:_lsOwnerCache[$sid] = $name
+        }
+        ($name -split '\\')[-1]
+    } catch { '-' }
+}
+
 function ls {
     param([switch]$a, [switch]$l)
     _ensureLsIcons
@@ -47,7 +62,7 @@ function ls {
             elseif ($s -ge 1KB) { '{0:F1}K' -f ($s / 1KB) }
             else { '{0}B' -f $s }
         }
-        $owner = try { ((Get-Acl -LiteralPath $item.FullName -ErrorAction Stop).Owner -split '\\')[-1] } catch { '-' }
+        $owner = _getOwnerName $item
         [PSCustomObject]@{
             Item    = $item
             IsDir   = $isDir
@@ -69,13 +84,14 @@ function ls {
     $hName  = 'Name'
     "${e}[1;38;2;180;190;254m${hPerm}  ${hSize}  ${hOwner}  ${hDate}  ${hName}${e}[0m"
 
+    # Permission の桁ごとグラデーション（Catppuccin Mocha: Lavender→Blue→Sapphire→Sky→Teal→Green→Yellow→Peach→Maroon→Red）。ループ外で1度だけ定義
+    $gradColors = @(
+        @(180,190,254), @(137,180,250), @(116,199,236), @(137,220,235),
+        @(148,226,213), @(166,227,161), @(249,226,175), @(250,179,135),
+        @(235,160,172), @(243,139,168)
+    )
+
     foreach ($row in $rows) {
-        # Permission（Catppuccin Mocha: Lavender→Blue→Sapphire→Sky→Teal→Green→Yellow→Peach→Maroon→Red）
-        $gradColors = @(
-            @(180,190,254), @(137,180,250), @(116,199,236), @(137,220,235),
-            @(148,226,213), @(166,227,161), @(249,226,175), @(250,179,135),
-            @(235,160,172), @(243,139,168)
-        )
         $perm = -join (0..9 | ForEach-Object {
             $c = $row.RawPerm[$_]; $rgb = $gradColors[$_]
             if ($c -eq '-') { "${e}[38;2;108;112;134m-${e}[0m" }
@@ -111,9 +127,19 @@ function ls {
 # Unix風 rm（-r, -f, -rf 対応）
 Remove-Item Alias:rm -Force -ErrorAction Ignore
 function rm {
-    param([switch]$r, [switch]$f)
-    $paths = @($args | Where-Object { $_ -notmatch '^-' })
-    if (-not $paths) { Write-Error 'rm: missing operand'; return }
+    # -r/-f を結合フラグ (-rf, -fr) でも分離フラグ (-r -f) でも受け付ける
+    $flags = ''
+    $paths = [System.Collections.Generic.List[string]]::new()
+    foreach ($a in $args) {
+        if ($a -is [string] -and $a.Length -gt 1 -and $a[0] -eq '-') {
+            $flags += $a.Substring(1)
+        } else {
+            $paths.Add([string]$a)
+        }
+    }
+    $r = $flags.Contains('r')
+    $f = $flags.Contains('f')
+    if ($paths.Count -eq 0) { Write-Error 'rm: missing operand'; return }
     $params = @{}
     if ($r) { $params['Recurse'] = $true }
     if ($f) { $params['Force'] = $true; $params['ErrorAction'] = 'SilentlyContinue' }
@@ -156,3 +182,13 @@ function pwd { ($ExecutionContext.SessionState.Path.CurrentLocation.Path -replac
 
 function la { ls -a @args }
 function ll { ls @args }
+
+# Claude Code: cc=claude / cc yolo=claude --dangerously-skip-permissions（以降の引数はそのまま委譲）
+function cc {
+    if ($args.Count -gt 0 -and $args[0] -eq 'yolo') {
+        $rest = $args | Select-Object -Skip 1
+        claude --dangerously-skip-permissions @rest
+    } else {
+        claude @args
+    }
+}
