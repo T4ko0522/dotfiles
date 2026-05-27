@@ -42,6 +42,7 @@ else
 	config.keys = keymaps.keys or {}
 	config.key_tables = keymaps.key_tables or {}
 	config.leader = { key = "q", mods = "CTRL", timeout_milliseconds = 2000 }
+	config.mouse_bindings = keymaps.mouse_bindings or {}
 end
 require("workspace").apply_to_config(config)
 require("appearance").apply_to_config(config)
