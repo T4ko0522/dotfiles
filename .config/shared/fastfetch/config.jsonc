@@ -2,14 +2,14 @@
   "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
   "logo": {
     // "source": "~/.config/fastfetch/mclaren.txt",
-    "source": "~/.config/fastfetch/anime.txt",
+   // "source": "~/.config/fastfetch/anime.txt",i
     "type": "file",
     "color": {
       // "1": "38;5;208"
       "1": "38;2;203;166;247"
     },
     "padding": {
-      "top": 0,
+    ]  "top": 0,
       "left": 0,
       "right": 8
     }

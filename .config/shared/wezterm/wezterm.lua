@@ -6,7 +6,7 @@ local config = wezterm.config_builder()
 
 -- 設定ファイルの変更を自動で読み込む
 config.automatically_reload_config = true
-config.default_prog = { os.getenv("SHELL") or "bash", "-l" }
+config.default_prog = { "zsh", "-l" }
 config.default_cwd = wezterm.home_dir
 
 -- font
