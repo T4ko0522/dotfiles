@@ -1,6 +1,10 @@
 # Neovim
 .luarc.json
 
+# Nix
+result
+result-*
+
 # lazygit
 .config/lazygit/state.yml
 

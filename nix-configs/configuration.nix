@@ -76,7 +76,24 @@
     noto-fonts-cjk-sans
     noto-fonts-cjk-serif
     noto-fonts-color-emoji
+    plemoljp-nf
   ];
+
+  fonts.fontconfig.defaultFonts = {
+    monospace = [
+      "PlemolJP Console NF"
+      "Noto Sans Mono CJK JP"
+    ];
+    sansSerif = [
+      "Noto Sans CJK JP"
+      "Noto Sans"
+    ];
+    serif = [
+      "Noto Serif CJK JP"
+      "Noto Serif"
+    ];
+    emoji = [ "Noto Color Emoji" ];
+  };
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
@@ -118,10 +135,13 @@
     isNormalUser = true;
     description = "T4ko";
     extraGroups = [ "networkmanager" "wheel" ];
+    shell = pkgs.zsh;
     packages = with pkgs; [
     #  thunderbird
     ];
   };
+
+  programs.zsh.enable = true;
 
   # Install firefox.
   programs.firefox.enable = true;

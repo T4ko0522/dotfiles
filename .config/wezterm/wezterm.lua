@@ -6,8 +6,8 @@ local config = wezterm.config_builder()
 
 -- 設定ファイルの変更を自動で読み込む
 config.automatically_reload_config = true
-config.default_prog = { "C:\\Program Files\\PowerShell\\7\\pwsh.exe", "-NoLogo" }
-config.default_cwd = wezterm.home_dir .. "\\Project"
+config.default_prog = { os.getenv("SHELL") or "bash", "-l" }
+config.default_cwd = wezterm.home_dir
 
 -- font
 config.font_size = 13.0
@@ -51,6 +51,5 @@ require("statusbar").apply_to_config(config)
 
 -- オプショナルモジュール（keymapsの後に読み込む）
 require("modules.opacity").apply_to_config(config)
-require("modules.wsl").apply_to_config(config)
 
 return config
