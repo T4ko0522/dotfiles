@@ -168,8 +168,6 @@
 
   programs.zsh.enable = true;
 
-  # Install firefox.
-  programs.firefox.enable = true;
   programs.steam = {
     enable = true;
     extraCompatPackages = with pkgs; [ proton-ge-bin ];
