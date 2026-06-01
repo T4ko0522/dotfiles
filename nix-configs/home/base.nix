@@ -1,11 +1,8 @@
 {
-  ciBuild ? false,
   lib,
   pkgs,
   ...
-}: let
-  chiffonCursor = pkgs.callPackage ../cursors/chiffon.nix {};
-in {
+}: {
   home.username = "t4ko";
   home.homeDirectory = "/home/t4ko";
   home.stateVersion = "26.05";
@@ -13,14 +10,6 @@ in {
   home.sessionVariables = {
     EDITOR = "nvim";
     VISUAL = "nvim";
-  };
-
-  home.pointerCursor = lib.mkIf (!ciBuild) {
-    package = chiffonCursor;
-    name = "Chiffon";
-    size = 24;
-    gtk.enable = true;
-    x11.enable = true;
   };
 
   home.activation.disableWallpaperEngineAutostart = lib.hm.dag.entryAfter ["writeBoundary"] ''

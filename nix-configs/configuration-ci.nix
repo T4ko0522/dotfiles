@@ -2,10 +2,6 @@
   imports = [
     ./hardware-configuration.nix
     ./modules/common.nix
-    ./profiles/desktop.nix
-    ./profiles/nvidia.nix
-    ./profiles/gaming.nix
-    ./profiles/desktop-apps.nix
   ];
 
   boot.loader.systemd-boot.enable = true;

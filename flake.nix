@@ -2,7 +2,7 @@
   description = "Dotfiles managed NixOS configuration";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
 
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
@@ -18,31 +18,37 @@
     system = "x86_64-linux";
     dotfilesDir = "/home/t4ko/dotfiles";
 
-    mkNixos = {ciBuild ? false}:
+    mkNixos = {
+      configuration,
+      homeConfiguration,
+    }:
       nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = {
-          inherit ciBuild dotfilesDir;
+          inherit dotfilesDir;
         };
         modules = [
-          ./nix-configs/hardware-configuration.nix
           home-manager.nixosModules.home-manager
-          ./nix-configs/configuration.nix
+          configuration
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "hm-backup";
             home-manager.extraSpecialArgs = {
-              inherit ciBuild dotfilesDir;
+              inherit dotfilesDir;
             };
-            home-manager.users.t4ko = import ./nix-configs/home.nix;
+            home-manager.users.t4ko = import homeConfiguration;
           }
         ];
       };
 
-    nixos = mkNixos {};
+    nixos = mkNixos {
+      configuration = ./nix-configs/configuration.nix;
+      homeConfiguration = ./nix-configs/home.nix;
+    };
     nixosCi = mkNixos {
-      ciBuild = true;
+      configuration = ./nix-configs/configuration-ci.nix;
+      homeConfiguration = ./nix-configs/home-ci.nix;
     };
   in {
     nixosConfigurations = {
