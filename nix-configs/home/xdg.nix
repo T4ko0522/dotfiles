@@ -42,6 +42,7 @@ in
       ModifierOnlyKeyTimeout=250
 
       [Hotkey/TriggerKeys]
+      0=Zenkaku_Hankaku
 
       [Hotkey/EnumerateForwardKeys]
 
