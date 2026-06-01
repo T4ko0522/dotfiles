@@ -3,11 +3,11 @@
 customCommands:
   - command: czg
     context: files
-    key: c
+    key: z
     output: terminal
   - command: czg ai
     context: files
-    key: C
+    key: Z
     output: terminal
   - key: '<c-f>'
     description: 'Search commit messages (all branches)'
