@@ -1,4 +1,5 @@
 {
+  ciBuild ? false,
   lib,
   pkgs,
   ...
@@ -14,7 +15,7 @@ in {
     VISUAL = "nvim";
   };
 
-  home.pointerCursor = {
+  home.pointerCursor = lib.mkIf (!ciBuild) {
     package = chiffonCursor;
     name = "Chiffon";
     size = 24;

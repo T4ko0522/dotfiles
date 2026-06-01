@@ -52,10 +52,5 @@ jobs:
           extra_nix_config: |
             experimental-features = nix-command flakes
 
-      - name: Build all NixOS configurations
-        run: |
-          nix eval --json .#nixosConfigurations --apply builtins.attrNames \
-            | jq -r '.[]' \
-            | while read -r config; do
-                nix build ".#nixosConfigurations.${config}.config.system.build.toplevel"
-              done
+      - name: Build CI NixOS configuration
+        run: nix build .#nixosConfigurations.nixos-ci.config.system.build.toplevel
