@@ -1,5 +1,4 @@
-{ ... }:
-{
+{...}: {
   imports = [
     ./home/base.nix
     ./home/packages.nix

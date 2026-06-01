@@ -2,11 +2,9 @@
   config,
   dotfilesDir,
   ...
-}:
-let
+}: let
   link = path: config.lib.file.mkOutOfStoreSymlink "${dotfilesDir}/${path}";
-in
-{
+in {
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {

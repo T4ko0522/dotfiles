@@ -2,11 +2,9 @@
   lib,
   pkgs,
   ...
-}:
-let
-  chiffonCursor = pkgs.callPackage ../cursors/chiffon.nix { };
-in
-{
+}: let
+  chiffonCursor = pkgs.callPackage ../cursors/chiffon.nix {};
+in {
   home.username = "t4ko";
   home.homeDirectory = "/home/t4ko";
   home.stateVersion = "26.05";
@@ -24,7 +22,7 @@ in
     x11.enable = true;
   };
 
-  home.activation.disableWallpaperEngineAutostart = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+  home.activation.disableWallpaperEngineAutostart = lib.hm.dag.entryAfter ["writeBoundary"] ''
     we_config="$HOME/.local/share/Steam/steamapps/common/wallpaper_engine/config.json"
     if [ -f "$we_config" ]; then
       ${pkgs.gnused}/bin/sed -i \

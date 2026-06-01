@@ -163,7 +163,7 @@
 
         "custom/menu" = {
           format = "{icon} Menu";
-          format-icons = [ "" ];
+          format-icons = [""];
           tooltip = "Open Menu";
           on-click = "fuzzel";
         };
