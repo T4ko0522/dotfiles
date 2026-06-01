@@ -40,3 +40,5 @@ pwsh -ExecutionPolicy Bypass -File .\.bin\switch_claude_code.ps1 npm
 # show current launcher status
 pwsh -ExecutionPolicy Bypass -File .\.bin\switch_claude_code.ps1 status
 ```
+
+Inspired by [akazdayo/nix-configs](https://github.com/akazdayo/nix-configs), [moons-14/dotfiles](https://github.com/moons-14/dotfiles), [mozumasu/dotfiles](https://github.com/mozumasu/dotfiles).

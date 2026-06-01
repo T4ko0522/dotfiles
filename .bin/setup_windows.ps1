@@ -10,29 +10,29 @@ $binDir = Join-Path $repo ".bin"
 # Dst: 相対パス → $homeDir 基準、絶対パス → そのまま使用
 $targets = @(
   @{ Src = ".gitconfig";            Dst = ".gitconfig" },
-  @{ Src = ".config/claude";        Dst = ".claude" },
-  @{ Src = ".config/codex";         Dst = ".codex" },
-  @{ Src = ".config/lazygit";       Dst = ".config/lazygit" },
-  @{ Src = ".config/mise";          Dst = ".config/mise" },
-  @{ Src = ".config/nvim";          Dst = (Join-Path $localDir "nvim") },
-  @{ Src = ".config/vim";           Dst = ".config/vim" },
-  @{ Src = ".config/wezterm";       Dst = ".config/wezterm" },
-  @{ Src = ".config/yazi";          Dst = (Join-Path $roamingDir "yazi\config") },
-  @{ Src = ".config/starship.toml"; Dst = ".config/starship.toml" },
-  @{ Src = ".config/ccwin-notify";  Dst = ".config/ccwin-notify" },
-  @{ Src = ".config/yasb";          Dst = ".config/yasb" },
-  @{ Src = ".config/cava";          Dst = ".config/cava" },
-  @{ Src = ".config/fastfetch";     Dst = ".config/fastfetch" },
-  @{ Src = ".config/komorebi/komorebi.json";     Dst = "komorebi.json" },
-  @{ Src = ".config/komorebi/komorebi.bar.json"; Dst = "komorebi.bar.json" },
-  @{ Src = ".config/komorebi/applications.json"; Dst = "applications.json" },
-  @{ Src = ".config/whkdrc";        Dst = ".config/whkdrc" },
-  @{ Src = ".config/vscode/settings.json";    Dst = (Join-Path $roamingDir "Code\User\settings.json") },
-  @{ Src = ".config/vscode/keybindings.json"; Dst = (Join-Path $roamingDir "Code\User\keybindings.json") },
-  @{ Src = ".config/vscode/snippets";         Dst = (Join-Path $roamingDir "Code\User\snippets") },
-  @{ Src = ".config/zed/settings.json";       Dst = (Join-Path $roamingDir "Zed\settings.json") },
-  @{ Src = ".config/zed/keymap.json";         Dst = (Join-Path $roamingDir "Zed\keymap.json") },
-  @{ Src = ".config/zed/tasks.json";          Dst = (Join-Path $roamingDir "Zed\tasks.json") }
+  @{ Src = ".config/shared/claude";        Dst = ".claude" },
+  @{ Src = ".config/shared/codex";         Dst = ".codex" },
+  @{ Src = ".config/shared/lazygit";       Dst = ".config/lazygit" },
+  @{ Src = ".config/shared/mise";          Dst = ".config/mise" },
+  @{ Src = ".config/shared/nvim";          Dst = (Join-Path $localDir "nvim") },
+  @{ Src = ".config/shared/vim";           Dst = ".config/vim" },
+  @{ Src = ".config/shared/wezterm";       Dst = ".config/wezterm" },
+  @{ Src = ".config/shared/yazi";          Dst = (Join-Path $roamingDir "yazi\config") },
+  @{ Src = ".config/shared/starship.toml"; Dst = ".config/starship.toml" },
+  @{ Src = ".config/shared/fastfetch";     Dst = ".config/fastfetch" },
+  @{ Src = ".config/windows/ccwin-notify";  Dst = ".config/ccwin-notify" },
+  @{ Src = ".config/windows/yasb";          Dst = ".config/yasb" },
+  @{ Src = ".config/windows/cava";          Dst = ".config/cava" },
+  @{ Src = ".config/windows/komorebi/komorebi.json";     Dst = "komorebi.json" },
+  @{ Src = ".config/windows/komorebi/komorebi.bar.json"; Dst = "komorebi.bar.json" },
+  @{ Src = ".config/windows/komorebi/applications.json"; Dst = "applications.json" },
+  @{ Src = ".config/windows/whkdrc";        Dst = ".config/whkdrc" },
+  @{ Src = ".config/shared/vscode/settings.json";    Dst = (Join-Path $roamingDir "Code\User\settings.json") },
+  @{ Src = ".config/shared/vscode/keybindings.json"; Dst = (Join-Path $roamingDir "Code\User\keybindings.json") },
+  @{ Src = ".config/shared/vscode/snippets";         Dst = (Join-Path $roamingDir "Code\User\snippets") },
+  @{ Src = ".config/shared/zed/settings.json";       Dst = (Join-Path $roamingDir "Zed\settings.json") },
+  @{ Src = ".config/shared/zed/keymap.json";         Dst = (Join-Path $roamingDir "Zed\keymap.json") },
+  @{ Src = ".config/shared/zed/tasks.json";          Dst = (Join-Path $roamingDir "Zed\tasks.json") }
 )
 
 function Remove-ExistingPath($path) {
@@ -127,7 +127,7 @@ foreach ($entry in $targets) {
 }
 
 # PowerShell profile: modules/ をjunctionでリンクし、プロファイルは最適化版を生成
-$profileSrc = Join-Path $repo ".config/powershell"
+$profileSrc = Join-Path $repo ".config/windows/powershell"
 $documentsDir = [Environment]::GetFolderPath("MyDocuments")
 $profileDst = Join-Path $documentsDir "PowerShell"
 if (Test-Path -LiteralPath $profileSrc) {

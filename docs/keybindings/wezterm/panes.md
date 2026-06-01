@@ -1,6 +1,6 @@
 # ペイン
 
-定義箇所: [`.config/wezterm/keymaps.lua`](../../../.config/wezterm/keymaps.lua) の `key_tables` 配下 `pane_ops` / `resize_pane` / `activate_pane`
+定義箇所: [`.config/shared/wezterm/keymaps.lua`](../../../.config/shared/wezterm/keymaps.lua) の `key_tables` 配下 `pane_ops` / `resize_pane` / `activate_pane`
 
 ## `pane_ops` — `Alt+q` で起動
 

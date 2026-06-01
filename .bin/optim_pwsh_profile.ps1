@@ -13,7 +13,7 @@ $ErrorActionPreference = "Stop"
 
 if (-not $SourcePath) {
   $repo = Split-Path -Parent $PSScriptRoot
-  $SourcePath = Join-Path $repo ".config/powershell/Microsoft.PowerShell_profile.ps1"
+  $SourcePath = Join-Path $repo ".config/windows/powershell/Microsoft.PowerShell_profile.ps1"
 }
 if (-not $OutputPath) {
   $OutputPath = $PROFILE
