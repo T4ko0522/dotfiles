@@ -1,4 +1,4 @@
-model = "gpt-5.4"
+model = "gpt-5.5"
 model_reasoning_effort = "medium"
 
 [windows]
@@ -6,3 +6,11 @@ sandbox = "elevated"
 
 [tui]
 theme = "monokai-extended-origin"
+status_line = [
+  "status",
+  "project-name",
+  "model-with-reasoning",
+  "git-branch",
+  "current-dir",
+  "context-used",
+]
