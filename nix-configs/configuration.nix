@@ -5,10 +5,10 @@
 { config, pkgs, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+  ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -76,6 +76,8 @@
     noto-fonts-cjk-sans
     noto-fonts-cjk-serif
     noto-fonts-color-emoji
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.symbols-only
     plemoljp-nf
   ];
 
@@ -95,17 +97,36 @@
     emoji = [ "Noto Color Emoji" ];
   };
 
-  # Enable the X11 windowing system.
-  services.xserver.enable = true;
+  # Use niri as the main graphical session.
+  services.xserver.enable = false;
+  programs.niri.enable = true;
 
-  # Enable the GNOME Desktop Environment.
-  services.displayManager.gdm.enable = true;
-  services.desktopManager.gnome.enable = true;
+  services.greetd = {
+    enable = true;
+    settings = {
+      default_session = {
+        command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd niri-session";
+        user = "greeter";
+      };
+    };
+  };
 
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "jp";
-    variant = "";
+  xdg.portal = {
+    enable = true;
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-gtk
+    ];
+    configPackages = [ pkgs.niri ];
+  };
+
+  security.polkit.enable = true;
+
+  environment.sessionVariables = {
+    NIXOS_OZONE_WL = "1";
+    MOZ_ENABLE_WAYLAND = "1";
+    GTK_IM_MODULE = "fcitx";
+    QT_IM_MODULE = "fcitx";
+    XMODIFIERS = "@im=fcitx";
   };
 
   # Enable CUPS to print documents.
@@ -134,10 +155,13 @@
   users.users."t4ko" = {
     isNormalUser = true;
     description = "T4ko";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
     shell = pkgs.zsh;
     packages = with pkgs; [
-    #  thunderbird
+      #  thunderbird
     ];
   };
 
@@ -145,6 +169,15 @@
 
   # Install firefox.
   programs.firefox.enable = true;
+  programs.steam = {
+    enable = true;
+    extraCompatPackages = with pkgs; [ proton-ge-bin ];
+  };
+
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+  };
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -153,12 +186,26 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     codex
+    fuzzel
     git
     gh
     lazygit
+    nautilus
+    networkmanagerapplet
+    pavucontrol
+    playerctl
     qt6Packages.fcitx5-configtool
+    linux-wallpaperengine
+    swaybg
+    swayidle
+    swaylock
     vim
     vesktop
+    xwayland-satellite
+    claude-code
+    google-chrome
+    prismlauncher
+    spotify
   ];
 
   nix.settings.experimental-features = [
