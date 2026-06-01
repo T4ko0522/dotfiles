@@ -4,39 +4,41 @@
     settings = {
       mainBar = {
         layer = "top";
-        spacing = 10;
+        spacing = 0;
+        margin-top = 8;
+        margin-left = 8;
+        margin-right = 8;
         on-sigusr2 = "show";
-        modules-left = [
-          "custom/power"
-          "custom/menu"
-          "tray"
-          "niri/workspaces"
-        ];
-        modules-right = [
-          "wlr/taskbar"
-          "pulseaudio"
-          "backlight"
-          "temperature"
-          "keyboard-state"
-          "battery"
-          "network"
-          "bluetooth"
-          "clock"
-        ];
+
+        modules-left = ["group/left"];
+        modules-center = ["clock"];
+        modules-right = ["group/right"];
+
+        "group/left" = {
+          orientation = "horizontal";
+          modules = ["custom/power" "custom/menu" "niri/workspaces" "tray"];
+          spacing = 0;
+        };
+
+        "group/right" = {
+          orientation = "horizontal";
+          modules = ["wlr/taskbar" "pulseaudio" "backlight" "temperature" "battery" "network" "bluetooth" "keyboard-state"];
+          spacing = 0;
+        };
 
         keyboard-state = {
           numlock = true;
           capslock = false;
-          format = "{icon}{name}";
+          format = "{icon}";
           format-icons = {
-            locked = " ";
-            unlocked = " ";
+            locked = " NUM";
+            unlocked = "";
           };
         };
 
         "wlr/taskbar" = {
           format = "{icon}";
-          icon-size = 30;
+          icon-size = 26;
           icon-theme = "Numix-Circle";
           tooltip-format = "{title}";
           on-click = "activate";
@@ -63,19 +65,19 @@
         };
 
         tray = {
-          icon-size = 21;
-          spacing = 5;
+          icon-size = 22;
+          spacing = 4;
           show-passive-items = true;
         };
 
         clock = {
-          format = "{:%a %d %b %Y | %H:%M}";
+          format = "  {0:%H:%M}   {0:%a %d %b}";
           tooltip-format = "<big><tt><small>{calendar}</small></tt></big>";
         };
 
         temperature = {
           critical-threshold = 80;
-          format = " {temperatureC}°C {icon}";
+          format = "{icon} {temperatureC}°C";
           format-icons = [
             ""
             ""
@@ -89,10 +91,10 @@
             warning = 30;
             critical = 15;
           };
-          format = "{capacity}% {icon}";
-          format-full = "{capacity}% {icon}";
-          format-charging = "{capacity}% ";
-          format-plugged = "{capacity}% ";
+          format = "{icon} {capacity}%";
+          format-full = "{icon} {capacity}%";
+          format-charging = " {capacity}%";
+          format-plugged = " {capacity}%";
           format-alt = "{time} {icon}";
           format-icons = [
             ""
@@ -105,11 +107,11 @@
 
         pulseaudio = {
           on-click = "pavucontrol";
-          format = "{volume}% {icon} {format_source}";
-          format-bluetooth = "{volume}% {icon} {format_source}";
-          format-bluetooth-muted = " {icon} {format_source}";
-          format-muted = " {format_source}";
-          format-source = "{volume}% ";
+          format = "{icon} {volume}%";
+          format-bluetooth = " {volume}%";
+          format-bluetooth-muted = " ";
+          format-muted = " ";
+          format-source = "";
           format-source-muted = "";
           format-icons = {
             headphone = "";
@@ -138,7 +140,7 @@
         };
 
         network = {
-          format-wifi = "{signalStrength}% ";
+          format-wifi = " {signalStrength}%";
           format-ethernet = "󰖟";
           tooltip-format = "{ifname} via {gwaddr} ";
           format-linked = "{ifname} (No IP) ";
@@ -162,8 +164,7 @@
         };
 
         "custom/menu" = {
-          format = "{icon} Menu";
-          format-icons = [""];
+          format = " Apps";
           tooltip = "Open Menu";
           on-click = "fuzzel";
         };
@@ -171,193 +172,174 @@
     };
 
     style = ''
-      @define-color primary #96d8ff;
-      @define-color background rgba(21, 18, 27, 0.8);
+      /* Catppuccin Mocha */
+      @define-color text #cdd6f4;
+      @define-color accent #b4befe;
+      @define-color base rgba(17, 17, 27, 0.92);
+      @define-color surface rgba(49, 50, 68, 0.95);
+      @define-color border rgba(180, 190, 254, 0.2);
+      @define-color hover rgba(180, 190, 254, 0.15);
+      @define-color green #a6e3a1;
+      @define-color yellow #f9e2af;
+      @define-color red #f38ba8;
+      @define-color peach #fab387;
+      @define-color muted rgba(186, 194, 222, 0.55);
 
-      /* All Modules */
       * {
         font-family: "JetBrainsMono Nerd Font";
         font-weight: bold;
         font-size: 15px;
-        background: rgba(21, 18, 27, 0);
+        color: @text;
+        min-height: 0;
+        padding: 0;
+        margin: 0;
+        border: none;
+        background: transparent;
       }
 
       window#waybar {
-        color: @primary;
+        background: transparent;
+        color: @text;
       }
 
+      /* ── All modules: same pill background ── */
+      #custom-power,
+      #custom-menu,
+      #workspaces,
+      #tray,
+      #wlr-taskbar,
+      #pulseaudio,
+      #backlight,
+      #temperature,
+      #battery,
+      #network,
+      #bluetooth,
+      #keyboard-state {
+        background: @surface;
+        border: 1px solid @border;
+        border-radius: 12px;
+        margin: 3px 3px;
+        padding: 4px 12px;
+        color: @text;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+      }
+
+      /* ── Clock ── */
+      #clock {
+        background: @surface;
+        border: 1px solid @border;
+        border-radius: 16px;
+        padding: 5px 22px;
+        box-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
+        color: @accent;
+        font-size: 15px;
+      }
+
+      /* ── Workspaces ── */
+      #workspaces {
+        padding: 4px 2px;
+      }
+
+      #workspaces button {
+        color: @muted;
+        padding: 2px 12px;
+        border-radius: 10px;
+        margin: 1px;
+        min-width: 24px;
+        transition: all 0.15s ease;
+      }
+
+      #workspaces button.active {
+        color: @accent;
+        background: @hover;
+      }
+
+      #workspaces button:hover {
+        background: @hover;
+        color: @text;
+      }
+
+      /* ── Power button ── */
+      #custom-power {
+        color: rgba(243, 139, 168, 0.85);
+        font-size: 17px;
+        transition: all 0.15s ease;
+      }
+
+      #custom-power:hover {
+        color: @red;
+        background: rgba(243, 139, 168, 0.15);
+      }
+
+      /* ── Battery states ── */
+      #battery {
+        color: @green;
+      }
+
+      #battery.warning {
+        color: @yellow;
+      }
+
+      #battery.critical {
+        color: @red;
+        animation: blink 1s step-end infinite;
+      }
+
+      /* ── Temperature ── */
+      #temperature.critical {
+        color: @red;
+      }
+
+      /* ── Taskbar ── */
+      #wlr-taskbar button {
+        background: @surface;
+        padding: 3px 5px;
+        margin: 2px 1px;
+        border-radius: 10px;
+        min-width: 32px;
+        min-height: 32px;
+        transition: all 0.15s ease;
+      }
+
+      #wlr-taskbar button:hover,
+      #wlr-taskbar button.active {
+        background: @hover;
+      }
+
+      /* ── Tooltip ── */
       tooltip {
-        background: @background;
-        border-radius: 10px;
-        border-width: 10px;
-        border-style: solid;
-        border-color: #11111b;
+        background: @surface;
+        border: 1px solid @border;
+        border-radius: 12px;
+        color: @text;
+        padding: 6px;
       }
 
-      /* Dropdown menus */
+      tooltip label {
+        padding: 2px 4px;
+      }
+
+      /* ── Menu ── */
       menu {
-        background: @background;
-        border: 1px solid @primary;
-        border-radius: 10px;
+        background: @surface;
+        border: 1px solid @border;
+        border-radius: 12px;
       }
 
       menu menuitem {
         background: transparent;
+        color: @text;
+        padding: 4px 10px;
+        border-radius: 8px;
       }
 
       menu menuitem:hover {
-        background-color: rgba(150, 216, 255, 0.1);
-        border-color: @primary;
+        background: @hover;
       }
 
-      /* Workspaces */
-      #workspaces button {
-        color: #585858;
-      }
-
-      #workspaces button.active {
-        color: @primary;
-      }
-
-      #workspaces button.urgent {
-        color: #11111b;
-        background: #a6e3a1;
-        border-radius: 10px;
-      }
-
-      #workspaces button:hover {
-        background: #010116;
-        color: #cdd6f4;
-        border-color: @primary;
-        border-radius: 10px;
-      }
-
-      /* Bar modules */
-      #window,
-      #workspaces,
-      #custom-clipboard,
-      #menu,
-      #submap,
-      #idle_inhibitor,
-      #pulseaudio,
-      #battery,
-      #bluetooth,
-      #network,
-      #power-profiles-daemon,
-      #cpu,
-      #memory,
-      #temperature,
-      #keyboard-state,
-      #clock,
-      #language,
-      #custom-input-method,
-      #tray,
-      #backlight,
-      #custom-brightness,
-      #custom-updates,
-      #custom-notification,
-      #custom-power,
-      #custom-weather,
-      #custom-menu,
-      #custom-razerbattery,
-      #custom-vpn,
-      #custom-lmstudio,
-      #wlr-taskbar {
-        background: @background;
-        font-family: "JetBrainsMono Nerd Font";
-        opacity: 1.0;
-        padding: 0px 10px;
-        margin: 0px 0px;
-        margin-top: 5px;
-        border: 0.5px solid @primary;
-        border-radius: 10px;
-      }
-
-      /* Individual modules */
-      #submap {
-        background-color: rgba(10, 10, 10, 0.8);
-        color: rgba(152, 239, 106, 1);
-      }
-
-      #menu {
-        background-color: @background;
-        border: 1px solid @primary;
-        border-radius: 10px;
-      }
-
-      #battery {
-        color: #a8ff96;
-        padding-right: 15px;
-      }
-
-      #power-profiles-daemon.performance {
-        color: @primary;
-      }
-
-      #power-profiles-daemon.balanced {
-        color: #9ca6ff;
-      }
-
-      #power-profiles-daemon.power-saver {
-        color: #9a7eff;
-      }
-
-      #temperature.critical {
-        color: #ff5874;
-      }
-
-      #clock {
-        margin-right: 0px;
-      }
-
-      #language {
-        margin-left: 0px;
-        margin-right: 5px;
-      }
-
-      #custom-input-method {
-        margin-left: 0px;
-        margin-right: 5px;
-      }
-
-      #custom-clipboard {
-        padding-left: 11px;
-        padding-right: 12px;
-      }
-
-      #custom-updates {
-        padding-right: 15px;
-      }
-
-      #custom-notification {
-        font-family: "NotoSansMono Nerd Font";
-        font-size: 16px;
-        padding-right: 15px;
-      }
-
-      #custom-power {
-        margin-left: 5px;
-        padding-left: 5px;
-      }
-
-      #custom-razerbattery {
-        padding-right: 0px;
-      }
-
-      #network {
-        padding-right: 14px;
-      }
-
-      #custom-vpn {
-        padding-right: 14px;
-      }
-
-      #custom-vpn.vpn-up {
-        color: #a8ff96;
-      }
-
-      #custom-vpn.vpn-down {
-        color: #585858;
+      /* ── Animations ── */
+      @keyframes blink {
+        50% { opacity: 0.5; }
       }
     '';
   };
