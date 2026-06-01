@@ -40,7 +40,7 @@
 
       export GOPATH="$XDG_DATA_HOME/go"
       export GO111MODULE=on
-      path=("$HOME/.local/bin" "$GOPATH/bin" "$HOME/.cargo/bin" $path)
+      path=("$HOME/.local/state/nix/profiles/home-manager/home-path/bin" "$HOME/.local/bin" "$GOPATH/bin" "$HOME/.cargo/bin" $path)
     '';
 
     initContent = lib.mkMerge [
