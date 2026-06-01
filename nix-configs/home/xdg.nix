@@ -23,7 +23,6 @@ in {
   xdg.dataFile."applications/mimeapps.list".force = true;
 
   xdg.configFile = {
-    "codex".source = link ".config/shared/codex";
     "fastfetch".source = link ".config/shared/fastfetch";
     "lazygit".source = link ".config/shared/lazygit";
     "nvim".source = link ".config/shared/nvim";
@@ -59,5 +58,6 @@ in {
   home.file = {
     ".gitconfig".source = link ".gitconfig";
     ".git_template/hooks".source = link ".git_template/hooks";
+    ".codex/config.toml".source = link ".config/shared/codex/config.toml";
   };
 }
