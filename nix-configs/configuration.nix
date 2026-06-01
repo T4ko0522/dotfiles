@@ -193,7 +193,6 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    codex
     fuzzel
     git
     gh
@@ -210,7 +209,6 @@
     vim
     vesktop
     xwayland-satellite
-    claude-code
     google-chrome
     prismlauncher
     spotify
