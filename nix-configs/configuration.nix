@@ -127,6 +127,7 @@
     GTK_IM_MODULE = "fcitx";
     QT_IM_MODULE = "fcitx";
     XMODIFIERS = "@im=fcitx";
+    __GL_MaxFramesAllowed = "1";
   };
 
   # Enable CUPS to print documents.
@@ -177,6 +178,15 @@
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
+  };
+
+  services.xserver.videoDrivers = [ "nvidia" ];
+
+  hardware.nvidia = {
+    modesetting.enable = true;
+    open = true;
+    nvidiaSettings = true;
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
 
   # Allow unfree packages

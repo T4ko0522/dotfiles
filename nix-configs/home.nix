@@ -68,6 +68,27 @@ in
     "wezterm".source = link ".config/shared/wezterm";
     "yazi".source = link ".config/shared/yazi";
     "zsh/rc".source = link ".config/nixos/zsh/rc";
+    "fcitx5/config".text = ''
+      [Hotkey]
+      EnumerateWithTriggerKeys=False
+      AltTriggerKeys=
+      EnumerateSkipFirst=False
+      ModifierOnlyKeyTimeout=250
+
+      [Hotkey/TriggerKeys]
+
+      [Hotkey/EnumerateForwardKeys]
+
+      [Hotkey/EnumerateBackwardKeys]
+
+      [Hotkey/EnumerateGroupForwardKeys]
+
+      [Hotkey/EnumerateGroupBackwardKeys]
+
+      [Hotkey/ActivateKeys]
+
+      [Hotkey/DeactivateKeys]
+    '';
     "niri/config.kdl".text = ''
       input {
           keyboard {
