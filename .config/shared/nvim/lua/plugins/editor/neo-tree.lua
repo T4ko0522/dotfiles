@@ -39,7 +39,7 @@ return {
           end
 
           vim.schedule(function()
-            vim.cmd("Neotree show")
+            require("neo-tree.command").execute({ action = "show" })
             vim.cmd("wincmd p") -- フォーカスを編集バッファ側に戻す
           end)
         end,
