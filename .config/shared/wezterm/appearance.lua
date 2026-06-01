@@ -5,7 +5,7 @@ local appearance = {
   color_scheme = "Catppuccin Mocha",
 
   -- タイトルバーとウィンドウボタン（最小化・最大化・閉じる）を非表示
-  window_decorations = "RESIZE",
+  window_decorations = "NONE",
   integrated_title_buttons = {},
   window_close_confirmation = "NeverPrompt", -- AlwaysPrompt or NeverPrompt
 

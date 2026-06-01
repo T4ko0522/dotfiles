@@ -4,6 +4,7 @@ add_newline = true
 # format
 # ----------------------------------------------------
 format = """
+$username\
 $directory\
 $git_branch\
 $git_status\
@@ -25,6 +26,12 @@ $time\
 # ----------------------------------------------------
 # left module
 # ----------------------------------------------------
+[username]
+show_always = true
+format = "[ $user ]($style)"
+style_user = 'bold fg:#cba6f7'
+style_root = 'bold fg:#f38ba8'
+
 [python]
 format = """
 [](fg:#f9e2af)\
