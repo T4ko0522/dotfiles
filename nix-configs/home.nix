@@ -8,5 +8,6 @@
     ./home/waybar.nix
     ./home/zsh.nix
     ./home/programs.nix
+    ./home/firefox.nix
   ];
 }
