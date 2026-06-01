@@ -10,38 +10,38 @@
     };
   };
 
-  outputs =
-    {
-      nixpkgs,
-      home-manager,
-      ...
-    }:
-    let
-      system = "x86_64-linux";
-      dotfilesDir = "/home/t4ko/dotfiles";
+  outputs = {
+    nixpkgs,
+    home-manager,
+    ...
+  }: let
+    system = "x86_64-linux";
+    dotfilesDir = "/home/t4ko/dotfiles";
 
-      nixos = nixpkgs.lib.nixosSystem {
-        inherit system;
-        modules = [
-          ./nix-configs/hardware-configuration.nix
-          home-manager.nixosModules.home-manager
-          ./nix-configs/configuration.nix
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.backupFileExtension = "hm-backup";
-            home-manager.extraSpecialArgs = {
-              inherit dotfilesDir;
-            };
-            home-manager.users.t4ko = import ./nix-configs/home.nix;
-          }
-        ];
+    nixos = nixpkgs.lib.nixosSystem {
+      inherit system;
+      specialArgs = {
+        inherit dotfilesDir;
       };
-    in
-    {
-      nixosConfigurations = {
-        nixos = nixos;
-        default = nixos;
-      };
+      modules = [
+        ./nix-configs/hardware-configuration.nix
+        home-manager.nixosModules.home-manager
+        ./nix-configs/configuration.nix
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.backupFileExtension = "hm-backup";
+          home-manager.extraSpecialArgs = {
+            inherit dotfilesDir;
+          };
+          home-manager.users.t4ko = import ./nix-configs/home.nix;
+        }
+      ];
     };
+  in {
+    nixosConfigurations = {
+      nixos = nixos;
+      default = nixos;
+    };
+  };
 }

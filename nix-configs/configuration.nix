@@ -3,6 +3,7 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 {
   config,
+  dotfilesDir,
   pkgs,
   ...
 }: {
@@ -219,6 +220,11 @@
     "nix-command"
     "flakes"
   ];
+
+  programs.nh = {
+    enable = true;
+    flake = dotfilesDir;
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
