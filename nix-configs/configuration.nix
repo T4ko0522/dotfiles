@@ -2,8 +2,10 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 {
+  ciBuild ? false,
   config,
   dotfilesDir,
+  lib,
   pkgs,
   ...
 }: {
@@ -170,19 +172,19 @@
 
   programs.zsh.enable = true;
 
-  programs.steam = {
+  programs.steam = lib.mkIf (!ciBuild) {
     enable = true;
     extraCompatPackages = with pkgs; [proton-ge-bin];
   };
 
   hardware.graphics = {
     enable = true;
-    enable32Bit = true;
+    enable32Bit = !ciBuild;
   };
 
-  services.xserver.videoDrivers = ["nvidia"];
+  services.xserver.videoDrivers = lib.mkIf (!ciBuild) ["nvidia"];
 
-  hardware.nvidia = {
+  hardware.nvidia = lib.mkIf (!ciBuild) {
     modesetting.enable = true;
     open = true;
     nvidiaSettings = true;
@@ -194,27 +196,30 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    fuzzel
-    git
-    gh
-    lazygit
-    nautilus
-    networkmanagerapplet
-    pavucontrol
-    playerctl
-    qt6Packages.fcitx5-configtool
-    linux-wallpaperengine
-    swaybg
-    swayidle
-    swaylock
-    vim
-    vesktop
-    xwayland-satellite
-    google-chrome
-    prismlauncher
-    spotify
-  ];
+  environment.systemPackages = with pkgs;
+    [
+      git
+      vim
+    ]
+    ++ lib.optionals (!ciBuild) [
+      fuzzel
+      gh
+      lazygit
+      nautilus
+      networkmanagerapplet
+      pavucontrol
+      playerctl
+      qt6Packages.fcitx5-configtool
+      linux-wallpaperengine
+      swaybg
+      swayidle
+      swaylock
+      vesktop
+      xwayland-satellite
+      google-chrome
+      prismlauncher
+      spotify
+    ];
 
   nix.settings.experimental-features = [
     "nix-command"
