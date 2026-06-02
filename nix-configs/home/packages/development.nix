@@ -12,6 +12,10 @@
     hyperfine
     kubectl
     pnpm
+    qmk
+    gcc-arm-embedded
+    dfu-util
+    avrdude
     terraform
     yarn
   ];

@@ -12,6 +12,7 @@
     swaybg
     swayidle
     swaylock
+    vial
     vesktop
     xwayland-satellite
     google-chrome

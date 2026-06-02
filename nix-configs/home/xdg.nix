@@ -50,8 +50,14 @@ in {
       [Hotkey/EnumerateGroupBackwardKeys]
 
       [Hotkey/ActivateKeys]
+      0=Henkan
+      1=Hangul
+      2=Hiragana_Katakana
 
       [Hotkey/DeactivateKeys]
+      0=Muhenkan
+      1=Hangul_Hanja
+      2=Eisu_toggle
     '';
   };
 
