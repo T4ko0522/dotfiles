@@ -8,14 +8,21 @@
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    vial-qmk = {
+      url = "git+https://github.com/vial-kb/vial-qmk?submodules=1";
+      flake = false;
+    };
   };
 
   outputs = {
     nixpkgs,
     home-manager,
+    vial-qmk,
     ...
   }: let
     system = "x86_64-linux";
+    pkgs = nixpkgs.legacyPackages.${system};
     dotfilesDir = "/home/t4ko/dotfiles";
 
     mkNixos = {
@@ -55,6 +62,22 @@
       nixos = nixos;
       default = nixos;
       nixos-ci = nixosCi;
+    };
+
+    devShells.${system} = {
+      default = pkgs.mkShell {
+        packages = with pkgs; [
+          avrdude
+          dfu-util
+          gcc-arm-embedded
+          git
+          gnumake
+          qmk
+          unzip
+        ];
+
+        VIAL_QMK_SRC = "${vial-qmk}";
+      };
     };
   };
 }

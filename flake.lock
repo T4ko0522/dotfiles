@@ -40,7 +40,26 @@
     "root": {
       "inputs": {
         "home-manager": "home-manager",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "vial-qmk": "vial-qmk"
+      }
+    },
+    "vial-qmk": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1779071400,
+        "narHash": "sha256-0+3L7dppthZT/e59/8cL7Vl4zfrYCMslh4PAfB7SFEI=",
+        "ref": "refs/heads/vial",
+        "rev": "888e3804d89dfadc130c2ba7fe4693046fb6883d",
+        "revCount": 29802,
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/vial-kb/vial-qmk"
+      },
+      "original": {
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/vial-kb/vial-qmk"
       }
     }
   },
