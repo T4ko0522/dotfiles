@@ -1,10 +1,10 @@
-{
+{keyboardLayout, ...}: {
   xdg.configFile."niri/config.kdl".text = ''
     input {
         keyboard {
             xkb {
-                layout "jp"
-                model "jp106"
+                layout "${keyboardLayout.xkbLayout}"
+                model "${keyboardLayout.xkbModel}"
             }
         }
 

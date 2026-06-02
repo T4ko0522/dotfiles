@@ -1,5 +1,6 @@
 {
   dotfilesDir,
+  keyboardLayout,
   pkgs,
   ...
 }: {
@@ -20,6 +21,8 @@
     LC_TELEPHONE = "ja_JP.UTF-8";
     LC_TIME = "ja_JP.UTF-8";
   };
+
+  console.keyMap = keyboardLayout.consoleKeyMap;
 
   users.users."t4ko" = {
     isNormalUser = true;
