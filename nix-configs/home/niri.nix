@@ -4,6 +4,7 @@
         keyboard {
             xkb {
                 layout "jp"
+                model "jp106"
             }
         }
 

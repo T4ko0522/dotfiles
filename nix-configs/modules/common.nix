@@ -25,6 +25,8 @@
     isNormalUser = true;
     description = "T4ko";
     extraGroups = [
+      "audio"
+      "input"
       "networkmanager"
       "plugdev"
       "wheel"

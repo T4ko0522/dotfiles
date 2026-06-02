@@ -55,6 +55,10 @@
   };
 
   services.xserver.enable = false;
+  services.xserver.xkb = {
+    layout = "jp";
+    model = "jp106";
+  };
   programs.niri.enable = true;
 
   services.greetd = {
