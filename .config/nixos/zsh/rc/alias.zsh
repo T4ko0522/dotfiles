@@ -1,6 +1,7 @@
 # common
+alias history='fc -l -10'
 alias v='nvim'
-alias ya='yazi'
+alias yz='yazi'
 alias cls='clear'
 alias ...='../../'
 alias ....='../../../'
