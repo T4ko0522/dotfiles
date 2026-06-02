@@ -8,6 +8,7 @@
     enable = true;
     dotDir = "${config.xdg.configHome}/zsh";
     defaultKeymap = "emacs";
+    enableCompletion = false;
 
     history = {
       path = "${config.xdg.configHome}/zsh/.zsh_history";
@@ -90,6 +91,8 @@
           done
         fi
 
+        zstyle ':autocomplete:*' list-lines 10
+        source ${pkgs.zsh-autocomplete}/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh
         source ${pkgs.zsh-autosuggestions}/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
         source ${pkgs.zsh-fast-syntax-highlighting}/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
       ''
