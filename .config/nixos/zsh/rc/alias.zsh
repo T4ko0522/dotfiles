@@ -1,5 +1,6 @@
 # common
 alias v='nvim'
+alias ya='yazi'
 alias cls='clear'
 alias ...='../../'
 alias ....='../../../'
