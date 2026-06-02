@@ -24,6 +24,12 @@
     system = "x86_64-linux";
     pkgs = nixpkgs.legacyPackages.${system};
     dotfilesDir = "/home/t4ko/dotfiles";
+    keyboardLayout = {
+      xkbLayout = "jp";
+      xkbModel = "jp106";
+      consoleKeyMap = "jp106";
+      fcitxLayout = "jp";
+    };
 
     mkNixos = {
       configuration,
@@ -32,7 +38,7 @@
       nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = {
-          inherit dotfilesDir;
+          inherit dotfilesDir keyboardLayout;
         };
         modules = [
           home-manager.nixosModules.home-manager
@@ -42,7 +48,7 @@
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "hm-backup";
             home-manager.extraSpecialArgs = {
-              inherit dotfilesDir;
+              inherit dotfilesDir keyboardLayout;
             };
             home-manager.users.t4ko = import homeConfiguration;
           }

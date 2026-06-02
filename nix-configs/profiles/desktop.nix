@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  keyboardLayout,
+  pkgs,
+  ...
+}: {
   i18n.inputMethod = {
     enable = true;
     type = "fcitx5";
@@ -12,16 +16,16 @@
       settings.inputMethod = {
         "Groups/0" = {
           Name = "Default";
-          "Default Layout" = "jp";
+          "Default Layout" = keyboardLayout.fcitxLayout;
           DefaultIM = "mozc";
         };
         "Groups/0/Items/0" = {
           Name = "keyboard-jp";
-          Layout = "";
+          Layout = keyboardLayout.fcitxLayout;
         };
         "Groups/0/Items/1" = {
           Name = "mozc";
-          Layout = "";
+          Layout = keyboardLayout.fcitxLayout;
         };
         GroupOrder."0" = "Default";
       };
@@ -55,10 +59,6 @@
   };
 
   services.xserver.enable = false;
-  services.xserver.xkb = {
-    layout = "jp";
-    model = "jp106";
-  };
   programs.niri.enable = true;
 
   services.greetd = {
