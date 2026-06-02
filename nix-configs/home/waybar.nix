@@ -5,9 +5,9 @@
       mainBar = {
         layer = "top";
         spacing = 0;
-        margin-top = 8;
-        margin-left = 8;
-        margin-right = 8;
+        margin-top = 10;
+        margin-left = 10;
+        margin-right = 10;
         on-sigusr2 = "show";
 
         modules-left = ["group/left"];
@@ -175,10 +175,12 @@
       /* Catppuccin Mocha */
       @define-color text #cdd6f4;
       @define-color accent #b4befe;
+      @define-color blue #89b4fa;
       @define-color base rgba(17, 17, 27, 0.92);
-      @define-color surface rgba(49, 50, 68, 0.95);
-      @define-color border rgba(180, 190, 254, 0.2);
-      @define-color hover rgba(180, 190, 254, 0.15);
+      @define-color surface rgba(30, 30, 46, 0.88);
+      @define-color surface-strong rgba(49, 50, 68, 0.94);
+      @define-color border rgba(180, 190, 254, 0.24);
+      @define-color hover rgba(137, 180, 250, 0.18);
       @define-color green #a6e3a1;
       @define-color yellow #f9e2af;
       @define-color red #f38ba8;
@@ -188,7 +190,7 @@
       * {
         font-family: "JetBrainsMono Nerd Font";
         font-weight: bold;
-        font-size: 15px;
+        font-size: 14px;
         color: @text;
         min-height: 0;
         padding: 0;
@@ -217,22 +219,22 @@
       #keyboard-state {
         background: @surface;
         border: 1px solid @border;
-        border-radius: 12px;
-        margin: 3px 3px;
-        padding: 4px 12px;
+        border-radius: 10px;
+        margin: 3px 4px;
+        padding: 5px 12px;
         color: @text;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.32);
       }
 
       /* ── Clock ── */
       #clock {
-        background: @surface;
+        background: @surface-strong;
         border: 1px solid @border;
-        border-radius: 16px;
-        padding: 5px 22px;
-        box-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
+        border-radius: 12px;
+        padding: 6px 22px;
+        box-shadow: 0 6px 22px rgba(0, 0, 0, 0.36);
         color: @accent;
-        font-size: 15px;
+        font-size: 14px;
       }
 
       /* ── Workspaces ── */
@@ -242,15 +244,15 @@
 
       #workspaces button {
         color: @muted;
-        padding: 2px 12px;
-        border-radius: 10px;
+        padding: 2px 11px;
+        border-radius: 8px;
         margin: 1px;
         min-width: 24px;
         transition: all 0.15s ease;
       }
 
       #workspaces button.active {
-        color: @accent;
+        color: @blue;
         background: @hover;
       }
 
@@ -292,10 +294,10 @@
 
       /* ── Taskbar ── */
       #wlr-taskbar button {
-        background: @surface;
+        background: transparent;
         padding: 3px 5px;
         margin: 2px 1px;
-        border-radius: 10px;
+        border-radius: 8px;
         min-width: 32px;
         min-height: 32px;
         transition: all 0.15s ease;
@@ -308,9 +310,9 @@
 
       /* ── Tooltip ── */
       tooltip {
-        background: @surface;
+        background: @surface-strong;
         border: 1px solid @border;
-        border-radius: 12px;
+        border-radius: 10px;
         color: @text;
         padding: 6px;
       }
@@ -321,9 +323,9 @@
 
       /* ── Menu ── */
       menu {
-        background: @surface;
+        background: @surface-strong;
         border: 1px solid @border;
-        border-radius: 12px;
+        border-radius: 10px;
       }
 
       menu menuitem {
