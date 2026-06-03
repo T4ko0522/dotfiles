@@ -84,7 +84,6 @@
         clip-to-geometry true
     }
 
-    spawn-at-startup "waybar"
     spawn-at-startup "xwayland-satellite"
     spawn-at-startup "fcitx5" "-d"
     ${config.t4ko.wallpaper.niriSpawnCommand}
