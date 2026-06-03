@@ -11,6 +11,7 @@
       addons = with pkgs; [
         fcitx5-mozc
         fcitx5-gtk
+        fcitx5-material-color
         qt6Packages.fcitx5-qt
       ];
       settings.inputMethod = {
