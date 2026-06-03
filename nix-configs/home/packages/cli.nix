@@ -3,11 +3,14 @@
     bat
     delta
     difftastic
+    doggo
     eza
     gcc
     ghq
     git-lfs
     gnumake
+    gping
+    just
     lsd
     ripgrep
     unzip
