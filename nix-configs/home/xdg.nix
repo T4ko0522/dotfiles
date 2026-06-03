@@ -64,6 +64,7 @@ in {
   home.file = {
     ".gitconfig".source = link ".gitconfig";
     ".git_template/hooks".source = link ".git_template/hooks";
+    ".codex/AGENTS.md".source = link "AGENTS.md";
     ".codex/config.toml".source = link ".config/shared/codex/config.toml";
     ".codex/rules/default.rules".source = link ".config/shared/codex/default.rules";
   };
