@@ -1,7 +1,7 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ./modules/common.nix
+    ./modules
     ./profiles/desktop.nix
     ./profiles/nvidia.nix
     ./profiles/gaming.nix
