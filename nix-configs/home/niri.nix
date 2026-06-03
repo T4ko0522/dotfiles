@@ -1,4 +1,8 @@
-{keyboardLayout, ...}: {
+{
+  config,
+  keyboardLayout,
+  ...
+}: {
   xdg.configFile."niri/config.kdl".text = ''
     input {
         keyboard {
@@ -83,7 +87,7 @@
     spawn-at-startup "waybar"
     spawn-at-startup "xwayland-satellite"
     spawn-at-startup "fcitx5" "-d"
-    spawn-at-startup "linux-wallpaperengine" "--assets-dir" "/home/t4ko/.local/share/Steam/steamapps/common/wallpaper_engine" "--screen-root" "DP-2" "--bg" "1810612745" "--screen-root" "HDMI-A-1" "--bg" "1810612745"
+    ${config.t4ko.wallpaper.niriSpawnCommand}
 
     environment {
         DISPLAY ":0"
