@@ -4,26 +4,39 @@
     settings = {
       mainBar = {
         layer = "top";
+        position = "top";
+        exclusive = true;
+        reload_style_on_change = true;
         spacing = 0;
-        margin-top = 10;
-        margin-left = 10;
-        margin-right = 10;
+        margin-top = 8;
+        margin-left = 8;
+        margin-right = 8;
         on-sigusr2 = "show";
 
-        modules-left = ["group/left"];
-        modules-center = ["clock"];
-        modules-right = ["group/right"];
+        modules-left = ["group/left1" "group/left2"];
+        modules-center = ["niri/workspaces" "memory" "cpu" "pulseaudio#output" "cava"];
+        modules-right = ["battery" "backlight" "temperature" "network" "pulseaudio#input" "bluetooth" "keyboard-state" "clock" "tray"];
 
-        "group/left" = {
+        "group/left1" = {
           orientation = "horizontal";
-          modules = ["custom/power" "custom/menu" "niri/workspaces" "tray"];
+          modules = ["custom/power" "custom/menu" "idle_inhibitor"];
           spacing = 0;
         };
 
-        "group/right" = {
+        "group/left2" = {
           orientation = "horizontal";
-          modules = ["wlr/taskbar" "pulseaudio" "backlight" "temperature" "battery" "network" "bluetooth" "keyboard-state"];
+          modules = ["wlr/taskbar"];
           spacing = 0;
+        };
+
+        idle_inhibitor = {
+          format = "{icon}";
+          tooltip-format-activated = "Stay Awake: ON";
+          tooltip-format-deactivated = "Stay Awake: OFF";
+          format-icons = {
+            activated = "󱎴";
+            deactivated = "󰷛";
+          };
         };
 
         keyboard-state = {
@@ -71,8 +84,54 @@
         };
 
         clock = {
-          format = "  {0:%H:%M}   {0:%a %d %b}";
+          format = "{0:%H:%M}  {0:%a %d %b}";
           tooltip-format = "<big><tt><small>{calendar}</small></tt></big>";
+        };
+
+        memory = {
+          interval = 5;
+          format = " {used:02.1f}GB";
+          tooltip-format = "Used {percentage}%\n{used:0.1f}GB/{total:0.1f}GB";
+          states = {
+            warning = 70;
+            critical = 85;
+          };
+        };
+
+        cpu = {
+          interval = 5;
+          format = " {usage:02}%";
+          tooltip = true;
+          states = {
+            warning = 70;
+            critical = 90;
+          };
+        };
+
+        cava = {
+          framerate = 30;
+          autosens = 1;
+          bars = 12;
+          lower_cutoff_freq = 50;
+          higher_cutoff_freq = 10000;
+          method = "pipewire";
+          source = "auto";
+          stereo = false;
+          reverse = false;
+          bar_delimiter = 0;
+          sleep_timer = 5;
+          hide_on_silence = false;
+          format_silent = "▁▁▁▁▁▁▁▁▁▁▁▁";
+          format-icons = [
+            "▁"
+            "▂"
+            "▃"
+            "▄"
+            "▅"
+            "▆"
+            "▇"
+            "█"
+          ];
         };
 
         temperature = {
@@ -105,14 +164,12 @@
           ];
         };
 
-        pulseaudio = {
+        "pulseaudio#output" = {
           on-click = "pavucontrol";
           format = "{icon} {volume}%";
           format-bluetooth = " {volume}%";
           format-bluetooth-muted = " ";
           format-muted = " ";
-          format-source = "";
-          format-source-muted = "";
           format-icons = {
             headphone = "";
             hands-free = "";
@@ -126,6 +183,17 @@
               ""
             ];
           };
+        };
+
+        "pulseaudio#input" = {
+          format = "{format_source}";
+          format-source = " {source_volume}%";
+          format-source-muted = "";
+          tooltip-format = "{format_source}";
+          scroll-step = 1;
+          max-volume = 100;
+          on-click = "pavucontrol";
+          on-click-right = "pamixer --default-source -t";
         };
 
         bluetooth = {
@@ -211,17 +279,23 @@
       #tray,
       #wlr-taskbar,
       #pulseaudio,
+      #pulseaudio.output,
+      #pulseaudio.input,
       #backlight,
       #temperature,
       #battery,
       #network,
       #bluetooth,
-      #keyboard-state {
+      #keyboard-state,
+      #idle_inhibitor,
+      #memory,
+      #cpu,
+      #cava {
         background: @surface;
         border: 1px solid @border;
         border-radius: 10px;
-        margin: 3px 4px;
-        padding: 5px 12px;
+        margin: 3px 3px;
+        padding: 5px 11px;
         color: @text;
         box-shadow: 0 5px 18px rgba(0, 0, 0, 0.32);
       }
@@ -235,6 +309,14 @@
         box-shadow: 0 6px 22px rgba(0, 0, 0, 0.36);
         color: @accent;
         font-size: 14px;
+      }
+
+      #cava {
+        color: @peach;
+        min-width: 74px;
+        letter-spacing: 1px;
+        padding-left: 12px;
+        padding-right: 12px;
       }
 
       /* ── Workspaces ── */
@@ -285,6 +367,16 @@
       #battery.critical {
         color: @red;
         animation: blink 1s step-end infinite;
+      }
+
+      #cpu.warning,
+      #memory.warning {
+        color: @yellow;
+      }
+
+      #cpu.critical,
+      #memory.critical {
+        color: @red;
       }
 
       /* ── Temperature ── */
