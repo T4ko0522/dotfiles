@@ -1,6 +1,9 @@
 # Neovim
 .luarc.json
 
+# temporary
+.temp/
+
 # Nix
 result
 result-*
