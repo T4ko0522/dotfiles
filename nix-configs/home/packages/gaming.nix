@@ -10,6 +10,7 @@
     })
     alcom
     osu-lazer-bin
+    polychromatic
     protonup-qt
     vrcx
     wineWow64Packages.stable
