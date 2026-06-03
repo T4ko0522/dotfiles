@@ -13,12 +13,15 @@
       url = "git+https://github.com/vial-kb/vial-qmk?submodules=1";
       flake = false;
     };
+
+    vicinae.url = "github:vicinaehq/vicinae";
   };
 
   outputs = {
     nixpkgs,
     home-manager,
     vial-qmk,
+    vicinae,
     ...
   }: let
     system = "x86_64-linux";
@@ -42,6 +45,7 @@
         };
         modules = [
           home-manager.nixosModules.home-manager
+          vicinae.nixosModules.default
           configuration
           {
             home-manager.useGlobalPkgs = true;
@@ -50,6 +54,7 @@
             home-manager.extraSpecialArgs = {
               inherit dotfilesDir keyboardLayout;
             };
+            home-manager.sharedModules = [vicinae.homeManagerModules.default];
             home-manager.users.t4ko = import homeConfiguration;
           }
         ];
