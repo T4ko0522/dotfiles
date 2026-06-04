@@ -5,6 +5,7 @@
     cava
     networkmanagerapplet
     pamixer
+    swaynotificationcenter
     waybar
     wl-clipboard
     xdg-utils

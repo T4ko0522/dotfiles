@@ -2,8 +2,7 @@
   config,
   keyboardLayout,
   ...
-}:
-{
+}: {
   xdg.configFile."niri/config.kdl".text = ''
     input {
         keyboard {
@@ -100,6 +99,7 @@
 
     spawn-at-startup "xwayland-satellite"
     spawn-at-startup "fcitx5" "-d"
+    spawn-at-startup "swaync"
     ${config.t4ko.wallpaper.niriSpawnCommand}
 
     environment {

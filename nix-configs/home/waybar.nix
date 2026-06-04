@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   programs.waybar = {
     enable = true;
     systemd.enable = true;
@@ -41,6 +40,7 @@
             "pulseaudio#input"
             "custom/separator"
             "bluetooth"
+            "custom/notification"
             "custom/clock"
             "custom/separator2"
             "tray"
@@ -59,7 +59,7 @@
 
         "group/left2" = {
           orientation = "horizontal";
-          modules = [ "mpris" ];
+          modules = ["mpris"];
         };
 
         "niri/workspaces" = {
@@ -266,6 +266,27 @@
           on-click = "blueman-manager";
         };
 
+        "custom/notification" = {
+          exec = "swaync-client -swb";
+          return-type = "json";
+          format = "{icon}";
+          format-icons = {
+            notification = "󱅫";
+            none = "󰂚";
+            dnd-notification = "󰂛";
+            dnd-none = "󰂛";
+            inhibited-notification = "󱅫";
+            inhibited-none = "󰂚";
+            dnd-inhibited-notification = "󰂛";
+            dnd-inhibited-none = "󰂛";
+          };
+          tooltip = true;
+          on-click = "swaync-client -t -sw";
+          on-click-right = "swaync-client -d -sw";
+          on-click-middle = "swaync-client -C";
+          escape = true;
+        };
+
         "pulseaudio#input" = {
           format-source = "";
           format-source-muted = "";
@@ -436,6 +457,7 @@
       #wlr-taskbar,
       #custom-menu,
       #custom-clock,
+      #custom-notification,
       #custom-separator,
       #custom-separator2,
       #custom-separator3,
@@ -484,8 +506,21 @@
 
       #battery,
       #bluetooth.connected,
+      #custom-notification.notification,
       #idle_inhibitor.activated {
         color: @mauve;
+      }
+
+      #custom-notification.notification,
+      #custom-notification.inhibited-notification {
+        animation: notify-bounce 1.4s ease-in-out infinite;
+      }
+
+      #custom-notification.dnd-none,
+      #custom-notification.dnd-notification,
+      #custom-notification.dnd-inhibited-none,
+      #custom-notification.dnd-inhibited-notification {
+        color: @overlay;
       }
 
       #tray {
@@ -560,6 +595,18 @@
         }
       }
 
+      @keyframes notify-bounce {
+        0% {
+          margin-top: 3px;
+        }
+        45% {
+          margin-top: 0;
+        }
+        100% {
+          margin-top: 3px;
+        }
+      }
+
       #battery.critical:not(.charging) {
         color: @red;
         animation: blink-recording 0.5s steps(12) infinite alternate;
@@ -577,7 +624,6 @@
     '';
   };
 
-  systemd.user.services.waybar.Service.ExecStartPre =
-    "${pkgs.runtimeShell} -c '${pkgs.procps}/bin/pkill -u %u -f \"(^|/)waybar($|[[:space:]])\" || true'";
+  systemd.user.services.waybar.Service.ExecStartPre = "${pkgs.runtimeShell} -c '${pkgs.procps}/bin/pkill -u %u -f \"(^|/)waybar($|[[:space:]])\" || true'";
   systemd.user.services.waybar.Unit.X-SwitchMethod = "restart";
 }
