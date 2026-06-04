@@ -3,11 +3,10 @@ return {
     "supermaven-inc/supermaven-nvim",
     event = "InsertEnter",
     opts = {
-      -- blink.cmp の <Tab> と競合させないため、独自キーに割当
       keymaps = {
-        accept_suggestion = "<C-l>", -- Ctrl+L で候補を確定
-        accept_word = "<C-j>", -- 1単語だけ確定
-        clear_suggestion = "<C-]>", -- 候補を消す
+        accept_suggestion = nil,
+        accept_word = nil,
+        clear_suggestion = nil,
       },
       ignore_filetypes = {
         TelescopePrompt = true,
@@ -21,7 +20,7 @@ return {
       },
       log_level = "warn",
       disable_inline_completion = false,
-      disable_keymaps = false,
+      disable_keymaps = true,
     },
   },
 }

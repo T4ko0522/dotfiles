@@ -16,6 +16,54 @@ keymap({ "n", "v" }, "P", '"+P', opts)
 keymap("i", "<C-a>", "<Home>", opts)
 keymap("i", "<C-e>", "<End>", opts)
 
+local function load_supermaven_preview()
+  pcall(function()
+    require("lazy").load({ plugins = { "supermaven-nvim" } })
+  end)
+
+  local ok, preview = pcall(require, "supermaven-nvim.completion_preview")
+  if ok then
+    return preview
+  end
+end
+
+local function accept_supermaven_suggestion()
+  local ai_accept = LazyVim and LazyVim.cmp and LazyVim.cmp.actions and LazyVim.cmp.actions.ai_accept
+  if ai_accept and ai_accept() then
+    return
+  end
+
+  local preview = load_supermaven_preview()
+  if preview and preview.has_suggestion() then
+    if LazyVim.create_undo then
+      LazyVim.create_undo()
+    end
+    vim.schedule(function()
+      preview.on_accept_suggestion()
+    end)
+    return
+  end
+
+  vim.notify("No Supermaven suggestion", vim.log.levels.WARN)
+end
+
+keymap("i", "<C-l>", accept_supermaven_suggestion, { noremap = true, silent = true, desc = "Accept Supermaven suggestion" })
+keymap("i", "<C-g>", accept_supermaven_suggestion, { noremap = true, silent = true, desc = "Accept Supermaven suggestion" })
+
+keymap("i", "<C-j>", function()
+  local preview = load_supermaven_preview()
+  if preview then
+    preview.on_accept_suggestion_word()
+  end
+end, { noremap = true, silent = true, desc = "Accept Supermaven word" })
+
+keymap("i", "<C-]>", function()
+  local preview = load_supermaven_preview()
+  if preview then
+    preview.on_dispose_inlay()
+  end
+end, { noremap = true, silent = true, desc = "Clear Supermaven suggestion" })
+
 -- Control + I と Tab をデフォルトの状態に戻す
 vim.api.nvim_set_keymap("n", "<C-i>", "<C-i>", { noremap = true })
 vim.api.nvim_set_keymap("i", "<C-i>", "<C-i>", { noremap = true })

@@ -6,6 +6,8 @@
 -- ノーマルモードの `,` (f/t の逆方向リピート) は失われるため、代替として ";," を割当
 vim.g.mapleader = ","
 vim.g.maplocalleader = "\\"
+-- Supermaven は blink.cmp の menu source ではなく inline ghost text として使う
+vim.g.ai_cmp = false
 vim.keymap.set({ "n", "x", "o" }, ";,", ",", { desc = "Repeat f/F/t/T (reverse)" })
 
 -- クリップボード連携を無効化（TextYankPostでヤンク時のみ連携する）
