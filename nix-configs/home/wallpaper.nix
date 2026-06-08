@@ -121,10 +121,10 @@ in {
       type = lib.types.attrsOf presetType;
       default = {
         safe = {
-          wallpaperId = cfg.wallpaperId;
+          inherit (cfg) wallpaperId;
         };
         chill = {
-          wallpaperId = cfg.wallpaperId;
+          inherit (cfg) wallpaperId;
           perMonitor = {
             DP-2 = "2886379581";
             HDMI-A-1 = "3043250625";
@@ -132,7 +132,7 @@ in {
           };
         };
         racing = {
-          wallpaperId = cfg.wallpaperId;
+          inherit (cfg) wallpaperId;
           perMonitor = {
             DP-2 = "3384344313";
             HDMI-A-1 = "3293839756";
@@ -140,7 +140,7 @@ in {
           };
         };
         blue-archive = {
-          wallpaperId = cfg.wallpaperId;
+          inherit (cfg) wallpaperId;
           perMonitor = {
             DP-2 = "3021003237";
             HDMI-A-1 = "3165339302";

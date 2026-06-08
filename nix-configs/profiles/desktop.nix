@@ -59,18 +59,31 @@
     emoji = ["Noto Color Emoji"];
   };
 
-  services.xserver.enable = false;
-  programs.niri.enable = true;
+  services = {
+    xserver.enable = false;
 
-  services.greetd = {
-    enable = true;
-    settings = {
-      default_session = {
-        command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd niri-session";
-        user = "greeter";
+    greetd = {
+      enable = true;
+      settings = {
+        default_session = {
+          command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd niri-session";
+          user = "greeter";
+        };
       };
     };
+
+    printing.enable = true;
+
+    pulseaudio.enable = false;
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+    };
   };
+
+  programs.niri.enable = true;
 
   xdg.portal = {
     enable = true;
@@ -81,6 +94,7 @@
   };
 
   security.polkit.enable = true;
+  security.rtkit.enable = true;
 
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
@@ -88,17 +102,6 @@
     GTK_IM_MODULE = "fcitx";
     QT_IM_MODULE = "fcitx";
     XMODIFIERS = "@im=fcitx";
-  };
-
-  services.printing.enable = true;
-
-  services.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
   };
 
   hardware.graphics.enable = true;

@@ -1,4 +1,4 @@
-{...}: let
+_: let
   c = import ../lib/catppuccin-mocha.nix;
 in {
   xdg.configFile."swaync/config.json".text = builtins.toJSON {

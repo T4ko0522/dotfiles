@@ -17,83 +17,81 @@
     vicinae.url = "github:vicinaehq/vicinae";
   };
 
-  outputs =
-    {
-      self,
-      nixpkgs,
-      home-manager,
-      vial-qmk,
-      vicinae,
-      ...
-    }:
-    let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-      dotfilesDir = self.outPath;
-      keyboardLayout = {
-        xkbLayout = "jp";
-        xkbModel = "jp106";
-        consoleKeyMap = "jp106";
-        fcitxLayout = "jp";
-      };
+  outputs = {
+    self,
+    nixpkgs,
+    home-manager,
+    vial-qmk,
+    vicinae,
+    ...
+  }: let
+    system = "x86_64-linux";
+    pkgs = nixpkgs.legacyPackages.${system};
+    dotfilesDir = self.outPath;
+    keyboardLayout = {
+      xkbLayout = "jp";
+      xkbModel = "jp106";
+      consoleKeyMap = "jp106";
+      fcitxLayout = "jp";
+    };
 
-      mkNixos =
-        {
-          configuration,
-          homeConfiguration,
-        }:
-        nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = {
-            inherit dotfilesDir keyboardLayout;
-          };
-          modules = [
-            home-manager.nixosModules.home-manager
-            vicinae.nixosModules.default
-            configuration
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.backupFileExtension = "hm-backup";
-              home-manager.extraSpecialArgs = {
+    mkNixos = {
+      configuration,
+      homeConfiguration,
+    }:
+      nixpkgs.lib.nixosSystem {
+        inherit system;
+        specialArgs = {
+          inherit dotfilesDir keyboardLayout;
+        };
+        modules = [
+          home-manager.nixosModules.home-manager
+          vicinae.nixosModules.default
+          configuration
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              backupFileExtension = "hm-backup";
+              extraSpecialArgs = {
                 inherit dotfilesDir keyboardLayout;
               };
-              home-manager.sharedModules = [ vicinae.homeManagerModules.default ];
-              home-manager.users.t4ko = import homeConfiguration;
-            }
-          ];
-        };
-
-      nixos = mkNixos {
-        configuration = ./nix-configs/configuration.nix;
-        homeConfiguration = ./nix-configs/home.nix;
-      };
-      nixosCi = mkNixos {
-        configuration = ./nix-configs/configuration-ci.nix;
-        homeConfiguration = ./nix-configs/home-ci.nix;
-      };
-    in
-    {
-      nixosConfigurations = {
-        nixos = nixos;
-        default = nixos;
-        nixos-ci = nixosCi;
+              sharedModules = [vicinae.homeManagerModules.default];
+              users.t4ko = import homeConfiguration;
+            };
+          }
+        ];
       };
 
-      devShells.${system} = {
-        default = pkgs.mkShell {
-          packages = with pkgs; [
-            avrdude
-            dfu-util
-            gcc-arm-embedded
-            git
-            gnumake
-            qmk
-            unzip
-          ];
+    nixos = mkNixos {
+      configuration = ./nix-configs/configuration.nix;
+      homeConfiguration = ./nix-configs/home.nix;
+    };
+    nixosCi = mkNixos {
+      configuration = ./nix-configs/configuration-ci.nix;
+      homeConfiguration = ./nix-configs/home-ci.nix;
+    };
+  in {
+    nixosConfigurations = {
+      inherit nixos;
+      default = nixos;
+      nixos-ci = nixosCi;
+    };
 
-          VIAL_QMK_SRC = "${vial-qmk}";
-        };
+    devShells.${system} = {
+      default = pkgs.mkShell {
+        packages = with pkgs; [
+          avrdude
+          dfu-util
+          gcc-arm-embedded
+          git
+          gnumake
+          qmk
+          unzip
+        ];
+
+        VIAL_QMK_SRC = "${vial-qmk}";
       };
     };
+  };
 }

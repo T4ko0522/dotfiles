@@ -5,33 +5,35 @@
 }: let
   link = path: config.lib.file.mkOutOfStoreSymlink "${dotfilesDir}/${path}";
 in {
-  xdg.mimeApps = {
-    enable = true;
-    defaultApplications = {
-      "inode/directory" = "org.gnome.Nautilus.desktop";
-      "text/html" = "google-chrome.desktop";
-      "x-scheme-handler/about" = "google-chrome.desktop";
-      "x-scheme-handler/claude-cli" = "claude-code-url-handler.desktop";
-      "x-scheme-handler/discord" = "vesktop.desktop";
-      "x-scheme-handler/http" = "google-chrome.desktop";
-      "x-scheme-handler/https" = "google-chrome.desktop";
-      "x-scheme-handler/unknown" = "google-chrome.desktop";
+  xdg = {
+    mimeApps = {
+      enable = true;
+      defaultApplications = {
+        "inode/directory" = "org.gnome.Nautilus.desktop";
+        "text/html" = "google-chrome.desktop";
+        "x-scheme-handler/about" = "google-chrome.desktop";
+        "x-scheme-handler/claude-cli" = "claude-code-url-handler.desktop";
+        "x-scheme-handler/discord" = "vesktop.desktop";
+        "x-scheme-handler/http" = "google-chrome.desktop";
+        "x-scheme-handler/https" = "google-chrome.desktop";
+        "x-scheme-handler/unknown" = "google-chrome.desktop";
+      };
     };
-  };
 
-  xdg.configFile."mimeapps.list".force = true;
-  xdg.dataFile."applications/mimeapps.list".force = true;
+    configFile = {
+      "mimeapps.list".force = true;
+      "fastfetch".source = link ".config/shared/fastfetch";
+      "lazygit".source = link ".config/shared/lazygit";
+      "nvim".source = link ".config/shared/nvim";
+      "starship.toml".source = link ".config/shared/starship.toml";
+      "vim".source = link ".config/shared/vim";
+      "wezterm".source = link ".config/shared/wezterm";
+      "yazi".source = link ".config/shared/yazi";
+      "zsh/rc".source = link ".config/nixos/zsh/rc";
+      "fcitx5/config".source = link ".config/nixos/fcitx5/config";
+    };
 
-  xdg.configFile = {
-    "fastfetch".source = link ".config/shared/fastfetch";
-    "lazygit".source = link ".config/shared/lazygit";
-    "nvim".source = link ".config/shared/nvim";
-    "starship.toml".source = link ".config/shared/starship.toml";
-    "vim".source = link ".config/shared/vim";
-    "wezterm".source = link ".config/shared/wezterm";
-    "yazi".source = link ".config/shared/yazi";
-    "zsh/rc".source = link ".config/nixos/zsh/rc";
-    "fcitx5/config".source = link ".config/nixos/fcitx5/config";
+    dataFile."applications/mimeapps.list".force = true;
   };
 
   home.file = {

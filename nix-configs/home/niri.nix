@@ -10,9 +10,9 @@
   renderMonitor = name: output: let
     parts =
       lib.optional (output.position != null)
-        "    position x=${toString output.position.x} y=${toString output.position.y}"
+      "    position x=${toString output.position.x} y=${toString output.position.y}"
       ++ lib.optional (output.transform != null)
-        "    transform \"${output.transform}\"";
+      "    transform \"${output.transform}\"";
   in
     lib.optionalString (parts != []) (
       "output \"${name}\" {\n"

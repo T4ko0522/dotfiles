@@ -3,30 +3,31 @@
   lib,
   ...
 }: {
-  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-    # Steam and gaming
-    "steam"
-    "steam-unwrapped"
-    "steam-original"
-    "steam-run"
-    "proton-ge-bin"
-    # Browsers
-    "brave"
-    "google-chrome"
-    # Media
-    "spotify"
-    "osu-lazer-bin"
-    # AI / LLM tools
-    "claude-code"
-    "codex"
-    "opencode"
-    # Infrastructure
-    "terraform"
-    # NVIDIA proprietary drivers
-    "nvidia-x11"
-    "nvidia-settings"
-    "nvidia-persistenced"
-  ];
+  nixpkgs.config.allowUnfreePredicate = pkg:
+    builtins.elem (lib.getName pkg) [
+      # Steam and gaming
+      "steam"
+      "steam-unwrapped"
+      "steam-original"
+      "steam-run"
+      "proton-ge-bin"
+      # Browsers
+      "brave"
+      "google-chrome"
+      # Media
+      "spotify"
+      "osu-lazer-bin"
+      # AI / LLM tools
+      "claude-code"
+      "codex"
+      "opencode"
+      # Infrastructure
+      "terraform"
+      # NVIDIA proprietary drivers
+      "nvidia-x11"
+      "nvidia-settings"
+      "nvidia-persistenced"
+    ];
 
   nix.settings = {
     experimental-features = [
