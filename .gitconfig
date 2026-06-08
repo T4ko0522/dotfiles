@@ -40,7 +40,7 @@
 	directory = %(prefix)///wsl.localhost/NixOS/home/takow/dotfiles
 [credential "https://github.com"]
 	helper = 
-	helper = !/nix/store/d0r9xzcpv8xcjds6z1w03wyqi6iv30af-gh-2.92.0/bin/.gh-wrapped auth git-credential
+	helper = !gh auth git-credential
 [credential "https://gist.github.com"]
 	helper = 
-	helper = !/nix/store/d0r9xzcpv8xcjds6z1w03wyqi6iv30af-gh-2.92.0/bin/.gh-wrapped auth git-credential
+	helper = !gh auth git-credential
