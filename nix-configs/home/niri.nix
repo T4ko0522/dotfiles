@@ -1,9 +1,56 @@
 {
   config,
+  lib,
   keyboardLayout,
   ...
-}: {
-  xdg.configFile."niri/config.kdl".text = ''
+}: let
+  c = import ../lib/catppuccin-mocha.nix;
+  cfg = config.t4ko.niri;
+
+  renderMonitor = name: output: let
+    parts =
+      lib.optional (output.position != null)
+        "    position x=${toString output.position.x} y=${toString output.position.y}"
+      ++ lib.optional (output.transform != null)
+        "    transform \"${output.transform}\"";
+  in
+    lib.optionalString (parts != []) (
+      "output \"${name}\" {\n"
+      + lib.concatMapStrings (p: p + "\n") parts
+      + "}\n\n"
+    );
+in {
+  options.t4ko.niri.monitors = lib.mkOption {
+    type = lib.types.attrsOf (lib.types.submodule {
+      options = {
+        position = lib.mkOption {
+          type = lib.types.nullOr (lib.types.submodule {
+            options = {
+              x = lib.mkOption {
+                type = lib.types.int;
+                default = 0;
+              };
+              y = lib.mkOption {
+                type = lib.types.int;
+                default = 0;
+              };
+            };
+          });
+          default = null;
+          description = "Monitor position.";
+        };
+        transform = lib.mkOption {
+          type = lib.types.nullOr lib.types.str;
+          default = null;
+          description = "Monitor transform (rotation), e.g. \"90\".";
+        };
+      };
+    });
+    default = {};
+    description = "Per-output niri monitor configuration.";
+  };
+
+  config.xdg.configFile."niri/config.kdl".text = ''
     input {
         keyboard {
             xkb {
@@ -22,7 +69,7 @@
         gaps 14
         center-focused-column "on-overflow"
         always-center-single-column
-        background-color "#11111b"
+        background-color "${c.crust}"
 
         preset-column-widths {
             proportion 0.33333
@@ -38,9 +85,9 @@
 
         border {
             width 3
-            active-gradient from="#89b4fa" to="#b4befe" angle=45 relative-to="workspace-view"
-            inactive-color "#313244"
-            urgent-color "#f38ba8"
+            active-gradient from="${c.blue}" to="${c.lavender}" angle=45 relative-to="workspace-view"
+            inactive-color "${c.surface}"
+            urgent-color "${c.red}"
         }
 
         shadow {
@@ -61,13 +108,13 @@
             position "top"
             gaps-between-tabs 2
             corner-radius 8
-            active-color "#b4befe"
-            inactive-color "#45475a"
-            urgent-color "#f38ba8"
+            active-color "${c.lavender}"
+            inactive-color "${c.surface1}"
+            urgent-color "${c.red}"
         }
 
         insert-hint {
-            gradient from="#89b4fa80" to="#b4befe80" angle=45 relative-to="workspace-view"
+            gradient from="${c.blue}80" to="${c.lavender}80" angle=45 relative-to="workspace-view"
         }
 
         struts {
@@ -77,19 +124,7 @@
         }
     }
 
-    output "DP-1" {
-        position x=3840 y=-840
-        transform "90"
-    }
-
-    output "DP-2" {
-        position x=0 y=0
-    }
-
-    output "HDMI-A-1" {
-        position x=1920 y=0
-    }
-
+    ${lib.concatStrings (lib.mapAttrsToList renderMonitor cfg.monitors)}
     prefer-no-csd
 
     window-rule {

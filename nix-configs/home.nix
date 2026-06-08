@@ -13,4 +13,26 @@
     ./home/firefox.nix
     ./home/vicinae.nix
   ];
+
+  t4ko.niri.monitors = {
+    "DP-1" = {
+      position = {
+        x = 3840;
+        y = -840;
+      };
+      transform = "90";
+    };
+    "DP-2" = {
+      position = {
+        x = 0;
+        y = 0;
+      };
+    };
+    "HDMI-A-1" = {
+      position = {
+        x = 1920;
+        y = 0;
+      };
+    };
+  };
 }
