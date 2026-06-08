@@ -15,6 +15,7 @@
     vial
     vesktop
     xwayland-satellite
+    brave
     google-chrome
     prismlauncher
     spotify
