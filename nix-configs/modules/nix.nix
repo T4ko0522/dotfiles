@@ -6,6 +6,7 @@
   nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
     # Steam and gaming
     "steam"
+    "steam-unwrapped"
     "steam-original"
     "steam-run"
     "proton-ge-bin"
