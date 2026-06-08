@@ -1,4 +1,6 @@
-{...}: {
+{...}: let
+  c = import ../lib/catppuccin-mocha.nix;
+in {
   xdg.configFile."swaync/config.json".text = builtins.toJSON {
     positionX = "right";
     positionY = "top";
@@ -40,13 +42,13 @@
 
   xdg.configFile."swaync/style.css".text = ''
     @define-color bg rgba(30, 30, 46, 0.96);
-    @define-color fg #cdd6f4;
-    @define-color surface #313244;
-    @define-color overlay #6c7086;
-    @define-color lavender #b4befe;
-    @define-color mauve #cba6f7;
-    @define-color yellow #f9e2af;
-    @define-color red #f38ba8;
+    @define-color fg ${c.fg};
+    @define-color surface ${c.surface};
+    @define-color overlay ${c.overlay};
+    @define-color lavender ${c.lavender};
+    @define-color mauve ${c.mauve};
+    @define-color yellow ${c.yellow};
+    @define-color red ${c.red};
 
     * {
       font-family: "JetBrainsMono Nerd Font";

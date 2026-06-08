@@ -1,4 +1,6 @@
-{pkgs, ...}: {
+{pkgs, ...}: let
+  c = import ../lib/catppuccin-mocha.nix;
+in {
   programs.waybar = {
     enable = true;
     systemd.enable = true;
@@ -74,9 +76,9 @@
         };
 
         "custom/separator2" = {
-          exec = "sh -c 'count=$(busctl --user get-property org.kde.StatusNotifierWatcher /StatusNotifierWatcher org.kde.StatusNotifierWatcher RegisteredStatusNotifierItems | sed -n \"s/^as \\([0-9]\\+\\).*/\\1/p\"); if [ \"\${count:-0}\" -gt 0 ]; then echo \"{\\\"text\\\":\\\"|\\\",\\\"class\\\":\\\"show\\\"}\"; else echo \"{\\\"text\\\":\\\"\\\",\\\"class\\\":\\\"hide\\\"}\"; fi'";
+          exec = "sh -c 'count=$(busctl --user get-property org.kde.StatusNotifierWatcher /StatusNotifierWatcher org.kde.StatusNotifierWatcher RegisteredStatusNotifierItems 2>/dev/null | sed -n \"s/^as \\([0-9]\\+\\).*/\\1/p\"); if [ \"\${count:-0}\" -gt 0 ]; then echo \"{\\\"text\\\":\\\"|\\\",\\\"class\\\":\\\"show\\\"}\"; else echo \"{\\\"text\\\":\\\"\\\",\\\"class\\\":\\\"hide\\\"}\"; fi'";
           return-type = "json";
-          interval = 2;
+          interval = 5;
         };
 
         "custom/separator3" = {
@@ -334,16 +336,16 @@
     style = ''
       /* Catppuccin Mocha */
       @define-color bg rgba(30, 30, 46, 0.95);
-      @define-color fg #cdd6f4;
-      @define-color mantle #181825;
-      @define-color surface #313244;
-      @define-color overlay #6c7086;
-      @define-color lavender #b4befe;
-      @define-color mauve #cba6f7;
-      @define-color green #a6e3a1;
-      @define-color yellow #f9e2af;
-      @define-color peach #fab387;
-      @define-color red #f38ba8;
+      @define-color fg ${c.fg};
+      @define-color mantle ${c.mantle};
+      @define-color surface ${c.surface};
+      @define-color overlay ${c.overlay};
+      @define-color lavender ${c.lavender};
+      @define-color mauve ${c.mauve};
+      @define-color green ${c.green};
+      @define-color yellow ${c.yellow};
+      @define-color peach ${c.peach};
+      @define-color red ${c.red};
 
       * {
         margin: 0;
