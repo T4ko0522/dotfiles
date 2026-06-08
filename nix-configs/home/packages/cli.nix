@@ -10,6 +10,7 @@
     git-lfs
     gnumake
     gping
+    gtop
     just
     lsd
     ripgrep

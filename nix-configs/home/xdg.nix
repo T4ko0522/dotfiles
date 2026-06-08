@@ -46,5 +46,11 @@ in {
     ".claude/agents".source = link ".config/shared/claude/agents";
     ".claude/skills".source = link ".config/shared/claude/skills";
     ".claude/statusline.sh".source = link ".config/shared/claude/statusline.sh";
+    # settings.json は共通 base (hooks なし) を Nix が生成する。
+    # Windows 固有の hooks は .config/windows/claude/ 側で setup_windows.ps1 がマージする。
+    ".claude/settings.json".text =
+      builtins.toJSON
+      (builtins.fromJSON
+        (builtins.readFile "${dotfilesDir}/.config/shared/claude/settings.json"));
   };
 }

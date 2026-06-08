@@ -10,7 +10,13 @@ $binDir = Join-Path $repo ".bin"
 # Dst: 相対パス → $homeDir 基準、絶対パス → そのまま使用
 $targets = @(
   @{ Src = ".gitconfig";            Dst = ".gitconfig" },
-  @{ Src = ".config/shared/claude";        Dst = ".claude" },
+  # Claude: 共通ファイルは個別リンク。settings.json は base+hooks を後段でマージ生成する。
+  @{ Src = ".config/shared/claude/CLAUDE.md";       Dst = ".claude/CLAUDE.md" },
+  @{ Src = ".config/shared/claude/agents";          Dst = ".claude/agents" },
+  @{ Src = ".config/shared/claude/skills";          Dst = ".claude/skills" },
+  @{ Src = ".config/shared/claude/statusline.sh";   Dst = ".claude/statusline.sh" },
+  @{ Src = ".config/shared/claude/claude-icon.svg"; Dst = ".claude/claude-icon.svg" },
+  @{ Src = ".config/windows/claude/ccwin-hook.ps1"; Dst = ".claude/ccwin-hook.ps1" },
   @{ Src = ".config/shared/codex";         Dst = ".codex" },
   @{ Src = ".config/shared/lazygit";       Dst = ".config/lazygit" },
   @{ Src = ".config/shared/mise";          Dst = ".config/mise" },
@@ -98,6 +104,15 @@ function New-Link($src, $dst, $isDir) {
   Copy-Item -LiteralPath $src -Destination $dst -Force
 }
 
+# 旧 setup は .claude をディレクトリ junction にしていた。ファイル単位リンクへ移行するため、
+# reparse point (junction/symlink) なら先に除去する。junction 内のファイルを個別 Remove すると
+# リンク先 (repo) を破壊するため、この事前除去が必須。
+$claudeHome = Join-Path $homeDir ".claude"
+$claudeItem = Get-Item -LiteralPath $claudeHome -Force -ErrorAction SilentlyContinue
+if ($claudeItem -and ($claudeItem.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+  Remove-ExistingPath -path $claudeHome | Out-Null
+}
+
 foreach ($entry in $targets) {
   $src = Join-Path $repo $entry.Src
   if (-not (Test-Path $src)) {
@@ -124,6 +139,26 @@ foreach ($entry in $targets) {
   $srcItem = Get-Item $src -Force
   New-Link -src $src -dst $dst -isDir $srcItem.PSIsContainer
   Write-Host "Linked: $dst -> $src"
+}
+
+# Claude settings.json: 共通 base に Windows 固有 hooks をマージして生成する。
+# (Linux/Nix 側は base をそのまま生成。hooks は Windows 専用のため setup でのみ合成)
+$claudeBase  = Join-Path $repo ".config/shared/claude/settings.json"
+$claudeHooks = Join-Path $repo ".config/windows/claude/settings.hooks.json"
+$claudeDst   = Join-Path $homeDir ".claude/settings.json"
+if ((Test-Path $claudeBase) -and (Test-Path $claudeHooks)) {
+  Remove-ExistingPath -path $claudeDst | Out-Null
+  $claudeParent = Split-Path -Parent $claudeDst
+  if (-not (Test-Path $claudeParent)) {
+    New-Item -ItemType Directory -Path $claudeParent -Force | Out-Null
+  }
+  $base  = Get-Content -LiteralPath $claudeBase  -Raw | ConvertFrom-Json
+  $hooks = Get-Content -LiteralPath $claudeHooks -Raw | ConvertFrom-Json
+  $base | Add-Member -NotePropertyName hooks -NotePropertyValue $hooks.hooks -Force
+  $base | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $claudeDst -Encoding UTF8
+  Write-Host "Generated: $claudeDst (shared base + windows hooks)"
+} else {
+  Write-Host "Skip Claude settings merge: missing base or hooks fragment" -ForegroundColor Yellow
 }
 
 # PowerShell profile: modules/ をjunctionでリンクし、プロファイルは最適化版を生成
