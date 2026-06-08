@@ -17,10 +17,6 @@
       # Media
       "spotify"
       "osu-lazer-bin"
-      # AI / LLM tools
-      "claude-code"
-      "codex"
-      "opencode"
       # Infrastructure
       "terraform"
       # NVIDIA proprietary drivers
@@ -34,8 +30,14 @@
       "nix-command"
       "flakes"
     ];
-    substituters = ["https://vicinae.cachix.org"];
-    trusted-public-keys = ["vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc="];
+    substituters = [
+      "https://vicinae.cachix.org"
+      "https://cache.numtide.com"
+    ];
+    trusted-public-keys = [
+      "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc="
+      "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+    ];
   };
 
   programs.nh = {

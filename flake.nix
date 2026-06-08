@@ -15,6 +15,8 @@
     };
 
     vicinae.url = "github:vicinaehq/vicinae";
+
+    llm-agents.url = "github:numtide/llm-agents.nix";
   };
 
   outputs = {
@@ -23,6 +25,7 @@
     home-manager,
     vial-qmk,
     vicinae,
+    llm-agents,
     ...
   }: let
     system = "x86_64-linux";
@@ -49,6 +52,7 @@
           vicinae.nixosModules.default
           configuration
           {
+            nixpkgs.overlays = [llm-agents.overlays.default];
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
