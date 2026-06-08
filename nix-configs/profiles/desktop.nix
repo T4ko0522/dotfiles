@@ -88,7 +88,6 @@
     GTK_IM_MODULE = "fcitx";
     QT_IM_MODULE = "fcitx";
     XMODIFIERS = "@im=fcitx";
-    __GL_MaxFramesAllowed = "1";
   };
 
   services.printing.enable = true;
