@@ -31,41 +31,18 @@ in {
     "wezterm".source = link ".config/shared/wezterm";
     "yazi".source = link ".config/shared/yazi";
     "zsh/rc".source = link ".config/nixos/zsh/rc";
-    "fcitx5/config".text = ''
-      [Hotkey]
-      EnumerateWithTriggerKeys=False
-      AltTriggerKeys=
-      EnumerateSkipFirst=False
-      ModifierOnlyKeyTimeout=250
-
-      [Hotkey/TriggerKeys]
-      0=Zenkaku_Hankaku
-
-      [Hotkey/EnumerateForwardKeys]
-
-      [Hotkey/EnumerateBackwardKeys]
-
-      [Hotkey/EnumerateGroupForwardKeys]
-
-      [Hotkey/EnumerateGroupBackwardKeys]
-
-      [Hotkey/ActivateKeys]
-      0=Henkan
-      1=Hangul
-      2=Hiragana_Katakana
-
-      [Hotkey/DeactivateKeys]
-      0=Muhenkan
-      1=Hangul_Hanja
-      2=Eisu_toggle
-    '';
+    "fcitx5/config".source = link ".config/nixos/fcitx5/config";
   };
 
   home.file = {
     ".gitconfig".source = link ".gitconfig";
     ".git_template/hooks".source = link ".git_template/hooks";
-    ".codex/AGENTS.md".source = link "AGENTS.md";
+    ".codex/AGENTS.md".source = link ".config/shared/codex/AGENTS.md";
     ".codex/config.toml".source = link ".config/shared/codex/config.toml";
     ".codex/rules/default.rules".source = link ".config/shared/codex/default.rules";
+    ".claude/CLAUDE.md".source = link ".config/shared/claude/CLAUDE.md";
+    ".claude/agents".source = link ".config/shared/claude/agents";
+    ".claude/skills".source = link ".config/shared/claude/skills";
+    ".claude/statusline.sh".source = link ".config/shared/claude/statusline.sh";
   };
 }
