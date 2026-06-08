@@ -9,7 +9,7 @@
       # ルート検索でファイルも表示する (file search)
       search_files_in_root = true;
 
-providers = {
+      providers = {
         # クリップボード履歴の監視を有効化 (clipboard history)
         clipboard = {
           preferences = {
