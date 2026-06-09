@@ -3,6 +3,9 @@ alias history='fc -l -10'
 alias v='nvim'
 alias yz='yazi'
 alias cls='clear'
+alias ct='/home/t4ko/Project/github.com/T4ko0522'
+alias la='lsd -lah'
+alias ..='../'
 alias ...='../../'
 alias ....='../../../'
 alias .....='../../../../'
@@ -33,6 +36,17 @@ function open {
     print -u2 'open: xdg-open or nautilus is required'
     return 127
   fi
+}
+
+function ghcd {
+  if ! command -v ghq >/dev/null 2>&1 || ! command -v fzf >/dev/null 2>&1; then
+    print -u2 'ghcd: ghq and fzf are required'
+    return 127
+  fi
+
+  local src
+  src=$(ghq list | fzf --preview 'bat --color=always --style=header,grid --line-range :80 "$(ghq root)"/{}/README.* 2>/dev/null') || return
+  [[ -n "$src" ]] && cd "$(ghq root)/$src"
 }
 
 hash -d xdata="$XDG_DATA_HOME"
