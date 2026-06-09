@@ -8,6 +8,7 @@
     ./home/wallpaper.nix
     ./home/swaync.nix
     ./home/waybar.nix
+    ./home/razer.nix
     ./home/zsh.nix
     ./home/programs.nix
     ./home/firefox.nix
