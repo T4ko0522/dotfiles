@@ -43,7 +43,7 @@ in {
             "custom/separator"
             "bluetooth"
             "custom/notification"
-            "custom/clock"
+            "clock"
             "custom/separator2"
             "tray"
           ];
@@ -320,10 +320,12 @@ in {
           on-click-right = "pamixer -t";
         };
 
-        "custom/clock" = {
-          exec = "date +'%H:%M %p' | tr '[:upper:]' '[:lower:]'";
+        clock = {
           interval = 60;
-          tooltip = false;
+          locale = "ja_JP.UTF-8";
+          format = "{:%H:%M %p}";
+          tooltip-format = "{:%Y/%m/%d}";
+          on-click = "gsimplecal";
         };
 
         tray = {
@@ -458,7 +460,7 @@ in {
       #pulseaudio.input,
       #wlr-taskbar,
       #custom-menu,
-      #custom-clock,
+      #clock,
       #custom-notification,
       #custom-separator,
       #custom-separator2,
@@ -502,7 +504,7 @@ in {
         transition: all 0.25s ease;
       }
 
-      #custom-clock {
+      #clock {
         color: @lavender;
       }
 

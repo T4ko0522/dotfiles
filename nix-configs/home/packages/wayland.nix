@@ -3,6 +3,7 @@
     blueman
     brightnessctl
     cava
+    gsimplecal
     networkmanagerapplet
     pamixer
     swaynotificationcenter

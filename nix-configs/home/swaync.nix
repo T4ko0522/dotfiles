@@ -50,6 +50,15 @@ in {
     @define-color yellow ${c.yellow};
     @define-color red ${c.red};
 
+    @keyframes swaync-timeout {
+      from {
+        background-position: 0% bottom;
+      }
+      to {
+        background-position: 100% bottom;
+      }
+    }
+
     * {
       font-family: "JetBrainsMono Nerd Font";
       font-size: 12px;
@@ -77,23 +86,34 @@ in {
     }
 
     .notification {
-      background: alpha(@surface, 0.92);
+      background-color: alpha(@surface, 0.92);
+      background-image: linear-gradient(to right, @mauve 50%, alpha(@mauve, 0) 50%);
+      background-repeat: no-repeat;
+      background-size: 200% 3px;
+      background-position: 0% bottom;
       border: 1px solid alpha(@lavender, 0.18);
       border-radius: 10px;
       padding: 10px;
       box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
-      transition: background 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+      animation: swaync-timeout 8s linear forwards;
+    }
+
+    .notification.low {
+      animation-duration: 4s;
     }
 
     .notification:hover {
-      background: alpha(@surface, 0.98);
+      background-color: alpha(@surface, 0.98);
       border-color: alpha(@mauve, 0.42);
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.36);
     }
 
     .notification.critical {
+      background-image: none;
       border-color: alpha(@red, 0.72);
       box-shadow: 0 0 0 2px alpha(@red, 0.28), 0 8px 24px rgba(0, 0, 0, 0.36);
+      animation: none;
     }
 
     .notification-content {
