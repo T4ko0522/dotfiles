@@ -19,6 +19,8 @@
       "osu-lazer-bin"
       # Infrastructure
       "terraform"
+      # LLM agents
+      "claude-code"
       # NVIDIA proprietary drivers
       "nvidia-x11"
       "nvidia-settings"
