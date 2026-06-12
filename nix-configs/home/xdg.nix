@@ -3,20 +3,25 @@
   dotfilesDir,
   ...
 }: let
-  link = path: config.lib.file.mkOutOfStoreSymlink "${dotfilesDir}/${path}";
+  # mkOutOfStoreSymlink は「store の外にある書き込み可能な実体」を指すための関数。
+  # dotfilesDir (= self.outPath) は store 内 (読み取り専用) なので、ここでは
+  # ライブの作業ツリー (~/dotfiles) を基準にしてシンボリックリンクを張る。
+  # これにより codex などが config.toml へ実行時状態を書き戻せるようになる。
+  link = path: config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/${path}";
 in {
   xdg = {
     mimeApps = {
       enable = true;
       defaultApplications = {
+        "application/xhtml+xml" = "brave-browser.desktop";
         "inode/directory" = "org.gnome.Nautilus.desktop";
-        "text/html" = "google-chrome.desktop";
-        "x-scheme-handler/about" = "google-chrome.desktop";
+        "text/html" = "brave-browser.desktop";
+        "x-scheme-handler/about" = "brave-browser.desktop";
         "x-scheme-handler/claude-cli" = "claude-code-url-handler.desktop";
         "x-scheme-handler/discord" = "vesktop.desktop";
-        "x-scheme-handler/http" = "google-chrome.desktop";
-        "x-scheme-handler/https" = "google-chrome.desktop";
-        "x-scheme-handler/unknown" = "google-chrome.desktop";
+        "x-scheme-handler/http" = "brave-browser.desktop";
+        "x-scheme-handler/https" = "brave-browser.desktop";
+        "x-scheme-handler/unknown" = "brave-browser.desktop";
       };
     };
 

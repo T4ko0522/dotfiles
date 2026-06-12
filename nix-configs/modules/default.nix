@@ -6,5 +6,6 @@
     ./nix.nix
     ./qmk.nix
     ./users.nix
+    ./xkb.nix
   ];
 }
