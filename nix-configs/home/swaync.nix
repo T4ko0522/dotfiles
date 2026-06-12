@@ -21,7 +21,7 @@ in {
     fit-to-screen = true;
     keyboard-shortcuts = true;
     image-visibility = "when-available";
-    transition-time = 180;
+    transition-time = 300;
     hide-on-clear = false;
     hide-on-action = true;
     script-fail-notify = true;
@@ -71,13 +71,13 @@ in {
       border-radius: 12px;
       box-shadow: 0 10px 32px rgba(0, 0, 0, 0.36);
       padding: 10px;
-      transition: margin 180ms cubic-bezier(0.2, 0.9, 0.2, 1), opacity 180ms ease;
+      transition: margin 300ms cubic-bezier(0.2, 0.9, 0.2, 1), opacity 300ms ease;
     }
 
     .notification-row {
       outline: none;
       margin: 0 0 8px 0;
-      transition: margin 180ms cubic-bezier(0.2, 0.9, 0.2, 1), opacity 180ms ease;
+      transition: margin 300ms cubic-bezier(0.2, 0.9, 0.2, 1), opacity 300ms ease, transform 300ms cubic-bezier(0.2, 0.9, 0.2, 1);
     }
 
     .notification-row:focus,
@@ -95,7 +95,7 @@ in {
       border-radius: 10px;
       padding: 10px;
       box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
-      transition: border-color 160ms ease, box-shadow 160ms ease;
+      transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, opacity 300ms ease, transform 300ms cubic-bezier(0.2, 0.9, 0.2, 1);
       animation: swaync-timeout 8s linear forwards;
     }
 
