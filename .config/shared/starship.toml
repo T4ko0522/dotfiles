@@ -56,6 +56,15 @@ format = """
 """
 style = 'bold fg:#313244 bg:#cba6f7'
 read_only_style = 'bold fg:#313244 bg:#cba6f7'
+[directory.substitutions]
+"~/Project/github.com/" = " "
+"Project/github.com/" = " "
+"~/Project/github.com" = ""
+"Project/github.com" = ""
+"~/Project/gitlab.com/" = " "
+"Project/gitlab.com/" = " "
+"~/Project/gitlab.com" = ""
+"Project/gitlab.com" = ""
 
 [direnv]
 disabled = false
