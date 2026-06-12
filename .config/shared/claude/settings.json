@@ -71,7 +71,8 @@
     }
   },
   "language": "Japanese",
-  "effortLevel": "xhigh",
+  "model": "claude-fable-5",
+  "effortLevel": "low",
   "autoUpdatesChannel": "stable",
   "voice": {
     "enabled": false,
