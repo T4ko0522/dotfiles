@@ -1,6 +1,72 @@
 {pkgs, ...}: let
   c = import ../lib/catppuccin-mocha.nix;
+  powerMenu = pkgs.writeShellScriptBin "waybar-power-menu" ''
+    if ${pkgs.procps}/bin/pgrep -u "$USER" -x nwg-bar >/dev/null; then
+      ${pkgs.procps}/bin/pkill -u "$USER" -x nwg-bar
+      exit 0
+    fi
+
+    exec ${pkgs.nwg-bar}/bin/nwg-bar -p top -f -a middle -mt 34 -i 34 -t power-menu.json -s power-menu.css
+  '';
 in {
+  xdg.configFile = {
+    "nwg-bar/power-menu.json".text = builtins.toJSON [
+      {
+        label = "_Sleep";
+        exec = "${pkgs.systemd}/bin/systemctl suspend";
+        icon = "${pkgs.nwg-bar}/share/nwg-bar/images/system-suspend.svg";
+      }
+      {
+        label = "_Reboot";
+        exec = "${pkgs.systemd}/bin/systemctl reboot";
+        icon = "${pkgs.nwg-bar}/share/nwg-bar/images/system-reboot.svg";
+      }
+      {
+        label = "_Shutdown";
+        exec = "${pkgs.systemd}/bin/systemctl poweroff";
+        icon = "${pkgs.nwg-bar}/share/nwg-bar/images/system-shutdown.svg";
+      }
+    ];
+
+    "nwg-bar/power-menu.css".text = ''
+      window {
+        background-color: transparent;
+      }
+
+      #outer-box {
+        margin: 0;
+      }
+
+      #inner-box {
+        background-color: rgba(24, 24, 37, 0.94);
+        border: 1px solid rgba(180, 190, 254, 0.22);
+        border-radius: 8px;
+        box-shadow: 0 16px 44px rgba(17, 17, 27, 0.55);
+        margin: 0;
+        padding: 8px;
+      }
+
+      button,
+      image {
+        background: transparent;
+        border: none;
+        box-shadow: none;
+      }
+
+      button {
+        color: ${c.fg};
+        margin: 0 3px;
+        padding: 8px 14px;
+        border-radius: 6px;
+      }
+
+      button:hover {
+        background-color: rgba(203, 166, 247, 0.18);
+        color: ${c.lavender};
+      }
+    '';
+  };
+
   programs.waybar = {
     enable = true;
     systemd.enable = true;
@@ -89,8 +155,8 @@ in {
 
         "custom/power" = {
           format = "";
-          tooltip-format = "Power menu\nLeft: turn off monitors\nRight: quit niri";
-          on-click = "niri msg action power-off-monitors";
+          tooltip-format = "Power menu\nLeft: choose shutdown, reboot, or sleep\nRight: quit niri";
+          on-click = "${powerMenu}/bin/waybar-power-menu";
           on-click-right = "niri msg action quit";
         };
 
