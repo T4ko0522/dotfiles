@@ -7,10 +7,10 @@
   Mod+V { spawn "vicinae" "deeplink" "vicinae://launch/clipboard/history"; }
   Mod+Q { close-window; }
 
-  Mod+Left { focus-column-left; }
-  Mod+Down { focus-window-down; }
-  Mod+Up { focus-window-up; }
-  Mod+Right { focus-column-right; }
+  Mod+Left { move-column-left; }
+  Mod+Down { move-window-down; }
+  Mod+Up { move-window-up; }
+  Mod+Right { move-column-right; }
   Mod+H { focus-column-left; }
   Mod+J { focus-window-down; }
   Mod+K { focus-window-up; }
@@ -20,12 +20,10 @@
   Mod+Ctrl+Down { move-window-down; }
   Mod+Ctrl+Up { move-window-up; }
   Mod+Ctrl+Right { move-column-right; }
-  Mod+Ctrl+H { move-column-left; }
+  Mod+Ctrl+H { move-window-to-monitor-left; }
   Mod+Ctrl+J { move-window-down; }
   Mod+Ctrl+K { move-window-up; }
-  Mod+Ctrl+L { move-column-right; }
-  Mod+Shift+H { move-window-to-monitor-left; }
-  Mod+Shift+L { move-window-to-monitor-right; }
+  Mod+Ctrl+L { move-window-to-monitor-right; }
 
   Mod+Page_Down { focus-workspace-down; }
   Mod+Page_Up { focus-workspace-up; }
