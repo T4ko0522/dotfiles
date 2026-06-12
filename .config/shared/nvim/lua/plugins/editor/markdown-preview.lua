@@ -2,7 +2,9 @@ return {
   "iamcco/markdown-preview.nvim",
   cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
   ft = { "markdown" },
-  build = "cd app && ./install.sh",
+  -- NixOS ではプリビルドバイナリ (動的リンク) が動かないため、node 実行用に依存だけ入れる。
+  -- bin/ を消しておかないと executable() 判定でプリビルド側が優先される (autoload/mkdp/rpc.vim)。
+  build = "cd app && rm -rf bin && yarn install --frozen-lockfile",
   init = function()
     vim.g.mkdp_filetypes = { "markdown" }
     vim.g.mkdp_auto_close = 0
