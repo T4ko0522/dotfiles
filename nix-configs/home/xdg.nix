@@ -1,8 +1,4 @@
-{
-  config,
-  dotfilesDir,
-  ...
-}: let
+{config, ...}: let
   # mkOutOfStoreSymlink は「store の外にある書き込み可能な実体」を指すための関数。
   # dotfilesDir (= self.outPath) は store 内 (読み取り専用) なので、ここでは
   # ライブの作業ツリー (~/dotfiles) を基準にしてシンボリックリンクを張る。
@@ -51,11 +47,9 @@ in {
     ".claude/agents".source = link ".config/shared/claude/agents";
     ".claude/skills".source = link ".config/shared/claude/skills";
     ".claude/statusline.sh".source = link ".config/shared/claude/statusline.sh";
-    # settings.json は共通 base (hooks なし) を Nix が生成する。
+    # settings.json は claude 自身が model/effort などを書き戻すため、
+    # store 生成ではなく作業ツリーへの書き込み可能リンクにする。
     # Windows 固有の hooks は .config/windows/claude/ 側で setup_windows.ps1 がマージする。
-    ".claude/settings.json".text =
-      builtins.toJSON
-      (builtins.fromJSON
-        (builtins.readFile "${dotfilesDir}/.config/shared/claude/settings.json"));
+    ".claude/settings.json".source = link ".config/shared/claude/settings.json";
   };
 }
