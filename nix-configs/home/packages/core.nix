@@ -4,6 +4,7 @@
     fastfetch
     fd
     fzf
+    ghostty
     jq
     lazygit
     neovim
