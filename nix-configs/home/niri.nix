@@ -164,7 +164,7 @@ in {
     }
 
     spawn-at-startup "xwayland-satellite"
-    spawn-at-startup "fcitx5" "-d"
+    spawn-at-startup "sh" "-c" "sleep 2 && fcitx5 -rd"
     spawn-at-startup "swaync"
     ${config.t4ko.wallpaper.niriSpawnCommand}
 
