@@ -18,6 +18,7 @@ in {
     swaynotificationcenterWithSlideDismiss
     waybar
     wl-clipboard
+    xwayland-satellite
     xdg-utils
   ];
 }
