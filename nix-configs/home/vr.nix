@@ -27,4 +27,11 @@
     log = ["${config.xdg.dataHome}/Steam/logs"];
     runtime = ["${pkgs.opencomposite}/lib/opencomposite"];
   };
+
+  # VRChat の写真は Proton prefix(438100) 内の Windows ピクチャに保存される。
+  # 毎回辿るのは面倒なので ~/Pictures/VRChat から辿れるようにする。
+  # mkOutOfStoreSymlink で nix store を経由せず可変パスへ直接 symlink を張る。
+  home.file."Pictures/VRChat".source =
+    config.lib.file.mkOutOfStoreSymlink
+    "${config.home.homeDirectory}/.local/share/Steam/steamapps/compatdata/438100/pfx/drive_c/users/steamuser/Pictures/VRChat";
 }
