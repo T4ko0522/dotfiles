@@ -15,14 +15,13 @@ config.font = wezterm.font_with_fallback({
 	"PlemolJP Console NF",
 	"Cascadia Mono",
 })
+config.warn_about_missing_glyphs = false
 
 -- GPU レンダラー
 config.front_end = "OpenGL"
 
--- komorebi 等のタイル WM とのリサイズ ping-pong 抑止
--- (WM_SIZE 再入による ntdll スタックオーバーフロー 0xc00000fd 対策)
-config.adjust_window_size_when_changing_font_size = false
-config.use_resize_increments = false
+config.adjust_window_size_when_changing_font_size = true
+config.use_resize_increments = true
 
 -- 背景の透過度
 config.window_background_opacity = 0.7
