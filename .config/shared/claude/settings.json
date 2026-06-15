@@ -79,6 +79,5 @@
   },
   "skipDangerousModePermissionPrompt": true,
   "theme": "dark-daltonized",
-  "voiceEnabled": false,
-  "model": "sonnet"
+  "voiceEnabled": false
 }

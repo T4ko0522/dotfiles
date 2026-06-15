@@ -17,6 +17,9 @@
       # Media
       "spotify"
       "osu-lazer-bin"
+      # VRChat avatar tooling
+      "unityhub"
+      "corefonts"
       # Infrastructure
       "terraform"
       # LLM agents

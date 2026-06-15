@@ -9,6 +9,7 @@
       ];
     })
     alcom
+    unityhub
     osu-lazer-bin
     polychromatic
     protonup-qt
