@@ -1,0 +1,56 @@
+name: Checks
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  syntax:
+    name: Nix syntax
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Check Nix syntax
+        run: |
+          git ls-files '*.nix' \
+            | xargs -r -n1 nix-instantiate --parse --quiet >/dev/null
+
+  alejandra:
+    name: Alejandra
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Check formatting
+        run: nix run nixpkgs#alejandra -- --check .
+
+  nixos:
+    name: NixOS build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Build CI NixOS configuration
+        run: nix build .#nixosConfigurations.nixos-ci.config.system.build.toplevel

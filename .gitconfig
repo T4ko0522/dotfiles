@@ -38,3 +38,9 @@
 	name = T4ko0522
 [safe]
 	directory = %(prefix)///wsl.localhost/NixOS/home/takow/dotfiles
+[credential "https://github.com"]
+	helper = 
+	helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !gh auth git-credential

@@ -2,7 +2,7 @@
 
 key table に入っていない通常状態で常時有効なキーバインド。
 
-定義箇所: [`.config/wezterm/keymaps.lua`](../../../.config/wezterm/keymaps.lua) の `keys` テーブル
+定義箇所: [`.config/shared/wezterm/keymaps.lua`](../../../.config/shared/wezterm/keymaps.lua) の `keys` テーブル
 
 ## コマンドパレット / 設定
 
@@ -20,7 +20,7 @@ key table に入っていない通常状態で常時有効なキーバインド�
 | `Ctrl+v` | クリップボードから貼り付け |
 | `Ctrl+Shift+Space` | QuickSelect 起動（URL / git hash / IP / path 等を 1 文字キーで選択） |
 
-QuickSelect の追加パターンは [`wezterm.lua`](../../../.config/wezterm/wezterm.lua) の `config.quick_select_patterns` で定義可能（現在は未設定で WezTerm 既定パターンのみ）。
+QuickSelect の追加パターンは [`wezterm.lua`](../../../.config/shared/wezterm/wezterm.lua) の `config.quick_select_patterns` で定義可能（現在は未設定で WezTerm 既定パターンのみ）。
 
 ## フォントサイズ
 

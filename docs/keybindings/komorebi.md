@@ -1,6 +1,6 @@
 # komorebi + whkd キーバインド
 
-設定ファイル: [`.config/whkdrc`](../../.config/whkdrc) / [`.config/komorebi/komorebi.json`](../../.config/komorebi/komorebi.json)
+設定ファイル: [`.config/windows/whkdrc`](../../.config/windows/whkdrc) / [`.config/windows/komorebi/komorebi.json`](../../.config/windows/komorebi/komorebi.json)
 
 前提:
 
@@ -38,7 +38,7 @@
 
 ### 起動スクリプト
 
-pwsh 起動時 ([`.config/powershell/conf.d/startup.ps1`](../../.config/powershell/conf.d/startup.ps1)) に komorebi が未起動なら [`.config/komorebi/komorebi_start.ps1`](../../.config/komorebi/komorebi_start.ps1) が走り、モニター適応 → komorebi/whkd 起動 → [`morning_setup.ps1`](../../.config/komorebi/morning_setup.ps1) による常用アプリ一括起動まで一気通貫で行う (`workspace_rules` が配置を担当)。2 回目以降の pwsh タブ起動では komorebi の生存を socket 応答で確認し、何もしない。
+pwsh 起動時 ([`.config/windows/powershell/conf.d/startup.ps1`](../../.config/windows/powershell/conf.d/startup.ps1)) に komorebi が未起動なら [`.config/windows/komorebi/komorebi_start.ps1`](../../.config/windows/komorebi/komorebi_start.ps1) が走り、モニター適応 → komorebi/whkd 起動 → [`morning_setup.ps1`](../../.config/windows/komorebi/morning_setup.ps1) による常用アプリ一括起動まで一気通貫で行う (`workspace_rules` が配置を担当)。2 回目以降の pwsh タブ起動では komorebi の生存を socket 応答で確認し、何もしない。
 
 ## 基本
 

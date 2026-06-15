@@ -10,29 +10,35 @@ $binDir = Join-Path $repo ".bin"
 # Dst: 相対パス → $homeDir 基準、絶対パス → そのまま使用
 $targets = @(
   @{ Src = ".gitconfig";            Dst = ".gitconfig" },
-  @{ Src = ".config/claude";        Dst = ".claude" },
-  @{ Src = ".config/codex";         Dst = ".codex" },
-  @{ Src = ".config/lazygit";       Dst = ".config/lazygit" },
-  @{ Src = ".config/mise";          Dst = ".config/mise" },
-  @{ Src = ".config/nvim";          Dst = (Join-Path $localDir "nvim") },
-  @{ Src = ".config/vim";           Dst = ".config/vim" },
-  @{ Src = ".config/wezterm";       Dst = ".config/wezterm" },
-  @{ Src = ".config/yazi";          Dst = (Join-Path $roamingDir "yazi\config") },
-  @{ Src = ".config/starship.toml"; Dst = ".config/starship.toml" },
-  @{ Src = ".config/ccwin-notify";  Dst = ".config/ccwin-notify" },
-  @{ Src = ".config/yasb";          Dst = ".config/yasb" },
-  @{ Src = ".config/cava";          Dst = ".config/cava" },
-  @{ Src = ".config/fastfetch";     Dst = ".config/fastfetch" },
-  @{ Src = ".config/komorebi/komorebi.json";     Dst = "komorebi.json" },
-  @{ Src = ".config/komorebi/komorebi.bar.json"; Dst = "komorebi.bar.json" },
-  @{ Src = ".config/komorebi/applications.json"; Dst = "applications.json" },
-  @{ Src = ".config/whkdrc";        Dst = ".config/whkdrc" },
-  @{ Src = ".config/vscode/settings.json";    Dst = (Join-Path $roamingDir "Code\User\settings.json") },
-  @{ Src = ".config/vscode/keybindings.json"; Dst = (Join-Path $roamingDir "Code\User\keybindings.json") },
-  @{ Src = ".config/vscode/snippets";         Dst = (Join-Path $roamingDir "Code\User\snippets") },
-  @{ Src = ".config/zed/settings.json";       Dst = (Join-Path $roamingDir "Zed\settings.json") },
-  @{ Src = ".config/zed/keymap.json";         Dst = (Join-Path $roamingDir "Zed\keymap.json") },
-  @{ Src = ".config/zed/tasks.json";          Dst = (Join-Path $roamingDir "Zed\tasks.json") }
+  # Claude: 共通ファイルは個別リンク。settings.json は base+hooks を後段でマージ生成する。
+  @{ Src = ".config/shared/claude/CLAUDE.md";       Dst = ".claude/CLAUDE.md" },
+  @{ Src = ".config/shared/claude/agents";          Dst = ".claude/agents" },
+  @{ Src = ".config/shared/claude/skills";          Dst = ".claude/skills" },
+  @{ Src = ".config/shared/claude/statusline.sh";   Dst = ".claude/statusline.sh" },
+  @{ Src = ".config/shared/claude/claude-icon.svg"; Dst = ".claude/claude-icon.svg" },
+  @{ Src = ".config/windows/claude/ccwin-hook.ps1"; Dst = ".claude/ccwin-hook.ps1" },
+  @{ Src = ".config/shared/codex";         Dst = ".codex" },
+  @{ Src = ".config/shared/lazygit";       Dst = ".config/lazygit" },
+  @{ Src = ".config/shared/mise";          Dst = ".config/mise" },
+  @{ Src = ".config/shared/nvim";          Dst = (Join-Path $localDir "nvim") },
+  @{ Src = ".config/shared/vim";           Dst = ".config/vim" },
+  @{ Src = ".config/shared/wezterm";       Dst = ".config/wezterm" },
+  @{ Src = ".config/shared/yazi";          Dst = (Join-Path $roamingDir "yazi\config") },
+  @{ Src = ".config/shared/starship.toml"; Dst = ".config/starship.toml" },
+  @{ Src = ".config/shared/fastfetch";     Dst = ".config/fastfetch" },
+  @{ Src = ".config/windows/ccwin-notify";  Dst = ".config/ccwin-notify" },
+  @{ Src = ".config/windows/yasb";          Dst = ".config/yasb" },
+  @{ Src = ".config/windows/cava";          Dst = ".config/cava" },
+  @{ Src = ".config/windows/komorebi/komorebi.json";     Dst = "komorebi.json" },
+  @{ Src = ".config/windows/komorebi/komorebi.bar.json"; Dst = "komorebi.bar.json" },
+  @{ Src = ".config/windows/komorebi/applications.json"; Dst = "applications.json" },
+  @{ Src = ".config/windows/whkdrc";        Dst = ".config/whkdrc" },
+  @{ Src = ".config/shared/vscode/settings.json";    Dst = (Join-Path $roamingDir "Code\User\settings.json") },
+  @{ Src = ".config/shared/vscode/keybindings.json"; Dst = (Join-Path $roamingDir "Code\User\keybindings.json") },
+  @{ Src = ".config/shared/vscode/snippets";         Dst = (Join-Path $roamingDir "Code\User\snippets") },
+  @{ Src = ".config/shared/zed/settings.json";       Dst = (Join-Path $roamingDir "Zed\settings.json") },
+  @{ Src = ".config/shared/zed/keymap.json";         Dst = (Join-Path $roamingDir "Zed\keymap.json") },
+  @{ Src = ".config/shared/zed/tasks.json";          Dst = (Join-Path $roamingDir "Zed\tasks.json") }
 )
 
 function Remove-ExistingPath($path) {
@@ -98,6 +104,15 @@ function New-Link($src, $dst, $isDir) {
   Copy-Item -LiteralPath $src -Destination $dst -Force
 }
 
+# 旧 setup は .claude をディレクトリ junction にしていた。ファイル単位リンクへ移行するため、
+# reparse point (junction/symlink) なら先に除去する。junction 内のファイルを個別 Remove すると
+# リンク先 (repo) を破壊するため、この事前除去が必須。
+$claudeHome = Join-Path $homeDir ".claude"
+$claudeItem = Get-Item -LiteralPath $claudeHome -Force -ErrorAction SilentlyContinue
+if ($claudeItem -and ($claudeItem.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+  Remove-ExistingPath -path $claudeHome | Out-Null
+}
+
 foreach ($entry in $targets) {
   $src = Join-Path $repo $entry.Src
   if (-not (Test-Path $src)) {
@@ -126,8 +141,28 @@ foreach ($entry in $targets) {
   Write-Host "Linked: $dst -> $src"
 }
 
+# Claude settings.json: 共通 base に Windows 固有 hooks をマージして生成する。
+# (Linux/Nix 側は base をそのまま生成。hooks は Windows 専用のため setup でのみ合成)
+$claudeBase  = Join-Path $repo ".config/shared/claude/settings.json"
+$claudeHooks = Join-Path $repo ".config/windows/claude/settings.hooks.json"
+$claudeDst   = Join-Path $homeDir ".claude/settings.json"
+if ((Test-Path $claudeBase) -and (Test-Path $claudeHooks)) {
+  Remove-ExistingPath -path $claudeDst | Out-Null
+  $claudeParent = Split-Path -Parent $claudeDst
+  if (-not (Test-Path $claudeParent)) {
+    New-Item -ItemType Directory -Path $claudeParent -Force | Out-Null
+  }
+  $base  = Get-Content -LiteralPath $claudeBase  -Raw | ConvertFrom-Json
+  $hooks = Get-Content -LiteralPath $claudeHooks -Raw | ConvertFrom-Json
+  $base | Add-Member -NotePropertyName hooks -NotePropertyValue $hooks.hooks -Force
+  $base | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $claudeDst -Encoding UTF8
+  Write-Host "Generated: $claudeDst (shared base + windows hooks)"
+} else {
+  Write-Host "Skip Claude settings merge: missing base or hooks fragment" -ForegroundColor Yellow
+}
+
 # PowerShell profile: modules/ をjunctionでリンクし、プロファイルは最適化版を生成
-$profileSrc = Join-Path $repo ".config/powershell"
+$profileSrc = Join-Path $repo ".config/windows/powershell"
 $documentsDir = [Environment]::GetFolderPath("MyDocuments")
 $profileDst = Join-Path $documentsDir "PowerShell"
 if (Test-Path -LiteralPath $profileSrc) {

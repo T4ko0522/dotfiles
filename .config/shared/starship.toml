@@ -1,0 +1,110 @@
+add_newline = true
+
+# ----------------------------------------------------
+# format
+# ----------------------------------------------------
+format = """
+$username\
+$directory\
+$git_branch\
+$git_status\
+$direnv\
+$python\
+$aws\
+$fill\
+$cmd_duration\
+$time\
+\n$character\
+"""
+
+# Enable if it appears on the same line as the command
+# right_format = """
+# $cmd_duration\
+# $time\
+# """
+
+# ----------------------------------------------------
+# left module
+# ----------------------------------------------------
+[username]
+show_always = true
+format = "[ $user ]($style)"
+style_user = 'bold fg:#cba6f7'
+style_root = 'bold fg:#f38ba8'
+
+[python]
+format = """
+[](fg:#f9e2af)\
+[$virtualenv]($style)\
+[](fg:#f9e2af)\
+"""
+style = "bold fg:#313244 bg:#f9e2af"
+
+[fill]
+symbol = '─'
+[directory]
+truncation_length = 6
+truncation_symbol = ' '
+truncate_to_repo = false
+home_symbol = '~'
+read_only = ' 󰌾 '
+format = """
+[](fg:#cba6f7)\
+[$path]($style)\
+[$read_only]($read_only_style)\
+[](fg:#cba6f7)\
+"""
+style = 'bold fg:#313244 bg:#cba6f7'
+read_only_style = 'bold fg:#313244 bg:#cba6f7'
+[directory.substitutions]
+"~/Project/github.com/" = " "
+"Project/github.com/" = " "
+"~/Project/github.com" = ""
+"Project/github.com" = ""
+"~/Project/gitlab.com/" = " "
+"Project/gitlab.com/" = " "
+"~/Project/gitlab.com" = ""
+"Project/gitlab.com" = ""
+
+[direnv]
+disabled = false
+format = """
+[](fg:#b4befe)\
+[$symbol$allowed]($style)\
+[](fg:#b4befe)\
+"""
+style = "bold fg:#313244 bg:#b4befe"
+
+[git_branch]
+symbol = ""
+style = "fg:#b4befe bg:#1d2230"
+format = """
+[](fg:#1d2230)\
+[$symbol $branch]($style)\
+"""
+
+[git_status]
+style = "fg:#b4befe bg:#1d2230"
+format = """
+[$all_status$ahead_behind]($style)\
+[](fg:#1d2230)\
+"""
+
+# ----------------------------------------------------
+# right module
+# ----------------------------------------------------
+[cmd_duration]
+min_time = 1
+style = 'fg:#fab387'
+format = "[ $duration]($style)" # nf-pl-right_soft_divider, nf-mdi-clock
+
+[time]
+disabled = false
+time_format = "%R" # Hour:Minute Format
+format = '[[  $time](fg:#b4befe)]($style)'
+
+# ----------------------------------------------------
+# prompt module
+# ----------------------------------------------------
+[character]
+vimcmd_symbol = '[V](bold green) '

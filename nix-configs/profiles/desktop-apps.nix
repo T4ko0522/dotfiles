@@ -1,0 +1,23 @@
+{pkgs, ...}: {
+  environment.systemPackages = with pkgs; [
+    fuzzel
+    gh
+    lazygit
+    nautilus
+    networkmanagerapplet
+    pavucontrol
+    playerctl
+    qt6Packages.fcitx5-configtool
+    linux-wallpaperengine
+    swaybg
+    swayidle
+    swaylock
+    vial
+    vesktop
+    xwayland-satellite
+    brave
+    google-chrome
+    prismlauncher
+    spotify
+  ];
+}

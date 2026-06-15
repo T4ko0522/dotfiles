@@ -2,10 +2,10 @@
 
 設定ファイル:
 
-- [`.config/wezterm/wezterm.lua`](../../../.config/wezterm/wezterm.lua) — エントリポイント
-- [`.config/wezterm/keymaps.lua`](../../../.config/wezterm/keymaps.lua) — グローバル / `tab_ops` / `pane_ops` / `resize_pane` / `activate_pane` / `copy_mode`
-- [`.config/wezterm/workspace.lua`](../../../.config/wezterm/workspace.lua) — ワークスペース / `workspace_mode`
-- [`.config/wezterm/modules/opacity.lua`](../../../.config/wezterm/modules/opacity.lua) — `setting_mode`
+- [`.config/shared/wezterm/wezterm.lua`](../../../.config/shared/wezterm/wezterm.lua) — エントリポイント
+- [`.config/shared/wezterm/keymaps.lua`](../../../.config/shared/wezterm/keymaps.lua) — グローバル / `tab_ops` / `pane_ops` / `resize_pane` / `activate_pane` / `copy_mode`
+- [`.config/shared/wezterm/workspace.lua`](../../../.config/shared/wezterm/workspace.lua) — ワークスペース / `workspace_mode`
+- [`.config/shared/wezterm/modules/opacity.lua`](../../../.config/shared/wezterm/modules/opacity.lua) — `setting_mode`
 
 ## 前提
 
