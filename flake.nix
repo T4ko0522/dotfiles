@@ -67,8 +67,12 @@
         ];
       };
 
-    nixos = mkNixos {
-      configuration = ./nix-configs/configuration.nix;
+    laptop = mkNixos {
+      configuration = ./nix-configs/hosts/laptop;
+      homeConfiguration = ./nix-configs/home.nix;
+    };
+    desktop = mkNixos {
+      configuration = ./nix-configs/hosts/desktop;
       homeConfiguration = ./nix-configs/home.nix;
     };
     nixosCi = mkNixos {
@@ -77,8 +81,8 @@
     };
   in {
     nixosConfigurations = {
-      inherit nixos;
-      default = nixos;
+      inherit laptop desktop;
+      default = laptop;
       nixos-ci = nixosCi;
     };
 
