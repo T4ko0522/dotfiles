@@ -1,6 +1,7 @@
 {
   imports = [
     ./base.nix
+    ./bluetooth.nix
     ./kernel.nix
     ./locale.nix
     ./nix.nix
