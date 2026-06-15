@@ -10,6 +10,14 @@ in {
       enable = true;
       defaultApplications = {
         "application/xhtml+xml" = "brave-browser.desktop";
+        "image/avif" = "imv.desktop";
+        "image/bmp" = "imv.desktop";
+        "image/gif" = "imv.desktop";
+        "image/jpeg" = "imv.desktop";
+        "image/png" = "imv.desktop";
+        "image/svg+xml" = "imv.desktop";
+        "image/tiff" = "imv.desktop";
+        "image/webp" = "imv.desktop";
         "inode/directory" = "org.gnome.Nautilus.desktop";
         "text/html" = "brave-browser.desktop";
         "x-scheme-handler/about" = "brave-browser.desktop";
