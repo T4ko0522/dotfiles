@@ -17,6 +17,11 @@
     vicinae.url = "github:vicinaehq/vicinae";
 
     llm-agents.url = "github:numtide/llm-agents.nix";
+
+    spotify-cli = {
+      url = "github:T4ko0522/spotify-cli";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -26,6 +31,7 @@
     vial-qmk,
     vicinae,
     llm-agents,
+    spotify-cli,
     ...
   }: let
     system = "x86_64-linux";
@@ -52,7 +58,10 @@
           vicinae.nixosModules.default
           configuration
           {
-            nixpkgs.overlays = [llm-agents.overlays.default];
+            nixpkgs.overlays = [
+              llm-agents.overlays.default
+              spotify-cli.overlays.default
+            ];
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;

@@ -14,6 +14,7 @@
     just
     lsd
     ripgrep
+    spotify-cli
     unzip
     zoxide
   ];

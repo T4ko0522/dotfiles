@@ -176,8 +176,29 @@
         "home-manager": "home-manager",
         "llm-agents": "llm-agents",
         "nixpkgs": "nixpkgs_2",
+        "spotify-cli": "spotify-cli",
         "vial-qmk": "vial-qmk",
         "vicinae": "vicinae"
+      }
+    },
+    "spotify-cli": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1781551804,
+        "narHash": "sha256-qkI8UlELcQzHnP8rx4v0P7M+tbcr2cv9o1eWAFBcAZE=",
+        "owner": "T4ko0522",
+        "repo": "spotify-cli",
+        "rev": "88a15945653bb616290405ff2842416e7d70f160",
+        "type": "github"
+      },
+      "original": {
+        "owner": "T4ko0522",
+        "repo": "spotify-cli",
+        "type": "github"
       }
     },
     "systems": {
