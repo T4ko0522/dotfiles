@@ -1,8 +1,8 @@
 default:
   @just --list
 
-os-switch:
-  nh os switch .#default
+os-switch host="laptop":
+  nh os switch . -H {{host}}
 
 fmt:
   alejandra .
@@ -13,8 +13,8 @@ syntax:
 lint:
   statix check .
 
-build:
-  nix build .#nixosConfigurations.nixos.config.system.build.toplevel
+build host="laptop":
+  nix build .#nixosConfigurations.{{host}}.config.system.build.toplevel
 
 ci: syntax
   alejandra --check .
