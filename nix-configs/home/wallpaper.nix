@@ -3,8 +3,7 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   cfg = config.t4ko.wallpaper;
   presetType = lib.types.submodule {
     options = {
@@ -21,7 +20,7 @@ let
 
       perMonitor = lib.mkOption {
         type = lib.types.attrsOf lib.types.str;
-        default = { };
+        default = {};
         description = "Wallpaper Engine wallpaper IDs keyed by monitor name. Overrides wallpaperId for matching monitors.";
       };
 
@@ -34,38 +33,37 @@ let
             "default"
           ]
         );
-        default = { };
+        default = {};
         description = "linux-wallpaperengine scaling modes keyed by monitor name.";
       };
     };
   };
   selectedPreset = cfg.presets.${cfg.activePreset};
-  mkPresetMonitors = preset: if preset.monitors == null then cfg.monitors else preset.monitors;
+  mkPresetMonitors = preset:
+    if preset.monitors == null
+    then cfg.monitors
+    else preset.monitors;
   selectedMonitors = mkPresetMonitors selectedPreset;
   mkWallpaperIdForMonitor = preset: monitor: preset.perMonitor.${monitor} or preset.wallpaperId;
-  mkScalingArgsForMonitor =
-    preset: monitor:
+  mkScalingArgsForMonitor = preset: monitor:
     lib.optionalString (lib.hasAttr monitor preset.perMonitorScaling) ''"--scaling" "${
-      preset.perMonitorScaling.${monitor}
-    }"'';
-  mkScreenArgs =
-    preset: monitors:
+        preset.perMonitorScaling.${monitor}
+      }"'';
+  mkScreenArgs = preset: monitors:
     lib.concatMapStringsSep " " (
-      monitor:
-      ''"--screen-root" "${monitor}" "--bg" "${mkWallpaperIdForMonitor preset monitor}"${mkScalingArgsForMonitor preset monitor}''
-    ) monitors;
+      monitor: ''"--screen-root" "${monitor}" "--bg" "${mkWallpaperIdForMonitor preset monitor}"${mkScalingArgsForMonitor preset monitor}''
+    )
+    monitors;
   screenArgs = mkScreenArgs selectedPreset selectedMonitors;
-  mkPresetScriptCase =
-    name: preset:
-    let
-      monitors = mkPresetMonitors preset;
-      args = lib.concatStringsSep " " (
-        [
-          "--assets-dir"
-          cfg.assetsDir
-        ]
-        ++ lib.concatMap (
-          monitor:
+  mkPresetScriptCase = name: preset: let
+    monitors = mkPresetMonitors preset;
+    args = lib.concatStringsSep " " (
+      [
+        "--assets-dir"
+        cfg.assetsDir
+      ]
+      ++ lib.concatMap (
+        monitor:
           [
             "--screen-root"
             monitor
@@ -76,14 +74,14 @@ let
             "--scaling"
             preset.perMonitorScaling.${monitor}
           ]
-        ) monitors
-      );
-    in
-    ''
-      ${lib.escapeShellArg name})
-        args=${lib.escapeShellArg args}
-        ;;
-    '';
+      )
+      monitors
+    );
+  in ''
+    ${lib.escapeShellArg name})
+      args=${lib.escapeShellArg args}
+      ;;
+  '';
   wallpaperPresetCommand = pkgs.writeShellApplication {
     name = "wallpaper-preset";
     runtimeInputs = [
@@ -113,8 +111,7 @@ let
       systemd-run --user --collect --unit "wallpaper-preset-$preset" linux-wallpaperengine $args
     '';
   };
-in
-{
+in {
   options.t4ko.wallpaper = {
     wallpaperId = lib.mkOption {
       type = lib.types.str;
@@ -192,9 +189,9 @@ in
       }
     ];
 
-    home.packages = [ wallpaperPresetCommand ];
+    home.packages = [wallpaperPresetCommand];
 
-    home.activation.disableWallpaperEngineAutostart = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    home.activation.disableWallpaperEngineAutostart = lib.hm.dag.entryAfter ["writeBoundary"] ''
       we_config="$HOME/.local/share/Steam/steamapps/common/wallpaper_engine/config.json"
       if [ -f "$we_config" ]; then
         ${pkgs.gnused}/bin/sed -i \
