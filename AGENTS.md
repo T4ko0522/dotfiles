@@ -4,7 +4,7 @@
 
 ## コマンド
 
-- 設定を適用: `just os-switch`
+- 設定を適用: `just os-switch <host>`（host 省略時は `laptop`。例: `just os-switch desktop`）
 - Nix ファイルを整形: `just fmt`
 - Nix 構文チェック: `just syntax`
 - Nix lint: `just lint`
@@ -26,9 +26,8 @@ GitHub Actions は `.github/workflows/checks.yml` で以下を実行します。
 ## 構成
 
 - `flake.nix`: flake inputs と `nixosConfigurations` を定義します。
-- `nix-configs/configuration.nix`: 通常の NixOS 構成の入口です。
+- `nix-configs/hosts/`: ホスト別の構成入口です。`laptop/`・`desktop/` があり、各 `default.nix` と `hardware-configuration.nix` を持ちます。自動生成由来の hardware 設定は目的なしに整理しないでください。
 - `nix-configs/configuration-ci.nix`: CI build 用の最小構成です。
-- `nix-configs/hardware-configuration.nix`: ハードウェア設定です。自動生成由来の内容なので、目的なしに整理しないでください。
 - `nix-configs/modules/`: NixOS 共通基盤モジュールです。
 - `nix-configs/profiles/`: desktop、gaming、nvidia など用途別の NixOS profile です。
 - `nix-configs/home/`: Home Manager 設定です。
@@ -40,8 +39,9 @@ GitHub Actions は `.github/workflows/checks.yml` で以下を実行します。
 
 現在の flake は `x86_64-linux` 向けです。
 
-- `nixosConfigurations.nixos`: 通常構成
-- `nixosConfigurations.default`: `nixos` の alias
+- `nixosConfigurations.laptop`: laptop ホスト構成
+- `nixosConfigurations.desktop`: desktop ホスト構成
+- `nixosConfigurations.default`: `laptop` の alias
 - `nixosConfigurations.nixos-ci`: CI 用構成
 - `devShells.x86_64-linux.default`: QMK/Vial 作業用 shell
 
@@ -68,7 +68,6 @@ GitHub Actions は `.github/workflows/checks.yml` で以下を実行します。
 
 - ユーザーの未 commit 変更を勝手に戻さないでください。
 - `flake.lock` の `"version": 7` は lock file 形式のバージョンです。Linux kernel version ではありません。
-- Linux kernel は `nix-configs/modules/kernel.nix` で指定します。
 - Home Manager package を追加する場合は、system package と user package のどちらに置くべきか確認してください。個人用 GUI/CLI は通常 `nix-configs/home/packages/` 側です。
 - `dogdns` のように nixpkgs で削除済みの package は、評価エラーの案内に従って代替 package を使ってください。
 - secrets や token を tracked file に追加しないでください。
@@ -85,6 +84,6 @@ just ci
 package 追加や NixOS module 変更では、必要に応じて以下も確認します。
 
 ```sh
-nix eval .#nixosConfigurations.nixos.config.home-manager.users.t4ko.home.packages --apply 'xs: builtins.length xs'
-nix eval .#nixosConfigurations.nixos.config.boot.kernelPackages.kernel.version --raw
+nix eval .#nixosConfigurations.default.config.home-manager.users.t4ko.home.packages --apply 'xs: builtins.length xs'
+nix eval .#nixosConfigurations.default.config.boot.kernelPackages.kernel.version --raw
 ```
