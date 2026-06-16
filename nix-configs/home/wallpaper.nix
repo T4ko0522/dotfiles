@@ -38,23 +38,101 @@
       };
     };
   };
-  selectedPreset = cfg.presets.${cfg.activePreset};
   mkPresetMonitors = preset:
     if preset.monitors == null
     then cfg.monitors
     else preset.monitors;
-  selectedMonitors = mkPresetMonitors selectedPreset;
   mkWallpaperIdForMonitor = preset: monitor: preset.perMonitor.${monitor} or preset.wallpaperId;
-  mkScalingArgsForMonitor = preset: monitor:
-    lib.optionalString (lib.hasAttr monitor preset.perMonitorScaling) ''"--scaling" "${
-        preset.perMonitorScaling.${monitor}
-      }"'';
-  mkScreenArgs = preset: monitors:
-    lib.concatMapStringsSep " " (
-      monitor: ''"--screen-root" "${monitor}" "--bg" "${mkWallpaperIdForMonitor preset monitor}"${mkScalingArgsForMonitor preset monitor}''
-    )
-    monitors;
-  screenArgs = mkScreenArgs selectedPreset selectedMonitors;
+  runtimeArgs =
+    [
+      "--fps"
+      (toString cfg.fps)
+    ]
+    ++ lib.optional cfg.silent "--silent"
+    ++ lib.optional cfg.noAudioProcessing "--no-audio-processing"
+    ++ lib.optional cfg.disableMouse "--disable-mouse"
+    ++ lib.optional cfg.disableParallax "--disable-parallax"
+    ++ lib.optional cfg.disableParticles "--disable-particles";
+  systemdRunArgs =
+    [
+      "--user"
+      "--collect"
+      "--unit"
+      "wallpaper-engine"
+      "--property=Restart=always"
+      "--property=RestartSec=${cfg.restartSec}"
+      "--property=RuntimeMaxSec=${cfg.runtimeMaxSec}"
+    ]
+    ++ lib.optionals (cfg.memoryMax != null) [
+      "--property=MemoryMax=${cfg.memoryMax}"
+    ];
+  wallpaperEngineCommand = pkgs.writeShellApplication {
+    name = "wallpaper-engine-managed";
+    runtimeInputs = [
+      pkgs.jq
+      pkgs.linux-wallpaperengine
+      pkgs.pipewire
+      pkgs.wireplumber
+    ];
+    text = ''
+      mute_audio_for_pid() {
+        pid="$1"
+        pw-dump 2>/dev/null \
+          | jq -r --arg pid "$pid" '
+              def prop($key): .info.props[$key];
+              (
+                map(
+                  select(
+                    .type == "PipeWire:Interface:Client"
+                    and (
+                      (prop("application.process.id") | tostring) == $pid
+                      or (prop("pipewire.sec.pid") | tostring) == $pid
+                    )
+                  )
+                  | .id
+                )
+              ) as $clients
+              | .[]
+              | select(.type == "PipeWire:Interface:Node")
+              | select(prop("media.class") == "Stream/Output/Audio")
+              | select((prop("client.id") // -1) as $client | $clients | index($client))
+              | .id
+            ' \
+          | while read -r node; do
+              if [ -n "$node" ]; then
+                wpctl set-volume "$node" 0% >/dev/null 2>&1 || true
+                wpctl set-mute "$node" 1 >/dev/null 2>&1 || true
+              fi
+            done
+      }
+
+      linux-wallpaperengine "$@" &
+      engine_pid=$!
+
+      ${lib.optionalString cfg.silent ''
+        (
+          while kill -0 "$engine_pid" 2>/dev/null; do
+            mute_audio_for_pid "$engine_pid"
+            sleep 1
+          done
+        ) &
+        muter_pid=$!
+      ''}
+
+      # shellcheck disable=SC2329
+      cleanup() {
+        ${lib.optionalString cfg.silent ''kill "$muter_pid" 2>/dev/null || true''}
+        kill "$engine_pid" 2>/dev/null || true
+      }
+      trap cleanup INT TERM EXIT
+
+      wait "$engine_pid"
+      status=$?
+      ${lib.optionalString cfg.silent ''kill "$muter_pid" 2>/dev/null || true''}
+      trap - INT TERM EXIT
+      exit "$status"
+    '';
+  };
   mkPresetScriptCase = name: preset: let
     monitors = mkPresetMonitors preset;
     args = lib.concatStringsSep " " (
@@ -62,6 +140,7 @@
         "--assets-dir"
         cfg.assetsDir
       ]
+      ++ runtimeArgs
       ++ lib.concatMap (
         monitor:
           [
@@ -85,6 +164,7 @@
   wallpaperPresetCommand = pkgs.writeShellApplication {
     name = "wallpaper-preset";
     runtimeInputs = [
+      pkgs.coreutils
       pkgs.linux-wallpaperengine
       pkgs.procps
       pkgs.systemd
@@ -106,9 +186,11 @@
           ;;
       esac
 
-      pkill -f '(^|/)linux-wallpaperengine( |$)' || true
+      systemctl --user stop wallpaper-engine.service 2>/dev/null || true
+      pkill -u "$(id -u)" -f '(^|/)linux-wallpaperengine( |$)' || true
+      systemctl --user reset-failed wallpaper-engine.service 2>/dev/null || true
       # shellcheck disable=SC2086
-      systemd-run --user --collect --unit "wallpaper-preset-$preset" linux-wallpaperengine $args
+      systemd-run ${lib.escapeShellArgs systemdRunArgs} ${wallpaperEngineCommand}/bin/wallpaper-engine-managed $args
     '';
   };
 in {
@@ -136,6 +218,60 @@ in {
       type = lib.types.str;
       default = "chill";
       description = "Wallpaper preset used by niri at startup.";
+    };
+
+    fps = lib.mkOption {
+      type = lib.types.ints.positive;
+      default = 30;
+      description = "Frame rate limit passed to linux-wallpaperengine.";
+    };
+
+    silent = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Mute wallpaper audio.";
+    };
+
+    noAudioProcessing = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Disable audio reactive processing in linux-wallpaperengine.";
+    };
+
+    disableMouse = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Disable mouse interaction for wallpapers.";
+    };
+
+    disableParallax = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Disable parallax effects for wallpapers.";
+    };
+
+    disableParticles = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Disable particle effects for scene wallpapers.";
+    };
+
+    memoryMax = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = "2G";
+      description = "systemd MemoryMax limit for the linux-wallpaperengine transient service. Set to null to disable.";
+    };
+
+    runtimeMaxSec = lib.mkOption {
+      type = lib.types.str;
+      default = "30min";
+      description = "systemd RuntimeMaxSec for periodic linux-wallpaperengine recycling.";
+    };
+
+    restartSec = lib.mkOption {
+      type = lib.types.str;
+      default = "5s";
+      description = "Delay before restarting linux-wallpaperengine after it exits or is recycled.";
     };
 
     presets = lib.mkOption {
@@ -176,8 +312,8 @@ in {
     niriSpawnCommand = lib.mkOption {
       type = lib.types.lines;
       readOnly = true;
-      default = ''spawn-at-startup "linux-wallpaperengine" "--assets-dir" "${cfg.assetsDir}" ${screenArgs}'';
-      description = "Generated niri startup command for linux-wallpaperengine.";
+      default = ''spawn-at-startup "${wallpaperPresetCommand}/bin/wallpaper-preset" "${cfg.activePreset}"'';
+      description = "Generated niri startup command for managed linux-wallpaperengine.";
     };
   };
 
