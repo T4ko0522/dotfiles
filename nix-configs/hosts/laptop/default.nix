@@ -20,6 +20,7 @@
       };
     };
     "HDMI-A-1" = {
+      focusAtStartup = true;
       mode = "1920x1080@60.000";
       position = {
         x = 1920;

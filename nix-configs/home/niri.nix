@@ -9,7 +9,9 @@
 
   renderMonitor = name: output: let
     parts =
-      lib.optional (output.mode != null)
+      lib.optional output.focusAtStartup
+      "    focus-at-startup"
+      ++ lib.optional (output.mode != null)
       "    mode \"${output.mode}\""
       ++ lib.optional (output.position != null)
       "    position x=${toString output.position.x} y=${toString output.position.y}"
@@ -50,6 +52,11 @@ in {
           type = lib.types.nullOr lib.types.str;
           default = null;
           description = "Monitor mode, e.g. \"1920x1080@144.000\".";
+        };
+        focusAtStartup = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Focus this output at startup (acts as the main monitor).";
         };
       };
     });

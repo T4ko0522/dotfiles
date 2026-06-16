@@ -21,6 +21,7 @@
       transform = "90";
     };
     "DP-2" = {
+      focusAtStartup = true;
       mode = "1920x1080@360.000";
       position = {
         x = 0;
