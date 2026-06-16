@@ -4,6 +4,7 @@
     gimp
     imv
     kooha
+    mpv
     yt-dlp
   ];
 }
