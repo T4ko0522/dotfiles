@@ -3,64 +3,68 @@
   lib,
   keyboardLayout,
   ...
-}: let
+}:
+let
   c = import ../lib/catppuccin-mocha.nix;
   cfg = config.t4ko.niri;
 
-  renderMonitor = name: output: let
-    parts =
-      lib.optional output.focusAtStartup
-      "    focus-at-startup"
-      ++ lib.optional (output.mode != null)
-      "    mode \"${output.mode}\""
-      ++ lib.optional (output.position != null)
-      "    position x=${toString output.position.x} y=${toString output.position.y}"
-      ++ lib.optional (output.transform != null)
-      "    transform \"${output.transform}\"";
-  in
-    lib.optionalString (parts != []) (
-      "output \"${name}\" {\n"
-      + lib.concatMapStrings (p: p + "\n") parts
-      + "}\n\n"
+  renderMonitor =
+    name: output:
+    let
+      parts =
+        lib.optional output.focusAtStartup "    focus-at-startup"
+        ++ lib.optional (output.mode != null) "    mode \"${output.mode}\""
+        ++ lib.optional (
+          output.position != null
+        ) "    position x=${toString output.position.x} y=${toString output.position.y}"
+        ++ lib.optional (output.transform != null) "    transform \"${output.transform}\"";
+    in
+    lib.optionalString (parts != [ ]) (
+      "output \"${name}\" {\n" + lib.concatMapStrings (p: p + "\n") parts + "}\n\n"
     );
-in {
+in
+{
   options.t4ko.niri.monitors = lib.mkOption {
-    type = lib.types.attrsOf (lib.types.submodule {
-      options = {
-        position = lib.mkOption {
-          type = lib.types.nullOr (lib.types.submodule {
-            options = {
-              x = lib.mkOption {
-                type = lib.types.int;
-                default = 0;
-              };
-              y = lib.mkOption {
-                type = lib.types.int;
-                default = 0;
-              };
-            };
-          });
-          default = null;
-          description = "Monitor position.";
+    type = lib.types.attrsOf (
+      lib.types.submodule {
+        options = {
+          position = lib.mkOption {
+            type = lib.types.nullOr (
+              lib.types.submodule {
+                options = {
+                  x = lib.mkOption {
+                    type = lib.types.int;
+                    default = 0;
+                  };
+                  y = lib.mkOption {
+                    type = lib.types.int;
+                    default = 0;
+                  };
+                };
+              }
+            );
+            default = null;
+            description = "Monitor position.";
+          };
+          transform = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+            description = "Monitor transform (rotation), e.g. \"90\".";
+          };
+          mode = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+            description = "Monitor mode, e.g. \"1920x1080@144.000\".";
+          };
+          focusAtStartup = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "Focus this output at startup (acts as the main monitor).";
+          };
         };
-        transform = lib.mkOption {
-          type = lib.types.nullOr lib.types.str;
-          default = null;
-          description = "Monitor transform (rotation), e.g. \"90\".";
-        };
-        mode = lib.mkOption {
-          type = lib.types.nullOr lib.types.str;
-          default = null;
-          description = "Monitor mode, e.g. \"1920x1080@144.000\".";
-        };
-        focusAtStartup = lib.mkOption {
-          type = lib.types.bool;
-          default = false;
-          description = "Focus this output at startup (acts as the main monitor).";
-        };
-      };
-    });
-    default = {};
+      }
+    );
+    default = { };
     description = "Per-output niri monitor configuration.";
   };
 
@@ -95,9 +99,9 @@ in {
         default-column-width { proportion 0.5; }
 
         focus-ring {
-            width 3
-            active-gradient from="${c.blue}" to="${c.lavender}" angle=45 relative-to="workspace-view"
-            inactive-color "${c.surface}"
+            width 4.6
+            active-gradient from="${c.mauve}" to="${c.lavender}" angle=45 relative-to="workspace-view"
+            inactive-color "#00000000"
             urgent-color "${c.red}"
         }
 
