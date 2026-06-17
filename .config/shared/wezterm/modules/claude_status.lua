@@ -1,10 +1,12 @@
 local module = {}
 
 -- ステータス定義
+-- アイコンは Claude Code 本物のロゴ ✳ (U+2733) に統一し、色で状態を区別する。
+--   running = Claude ブランドのオレンジ / waiting = Yellow / idle = 控えめな Overlay0
 module.STATUS = {
-  running = { icon = "●", color = "#57A143" },
-  waiting = { icon = "◐", color = "#ffd700" },
-  idle    = { icon = "○", color = "#a0a9cb" },
+  running = { icon = "✳", color = "#d97757" }, -- Claude Orange（生成中）
+  waiting = { icon = "✳", color = "#f9e2af" }, -- Yellow（入力待ち）
+  idle    = { icon = "✳", color = "#6c7086" }, -- Overlay0（アイドル）
 }
 
 -- Claudeプロセスかどうか判定

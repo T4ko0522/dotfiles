@@ -6,30 +6,72 @@ local module = {}
 -- 定数
 -- =============================================================================
 
--- Icons
-local ICONS = {
-  docker = wezterm.nerdfonts.md_docker,
-  neovim = wezterm.nerdfonts.linux_neovim,
-  ssh = wezterm.nerdfonts.md_lan,
-  fallback = wezterm.nerdfonts.dev_terminal,
-  zoom = wezterm.nerdfonts.md_magnify,
+-- Catppuccin Mocha パレット（色はすべてここから参照して一元管理する）
+local PALETTE = {
+  rosewater = "#f5e0dc",
+  text      = "#cdd6f4",
+  subtext0  = "#a6adc8",
+  base      = "#1e1e2e",
+  mauve     = "#cba6f7",
+  red       = "#f38ba8",
+  maroon    = "#eba0ac",
+  peach     = "#fab387",
+  yellow    = "#f9e2af",
+  green     = "#a6e3a1",
+  teal      = "#94e2d5",
+  sky       = "#89dceb",
+  blue      = "#89b4fa",
+  lavender  = "#b4befe",
 }
 
--- Icon colors (Catppuccin Mocha 系の紫テーマに合わせて調整)
-local ICON_COLORS = {
-  docker = "#89b4fa", -- Blue
-  neovim = "#a6e3a1", -- Green
-  ssh = "#f38ba8",    -- Red/Pink
+-- Icons（Nerd Font のグリフ名で宣言）
+local ICONS = {
+  docker   = wezterm.nerdfonts.md_docker,
+  neovim   = wezterm.nerdfonts.custom_neovim,
+  vim      = wezterm.nerdfonts.custom_vim,
+  ssh      = wezterm.nerdfonts.md_lan,
+  git      = wezterm.nerdfonts.dev_git_branch,
+  node     = wezterm.nerdfonts.md_nodejs,
+  python   = wezterm.nerdfonts.md_language_python,
+  rust     = wezterm.nerdfonts.dev_rust,
+  go       = wezterm.nerdfonts.md_language_go,
+  lua      = wezterm.nerdfonts.seti_lua,
+  shell    = wezterm.nerdfonts.md_console_line,
+  fallback = wezterm.nerdfonts.dev_terminal,
+  zoom     = wezterm.nerdfonts.md_magnify,
 }
+
+-- プロセス検出ルール（上から順に NAME_INDEX へ展開。各名前は 1 ルールに属する）
+-- icon は ICONS のキー、color は PALETTE のキーを指す。
+local PROCESS_MATCHERS = {
+  { icon = "neovim", color = "green",    names = { "nvim" } },
+  { icon = "vim",    color = "green",    names = { "vim", "vi" } },
+  { icon = "docker", color = "blue",     names = { "docker", "docker-compose", "lazydocker" } },
+  { icon = "git",    color = "peach",    names = { "git", "lazygit", "gitui", "tig" } },
+  { icon = "node",   color = "teal",     names = { "node", "npm", "pnpm", "yarn", "bun", "deno" } },
+  { icon = "python", color = "yellow",   names = { "python", "python3", "pip", "ipython" } },
+  { icon = "rust",   color = "maroon",   names = { "cargo", "rustc" } },
+  { icon = "go",     color = "sky",      names = { "go", "gopls" } },
+  { icon = "lua",    color = "lavender", names = { "lua", "luajit" } },
+  { icon = "shell",  color = "subtext0", names = { "bash", "zsh", "fish", "sh" } },
+}
+
+-- プロセス名 -> ルールの索引（モジュールロード時に 1 回だけ構築）
+local NAME_INDEX = {}
+for _, m in ipairs(PROCESS_MATCHERS) do
+  for _, name in ipairs(m.names) do
+    NAME_INDEX[name] = m
+  end
+end
 
 -- Tab colors
 local TAB_COLORS = {
-  foreground_inactive = "#a6adc8", -- Subtext0
-  background_inactive = "#1e1e2e", -- Base
-  foreground_active = "#1e1e2e",   -- Base（アクティブタブ文字）
-  background_active = "#cba6f7",   -- Mauve（ラベンダー）
-  background_ssh_active = "#f38ba8",
-  foreground_ssh_active = "#1e1e2e",
+  foreground_inactive  = PALETTE.subtext0,
+  background_inactive  = PALETTE.base,
+  foreground_active    = PALETTE.base, -- アクティブタブ文字
+  background_active    = PALETTE.mauve, -- ラベンダー
+  background_ssh_active = PALETTE.red,
+  foreground_ssh_active = PALETTE.base,
 }
 
 -- Tab decorations
@@ -79,18 +121,18 @@ local function extract_project_name(cwd)
   return cwd:match("([^/]+)$") or cwd
 end
 
-local function get_icon_and_color(process_name, pane_title, cmdline, cwd, is_ssh, is_active)
+local function get_icon_and_color(process_name, pane_title, is_ssh, is_active)
   if is_ssh then
-    local color = is_active and "#ffffff" or ICON_COLORS.ssh
-    return ICONS.ssh, color
+    return ICONS.ssh, is_active and PALETTE.text or PALETTE.red
   end
 
-  if pane_title == "nvim" or process_name == "nvim" then
-    return ICONS.neovim, ICON_COLORS.neovim
+  -- プロセス名で照合し、無ければペインタイトルでも照合する
+  local matcher = NAME_INDEX[process_name]
+  if not matcher and pane_title and pane_title ~= "" then
+    matcher = NAME_INDEX[pane_title]
   end
-
-  if process_name == "docker" or (pane_title and pane_title:find("docker")) then
-    return ICONS.docker, ICON_COLORS.docker
+  if matcher then
+    return ICONS[matcher.icon], PALETTE[matcher.color]
   end
 
   return ICONS.fallback, TAB_COLORS.foreground_inactive
@@ -143,7 +185,6 @@ function module.apply_to_config(config)
     local pane_title = pane.title or ""
     local cmdline = pane.foreground_process_name or ""
     local user_vars = pane.user_vars or {}
-    local cached_cwd = title_cache[pane_id] or ""
 
     -- SSH判定
     local is_ssh, ssh_host = is_ssh_process(process_name, cmdline, user_vars)
@@ -167,7 +208,7 @@ function module.apply_to_config(config)
     end
 
     -- アイコン
-    local icon, icon_color = get_icon_and_color(process_name, pane_title, cmdline, cached_cwd, is_ssh, tab.is_active)
+    local icon, icon_color = get_icon_and_color(process_name, pane_title, is_ssh, tab.is_active)
 
     -- ズームインジケーター
     local zoom_indicator = has_zoomed_pane(tab.panes) and (ICONS.zoom .. " ") or ""
