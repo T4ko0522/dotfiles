@@ -3,27 +3,23 @@
   lib,
   keyboardLayout,
   ...
-}:
-let
+}: let
   c = import ../lib/catppuccin-mocha.nix;
   cfg = config.t4ko.niri;
 
-  renderMonitor =
-    name: output:
-    let
-      parts =
-        lib.optional output.focusAtStartup "    focus-at-startup"
-        ++ lib.optional (output.mode != null) "    mode \"${output.mode}\""
-        ++ lib.optional (
-          output.position != null
-        ) "    position x=${toString output.position.x} y=${toString output.position.y}"
-        ++ lib.optional (output.transform != null) "    transform \"${output.transform}\"";
-    in
-    lib.optionalString (parts != [ ]) (
+  renderMonitor = name: output: let
+    parts =
+      lib.optional output.focusAtStartup "    focus-at-startup"
+      ++ lib.optional (output.mode != null) "    mode \"${output.mode}\""
+      ++ lib.optional (
+        output.position != null
+      ) "    position x=${toString output.position.x} y=${toString output.position.y}"
+      ++ lib.optional (output.transform != null) "    transform \"${output.transform}\"";
+  in
+    lib.optionalString (parts != []) (
       "output \"${name}\" {\n" + lib.concatMapStrings (p: p + "\n") parts + "}\n\n"
     );
-in
-{
+in {
   options.t4ko.niri.monitors = lib.mkOption {
     type = lib.types.attrsOf (
       lib.types.submodule {
@@ -64,7 +60,7 @@ in
         };
       }
     );
-    default = { };
+    default = {};
     description = "Per-output niri monitor configuration.";
   };
 
