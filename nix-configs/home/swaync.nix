@@ -17,7 +17,7 @@ in {
     notification-body-image-width = 260;
     timeout = 8;
     timeout-low = 4;
-    timeout-critical = 0;
+    timeout-critical = 12;
     fit-to-screen = true;
     keyboard-shortcuts = true;
     image-visibility = "when-available";
