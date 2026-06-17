@@ -13,6 +13,7 @@ in {
     brightnessctl
     cava
     gsimplecal
+    libnotify
     networkmanagerapplet
     pamixer
     swaynotificationcenterWithSlideDismiss

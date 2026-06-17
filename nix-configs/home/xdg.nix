@@ -1,4 +1,8 @@
-{config, ...}: let
+{
+  config,
+  lib,
+  ...
+}: let
   # link (out-of-store): mkOutOfStoreSymlink で store の外にある「書き込み可能な実体」を指す。
   # dotfilesDir (= self.outPath) は store 内 (読み取り専用) なので、ライブの作業ツリー
   # (~/dotfiles) を基準に symlink を張る。プログラム自身が設定 dir/file へ書き戻すもの
@@ -10,6 +14,11 @@
   # プログラムが書き込まない静的設定に使う。変更には rebuild (just os-switch) が必要になる
   # 代わりに再現性が上がり、誤編集で壊れない。flake 評価で参照するため対象は Git track 必須。
   store = path: ../../. + "/${path}";
+
+  claudeSettings =
+    lib.recursiveUpdate
+    (builtins.fromJSON (builtins.readFile (store ".config/shared/claude/settings.json")))
+    (builtins.fromJSON (builtins.readFile (store ".config/nixos/claude/settings.hooks.json")));
 in {
   xdg = {
     mimeApps = {
@@ -74,14 +83,27 @@ in {
     ".claude/CLAUDE.md".source = store ".config/shared/claude/CLAUDE.md";
     ".claude/agents".source = store ".config/shared/claude/agents";
     ".claude/statusline.sh".source = store ".config/shared/claude/statusline.sh";
+    ".claude/claude-icon.svg".source = store ".config/shared/claude/claude-icon.svg";
+    ".claude/claude-notify-hook.sh" = {
+      source = store ".config/nixos/claude/claude-notify-hook.sh";
+      executable = true;
+    };
 
     # out-of-store: プログラム自身が書き戻すもの。
     ".gitconfig".source = link ".gitconfig"; # git config --global で書き込む
     ".codex/config.toml".source = link ".config/shared/codex/config.toml"; # codex が実行時状態を書き戻す
     ".claude/skills".source = link ".config/shared/claude/skills"; # プラグイン導入で書き込む
-    # settings.json は claude 自身が model/effort などを書き戻すため、
-    # store 生成ではなく作業ツリーへの書き込み可能リンクにする。
-    # Windows 固有の hooks は .config/windows/claude/ 側で setup_windows.ps1 がマージする。
-    ".claude/settings.json".source = link ".config/shared/claude/settings.json";
   };
+
+  # Claude settings.json: 共通 base に NixOS 固有 hooks をマージして生成する。
+  # Windows 側の setup_windows.ps1 と同じく、通知 hook の依存は OS 固有ディレクトリに閉じ込める。
+  home.activation.generateClaudeSettings = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    claude_dir="${config.home.homeDirectory}/.claude"
+    mkdir -p "$claude_dir"
+    rm -f "$claude_dir/settings.json"
+    cat > "$claude_dir/settings.json" <<'EOF'
+    ${builtins.toJSON claudeSettings}
+    EOF
+    chmod 0644 "$claude_dir/settings.json"
+  '';
 }
