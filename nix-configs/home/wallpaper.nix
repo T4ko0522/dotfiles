@@ -48,7 +48,10 @@
       "--fps"
       (toString cfg.fps)
     ]
-    ++ lib.optional cfg.silent "--silent"
+    ++ lib.optionals cfg.silent [
+      "--volume"
+      "0"
+    ]
     ++ lib.optional cfg.noAudioProcessing "--no-audio-processing"
     ++ lib.optional cfg.disableMouse "--disable-mouse"
     ++ lib.optional cfg.disableParallax "--disable-parallax"
@@ -69,66 +72,20 @@
   wallpaperEngineCommand = pkgs.writeShellApplication {
     name = "wallpaper-engine-managed";
     runtimeInputs = [
-      pkgs.jq
       pkgs.linux-wallpaperengine
-      pkgs.pipewire
-      pkgs.wireplumber
     ];
     text = ''
-      mute_audio_for_pid() {
-        pid="$1"
-        pw-dump 2>/dev/null \
-          | jq -r --arg pid "$pid" '
-              def prop($key): .info.props[$key];
-              (
-                map(
-                  select(
-                    .type == "PipeWire:Interface:Client"
-                    and (
-                      (prop("application.process.id") | tostring) == $pid
-                      or (prop("pipewire.sec.pid") | tostring) == $pid
-                    )
-                  )
-                  | .id
-                )
-              ) as $clients
-              | .[]
-              | select(.type == "PipeWire:Interface:Node")
-              | select(prop("media.class") == "Stream/Output/Audio")
-              | select((prop("client.id") // -1) as $client | $clients | index($client))
-              | .id
-            ' \
-          | while read -r node; do
-              if [ -n "$node" ]; then
-                wpctl set-volume "$node" 0% >/dev/null 2>&1 || true
-                wpctl set-mute "$node" 1 >/dev/null 2>&1 || true
-              fi
-            done
-      }
-
       linux-wallpaperengine "$@" &
       engine_pid=$!
 
-      ${lib.optionalString cfg.silent ''
-        (
-          while kill -0 "$engine_pid" 2>/dev/null; do
-            mute_audio_for_pid "$engine_pid"
-            sleep 1
-          done
-        ) &
-        muter_pid=$!
-      ''}
-
       # shellcheck disable=SC2329
       cleanup() {
-        ${lib.optionalString cfg.silent ''kill "$muter_pid" 2>/dev/null || true''}
         kill "$engine_pid" 2>/dev/null || true
       }
       trap cleanup INT TERM EXIT
 
       wait "$engine_pid"
       status=$?
-      ${lib.optionalString cfg.silent ''kill "$muter_pid" 2>/dev/null || true''}
       trap - INT TERM EXIT
       exit "$status"
     '';
