@@ -70,6 +70,7 @@ in {
             xkb {
                 layout "${keyboardLayout.xkbLayout}"
                 model "${keyboardLayout.xkbModel}"
+                options "${keyboardLayout.xkbOptions}"
             }
         }
 

@@ -40,6 +40,7 @@
     keyboardLayout = {
       xkbLayout = "jp";
       xkbModel = "jp106";
+      xkbOptions = "caps:none";
       consoleKeyMap = "jp106";
       fcitxLayout = "jp";
     };
