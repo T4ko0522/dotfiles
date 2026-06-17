@@ -1,6 +1,6 @@
 {...}: {
   imports = [
-    ./home/base.nix
+    ./home/identity.nix
     ./home/profiles/cursor.nix
     ./home/packages.nix
     ./home/xdg.nix

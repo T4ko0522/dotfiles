@@ -1,35 +1,4 @@
-{
-  dotfilesDir,
-  lib,
-  ...
-}: {
-  nixpkgs.config.allowUnfreePredicate = pkg:
-    builtins.elem (lib.getName pkg) [
-      # Steam and gaming
-      "steam"
-      "steam-unwrapped"
-      "steam-original"
-      "steam-run"
-      "proton-ge-bin"
-      # Browsers
-      "brave"
-      "google-chrome"
-      # Media
-      "spotify"
-      "osu-lazer-bin"
-      # VRChat avatar tooling
-      "unityhub"
-      "corefonts"
-      # Infrastructure
-      "terraform"
-      # LLM agents
-      "claude-code"
-      # NVIDIA proprietary drivers
-      "nvidia-x11"
-      "nvidia-settings"
-      "nvidia-persistenced"
-    ];
-
+_: {
   nix.settings = {
     experimental-features = [
       "nix-command"
@@ -43,10 +12,5 @@
       "vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc="
       "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
     ];
-  };
-
-  programs.nh = {
-    enable = true;
-    flake = dotfilesDir;
   };
 }
