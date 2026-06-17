@@ -3,11 +3,12 @@
   "logo": {
     // "source": "~/.config/fastfetch/mclaren.txt",
     // "source": "~/.config/fastfetch/anime.txt",
+    // "source": "~/.config/fastfetch/windows.txt",
     "type": "file",
-    "color": {
-      // "1": "38;5;208"
-      "1": "38;2;203;166;247"
-    },
+    // "color": {
+    //   "1": "38;5;208"
+    //   "1": "38;2;203;166;247"
+    // },
     "padding": {
       "top": 0,
       "left": 0,
@@ -16,11 +17,7 @@
   },
   "modules": [
     {
-      "type": "title",
-      "color": {
-        "1": "38;2;180;190;254",
-        "2": "38;2;203;166;247"
-      }
+      "type": "title"
     },
     {
       "type": "separator",
@@ -29,74 +26,95 @@
     },
     {
       "type": "os",
-      "key": "󰍹 OS",
-      "keyColor": "38;2;137;180;250"
+      "key": " OS",
+      "keyColor": "38;2;243;139;168"
     },
     {
       "type": "host",
-      "key": "󰌢 Host",
-      "keyColor": "38;2;116;199;236"
+      "key": "󰒋 Host",
+      "keyColor": "38;2;235;160;172"
     },
     {
       "type": "kernel",
-      "key": "󰣖 Kernel",
-      "keyColor": "38;2;137;220;235"
+      "key": " Kernel",
+      "keyColor": "38;2;250;179;135"
     },
     {
       "type": "bios",
-      "key": "󰌷 BIOS",
-      "keyColor": "38;2;148;226;213"
-    },
-    {
-      "type": "uptime",
-      "key": "󰅐 Uptime",
-      "keyColor": "38;2;116;199;236"
+      "key": " BIOS",
+      "keyColor": "38;2;249;226;175"
     },
     {
       "type": "users",
       "key": "󰀄 Users",
-      "keyColor": "38;2;180;190;254"
+      "keyColor": "38;2;166;227;161"
+    },
+    {
+      "type": "uptime",
+      "key": "󰅐 Uptime",
+      "keyColor": "38;2;148;226;213"
+    },
+    {
+      "type": "packages",
+      "key": " Packges",
+      "keyColor": "38;2;137;220;235"
+    },
+    {
+      "type": "WM",
+      "key": " WM",
+      "keyColor": "38;2;116;199;236"
+    },
+    {
+      "type": "command",
+      "key": " Font",
+      "keyColor": "38;2;137;180;250",
+      "text": "fc-match -f '%{family}\\n' sans-serif"
     },
     {
       "type": "shell",
-      "key": "󰆍 Shell",
-      "keyColor": "38;2;203;166;247"
+      "key": " Shell",
+      "keyColor": "38;2;180;190;254"
     },
     {
       "type": "terminal",
-      "key": "󰆍 Terminal",
+      "key": " Terminal",
+      "keyColor": "38;2;203;166;247"
+    },
+    {
+      "type": "terminalfont",
+      "key": "󰛖 Terminal Font",
       "keyColor": "38;2;245;194;231"
     },
     {
       "type": "cpu",
-      "key": "󰻠 CPU",
-      "keyColor": "38;2;235;160;172"
+      "key": " CPU",
+      "keyColor": "38;2;242;205;205"
     },
     {
       "type": "command",
       "key": "󰢮 GPU",
-      "keyColor": "38;2;243;139;168",
+      "keyColor": "38;2;245;224;220",
       "text": "nvidia-smi --query-gpu=name,memory.total --format=csv,noheader"
     },
     {
       "type": "memory",
-      "key": "󰍛 Memory",
-      "keyColor": "38;2;250;179;135"
+      "key": " Memory",
+      "keyColor": "38;2;243;139;168"
     },
     {
       "type": "disk",
       "key": "󰋊 Disk",
-      "keyColor": "38;2;249;226;175"
+      "keyColor": "38;2;235;160;172"
     },
-    "break",
     {
-      "type": "command",
-      "key": " ",
-      "keyWidth": 0,
-      "shell": "zsh",
-      "text": "python \"$HOME/.config/fastfetch/show_music.py\" 2>/dev/null",
-      "format": "{result}",
-      "splitLines": true
+      "type": "locale",
+      "key": " Locale",
+      "keyColor": "38;2;250;179;135"
+    },
+    {
+      "type": "localip",
+      "key": "󱤚 Local IP",
+      "keyColor": "38;2;249;226;175"
     }
   ]
 }
