@@ -4,7 +4,7 @@ $repo = Split-Path -Parent $PSScriptRoot
 $homeDir = [Environment]::GetFolderPath("UserProfile")
 $localDir = [Environment]::GetFolderPath("LocalApplicationData")
 $roamingDir = [Environment]::GetFolderPath("ApplicationData")
-$binDir = Join-Path $repo ".bin"
+$scriptsDir = Join-Path $repo "scripts"
 
 # Src: repo からの相対パス
 # Dst: 相対パス → $homeDir 基準、絶対パス → そのまま使用
@@ -179,7 +179,7 @@ if (Test-Path -LiteralPath $profileSrc) {
   }
 
   # conf.d をインライン展開した最適化プロファイルを $PROFILE に書き出す
-  $optimScript = Join-Path $binDir "optim_pwsh_profile.ps1"
+  $optimScript = Join-Path $scriptsDir "optim_pwsh_profile.ps1"
   $profileOut = Join-Path $profileDst "Microsoft.PowerShell_profile.ps1"
   & $optimScript -SourcePath (Join-Path $profileSrc "Microsoft.PowerShell_profile.ps1") -OutputPath $profileOut
 } else {
@@ -200,24 +200,24 @@ if (Test-Path -LiteralPath $hooksSrc) {
 
 Write-Host "Git template setup completed."
 
-# Ensure dotfiles .bin is available from PATH in all shells.
+# Ensure dotfiles scripts dir is available from PATH in all shells.
 $userPath = [Environment]::GetEnvironmentVariable("Path", "User")
 $pathItems = @()
 if (-not [string]::IsNullOrWhiteSpace($userPath)) {
   $pathItems = $userPath -split ";"
 }
 
-if ($pathItems -notcontains $binDir) {
+if ($pathItems -notcontains $scriptsDir) {
   if ([string]::IsNullOrWhiteSpace($userPath)) {
-    $newUserPath = $binDir
+    $newUserPath = $scriptsDir
   } else {
-    $newUserPath = "$userPath;$binDir"
+    $newUserPath = "$userPath;$scriptsDir"
   }
   [Environment]::SetEnvironmentVariable("Path", $newUserPath, "User")
-  $env:Path = "$env:Path;$binDir"
-  Write-Host "Added to user PATH: $binDir"
+  $env:Path = "$env:Path;$scriptsDir"
+  Write-Host "Added to user PATH: $scriptsDir"
 } else {
-  Write-Host "Already in user PATH: $binDir"
+  Write-Host "Already in user PATH: $scriptsDir"
 }
 
 # mise trust & install（未実行の場合のみ）

@@ -80,9 +80,6 @@ result-*
 # zsh
 .config/nixos/zsh/**/*.zwc
 
-# vendor binaries
-.bin/snoretoast.exe
-
 # PowerShell (Install-Module で入るモジュール)
 .config/windows/powershell/Modules/
 

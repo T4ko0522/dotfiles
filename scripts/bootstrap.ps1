@@ -1,7 +1,7 @@
 #!/usr/bin/env pwsh
 # -----------------------------------------------------------------------------
 # bootstrap.ps1 — dotfiles の依存関係を一括インストール
-# 完了後 `.bin\setup_windows.ps1` を実行してリンクを張る。
+# 完了後 `scripts\setup_windows.ps1` を実行してリンクを張る。
 # -----------------------------------------------------------------------------
 
 $ErrorActionPreference = 'Stop'
@@ -168,4 +168,4 @@ foreach ($pkg in $scoopPackages) {
 }
 
 Write-Host "`n[OK] Bootstrap completed." -ForegroundColor Green
-Write-Host "次に: pwsh -ExecutionPolicy Bypass -File .\.bin\setup_windows.ps1" -ForegroundColor White
+Write-Host "次に: pwsh -ExecutionPolicy Bypass -File .\scripts\setup_windows.ps1" -ForegroundColor White
