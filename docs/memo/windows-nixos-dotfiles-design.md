@@ -32,7 +32,7 @@ Windows と NixOS の両方で同じ dotfiles を運用しつつ、どちらか�
 
 ### Windows
 
-`.bin/setup_windows.ps1` は契約に従って Windows の home 配下へリンク・生成を行う executor とする。
+`scripts/setup_windows.ps1` は契約に従って Windows の home 配下へリンク・生成を行う executor とする。
 
 将来的には、リンク対象の一覧をスクリプト内に直接書かない。
 
@@ -53,7 +53,7 @@ dotfiles/
     shared/
     windows/
     nixos/
-  .bin/
+  scripts/
     setup_windows.ps1
     check_contracts.ps1
     export_contracts.ps1
@@ -219,7 +219,7 @@ PowerShell 標準には TOML parser がないため、次のどちらかを採�
 ```text
 contracts/dotfiles.toml
   -> .generated/dotfiles.psd1
-  -> .bin/setup_windows.ps1
+  -> scripts/setup_windows.ps1
 ```
 
 ## CI
