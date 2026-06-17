@@ -162,8 +162,8 @@ in {
 
         "custom/menu" = {
           format = "";
-          tooltip = "Open Menu";
-          on-click = "fuzzel";
+          tooltip = "Toggle Overview";
+          on-click = "niri msg action toggle-overview";
         };
 
         idle_inhibitor = {
