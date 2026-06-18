@@ -23,8 +23,8 @@ jobs:
           git ls-files '*.nix' \
             | xargs -r -n1 nix-instantiate --parse --quiet >/dev/null
 
-  formatting:
-    name: Formatting
+  nix-formatting:
+    name: Nix formatting
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -39,8 +39,34 @@ jobs:
       - name: Check Nix formatting
         run: nix run nixpkgs#alejandra -- --check .
 
+  markdown-lint:
+    name: Markdown lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
       - name: Check Markdown lint
         run: nix run nixpkgs#markdownlint-cli2 --
+
+  lua-formatting:
+    name: Lua formatting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
 
       - name: Check Lua formatting
         run: |
