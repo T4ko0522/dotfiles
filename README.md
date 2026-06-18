@@ -1,7 +1,9 @@
 # Dotfiles
+
 NixOSとWindowsの環境を管理しているdotfiles.
 
 ## Nix
+
 ```text
           ▗▄▄▄       ▗▄▄▄▄    ▄▄▄▖
           ▜███▙       ▜███▙  ▟███▛
