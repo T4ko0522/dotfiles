@@ -23,8 +23,8 @@ jobs:
           git ls-files '*.nix' \
             | xargs -r -n1 nix-instantiate --parse --quiet >/dev/null
 
-  alejandra:
-    name: Alejandra
+  formatting:
+    name: Formatting
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -36,8 +36,16 @@ jobs:
           extra_nix_config: |
             experimental-features = nix-command flakes
 
-      - name: Check formatting
+      - name: Check Nix formatting
         run: nix run nixpkgs#alejandra -- --check .
+
+      - name: Check Markdown lint
+        run: nix run nixpkgs#markdownlint-cli2 --
+
+      - name: Check Lua formatting
+        run: |
+          git ls-files '*.lua' \
+            | xargs -r nix run nixpkgs#stylua -- --check
 
   nixos:
     name: NixOS build
