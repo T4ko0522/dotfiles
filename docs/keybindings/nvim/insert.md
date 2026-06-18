@@ -80,6 +80,7 @@ HTML や JSX のファイルで `div.foo>p` のような略記を展開できま
 | `Ctrl+y` then `,` | Emmet を展開 (デフォルト Leader: `<C-y>`) |
 
 例: `ul>li*3` と書いて `Ctrl+y` `,` を押すと
+
 ```html
 <ul>
   <li></li>
@@ -87,6 +88,7 @@ HTML や JSX のファイルで `div.foo>p` のような略記を展開できま
   <li></li>
 </ul>
 ```
+
 に展開されます。
 
 ## Insert モード時の表示

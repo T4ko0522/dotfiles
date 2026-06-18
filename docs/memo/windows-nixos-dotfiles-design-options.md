@@ -96,6 +96,7 @@ Nix 側には `specialArgs`（keyboardLayout, dotfilesDir）、per-host monitors
 これで `xdg.nix:100-108` の activation と `setup_windows.ps1:144-162` の PowerShell マージが両方不要になる。最も分かりやすい chezmoi の利得。
 
 ただし注意（Codex 指摘）:
+
 - `include` は **source directory 相対**。`.chezmoiroot=home/` にするなら、上記 `.config/shared/...` は `home/` 配下に置かれている必要がある。レイアウト確定前に最小 PoC で解決を確認すること。
 - `mergeOverwrite` は **deep merge だが deep copy ではなく右側優先、配列は連結しない**。現 PS は `hooks` を丸ごと差し替え、Nix は `recursiveUpdate`。テンプレート化前に **JSON fixture テスト**で挙動を固定し、両 OS で一致させること。
 

@@ -70,7 +70,7 @@ pwsh 起動時 ([`.config/windows/powershell/conf.d/startup.ps1`](../../.config/
 | `Win+Shift+]` | 次のウィンドウへ (`cycle-focus next`) |
 
 > `cross_boundary_behaviour: "Workspace"` によりフォーカス移動は同一ワークスペース内に閉じる。モニター切替は `Win+,` / `Win+.` を使う。
-
+>
 > 注: `Win+u/i/o/p` は方向フォーカスではなく `preselect-direction` (次に開くウィンドウの配置先指定)。
 
 ## ウィンドウ移動
