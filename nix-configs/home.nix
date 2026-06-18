@@ -14,5 +14,6 @@
     ./home/programs.nix
     ./home/firefox.nix
     ./home/vicinae.nix
+    ./home/spotify.nix
   ];
 }
