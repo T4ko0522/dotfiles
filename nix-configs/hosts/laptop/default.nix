@@ -11,6 +11,19 @@
 
   networking.hostName = "laptop";
 
+  services.pipewire.wireplumber.extraConfig.bluetooth = {
+    "wireplumber.settings" = {
+      "bluetooth.autoswitch-to-headset-profile" = false;
+    };
+
+    "monitor.bluez.properties" = {
+      "bluez5.roles" = [
+        "a2dp_sink"
+        "a2dp_source"
+      ];
+    };
+  };
+
   home-manager.users.t4ko.t4ko.niri.monitors = {
     "eDP-1" = {
       mode = "1920x1080@165.016";
