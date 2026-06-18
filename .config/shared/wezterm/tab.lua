@@ -9,51 +9,51 @@ local module = {}
 -- Catppuccin Mocha パレット（色はすべてここから参照して一元管理する）
 local PALETTE = {
   rosewater = "#f5e0dc",
-  text      = "#cdd6f4",
-  subtext0  = "#a6adc8",
-  base      = "#1e1e2e",
-  mauve     = "#cba6f7",
-  red       = "#f38ba8",
-  maroon    = "#eba0ac",
-  peach     = "#fab387",
-  yellow    = "#f9e2af",
-  green     = "#a6e3a1",
-  teal      = "#94e2d5",
-  sky       = "#89dceb",
-  blue      = "#89b4fa",
-  lavender  = "#b4befe",
+  text = "#cdd6f4",
+  subtext0 = "#a6adc8",
+  base = "#1e1e2e",
+  mauve = "#cba6f7",
+  red = "#f38ba8",
+  maroon = "#eba0ac",
+  peach = "#fab387",
+  yellow = "#f9e2af",
+  green = "#a6e3a1",
+  teal = "#94e2d5",
+  sky = "#89dceb",
+  blue = "#89b4fa",
+  lavender = "#b4befe",
 }
 
 -- Icons（Nerd Font のグリフ名で宣言）
 local ICONS = {
-  docker   = wezterm.nerdfonts.md_docker,
-  neovim   = wezterm.nerdfonts.custom_neovim,
-  vim      = wezterm.nerdfonts.custom_vim,
-  ssh      = wezterm.nerdfonts.md_lan,
-  git      = wezterm.nerdfonts.dev_git_branch,
-  node     = wezterm.nerdfonts.md_nodejs,
-  python   = wezterm.nerdfonts.md_language_python,
-  rust     = wezterm.nerdfonts.dev_rust,
-  go       = wezterm.nerdfonts.md_language_go,
-  lua      = wezterm.nerdfonts.seti_lua,
-  shell    = wezterm.nerdfonts.md_console_line,
+  docker = wezterm.nerdfonts.md_docker,
+  neovim = wezterm.nerdfonts.custom_neovim,
+  vim = wezterm.nerdfonts.custom_vim,
+  ssh = wezterm.nerdfonts.md_lan,
+  git = wezterm.nerdfonts.dev_git_branch,
+  node = wezterm.nerdfonts.md_nodejs,
+  python = wezterm.nerdfonts.md_language_python,
+  rust = wezterm.nerdfonts.dev_rust,
+  go = wezterm.nerdfonts.md_language_go,
+  lua = wezterm.nerdfonts.seti_lua,
+  shell = wezterm.nerdfonts.md_console_line,
   fallback = wezterm.nerdfonts.dev_terminal,
-  zoom     = wezterm.nerdfonts.md_magnify,
+  zoom = wezterm.nerdfonts.md_magnify,
 }
 
 -- プロセス検出ルール（上から順に NAME_INDEX へ展開。各名前は 1 ルールに属する）
 -- icon は ICONS のキー、color は PALETTE のキーを指す。
 local PROCESS_MATCHERS = {
-  { icon = "neovim", color = "green",    names = { "nvim" } },
-  { icon = "vim",    color = "green",    names = { "vim", "vi" } },
-  { icon = "docker", color = "blue",     names = { "docker", "docker-compose", "lazydocker" } },
-  { icon = "git",    color = "peach",    names = { "git", "lazygit", "gitui", "tig" } },
-  { icon = "node",   color = "teal",     names = { "node", "npm", "pnpm", "yarn", "bun", "deno" } },
-  { icon = "python", color = "yellow",   names = { "python", "python3", "pip", "ipython" } },
-  { icon = "rust",   color = "maroon",   names = { "cargo", "rustc" } },
-  { icon = "go",     color = "sky",      names = { "go", "gopls" } },
-  { icon = "lua",    color = "lavender", names = { "lua", "luajit" } },
-  { icon = "shell",  color = "subtext0", names = { "bash", "zsh", "fish", "sh" } },
+  { icon = "neovim", color = "green", names = { "nvim" } },
+  { icon = "vim", color = "green", names = { "vim", "vi" } },
+  { icon = "docker", color = "blue", names = { "docker", "docker-compose", "lazydocker" } },
+  { icon = "git", color = "peach", names = { "git", "lazygit", "gitui", "tig" } },
+  { icon = "node", color = "teal", names = { "node", "npm", "pnpm", "yarn", "bun", "deno" } },
+  { icon = "python", color = "yellow", names = { "python", "python3", "pip", "ipython" } },
+  { icon = "rust", color = "maroon", names = { "cargo", "rustc" } },
+  { icon = "go", color = "sky", names = { "go", "gopls" } },
+  { icon = "lua", color = "lavender", names = { "lua", "luajit" } },
+  { icon = "shell", color = "subtext0", names = { "bash", "zsh", "fish", "sh" } },
 }
 
 -- プロセス名 -> ルールの索引（モジュールロード時に 1 回だけ構築）
@@ -66,10 +66,10 @@ end
 
 -- Tab colors
 local TAB_COLORS = {
-  foreground_inactive  = PALETTE.subtext0,
-  background_inactive  = PALETTE.base,
-  foreground_active    = PALETTE.base, -- アクティブタブ文字
-  background_active    = PALETTE.mauve, -- ラベンダー
+  foreground_inactive = PALETTE.subtext0,
+  background_inactive = PALETTE.base,
+  foreground_active = PALETTE.base, -- アクティブタブ文字
+  background_active = PALETTE.mauve, -- ラベンダー
   background_ssh_active = PALETTE.red,
   foreground_ssh_active = PALETTE.base,
 }
@@ -98,7 +98,6 @@ local function is_ssh_process(process_name, cmdline, user_vars)
   end
   return false, nil
 end
-
 
 local function extract_project_name(cwd)
   if not cwd then

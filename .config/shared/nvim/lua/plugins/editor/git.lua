@@ -21,7 +21,14 @@ return {
   },
   {
     "sindrets/diffview.nvim", -- diffview プラグイン
-    cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFocusFiles", "DiffviewFileHistory", "DiffviewRefresh" },
+    cmd = {
+      "DiffviewOpen",
+      "DiffviewClose",
+      "DiffviewToggleFiles",
+      "DiffviewFocusFiles",
+      "DiffviewFileHistory",
+      "DiffviewRefresh",
+    },
     config = function()
       local actions = require("diffview.actions")
 

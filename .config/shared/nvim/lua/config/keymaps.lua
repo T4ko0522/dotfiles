@@ -47,8 +47,18 @@ local function accept_supermaven_suggestion()
   vim.notify("No Supermaven suggestion", vim.log.levels.WARN)
 end
 
-keymap("i", "<C-l>", accept_supermaven_suggestion, { noremap = true, silent = true, desc = "Accept Supermaven suggestion" })
-keymap("i", "<C-g>", accept_supermaven_suggestion, { noremap = true, silent = true, desc = "Accept Supermaven suggestion" })
+keymap(
+  "i",
+  "<C-l>",
+  accept_supermaven_suggestion,
+  { noremap = true, silent = true, desc = "Accept Supermaven suggestion" }
+)
+keymap(
+  "i",
+  "<C-g>",
+  accept_supermaven_suggestion,
+  { noremap = true, silent = true, desc = "Accept Supermaven suggestion" }
+)
 
 keymap("i", "<C-j>", function()
   local preview = load_supermaven_preview()
@@ -131,10 +141,9 @@ end, { desc = "Notification History" })
 local function get_git_root()
   local buf_dir = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":h")
   -- vim.fn.systemlist の代わりに vim.system + タイムアウトでハング防止
-  local result = vim.system(
-    { "git", "-C", buf_dir, "rev-parse", "--show-toplevel" },
-    { text = true, timeout = 3000 }
-  ):wait()
+  local result = vim
+    .system({ "git", "-C", buf_dir, "rev-parse", "--show-toplevel" }, { text = true, timeout = 3000 })
+    :wait()
   return (result.code == 0 and vim.trim(result.stdout)) or LazyVim.root.get({ buf = 0 })
 end
 

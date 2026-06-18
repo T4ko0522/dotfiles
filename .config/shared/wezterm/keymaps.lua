@@ -80,7 +80,6 @@ return {
     { key = "0", mods = "ALT", action = act.ResetFontSize },
     { key = "0", mods = "CTRL|SHIFT", action = act.ResetFontSize },
 
-
     -- 設定再読み込み
     { key = "r", mods = "CTRL|SHIFT|ALT", action = act.ReloadConfiguration },
   },

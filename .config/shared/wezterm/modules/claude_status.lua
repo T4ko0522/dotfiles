@@ -6,13 +6,12 @@ local module = {}
 module.STATUS = {
   running = { icon = "✳", color = "#d97757" }, -- Claude Orange（生成中）
   waiting = { icon = "✳", color = "#f9e2af" }, -- Yellow（入力待ち）
-  idle    = { icon = "✳", color = "#6c7086" }, -- Overlay0（アイドル）
+  idle = { icon = "✳", color = "#6c7086" }, -- Overlay0（アイドル）
 }
 
 -- Claudeプロセスかどうか判定
 function module.is_claude(process_name, pane_title)
-  return process_name == "claude"
-    or (pane_title and (pane_title:find("^✳") or pane_title:lower():find("claude")))
+  return process_name == "claude" or (pane_title and (pane_title:find("^✳") or pane_title:lower():find("claude")))
 end
 
 -- ペインタイトルからステータスを判定

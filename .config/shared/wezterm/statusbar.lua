@@ -6,8 +6,8 @@ local module = {}
 -- =============================================================================
 
 local WORKSPACE_COLORS = {
-  default = "#cba6f7",      -- Mauve（ラベンダー）
-  copy_mode = "#f9e2af",    -- Yellow
+  default = "#cba6f7", -- Mauve（ラベンダー）
+  copy_mode = "#f9e2af", -- Yellow
   setting_mode = "#a6e3a1", -- Green
 }
 
