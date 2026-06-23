@@ -30,16 +30,15 @@ $time\
 [username]
 show_always = true
 format = "[ $user ]($style)"
-style_user = 'bold fg:#cba6f7'
+style_user = 'bold fg:#7ebae4'
 style_root = 'bold fg:#f38ba8'
-
 [python]
 format = """
-[](fg:#f9e2af)\
+[](fg:#7ebae4)\
 [$virtualenv]($style)\
-[](fg:#f9e2af)\
+[](fg:#7ebae4)\
 """
-style = "bold fg:#313244 bg:#f9e2af"
+style = "bold fg:#0a1828 bg:#7ebae4"
 
 [fill]
 symbol = '─'
@@ -50,13 +49,13 @@ truncate_to_repo = false
 home_symbol = '~'
 read_only = ' 󰌾 '
 format = """
-[](fg:#cba6f7)\
+[](fg:#5277c3)\
 [$path]($style)\
 [$read_only]($read_only_style)\
-[](fg:#cba6f7)\
+[](fg:#5277c3)\
 """
-style = 'bold fg:#313244 bg:#cba6f7'
-read_only_style = 'bold fg:#313244 bg:#cba6f7'
+style = 'bold fg:#e6eefb bg:#5277c3'
+read_only_style = 'bold fg:#e6eefb bg:#5277c3'
 [directory.substitutions]
 "~/Project/github.com/" = " "
 "Project/github.com/" = " "
@@ -70,35 +69,35 @@ read_only_style = 'bold fg:#313244 bg:#cba6f7'
 [direnv]
 disabled = false
 format = """
-[](fg:#b4befe)\
+[](fg:#5277c3)\
 [$symbol$allowed]($style)\
-[](fg:#b4befe)\
+[](fg:#5277c3)\
 """
-style = "bold fg:#313244 bg:#b4befe"
+style = "bold fg:#e6eefb bg:#5277c3"
 
 [nix_shell]
 disabled = false
 symbol = " "
 format = """
-[](fg:#89b4fa)\
+[](fg:#5277c3)\
 [$symbol$state]($style)\
-[](fg:#89b4fa)\
+[](fg:#5277c3)\
 """
-style = "bold fg:#313244 bg:#89b4fa"
+style = "bold fg:#e6eefb bg:#5277c3"
 
 [git_branch]
 symbol = ""
-style = "fg:#b4befe bg:#1d2230"
+style = "fg:#0a1828 bg:#7ebae4"
 format = """
-[](fg:#1d2230)\
+[](fg:#7ebae4)\
 [$symbol $branch]($style)\
 """
 
 [git_status]
-style = "fg:#b4befe bg:#1d2230"
+style = "fg:#0a1828 bg:#7ebae4"
 format = """
 [$all_status$ahead_behind]($style)\
-[](fg:#1d2230)\
+[](fg:#7ebae4)\
 """
 
 # ----------------------------------------------------
@@ -106,13 +105,13 @@ format = """
 # ----------------------------------------------------
 [cmd_duration]
 min_time = 1
-style = 'fg:#fab387'
+style = 'fg:#5277c3'
 format = "[ $duration]($style)" # nf-pl-right_soft_divider, nf-mdi-clock
 
 [time]
 disabled = false
 time_format = "%R" # Hour:Minute Format
-format = '[[  $time](fg:#b4befe)]($style)'
+format = '[[  $time](fg:#7ebae4)]($style)'
 
 # ----------------------------------------------------
 # prompt module

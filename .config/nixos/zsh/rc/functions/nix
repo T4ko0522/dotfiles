@@ -1,0 +1,34 @@
+#!/usr/bin/env zsh
+# `nix develop` を素の bash ではなく zsh で起動するラッパー。
+# 普段の対話環境 (alias / starship / 補完 / zoxide など) を保ったまま
+# dev shell に入れるようにする。
+#
+# 介入するのは「対話的に dev shell へ入ろうとしている」場合だけ:
+#   - stdout が tty (パイプや CI、スクリプト経由では介入しない)
+#   - サブコマンドが develop
+#   - ユーザーが自分で実行コマンドを指定していない (-c/--command など)
+# それ以外は素の nix にそのまま委譲する。
+
+emulate -L zsh
+
+if [[ "$1" == "develop" && -t 1 ]]; then
+  local arg
+  for arg in "$@"; do
+    case "$arg" in
+      -c | --command | -h | --help | --version)
+        command nix "$@"
+        return
+        ;;
+    esac
+  done
+  # dev shell 内では starship を Nix テーマ配色に差し替える (子 zsh の環境だけに適用)。
+  local nix_starship="$HOME/dotfiles/.config/shared/starship-nix.toml"
+  if [[ -r "$nix_starship" ]]; then
+    STARSHIP_CONFIG="$nix_starship" command nix "$@" --command zsh
+  else
+    command nix "$@" --command zsh
+  fi
+  return
+fi
+
+command nix "$@"
