@@ -221,13 +221,13 @@ in {
 
     runtimeMaxSec = lib.mkOption {
       type = lib.types.str;
-      default = "30min";
+      default = "90min";
       description = "systemd RuntimeMaxSec for periodic linux-wallpaperengine recycling.";
     };
 
     restartSec = lib.mkOption {
       type = lib.types.str;
-      default = "5s";
+      default = "3s";
       description = "Delay before restarting linux-wallpaperengine after it exits or is recycled.";
     };
 
