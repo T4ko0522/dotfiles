@@ -22,7 +22,7 @@ if [[ "$1" == "develop" && -t 1 ]]; then
     esac
   done
   # dev shell 内では starship を Nix テーマ配色に差し替える (子 zsh の環境だけに適用)。
-  local nix_starship="$HOME/dotfiles/.config/shared/starship-nix.toml"
+  local nix_starship="$HOME/dotfiles/.config/nixos/starship-nix.toml"
   if [[ -r "$nix_starship" ]]; then
     STARSHIP_CONFIG="$nix_starship" command nix "$@" --command zsh
   else
