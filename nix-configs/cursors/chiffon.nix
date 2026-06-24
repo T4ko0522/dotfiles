@@ -2,7 +2,8 @@
   pkgs,
   lib,
   ...
-}: let
+}:
+let
   # --- 1. 設定: マッピング定義 ---
   # 日本語のファイル名の一部 (key) と、X11のカーソル名リスト (value)
   # リストの先頭が実ファイル名、2番目以降がシンボリックリンクになります
@@ -56,82 +57,77 @@
       "crossed_circle"
       "not-allowed"
     ];
-    "ペン" = ["pencil"];
+    "ペン" = [ "pencil" ];
   };
 
   themeName = "Chiffon";
 in
-  pkgs.stdenv.mkDerivation {
-    name = "chiffon-cursor-theme";
+pkgs.stdenv.mkDerivation {
+  name = "chiffon-cursor-theme";
 
-    # --- 2. ソースの取得 (requireFile) ---
-    src = pkgs.requireFile {
-      name = "Chiffon_Cursor.zip";
-      url = "https://booth.pm/ja/items/5386027";
-      sha256 = "ae8c21a4f18630b7322dfa7816ed99194d11fafb1d94bad7234c1b0838fb762e";
-      message = "BOOTHからダウンロードしたzipファイルをChiffon_Cursor.zipに改名したうえで、 'nix-store --add-fixed sha256 <file>' で登録してください。";
-    };
+  # --- 2. ソースの取得 ---
+  src = ./Chiffon_Cursor.zip;
 
-    # ビルドに必要なツール
-    nativeBuildInputs = with pkgs; [
-      unar
-      win2xcur
-    ];
+  # ビルドに必要なツール
+  nativeBuildInputs = with pkgs; [
+    unar
+    win2xcur
+  ];
 
-    # ソースを展開しないようにする（手動でunzipするため）
-    unpackPhase = "true";
+  # ソースを展開しないようにする（手動でunzipするため）
+  unpackPhase = "true";
 
-    # --- 3. インストールフェーズ (変換スクリプトの本体) ---
-    installPhase = ''
-      # 出力先ディレクトリの作成
-      cursorDir=$out/share/icons/${themeName}/cursors
-      mkdir -p $cursorDir
+  # --- 3. インストールフェーズ (変換スクリプトの本体) ---
+  installPhase = ''
+    # 出力先ディレクトリの作成
+    cursorDir=$out/share/icons/${themeName}/cursors
+    mkdir -p $cursorDir
 
-      # 作業用の一時ディレクトリを作成して展開
-      mkdir -p build_tmp
-      unar $src
-      mv ./"シフォン Cursor"/ ./build_tmp/
-      cd build_tmp
+    # 作業用の一時ディレクトリを作成して展開
+    mkdir -p build_tmp
+    unar $src
+    mv ./"シフォン Cursor"/ ./build_tmp/
+    cd build_tmp
 
-      # NixのMap定義をbashのロジックに展開して実行
-      # findコマンドを使ってファイル名の一部(key)に一致するファイルを探します
-      ${lib.concatStringsSep "\n" (
-        lib.mapAttrsToList (
-          key: names: let
-            primary = builtins.head names;
-            aliases = builtins.tail names;
-          in ''
-            targetFile=$(find . -maxdepth 2 -name "*${key}*.ani" -o -name "*${key}*.cur" | head -n 1)
+    # NixのMap定義をbashのロジックに展開して実行
+    # findコマンドを使ってファイル名の一部(key)に一致するファイルを探します
+    ${lib.concatStringsSep "\n" (
+      lib.mapAttrsToList (
+        key: names:
+        let
+          primary = builtins.head names;
+          aliases = builtins.tail names;
+        in
+        ''
+          targetFile=$(find . -maxdepth 2 -name "*${key}*.ani" -o -name "*${key}*.cur" | head -n 1)
 
-            if [ -n "$targetFile" ]; then
-              win2xcur "$targetFile" -o "$cursorDir/" >/dev/null
-              originalBaseName=$(basename "$targetFile")
-              generatedFile="$cursorDir/''${originalBaseName%.*}"
+          if [ -n "$targetFile" ]; then
+            win2xcur "$targetFile" -o "$cursorDir/" >/dev/null
+            originalBaseName=$(basename "$targetFile")
+            generatedFile="$cursorDir/''${originalBaseName%.*}"
 
-              if [ -f "$generatedFile" ]; then
-                 mv "$generatedFile" "$cursorDir/${primary}"
+            if [ -f "$generatedFile" ]; then
+               mv "$generatedFile" "$cursorDir/${primary}"
 
-                 # シンボリックリンクの作成 (エイリアス)
-                 ${lib.concatMapStringsSep "\n" (alias: ''
-                ln -sf "${primary}" "$cursorDir/${alias}"
-              '')
-              aliases}
-              else
-                 echo "    [Error] Output not found for $targetFile"
-              fi
+               # シンボリックリンクの作成 (エイリアス)
+               ${lib.concatMapStringsSep "\n" (alias: ''
+                 ln -sf "${primary}" "$cursorDir/${alias}"
+               '') aliases}
             else
-              echo "    [Skip] Source file for '${key}' not found."
+               echo "    [Error] Output not found for $targetFile"
             fi
-          ''
-        )
-        cursorMap
-      )}
+          else
+            echo "    [Skip] Source file for '${key}' not found."
+          fi
+        ''
+      ) cursorMap
+    )}
 
-      # --- index.theme の生成 ---
-      echo "[Icon Theme]
-      Name=${themeName}
-      Comment=Converted from Windows Cursor via Nix
-      Inherits=core
-      " > $out/share/icons/${themeName}/index.theme
-    '';
-  }
+    # --- index.theme の生成 ---
+    echo "[Icon Theme]
+    Name=${themeName}
+    Comment=Converted from Windows Cursor via Nix
+    Inherits=core
+    " > $out/share/icons/${themeName}/index.theme
+  '';
+}
