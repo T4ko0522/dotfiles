@@ -15,5 +15,6 @@
     vim
     wezterm
     yazi
+    zed-editor
   ];
 }

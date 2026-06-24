@@ -68,6 +68,7 @@ in {
       # out-of-store: プログラム自身が dir/file へ書き戻すもの。
       "lazygit".source = link ".config/shared/lazygit"; # state.yml を書き込む
       "nvim".source = link ".config/shared/nvim"; # lazy-lock.json を書き込む
+      "zed".source = link ".config/shared/zed"; # GUI 設定変更で settings.json を書き戻す
       "zsh/rc".source = link ".config/nixos/zsh/rc"; # .zwc を zcompile する
       "fcitx5/config".source = link ".config/nixos/fcitx5/config"; # GUI 設定で再書き込み
     };
