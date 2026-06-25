@@ -24,9 +24,9 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 })
 vim.api.nvim_set_hl(0, "SpellCap", {})
 
--- 背景透過は catppuccin プラグインの init で ColorScheme autocmd を登録している
--- (plugins/ui/catppuccin.lua)。autocmds.lua は VeryLazy 読込で colorscheme 適用後となり
--- ColorScheme イベントを取り逃すため、ここには置かない。
+-- 背景透過は dracula.nvim の setup (plugins/ui/dracula.lua の transparent_bg = true と
+-- overrides) で行う。autocmds.lua は VeryLazy 読込で colorscheme 適用後となり
+-- ColorScheme イベントを取り逃すため、透過設定はここには置かない。
 
 vim.api.nvim_create_user_command("CountCleanTextLength", function()
   local bufnr = 0

@@ -2,16 +2,16 @@ return {
   -- filename
   {
     "b0o/incline.nvim",
-    dependencies = { "catppuccin/nvim" },
+    dependencies = { "Mofiqul/dracula.nvim" },
     event = "BufReadPre",
     priority = 1200,
     config = function()
-      local colors = require("catppuccin.palettes").get_palette("mocha")
+      local colors = require("dracula").colors()
       require("incline").setup({
         highlight = {
           groups = {
-            InclineNormal = { guibg = colors.mauve, guifg = colors.base },
-            InclineNormalNC = { guifg = colors.lavender, guibg = colors.mantle },
+            InclineNormal = { guibg = colors.purple, guifg = colors.bg },
+            InclineNormalNC = { guifg = colors.comment, guibg = colors.menu },
           },
         },
         window = { margin = { vertical = 0, horizontal = 1 } },
