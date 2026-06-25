@@ -52,6 +52,7 @@
     "huggingface-skills@claude-plugins-official": true,
     "lua-lsp@claude-plugins-official": true,
     "playwright@claude-plugins-official": true,
+    "reviewable-html-workbench@reviewable-html-workbench-local": true,
     "rust-analyzer-lsp@claude-plugins-official": true,
     "security-guidance@claude-plugins-official": true,
     "stripe@claude-plugins-official": true
@@ -67,6 +68,12 @@
       "source": {
         "source": "github",
         "repo": "openai/codex-plugin-cc"
+      }
+    },
+    "reviewable-html-workbench-local": {
+      "source": {
+        "source": "github",
+        "repo": "u-ichi/reviewable-html-workbench"
       }
     }
   },
