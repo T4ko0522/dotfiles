@@ -17,7 +17,7 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
   spec = {
     -- add LazyVim and import its plugins
-    { "LazyVim/LazyVim", import = "lazyvim.plugins", opts = { colorscheme = "catppuccin" } },
+    { "LazyVim/LazyVim", import = "lazyvim.plugins", opts = { colorscheme = "dracula" } },
     -- { "LazyVim/LazyVim", import = "lazyvim.plugins", opts = { colorscheme = "zenbones" } },
     -- LazyExtra
     { import = "lazyvim.plugins.extras.linting.eslint" },
@@ -56,7 +56,7 @@ require("lazy").setup({
     version = false, -- always use the latest git commit
     -- version = "*", -- try installing the latest stable version for plugins that support semver
   },
-  install = { colorscheme = { "zenbones", "tokyonight", "habamax" } },
+  install = { colorscheme = { "dracula", "tokyonight", "habamax" } },
   checker = {
     enabled = false, -- 起動時/定期 fetch を止める（必要なら :Lazy sync で手動更新）
     notify = false,
