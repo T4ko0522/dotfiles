@@ -2,6 +2,7 @@
   imports = [
     ./base.nix
     ./bluetooth.nix
+    ./docker.nix
     ./kernel.nix
     ./locale.nix
     ./nh.nix
