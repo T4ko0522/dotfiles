@@ -8,7 +8,9 @@
 #   Secrets:
 #     CACHE_PRIVATE_KEY     NAR 署名用秘密鍵
 #     ADMIN_TOKEN           cf-edgeNix Worker の write API Bearer
-#     CLOUDFLARE_API_TOKEN  R2 write + KV write の最小権限トークン
+#     CLOUDFLARE_API_TOKEN  KV bulk write の最小権限トークン
+#     R2_ACCESS_KEY_ID      R2 S3 API のアクセスキー (R2 dashboard → Manage R2 API tokens)
+#     R2_SECRET_ACCESS_KEY  R2 S3 API のシークレットキー
 #   Variables:
 #     CLOUDFLARE_ACCOUNT_ID
 #     API_BASE_URL          deploy 済み cf-edgeNix Worker の URL
@@ -132,6 +134,8 @@ jobs:
           FLAKE_LOCK_HASH: ${{ hashFiles('flake.lock') }}
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
         run: |
           failed=()
           for host in $HOSTS; do
