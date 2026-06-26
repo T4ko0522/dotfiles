@@ -25,15 +25,18 @@ on:
         required: false
         type: string
   push:
-    branches: [main]
+    branches: [master]
 
 concurrency:
   group: publish-cache-${{ github.ref }}
   cancel-in-progress: false
 
+permissions: {}
+
 jobs:
   publish:
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     environment: production
     strategy:
       fail-fast: false
