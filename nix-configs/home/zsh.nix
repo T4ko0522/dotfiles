@@ -38,7 +38,7 @@
       export VISUAL="$EDITOR"
       export GIT_EDITOR="$EDITOR"
 
-      export GOPATH="$XDG_DATA_HOME/go"
+      export GOPATH="$HOME/go"
       export GO111MODULE=on
       path=("$HOME/.local/bin" "$GOPATH/bin" "$HOME/.cargo/bin" $path)
     '';
