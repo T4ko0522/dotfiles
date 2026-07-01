@@ -19,13 +19,19 @@
 
   # OpenVR ランタイムを OpenComposite に固定する。
   # SteamVR は使わないので read-only symlink で問題ない。
-  xdg.configFile."openvr/openvrpaths.vrpath".text = builtins.toJSON {
-    version = 1;
-    jsonid = "vrpathreg";
-    external_drivers = null;
-    config = ["${config.xdg.dataHome}/Steam/config"];
-    log = ["${config.xdg.dataHome}/Steam/logs"];
-    runtime = ["${pkgs.opencomposite}/lib/opencomposite"];
+  # force = true: 他ツール (SteamVR, xrizer, motoc 等) が openvrpaths.vrpath を書き換えても
+  # rebuild ごとに OpenComposite で上書きし直し、宣言と現実のズレを防ぐ。
+  # (過去に xrizer 系の openvrpaths が残っていて hm-backup が衝突し activation 失敗した経緯あり)
+  xdg.configFile."openvr/openvrpaths.vrpath" = {
+    force = true;
+    text = builtins.toJSON {
+      version = 1;
+      jsonid = "vrpathreg";
+      external_drivers = null;
+      config = ["${config.xdg.dataHome}/Steam/config"];
+      log = ["${config.xdg.dataHome}/Steam/logs"];
+      runtime = ["${pkgs.opencomposite}/lib/opencomposite"];
+    };
   };
 
   # VRChat の写真は Proton prefix(438100) 内の Windows ピクチャに保存される。
