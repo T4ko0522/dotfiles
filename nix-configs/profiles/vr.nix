@@ -64,6 +64,5 @@
   # WiVRn 26.6 で defaultRuntime オプションが廃止されたため、
   # /etc/xdg/openxr/1/active_runtime.json を WiVRn の OpenXR manifest に向けて、
   # WayVR や xrizer などが OpenXR runtime を解決できるようにする。
-  environment.etc."xdg/openxr/1/active_runtime.json".source =
-    "${config.services.wivrn.package}/share/openxr/1/openxr_wivrn.json";
+  environment.etc."xdg/openxr/1/active_runtime.json".source = "${config.services.wivrn.package}/share/openxr/1/openxr_wivrn.json";
 }
