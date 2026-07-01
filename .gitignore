@@ -86,3 +86,6 @@ result-*
 # yasb
 .config/windows/yasb/yasb.log
 .config/windows/yasb/.env
+
+# Cloudflare Wrangler
+.wrangler/*
