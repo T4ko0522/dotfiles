@@ -1,9 +1,11 @@
 return {
   {
     "nvim-treesitter/nvim-treesitter",
-    opts = function(_, opts)
-      require("nvim-treesitter.install").compilers = { "gcc", "zig", "clang", "cl", "cc" }
-      return opts
-    end,
+    -- LazyVim デフォルトの ensure_installed に css/scss は無く、main ブランチには
+    -- auto_install も無いため、ここに列挙した言語だけがインストールされる。
+    -- 扱う filetype が増えたらここへ追記すること。
+    opts = {
+      ensure_installed = { "css", "scss" },
+    },
   },
 }

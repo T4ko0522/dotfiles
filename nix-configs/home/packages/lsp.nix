@@ -14,6 +14,7 @@
     ruff
     statix
     stylua
+    taplo
     tailwindcss-language-server
     vscode-langservers-extracted
     vtsls

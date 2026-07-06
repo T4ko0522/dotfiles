@@ -37,6 +37,8 @@ return {
         biome = { mason = false },
         vtsls = { mason = false },
         jsonls = { mason = false },
+        cssls = { mason = false }, -- vscode-langservers-extracted (Nix)
+        taplo = { mason = false }, -- TOML LSP (Nix)
         dockerls = { mason = false },
         docker_compose_language_service = { mason = false },
         eslint = { mason = false },
