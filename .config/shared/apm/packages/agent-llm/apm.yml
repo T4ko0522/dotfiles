@@ -1,0 +1,8 @@
+name: agent-llm
+version: 1.0.0
+description: エージェント連携・LLM ワークフロー系 skill
+author: T4ko0522
+target: claude
+dependencies:
+  mcp: []
+  apm: []

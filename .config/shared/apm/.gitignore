@@ -1,0 +1,5 @@
+# apm install の取得物と生成物 (source は packages/<category>/.apm/skills/ のみ追跡)
+# apm.lock.yaml は外部依存 (mizchi/skills) のバージョン固定のため追跡する
+apm_modules/
+.claude/
+.agents/

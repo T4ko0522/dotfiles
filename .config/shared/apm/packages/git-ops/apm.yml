@@ -1,0 +1,8 @@
+name: git-ops
+version: 1.0.0
+description: Git 操作系 skill
+author: T4ko0522
+target: claude
+dependencies:
+  mcp: []
+  apm: []

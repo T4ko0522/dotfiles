@@ -4,6 +4,9 @@ default:
 os-switch host="laptop":
   nh os switch . -H {{host}}
 
+skills-sync:
+  cd .config/shared/apm && apm install
+
 fmt:
   alejandra .
   nix run nixpkgs#markdownlint-cli2 -- --fix

@@ -22,11 +22,7 @@ result-*
 .config/shared/claude/session-env/
 .config/shared/claude/statsig/
 .config/shared/claude/sessions/
-.config/shared/claude/skills/*
-!.config/shared/claude/skills/git-commit
-!.config/shared/claude/skills/markdown-session-format/
-!.config/shared/claude/skills/team
-!.config/shared/claude/skills/tool-pipeline
+.config/shared/claude/skills/
 .config/shared/claude/tasks/
 .config/shared/claude/todos/
 .config/shared/claude/file-history/

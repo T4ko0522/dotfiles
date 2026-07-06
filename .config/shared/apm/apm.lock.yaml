@@ -1,0 +1,93 @@
+lockfile_version: '1'
+generated_at: '2026-07-05T00:15:49.358114+00:00'
+apm_version: 0.18.0
+dependencies:
+- repo_url: _local/agent-llm
+  package_type: apm_package
+  deployed_files:
+  - .claude/skills/team
+  - .claude/skills/tool-pipeline
+  source: local
+  local_path: ./packages/agent-llm
+- repo_url: _local/docs
+  package_type: apm_package
+  deployed_files:
+  - .claude/skills/markdown-session-format
+  source: local
+  local_path: ./packages/docs
+- repo_url: _local/git-ops
+  package_type: apm_package
+  deployed_files:
+  - .claude/skills/git-commit
+  source: local
+  local_path: ./packages/git-ops
+- repo_url: mizchi/skills
+  host: github.com
+  resolved_commit: 5aaf2d126a04a8b079fd5184eb1860f232afffd3
+  resolved_ref: 5aaf2d126a04a8b079fd5184eb1860f232afffd3
+  virtual_path: cloudflare/deploy
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .claude/skills/deploy
+  content_hash: sha256:e3780ee11a9546ab33fb3f86ed8d77edc28995f2732f0a7b9b803f168de552c7
+- repo_url: mizchi/skills
+  host: github.com
+  resolved_commit: 5aaf2d126a04a8b079fd5184eb1860f232afffd3
+  resolved_ref: 5aaf2d126a04a8b079fd5184eb1860f232afffd3
+  virtual_path: cloudflare/workers-otel-utels
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .claude/skills/workers-otel-utels
+  content_hash: sha256:caaa59e9c24d3b8c430e0cb9803e6ebf876ccb11dccf56b65460999e2783b43b
+- repo_url: mizchi/skills
+  host: github.com
+  resolved_commit: 5aaf2d126a04a8b079fd5184eb1860f232afffd3
+  resolved_ref: 5aaf2d126a04a8b079fd5184eb1860f232afffd3
+  virtual_path: devops/gh-fix-ci
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .claude/skills/gh-fix-ci
+  content_hash: sha256:822c8d821d30cdd7f0b65a532fa6974ee98140c345bc2b69526ef9d82efeb766
+- repo_url: mizchi/skills
+  host: github.com
+  resolved_commit: 5aaf2d126a04a8b079fd5184eb1860f232afffd3
+  resolved_ref: 5aaf2d126a04a8b079fd5184eb1860f232afffd3
+  virtual_path: tooling/apm-usage
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .claude/skills/apm-usage
+  content_hash: sha256:519bcaa185327320805cfbc89d655499c68485029e995676bdd490665b688a70
+- repo_url: mizchi/skills
+  host: github.com
+  resolved_commit: 5aaf2d126a04a8b079fd5184eb1860f232afffd3
+  resolved_ref: 5aaf2d126a04a8b079fd5184eb1860f232afffd3
+  virtual_path: tooling/conventional-changelog
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .claude/skills/conventional-changelog
+  content_hash: sha256:2711fda7b4ab6ad61aaf5852cb168c7e820d7eb59b88ca0c515377297d8e5c38
+- repo_url: mizchi/skills
+  host: github.com
+  resolved_commit: 5aaf2d126a04a8b079fd5184eb1860f232afffd3
+  resolved_ref: 5aaf2d126a04a8b079fd5184eb1860f232afffd3
+  virtual_path: tooling/justfile
+  is_virtual: true
+  package_type: marketplace_plugin
+  deployed_files:
+  - .claude/skills/justfile
+  content_hash: sha256:1135b39262e10962fc53efb044683bf68e661e3e1a2ce4210e28393494af4d7d
+- repo_url: mizchi/skills
+  host: github.com
+  resolved_commit: 5aaf2d126a04a8b079fd5184eb1860f232afffd3
+  resolved_ref: 5aaf2d126a04a8b079fd5184eb1860f232afffd3
+  virtual_path: tooling/nix-setup
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .claude/skills/nix-setup
+  content_hash: sha256:378bc32bbab93ecd6d29bd9c8a31d58a36add179e5eebcef979440d9d554946d

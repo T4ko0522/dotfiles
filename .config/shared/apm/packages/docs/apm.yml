@@ -1,0 +1,8 @@
+name: docs
+version: 1.0.0
+description: ドキュメント・記録フォーマット系 skill
+author: T4ko0522
+target: claude
+dependencies:
+  mcp: []
+  apm: []

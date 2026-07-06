@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: let
   # link (out-of-store): mkOutOfStoreSymlink で store の外にある「書き込み可能な実体」を指す。
@@ -93,7 +94,7 @@ in {
     # out-of-store: プログラム自身が書き戻すもの。
     ".gitconfig".source = link ".gitconfig"; # git config --global で書き込む
     ".codex/config.toml".source = link ".config/shared/codex/config.toml"; # codex が実行時状態を書き戻す
-    ".claude/skills".source = link ".config/shared/claude/skills"; # プラグイン導入で書き込む
+    ".claude/skills".source = link ".config/shared/apm/.claude/skills"; # apm install の生成物 (source は .config/shared/apm/packages/<category>/.apm/skills/)
   };
 
   # Claude settings.json: 共通 base に NixOS 固有 hooks をマージして生成する。
@@ -106,5 +107,12 @@ in {
     ${builtins.toJSON claudeSettings}
     EOF
     chmod 0644 "$claude_dir/settings.json"
+  '';
+
+  # apm install: .config/shared/apm/packages/<category>/.apm/skills/ (source) から .claude/skills/ (生成物) を deploy する。
+  # 生成物は gitignore され、~/.claude/skills は out-of-store link で生成物を指す。
+  home.activation.apmInstallSkills = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    cd "${config.home.homeDirectory}/dotfiles/.config/shared/apm"
+    ${pkgs.apm-cli}/bin/apm install
   '';
 }
