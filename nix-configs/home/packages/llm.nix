@@ -3,6 +3,6 @@
     claude-code
     codex
     opencode
-    pkgs.apm-cli
+    apm
   ];
 }
