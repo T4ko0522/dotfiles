@@ -1,11 +1,14 @@
 #!/bin/sh
-# prepare-commit-msg: conventional commit prefix に gitmoji を自動挿入する
-# 例: "feat: add feature" → "feat: ✨ add feature"
+# prepare-commit-msg: conventional commit prefix を gitmoji に置換する
+# 例: "feat: add feature"      → "✨ add feature"
+#     "fix(auth): bug"         → "🐛 auth: bug"
+#     "gm feat: add feature"   → "feat: ✨ add feature" (prefix を残して emoji 挿入)
+#     "n feat: add feature"    → "feat: add feature" (gitmoji なし、prefix を残す)
 
 COMMIT_MSG_FILE="$1"
 COMMIT_SOURCE="$2"
 
-# merge, squash, amend 等はスキップ
+# merge, squash 等はスキップ
 case "$COMMIT_SOURCE" in
   merge|squash) exit 0 ;;
 esac
@@ -13,39 +16,22 @@ esac
 # 先頭行を取得
 first_line=$(head -n1 "$COMMIT_MSG_FILE")
 
-# "ngm " プレフィックス付きなら gitmoji をスキップし、プレフィックスだけ除去
+# "n " プレフィックス付きなら gitmoji 置換をスキップし、プレフィックスだけ除去
 case "$first_line" in
-  ngm\ *)
-    sed -i '1s/^ngm //' "$COMMIT_MSG_FILE"
+  n\ *)
+    sed -i '1s/^n //' "$COMMIT_MSG_FILE"
     exit 0
     ;;
 esac
 
-# "gm " プレフィックス付きなら conventional type を gitmoji に置換 (type を残さない)
-# 例: "gm feat: add" → "✨ add" / "gm fix(auth): bug" → "🐛 bug"
+# "gm " プレフィックス付きなら従来動作: prefix を残して直後に emoji を挿入
+# 例: "gm feat: add" → "feat: ✨ add" / "gm fix(auth): bug" → "fix(auth): 🐛 bug"
+mode="replace"
 case "$first_line" in
   gm\ *)
+    mode="keep"
     sed -i '1s/^gm //' "$COMMIT_MSG_FILE"
     first_line=$(head -n1 "$COMMIT_MSG_FILE")
-    emoji=""
-    case "$first_line" in
-      feat:*|feat\(*\):*)         emoji="✨" ;;
-      fix:*|fix\(*\):*)           emoji="🐛" ;;
-      docs:*|docs\(*\):*)         emoji="📝" ;;
-      style:*|style\(*\):*)       emoji="💄" ;;
-      refactor:*|refactor\(*\):*) emoji="♻️" ;;
-      perf:*|perf\(*\):*)         emoji="⚡️" ;;
-      test:*|test\(*\):*)         emoji="✅" ;;
-      build:*|build\(*\):*)       emoji="👷" ;;
-      ci:*|ci\(*\):*)             emoji="🎡" ;;
-      chore:*|chore\(*\):*)       emoji="🔧" ;;
-      remove:*|remove\(*\):*)     emoji="🔥" ;;
-      deploy:*|deploy\(*\):*)     emoji="🚀" ;;
-    esac
-    if [ -n "$emoji" ]; then
-      sed -i "1s/^[a-z][a-z]*\(([^)]*)\)\{0,1\}: /$emoji /" "$COMMIT_MSG_FILE"
-    fi
-    exit 0
     ;;
 esac
 
@@ -54,7 +40,7 @@ case "$first_line" in
   *✨*|*🐛*|*📝*|*💄*|*♻️*|*⚡️*|*✅*|*👷*|*🎡*|*🔧*|*🔥*|*🚀*) exit 0 ;;
 esac
 
-# prefix から gitmoji を決定（scope 付き "type(scope):" にも対応）
+# conventional type から gitmoji を決定（scope 付き "type(scope):" にも対応）
 emoji=""
 case "$first_line" in
   feat:*|feat\(*\):*)         emoji="✨" ;;
@@ -75,5 +61,12 @@ if [ -z "$emoji" ]; then
   exit 0
 fi
 
-# "type: description" または "type(scope): description" → prefix の直後に emoji を挿入
-sed -i "1s/^\([a-z][a-z]*\(([^)]*)\)\{0,1\}:\) /\1 $emoji /" "$COMMIT_MSG_FILE"
+if [ "$mode" = "keep" ]; then
+  # "type: description" / "type(scope): description" → prefix の直後に emoji を挿入
+  sed -i "1s/^\([a-z][a-z]*\(([^)]*)\)\{0,1\}:\) /\1 $emoji /" "$COMMIT_MSG_FILE"
+else
+  # "type(scope): description" → "emoji scope: description" (scope をコロン付きで残す)
+  # "type: description"        → "emoji description"
+  sed -i "1s/^[a-z][a-z]*(\([^)]*\)): */$emoji \1: /" "$COMMIT_MSG_FILE"
+  sed -i "1s/^[a-z][a-z]*: */$emoji /" "$COMMIT_MSG_FILE"
+fi

@@ -13,7 +13,7 @@ description: ユーザー固有の Git コミット規約に従って変更を�
 
 以下の type を使う:
 
-git フック (`~/.git_template/hooks/prepare-commit-msg`) が type を見て対応する gitmoji を自動挿入する。
+git フック (`~/.git_template/hooks/prepare-commit-msg`) が type を見て対応する gitmoji に **置換** する。既定では `type` 名は消え、scope があれば `emoji scope: description`、scope がなければ `emoji description` になる（type 表記を残したい場合は `gm` プレフィックス、gitmoji 自体を付けたくない場合は `n` プレフィックスを使う。詳細は後述）。
 
 | type | gitmoji | 用途 |
 |------|---------|------|
@@ -45,6 +45,8 @@ git フック (`~/.git_template/hooks/prepare-commit-msg`) が type を見て対
 
 ### 例
 
+コミット時に渡すメッセージ（フック適用前）:
+
 ```
 feat(wezterm): タブバーの透過設定を追加
 fix(claude): settings.json の env.example deny を解消
@@ -52,40 +54,69 @@ chore(skills): tool-pipeline スキルを追加
 refactor(claude): Git コミット規約を skill に分離
 ```
 
-## ngm プレフィックス（gitmoji 挿入スキップ）
+フック適用後、ログに残る形（既定モード: type は消え、scope は `scope: ` として残る）:
 
-通常 `feat:` / `fix:` 等のメッセージは prepare-commit-msg フックが自動で gitmoji を挿入するが、
-**意図的に gitmoji を付けたくない場合は メッセージ先頭に `ngm` を付ける**（ngm = no gitmoji）。
+```
+✨ wezterm: タブバーの透過設定を追加
+🐛 claude: settings.json の env.example deny を解消
+🔧 skills: tool-pipeline スキルを追加
+♻️ claude: Git コミット規約を skill に分離
+```
 
-### フックの挙動
+## プレフィックスによる挙動切り替え
 
-1. メッセージ先頭が `ngm` で始まるか判定
-2. その場合は `ngm` プレフィックスを取り除いて gitmoji 挿入をスキップ
-3. それ以外は通常どおり type に応じた gitmoji を先頭に挿入
+既定の gitmoji 置換（type 名を消して gitmoji 化）以外に、2 種類のプレフィックスで挙動を変えられる。
 
-### 使うケース
+| プレフィックス | 挙動 | type(scope) 表記 |
+|------|------|------|
+| （なし） | gitmoji に置換 | 消える（scope はコロン付きで残る） |
+| `gm ` | type(scope) を残したまま直後に gitmoji を挿入 | 残る |
+| `n ` | gitmoji を付けない | 残る（プレフィックスのみ除去） |
+
+### `gm ` プレフィックス（type 表記を残して gitmoji を追加）
+
+- **type 名をログに残しつつ gitmoji も欲しい場合は メッセージ先頭に `gm` を付ける**（gm = gitmoji、type は消さない）
+- フックの挙動: `gm ` を取り除いた後、`type(scope): ` の直後に対応する gitmoji を挿入する（type/scope はそのまま）
+
+例:
+
+```
+入力:  gm feat(wezterm): タブバーの透過設定を追加
+最終:  feat(wezterm): ✨ タブバーの透過設定を追加
+
+入力:  gm fix: スコープなし
+最終:  fix: 🐛 スコープなし
+```
+
+### `n ` プレフィックス（gitmoji 挿入なし）
+
+- **意図的に gitmoji を付けたくない場合は メッセージ先頭に `n` を付ける**（n = no gitmoji）
+- フックの挙動: メッセージ先頭が `n ` で始まるか判定し、その場合は `n ` プレフィックスを取り除いて終了（gitmoji 処理をスキップ、type(scope) はそのまま残る）
+
+使うケース:
 
 - リバート / チェリーピックで元のメッセージスタイルを保持したい
 - WIP / 一時コミットで gitmoji が不要
 - 他リポジトリからのパッチ適用で元のフォーマットを尊重したい
 - type が gitmoji 表にないがメッセージ形式は守りたい
 
-### 例
+例:
 
 ```
-入力:  ngm feat(wezterm): 一時的なデバッグ設定を追加
+入力:  n feat(wezterm): 一時的なデバッグ設定を追加
 最終:  feat(wezterm): 一時的なデバッグ設定を追加
 
-入力:  ngm fix: cherry-pick from upstream
+入力:  n fix: cherry-pick from upstream
 最終:  fix: cherry-pick from upstream
 ```
 
 ### 注意
 
-- `ngm` の後には **半角スペース 1 個** が必須（`ngm　feat:` のような全角スペースは効かない）
-- スキップ対象は **gitmoji 挿入のみ**。`ngm` プレフィックス自体は最終メッセージから除去される
-- merge / squash ソースは元から gitmoji 挿入対象外（`ngm` 不要）
-- 既に gitmoji が含まれているメッセージも自動スキップされる（二重防止）
+- `gm` / `n` の後には **半角スペース 1 個** が必須（全角スペースは効かない）
+- プレフィックス自体は最終メッセージから除去される
+- merge / squash ソースは元から gitmoji 処理対象外（プレフィックス不要）
+- 既に gitmoji が含まれているメッセージは自動スキップされる（二重挿入防止）
+- `revert:` は gitmoji 対応表に無いため、プレフィックスなしでも無変換のまま残る
 
 ## コミット分割の方針
 
