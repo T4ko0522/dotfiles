@@ -1,5 +1,5 @@
 lockfile_version: '1'
-generated_at: '2026-07-07T12:20:16.900903+00:00'
+generated_at: '2026-07-07T14:58:14.571440+00:00'
 apm_version: 0.18.0
 dependencies:
 - repo_url: _local/agent-llm
@@ -23,6 +23,16 @@ dependencies:
   - .claude/skills/pr-summarizer
   source: local
   local_path: ./packages/git-ops
+- repo_url: mizchi/actrun
+  host: github.com
+  resolved_commit: 3ea136d34e7ee071986bbaaad54e40aa496b8488
+  resolved_ref: 3ea136d34e7ee071986bbaaad54e40aa496b8488
+  virtual_path: .claude/skills/actrun
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .claude/skills/actrun
+  content_hash: sha256:933795c51dbc7f24d6a26e961cab4a6597b793b2cbaece865ab9055e5c4f28f9
 - repo_url: mizchi/skills
   host: github.com
   resolved_commit: 5aaf2d126a04a8b079fd5184eb1860f232afffd3

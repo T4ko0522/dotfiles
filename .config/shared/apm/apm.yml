@@ -18,3 +18,4 @@ dependencies:
     - mizchi/skills/devops/gh-fix-ci#5aaf2d126a04a8b079fd5184eb1860f232afffd3
     - mizchi/skills/cloudflare/deploy#5aaf2d126a04a8b079fd5184eb1860f232afffd3
     - mizchi/skills/cloudflare/workers-otel-utels#5aaf2d126a04a8b079fd5184eb1860f232afffd3
+    - mizchi/actrun/.claude/skills/actrun#3ea136d34e7ee071986bbaaad54e40aa496b8488
