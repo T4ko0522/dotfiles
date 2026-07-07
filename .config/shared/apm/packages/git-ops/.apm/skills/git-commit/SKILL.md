@@ -54,7 +54,7 @@ chore(skills): tool-pipeline スキルを追加
 refactor(claude): Git コミット規約を skill に分離
 ```
 
-フック適用後、ログに残る形（既定モード: type は消え、scope は `scope: ` として残る）:
+フック適用後、ログに残る形（既定モード: type は消え、scope は `scope:` として残る）:
 
 ```
 ✨ wezterm: タブバーの透過設定を追加
@@ -70,13 +70,13 @@ refactor(claude): Git コミット規約を skill に分離
 | プレフィックス | 挙動 | type(scope) 表記 |
 |------|------|------|
 | （なし） | gitmoji に置換 | 消える（scope はコロン付きで残る） |
-| `gm ` | type(scope) を残したまま直後に gitmoji を挿入 | 残る |
-| `n ` | gitmoji を付けない | 残る（プレフィックスのみ除去） |
+| `gm` | type(scope) を残したまま直後に gitmoji を挿入 | 残る |
+| `n` | gitmoji を付けない | 残る（プレフィックスのみ除去） |
 
-### `gm ` プレフィックス（type 表記を残して gitmoji を追加）
+### `gm` プレフィックス（type 表記を残して gitmoji を追加）
 
 - **type 名をログに残しつつ gitmoji も欲しい場合は メッセージ先頭に `gm` を付ける**（gm = gitmoji、type は消さない）
-- フックの挙動: `gm ` を取り除いた後、`type(scope): ` の直後に対応する gitmoji を挿入する（type/scope はそのまま）
+- フックの挙動: `gm` を取り除いた後、`type(scope):` の直後に対応する gitmoji を挿入する（type/scope はそのまま）
 
 例:
 
@@ -88,10 +88,10 @@ refactor(claude): Git コミット規約を skill に分離
 最終:  fix: 🐛 スコープなし
 ```
 
-### `n ` プレフィックス（gitmoji 挿入なし）
+### `n` プレフィックス（gitmoji 挿入なし）
 
 - **意図的に gitmoji を付けたくない場合は メッセージ先頭に `n` を付ける**（n = no gitmoji）
-- フックの挙動: メッセージ先頭が `n ` で始まるか判定し、その場合は `n ` プレフィックスを取り除いて終了（gitmoji 処理をスキップ、type(scope) はそのまま残る）
+- フックの挙動: メッセージ先頭が `n` で始まるか判定し、その場合は `n` プレフィックスを取り除いて終了（gitmoji 処理をスキップ、type(scope) はそのまま残る）
 
 使うケース:
 
