@@ -30,8 +30,6 @@ on:
         required: false
         default: laptop
         type: string
-  push:
-    branches: [bench/**]
 
 concurrency:
   group: benchmark-cache
