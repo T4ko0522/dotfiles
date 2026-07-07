@@ -164,6 +164,29 @@ in {
       description = "Wallpaper Engine assets directory.";
     };
 
+    fallbackImage = lib.mkOption {
+      type = lib.types.nullOr lib.types.path;
+      default = ../assets/wallpapers/sea.png;
+      description = ''
+        Static wallpaper rendered by swaybg on every output. It is spawned before
+        linux-wallpaperengine so that it stays visible whenever the engine fails to
+        start or crashes. Set to null to disable the static fallback entirely.
+      '';
+    };
+
+    fallbackMode = lib.mkOption {
+      type = lib.types.enum [
+        "stretch"
+        "fit"
+        "fill"
+        "center"
+        "tile"
+        "solid_color"
+      ];
+      default = "fill";
+      description = "swaybg scaling mode used for the static fallback image.";
+    };
+
     monitors = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = lib.attrNames config.t4ko.niri.monitors;
@@ -269,8 +292,16 @@ in {
     niriSpawnCommand = lib.mkOption {
       type = lib.types.lines;
       readOnly = true;
-      default = ''spawn-at-startup "${wallpaperPresetCommand}/bin/wallpaper-preset" "${cfg.activePreset}"'';
-      description = "Generated niri startup command for managed linux-wallpaperengine.";
+      default =
+        lib.optionalString (cfg.fallbackImage != null) ''
+          spawn-at-startup "${pkgs.swaybg}/bin/swaybg" "--mode" "${cfg.fallbackMode}" "--image" "${cfg.fallbackImage}"
+        ''
+        + ''spawn-at-startup "${wallpaperPresetCommand}/bin/wallpaper-preset" "${cfg.activePreset}"'';
+      description = ''
+        Generated niri startup commands. When fallbackImage is set, swaybg is spawned
+        first as a static fallback layer, then managed linux-wallpaperengine is spawned
+        on top of it.
+      '';
     };
   };
 
