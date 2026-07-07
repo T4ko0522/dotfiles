@@ -1,0 +1,312 @@
+# cf-edgeNix (nix.t4ko.pet) の有無で NixOS closure のビルド (nixos-rebuild の
+# ビルド部分に相当) がどれだけ速くなるかを計測するベンチマーク。
+#
+# シナリオ (すべて fresh runner・/nix/store キャッシュなし・同一 commit):
+#   1. baseline       — substituter は cache.nixos.org / numtide / vicinae のみ
+#   2. edgenix-first  — + https://nix.t4ko.pet (Workers Cache API はコールド想定)
+#   3. edgenix-second — 同一構成を直後に再実行 (Cache API / KV / L0 ウォーム)
+#
+# コスト計測: 各フェーズの前後で /api/quota/metrics (5 分 cron が書く R2 使用量
+# snapshot) を取得し、R2 Class B operations の増分を比較する。
+# edgenix-second で増分が消えていれば、その差が Workers Cache API による
+# R2 Class B 削減分。cron + GraphQL 集計遅延があるため取得前に 7 分待つ。
+#
+# 注意: ビルド対象は checkout した working tree ではなく
+# github:T4ko0522/dotfiles/<sha> を直接参照する。flake が dotfilesDir =
+# self.outPath を使っているため、working tree にベンチ用ファイルがあると
+# store path が変わり publish 済み closure にヒットしなくなるため。
+
+name: benchmark-cache
+
+on:
+  workflow_dispatch:
+    inputs:
+      rev:
+        description: "ビルド対象 commit SHA (空なら master HEAD)"
+        required: false
+        type: string
+      host:
+        description: "対象 host (laptop | desktop)"
+        required: false
+        default: laptop
+        type: string
+  push:
+    branches: [bench/**]
+
+concurrency:
+  group: benchmark-cache
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  KEYS: >-
+    cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
+    nix.t4ko.pet-1:0eRO18L1/5diWYWboKKPTejQGhGCHNITwELiUaX7Kps=
+    vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc=
+    niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=
+  SUBS_BASE: https://cache.nixos.org https://vicinae.cachix.org https://cache.numtide.com
+  SUBS_EDGE: https://nix.t4ko.pet https://cache.nixos.org https://vicinae.cachix.org https://cache.numtide.com
+
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    outputs:
+      rev: ${{ steps.rev.outputs.rev }}
+      host: ${{ steps.rev.outputs.host }}
+    steps:
+      - name: Resolve target rev / host
+        id: rev
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUT_REV: ${{ inputs.rev }}
+          INPUT_HOST: ${{ inputs.host }}
+        run: |
+          rev="$INPUT_REV"
+          if [ -z "$rev" ]; then
+            rev=$(gh api repos/${{ github.repository }}/commits/master --jq .sha)
+          fi
+          host="${INPUT_HOST:-laptop}"
+          case "$host" in
+            laptop|desktop) ;;
+            *) echo "unknown host: $host" >&2; exit 1 ;;
+          esac
+          echo "rev=$rev" >> "$GITHUB_OUTPUT"
+          echo "host=$host" >> "$GITHUB_OUTPUT"
+          echo "target: $rev / $host"
+
+  quota-before:
+    runs-on: ubuntu-latest
+    environment: production
+    continue-on-error: true
+    outputs:
+      classB: ${{ steps.q.outputs.classB }}
+      classA: ${{ steps.q.outputs.classA }}
+    steps:
+      - name: Snapshot quota metrics
+        id: q
+        env:
+          ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+        run: |
+          json=$(curl -sSf -H "Authorization: Bearer $ADMIN_TOKEN" https://nix.t4ko.pet/api/quota/metrics)
+          echo "classB=$(jq -r '.metrics.classBOperations.value // 0' <<<"$json")" >> "$GITHUB_OUTPUT"
+          echo "classA=$(jq -r '.metrics.classAOperations.value // 0' <<<"$json")" >> "$GITHUB_OUTPUT"
+          jq . <<<"$json"
+
+  baseline:
+    needs: [resolve, quota-before]
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    outputs:
+      duration: ${{ steps.bench.outputs.duration }}
+      closure_bytes: ${{ steps.bench.outputs.closure_bytes }}
+      copied_total: ${{ steps.bench.outputs.copied_total }}
+      from_edgenix: ${{ steps.bench.outputs.from_edgenix }}
+      from_nixos: ${{ steps.bench.outputs.from_nixos }}
+      built_locally: ${{ steps.bench.outputs.built_locally }}
+    steps:
+      - name: Free disk space
+        run: sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc /usr/local/.ghcup
+
+      - name: Checkout (bench scripts)
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install Nix (without nix.t4ko.pet)
+        uses: cachix/install-nix-action@08dcb3a5e62fa31e2da3d490afc4176ef55ecd72 # v30
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            substituters = ${{ env.SUBS_BASE }}
+            trusted-public-keys = ${{ env.KEYS }}
+            accept-flake-config = false
+
+      - name: Build toplevel (baseline)
+        id: bench
+        env:
+          FLAKE_REF: github:${{ github.repository }}/${{ needs.resolve.outputs.rev }}
+          HOST: ${{ needs.resolve.outputs.host }}
+        run: bash scripts/bench-build.sh
+
+  edgenix-first:
+    needs: [resolve, baseline]
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    outputs:
+      duration: ${{ steps.bench.outputs.duration }}
+      closure_bytes: ${{ steps.bench.outputs.closure_bytes }}
+      copied_total: ${{ steps.bench.outputs.copied_total }}
+      from_edgenix: ${{ steps.bench.outputs.from_edgenix }}
+      from_nixos: ${{ steps.bench.outputs.from_nixos }}
+      built_locally: ${{ steps.bench.outputs.built_locally }}
+    steps:
+      - name: Free disk space
+        run: sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc /usr/local/.ghcup
+
+      - name: Checkout (bench scripts)
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install Nix (with nix.t4ko.pet)
+        uses: cachix/install-nix-action@08dcb3a5e62fa31e2da3d490afc4176ef55ecd72 # v30
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            substituters = ${{ env.SUBS_EDGE }}
+            trusted-public-keys = ${{ env.KEYS }}
+            accept-flake-config = false
+
+      - name: Build toplevel (edgenix cold)
+        id: bench
+        env:
+          FLAKE_REF: github:${{ github.repository }}/${{ needs.resolve.outputs.rev }}
+          HOST: ${{ needs.resolve.outputs.host }}
+        run: bash scripts/bench-build.sh
+
+  quota-cold:
+    needs: [quota-before, edgenix-first]
+    runs-on: ubuntu-latest
+    environment: production
+    continue-on-error: true
+    outputs:
+      classB: ${{ steps.q.outputs.classB }}
+      classA: ${{ steps.q.outputs.classA }}
+    steps:
+      - name: Wait for quota cron + analytics lag
+        run: sleep 420
+
+      - name: Snapshot quota metrics
+        id: q
+        env:
+          ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+        run: |
+          json=$(curl -sSf -H "Authorization: Bearer $ADMIN_TOKEN" https://nix.t4ko.pet/api/quota/metrics)
+          echo "classB=$(jq -r '.metrics.classBOperations.value // 0' <<<"$json")" >> "$GITHUB_OUTPUT"
+          echo "classA=$(jq -r '.metrics.classAOperations.value // 0' <<<"$json")" >> "$GITHUB_OUTPUT"
+          jq . <<<"$json"
+
+  edgenix-second:
+    needs: [resolve, quota-cold]
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    outputs:
+      duration: ${{ steps.bench.outputs.duration }}
+      closure_bytes: ${{ steps.bench.outputs.closure_bytes }}
+      copied_total: ${{ steps.bench.outputs.copied_total }}
+      from_edgenix: ${{ steps.bench.outputs.from_edgenix }}
+      from_nixos: ${{ steps.bench.outputs.from_nixos }}
+      built_locally: ${{ steps.bench.outputs.built_locally }}
+    steps:
+      - name: Free disk space
+        run: sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc /usr/local/.ghcup
+
+      - name: Checkout (bench scripts)
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install Nix (with nix.t4ko.pet)
+        uses: cachix/install-nix-action@08dcb3a5e62fa31e2da3d490afc4176ef55ecd72 # v30
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            substituters = ${{ env.SUBS_EDGE }}
+            trusted-public-keys = ${{ env.KEYS }}
+            accept-flake-config = false
+
+      - name: Build toplevel (edgenix warm)
+        id: bench
+        env:
+          FLAKE_REF: github:${{ github.repository }}/${{ needs.resolve.outputs.rev }}
+          HOST: ${{ needs.resolve.outputs.host }}
+        run: bash scripts/bench-build.sh
+
+  quota-warm:
+    needs: [quota-cold, edgenix-second]
+    runs-on: ubuntu-latest
+    environment: production
+    continue-on-error: true
+    outputs:
+      classB: ${{ steps.q.outputs.classB }}
+      classA: ${{ steps.q.outputs.classA }}
+    steps:
+      - name: Wait for quota cron + analytics lag
+        run: sleep 420
+
+      - name: Snapshot quota metrics
+        id: q
+        env:
+          ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+        run: |
+          json=$(curl -sSf -H "Authorization: Bearer $ADMIN_TOKEN" https://nix.t4ko.pet/api/quota/metrics)
+          echo "classB=$(jq -r '.metrics.classBOperations.value // 0' <<<"$json")" >> "$GITHUB_OUTPUT"
+          echo "classA=$(jq -r '.metrics.classAOperations.value // 0' <<<"$json")" >> "$GITHUB_OUTPUT"
+          jq . <<<"$json"
+
+  report:
+    needs: [resolve, quota-before, baseline, edgenix-first, quota-cold, edgenix-second, quota-warm]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Write summary
+        env:
+          REV: ${{ needs.resolve.outputs.rev }}
+          HOST: ${{ needs.resolve.outputs.host }}
+          B_DUR: ${{ needs.baseline.outputs.duration }}
+          B_TOTAL: ${{ needs.baseline.outputs.copied_total }}
+          B_NIXOS: ${{ needs.baseline.outputs.from_nixos }}
+          B_BUILT: ${{ needs.baseline.outputs.built_locally }}
+          B_SIZE: ${{ needs.baseline.outputs.closure_bytes }}
+          C_DUR: ${{ needs.edgenix-first.outputs.duration }}
+          C_TOTAL: ${{ needs.edgenix-first.outputs.copied_total }}
+          C_EDGE: ${{ needs.edgenix-first.outputs.from_edgenix }}
+          C_NIXOS: ${{ needs.edgenix-first.outputs.from_nixos }}
+          C_BUILT: ${{ needs.edgenix-first.outputs.built_locally }}
+          W_DUR: ${{ needs.edgenix-second.outputs.duration }}
+          W_TOTAL: ${{ needs.edgenix-second.outputs.copied_total }}
+          W_EDGE: ${{ needs.edgenix-second.outputs.from_edgenix }}
+          W_NIXOS: ${{ needs.edgenix-second.outputs.from_nixos }}
+          W_BUILT: ${{ needs.edgenix-second.outputs.built_locally }}
+          Q0_B: ${{ needs.quota-before.outputs.classB }}
+          Q1_B: ${{ needs.quota-cold.outputs.classB }}
+          Q2_B: ${{ needs.quota-warm.outputs.classB }}
+          Q0_A: ${{ needs.quota-before.outputs.classA }}
+          Q1_A: ${{ needs.quota-cold.outputs.classA }}
+          Q2_A: ${{ needs.quota-warm.outputs.classA }}
+        run: |
+          fmt() { # 秒 → "12m34s (754s)"
+            local s="$1"
+            [ -z "$s" ] && { echo "n/a"; return; }
+            printf "%dm%02ds (%ss)" $((s / 60)) $((s % 60)) "$s"
+          }
+          gib() {
+            local b="$1"
+            [ -z "$b" ] && { echo "n/a"; return; }
+            awk -v b="$b" 'BEGIN { printf "%.2f GiB", b / 1024 / 1024 / 1024 }'
+          }
+          delta() {
+            local a="$1" b="$2"
+            { [ -z "$a" ] || [ -z "$b" ]; } && { echo "n/a"; return; }
+            echo $((b - a))
+          }
+          {
+            echo "# cf-edgeNix cache benchmark"
+            echo
+            echo "- target: \`github:${{ github.repository }}/$REV\` / host: \`$HOST\`"
+            echo "- closure size: $(gib "$B_SIZE")"
+            echo
+            echo "## ビルド時間 (nixos-rebuild のビルド相当・fresh runner)"
+            echo
+            echo "| scenario | wall time | copied paths | from nix.t4ko.pet | from cache.nixos.org | built locally |"
+            echo "| --- | --- | --- | --- | --- | --- |"
+            echo "| baseline (cache なし) | $(fmt "$B_DUR") | ${B_TOTAL:-n/a} | 0 | ${B_NIXOS:-n/a} | ${B_BUILT:-n/a} |"
+            echo "| nix.t4ko.pet あり (edge cold) | $(fmt "$C_DUR") | ${C_TOTAL:-n/a} | ${C_EDGE:-n/a} | ${C_NIXOS:-n/a} | ${C_BUILT:-n/a} |"
+            echo "| nix.t4ko.pet あり (edge warm) | $(fmt "$W_DUR") | ${W_TOTAL:-n/a} | ${W_EDGE:-n/a} | ${W_NIXOS:-n/a} | ${W_BUILT:-n/a} |"
+            echo
+            echo "## R2 コスト (quota snapshot 差分・月間累計の増分)"
+            echo
+            echo "| phase | ΔClass B (read) | ΔClass A (write) |"
+            echo "| --- | --- | --- |"
+            echo "| edge cold run | $(delta "$Q0_B" "$Q1_B") | $(delta "$Q0_A" "$Q1_A") |"
+            echo "| edge warm run | $(delta "$Q1_B" "$Q2_B") | $(delta "$Q1_A" "$Q2_A") |"
+            echo
+            echo "> quota snapshot は 5 分 cron + GraphQL Analytics 経由のため増分は参考値。"
+            echo "> warm run の ΔClass B が cold run より小さい分が Workers Cache API による削減分。"
+          } >> "$GITHUB_STEP_SUMMARY"
