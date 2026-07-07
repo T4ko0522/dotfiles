@@ -113,6 +113,6 @@ in {
   # 生成物は gitignore され、~/.claude/skills は out-of-store link で生成物を指す。
   home.activation.apmInstallSkills = lib.hm.dag.entryAfter ["writeBoundary"] ''
     cd "${config.home.homeDirectory}/dotfiles/.config/shared/apm"
-    ${pkgs.apm-cli}/bin/apm install
+    ${pkgs.apm}/bin/apm install
   '';
 }
