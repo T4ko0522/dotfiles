@@ -3,7 +3,7 @@
     ./hardware-configuration.nix
     ../../modules
     ../../profiles/desktop.nix
-    ../../profiles/nvidia.nix
+    ../../profiles/nvidia-hybrid.nix
     ../../profiles/gaming.nix
     # ../../profiles/vr.nix
     ../../profiles/desktop-apps.nix
