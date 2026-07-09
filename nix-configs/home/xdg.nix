@@ -113,6 +113,9 @@ in {
   # 生成物は gitignore され、~/.claude/skills は out-of-store link で生成物を指す。
   home.activation.apmInstallSkills = lib.hm.dag.entryAfter ["writeBoundary"] ''
     cd "${config.home.homeDirectory}/dotfiles/.config/shared/apm"
+    # activation は systemd 環境で走るため ~/.zshenv は読まれない。gh CLI の keyring からトークンを渡し、
+    # apm install が mizchi/skills などを clone する際に GitHub 認証が通るようにする。
+    export GITHUB_TOKEN="$(${pkgs.gh}/bin/gh auth token 2>/dev/null || true)"
     ${pkgs.llm-agents.apm}/bin/apm install
   '';
 }
