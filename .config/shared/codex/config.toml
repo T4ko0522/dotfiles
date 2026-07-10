@@ -1,5 +1,5 @@
-model = "gpt-5.5"
-model_reasoning_effort = "high"
+model = "gpt-5.6-terra"
+model_reasoning_effort = "xhigh"
 service_tier = "default"
 
 [windows]
@@ -18,6 +18,7 @@ status_line = [
 
 [tui.model_availability_nux]
 "gpt-5.5" = 4
+"gpt-5.6-sol" = 4
 
 [projects."/home/t4ko/dotfiles"]
 trust_level = "trusted"
@@ -50,4 +51,10 @@ trust_level = "trusted"
 trust_level = "trusted"
 
 [projects."/home/t4ko/Project/github.com/T4ko0522"]
+trust_level = "trusted"
+
+[projects."/home/t4ko/Project/github.com/t4ko0522/University-exams"]
+trust_level = "trusted"
+
+[projects."/home/t4ko/Project/github.com/t4ko0522/cf-edgeNix"]
 trust_level = "trusted"
