@@ -303,9 +303,17 @@ in {
         on top of it.
       '';
     };
+
+    presetCommand = lib.mkOption {
+      type = lib.types.package;
+      readOnly = true;
+      description = "Command that applies a Wallpaper Engine preset.";
+    };
   };
 
   config = {
+    t4ko.wallpaper.presetCommand = wallpaperPresetCommand;
+
     assertions = [
       {
         assertion = lib.hasAttr cfg.activePreset cfg.presets;

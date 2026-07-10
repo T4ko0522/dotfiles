@@ -6,6 +6,7 @@
     ./home/xdg.nix
     ./home/quick-shell.nix
     ./home/niri.nix
+    ./home/lockscreen.nix
     ./home/wallpaper.nix
     ./home/swaync.nix
     ./home/waybar.nix

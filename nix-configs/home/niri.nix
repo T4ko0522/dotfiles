@@ -7,6 +7,7 @@
   c = import ../lib/catppuccin-mocha.nix;
   cfg = config.t4ko.niri;
   quickShell = config.t4ko.quickShell;
+  lockscreenCommand = lib.getExe config.t4ko.lockscreen.command;
   quickShellAppIdRegex = lib.replaceStrings ["\\"] ["\\\\"] (lib.escapeRegex quickShell.appId);
 
   renderMonitor = name: output: let
@@ -200,6 +201,7 @@ in {
       ${import ./niri-keybind.nix {
       quickShellCommand = quickShell.command;
       quickShellModFCommand = quickShell.modFCommand;
+      inherit lockscreenCommand;
     }}
     }
   '';

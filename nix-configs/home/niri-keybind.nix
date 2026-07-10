@@ -1,6 +1,7 @@
 {
   quickShellCommand,
   quickShellModFCommand,
+  lockscreenCommand,
 }: ''
   Mod+Shift+Slash { show-hotkey-overlay; }
 
@@ -50,6 +51,7 @@
   Mod+F { spawn "${quickShellModFCommand}"; }
   Mod+Shift+F { fullscreen-window; }
   Mod+C { center-column; }
+  Mod+Alt+L { spawn "${lockscreenCommand}"; }
   Mod+Minus { set-column-width "-10%"; }
   Mod+Equal { set-column-width "+10%"; }
 
