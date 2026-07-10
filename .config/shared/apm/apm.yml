@@ -1,8 +1,10 @@
 name: t4ko-skills
 version: 1.0.0
-description: Claude Code 向け skill を apm で管理する (カテゴリ別 local package 構成)
+description: Claude Code / Codex 向け skill を apm で管理する (カテゴリ別 local package 構成)
 author: T4ko0522
-target: claude
+targets:
+  - claude
+  - codex
 dependencies:
   mcp: []
   apm:
