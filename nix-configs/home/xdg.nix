@@ -81,6 +81,7 @@ in {
     # in-store: プログラムが書き込まない静的設定。
     ".git_template/hooks".source = store ".git_template/hooks";
     ".codex/AGENTS.md".source = store ".config/shared/codex/AGENTS.md";
+    ".codex/agents".source = store ".config/shared/codex/agents";
     ".codex/rules/default.rules".source = store ".config/shared/codex/default.rules";
     ".claude/CLAUDE.md".source = store ".config/shared/claude/CLAUDE.md";
     ".claude/agents".source = store ".config/shared/claude/agents";
@@ -109,13 +110,24 @@ in {
     chmod 0644 "$claude_dir/settings.json"
   '';
 
-  # apm install: .config/shared/apm/packages/<category>/.apm/skills/ (source) から .claude/skills/ (生成物) を deploy する。
-  # 生成物は gitignore され、~/.claude/skills は out-of-store link で生成物を指す。
+  # apm install: .config/shared/apm/packages/<category>/.apm/skills/ (source) から各targetのskills dirへdeployする。
+  # APMはCodex向けskillを`.agents/skills`に生成する。Codexは~/.codex/skills/.systemを保持する必要があるため、skillごとのリンクを後段で作る。
   home.activation.apmInstallSkills = lib.hm.dag.entryAfter ["writeBoundary"] ''
     cd "${config.home.homeDirectory}/dotfiles/.config/shared/apm"
     # activation は systemd 環境で走るため ~/.zshenv は読まれない。gh CLI の keyring からトークンを渡し、
     # apm install が mizchi/skills などを clone する際に GitHub 認証が通るようにする。
     export GITHUB_TOKEN="$(${pkgs.gh}/bin/gh auth token 2>/dev/null || true)"
     ${pkgs.llm-agents.apm}/bin/apm install
+  '';
+
+  home.activation.linkCodexSkills = lib.hm.dag.entryAfter ["apmInstallSkills"] ''
+    source_dir="${config.home.homeDirectory}/dotfiles/.config/shared/apm/.agents/skills"
+    target_dir="${config.home.homeDirectory}/.codex/skills"
+    mkdir -p "$target_dir"
+    find "$target_dir" -maxdepth 1 -type l -lname "$source_dir/*" -delete
+    for skill in "$source_dir"/*; do
+      [ -d "$skill" ] || continue
+      ln -sfn "$skill" "$target_dir/$(basename "$skill")"
+    done
   '';
 }

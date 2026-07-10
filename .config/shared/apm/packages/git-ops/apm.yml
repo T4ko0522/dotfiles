@@ -2,7 +2,9 @@ name: git-ops
 version: 1.0.0
 description: Git/GitHub 操作系 skill
 author: T4ko0522
-target: claude
+targets:
+  - claude
+  - codex
 dependencies:
   mcp: []
   apm: []
