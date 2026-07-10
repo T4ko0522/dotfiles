@@ -4,7 +4,6 @@
 
 ## コマンド
 
-- 設定を適用: `just os-switch <host>`（host 省略時は `laptop`。例: `just os-switch desktop`）
 - Nix ファイルを整形: `just fmt`
 - Nix 構文チェック: `just syntax`
 - Nix lint: `just lint`
