@@ -1,0 +1,138 @@
+diff --git a/data/ui/control_center.blp b/data/ui/control_center.blp
+index 02064cd..2e718a8 100644
+--- a/data/ui/control_center.blp
++++ b/data/ui/control_center.blp
+@@ -7,22 +7,28 @@ template $SwayNotificationCenterControlCenter: ApplicationWindow {
+     "blank-window",
+   ]
+ 
+-  ScrolledWindow window {
+-    hscrollbar-policy: never;
+-    overflow: hidden;
++  Revealer revealer {
++    transition-type: slide_left;
++    transition-duration: 180;
++    reveal-child: false;
+ 
+-    styles [
+-      "control-center",
+-    ]
++    child: ScrolledWindow window {
++      hscrollbar-policy: never;
++      overflow: hidden;
+ 
+-    child: Viewport {
+-      child: $IterBox box {
+-        orientation: vertical;
+-        vexpand: true;
++      styles [
++        "control-center",
++      ]
+ 
+-        styles [
+-          "widgets",
+-        ]
++      child: Viewport {
++        child: $IterBox box {
++          orientation: vertical;
++          vexpand: true;
++
++          styles [
++            "widgets",
++          ]
++        };
+       };
+     };
+   }
+diff --git a/src/controlCenter/controlCenter.vala b/src/controlCenter/controlCenter.vala
+index 7c2480e..2dabee3 100644
+--- a/src/controlCenter/controlCenter.vala
++++ b/src/controlCenter/controlCenter.vala
+@@ -4,11 +4,16 @@ namespace SwayNotificationCenter {
+         [GtkChild]
+         unowned Gtk.ScrolledWindow window;
+         [GtkChild]
++        unowned Gtk.Revealer revealer;
++        [GtkChild]
+         unowned IterBox box;
+ 
+         private Gtk.GestureClick blank_window_gesture;
+         private bool blank_window_down = false;
+         private bool blank_window_in = false;
++        private bool control_center_visible = false;
++        private uint hide_timeout_id = 0;
++        private const uint CONTROL_CENTER_TRANSITION_DURATION = 180;
+ 
+         private Gtk.EventControllerKey key_controller;
+ 
+@@ -367,37 +372,55 @@ namespace SwayNotificationCenter {
+         }
+ 
+         public bool toggle_visibility () {
+-            var cc_visibility = !this.visible;
++            var cc_visibility = !control_center_visible;
+             set_visibility (cc_visibility);
+             return cc_visibility;
+         }
+ 
+         public void set_visibility (bool visibility) {
+-            if (this.visible == visibility) {
++            if (control_center_visible == visibility) {
+                 return;
+             }
+-            // Destroy the wl_surface to get a new "enter-monitor" signal and
+-            // fixes issues where keyboard shortcuts stop working after clearing
+-            // all notifications.
+-            ((Gtk.Widget) this).unrealize ();
++            control_center_visible = visibility;
+ 
+-            this.set_visible (visibility);
++            if (visibility) {
++                if (hide_timeout_id != 0) {
++                    Source.remove (hide_timeout_id);
++                    hide_timeout_id = 0;
++                }
++                // Destroy the old wl_surface to get a fresh enter-monitor signal.
++                ((Gtk.Widget) this).unrealize ();
++                revealer.set_reveal_child (false);
++                this.set_visible (true);
++                Timeout.add (16, () => {
++                    if (control_center_visible) {
++                        revealer.set_reveal_child (true);
++                    }
++                    return Source.REMOVE;
++                });
++            } else {
++                revealer.set_reveal_child (false);
++                hide_timeout_id = Timeout.add (
++                    CONTROL_CENTER_TRANSITION_DURATION,
++                    () => {
++                        hide_timeout_id = 0;
++                        if (!control_center_visible) {
++                            this.set_visible (false);
++                            ((Gtk.Widget) this).unrealize ();
++                        }
++                        return Source.REMOVE;
++                    });
++            }
+ 
+             // Updates all widgets on visibility change
+             foreach (var widget in widgets) {
+-                widget.on_cc_visibility_change (visible);
+-            }
+-
+-            if (this.visible) {
+-                add_css_class ("open");
+-            } else {
+-                remove_css_class ("open");
++                widget.on_cc_visibility_change (visibility);
+             }
+             swaync_daemon.emit_subscribe ();
+         }
+ 
+         public inline bool get_visibility () {
+-            return this.visible;
++            return control_center_visible;
+         }
+ 
+         public void set_monitor (Gdk.Monitor ?monitor) {

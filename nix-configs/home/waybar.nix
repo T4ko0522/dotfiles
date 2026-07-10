@@ -154,6 +154,7 @@ in {
         };
 
         "custom/power" = {
+          cursor = true;
           format = "";
           tooltip-format = "Power menu\nLeft: choose shutdown, reboot, or sleep\nRight: quit niri";
           on-click = "${powerMenu}/bin/waybar-power-menu";
@@ -161,12 +162,14 @@ in {
         };
 
         "custom/menu" = {
+          cursor = true;
           format = "";
           tooltip = "Toggle Overview";
           on-click = "niri msg action toggle-overview";
         };
 
         idle_inhibitor = {
+          cursor = true;
           format = "{icon}";
           tooltip-format-activated = "Stay Awake: ON 󱎴";
           tooltip-format-deactivated = "Stay Awake: OFF 󰶐";
@@ -177,6 +180,7 @@ in {
         };
 
         "wlr/taskbar" = {
+          cursor = true;
           format = "{icon}";
           icon-size = 22;
           icon-theme = "Numix-Circle";
@@ -307,6 +311,7 @@ in {
         };
 
         network = {
+          cursor = true;
           format-icons = [
             "󰤯"
             "󰤟"
@@ -327,6 +332,7 @@ in {
         };
 
         bluetooth = {
+          cursor = true;
           format = "{num_connections}";
           format-disabled = "󰂲 {status}";
           format-connected = "󰂱 {num_connections}";
@@ -335,6 +341,7 @@ in {
         };
 
         "custom/notification" = {
+          cursor = true;
           exec = "swaync-client -swb";
           return-type = "json";
           format = "{icon}";
@@ -356,6 +363,7 @@ in {
         };
 
         "pulseaudio#input" = {
+          cursor = true;
           format-source = "";
           format-source-muted = "";
           format = "{format_source}";
@@ -369,6 +377,7 @@ in {
         };
 
         "pulseaudio#output" = {
+          cursor = true;
           format = "{icon} {volume}%";
           tooltip-format = "{icon} {volume}%";
           format-muted = "";
@@ -387,11 +396,12 @@ in {
         };
 
         clock = {
+          cursor = true;
           interval = 60;
           locale = "ja_JP.UTF-8";
           format = "{:%H:%M %p}";
           tooltip-format = "{:%Y/%m/%d}";
-          on-click = "gsimplecal";
+          on-click = "pkill -x waycal || waycal";
         };
 
         tray = {
