@@ -1,4 +1,7 @@
-{quickShellCommand}: ''
+{
+  quickShellCommand,
+  quickShellModFCommand,
+}: ''
   Mod+Shift+Slash { show-hotkey-overlay; }
 
   Mod+Return { spawn "wezterm"; }
@@ -44,7 +47,7 @@
   Mod+9 { focus-workspace 9; }
 
   Mod+R { switch-preset-column-width; }
-  Mod+F { maximize-column; }
+  Mod+F { spawn "${quickShellModFCommand}"; }
   Mod+Shift+F { fullscreen-window; }
   Mod+C { center-column; }
   Mod+Minus { set-column-width "-10%"; }

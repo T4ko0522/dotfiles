@@ -12,8 +12,13 @@
     name = "quick-shell-session";
     runtimeInputs = with pkgs; [tmux zsh];
     text = ''
-      exec tmux new-session -A -s "${sessionName}" \
-        env QUICK_SHELL=1 STARSHIP_CONFIG=${starshipConfig} zsh -l
+      if ! tmux has-session -t "${sessionName}" 2>/dev/null; then
+        tmux new-session -d -s "${sessionName}" \
+          env QUICK_SHELL=1 STARSHIP_CONFIG=${starshipConfig} zsh -l
+      fi
+
+      tmux set-option -t "${sessionName}" status off
+      exec tmux attach-session -t "${sessionName}"
     '';
   };
 
@@ -32,19 +37,46 @@
         exit 1
       fi
 
+      tmux_socket="''${TMUX%%,*}"
       current_client="$(tmux display-message -p '#{client_tty}')"
-      wezterm start -- ${pkgs.tmux}/bin/tmux attach-session -t "${sessionName}" >/dev/null 2>&1 &
+      wezterm_pid=""
+
+      if ! wezterm cli spawn -- \
+        ${pkgs.tmux}/bin/tmux -S "$tmux_socket" attach-session -t "${sessionName}" >/dev/null 2>&1; then
+        wezterm start --always-new-process -- \
+          ${pkgs.tmux}/bin/tmux -S "$tmux_socket" attach-session -t "${sessionName}" &
+        wezterm_pid=$!
+      fi
 
       for _ in $(seq 1 50); do
-        client_count="$(tmux list-clients -t "${sessionName}" -F '#{client_tty}' | wc -l)"
+        client_count="$(tmux -S "$tmux_socket" list-clients -t "${sessionName}" -F '#{client_tty}' | wc -l)"
         if [ "$client_count" -gt 1 ]; then
           exec tmux detach-client -t "$current_client"
+        fi
+        if [ -n "$wezterm_pid" ] && ! kill -0 "$wezterm_pid" 2>/dev/null; then
+          wait "$wezterm_pid"
+          echo "quick-shell-wezterm: WezTerm を起動できませんでした" >&2
+          exit 1
         fi
         sleep 0.1
       done
 
       echo "quick-shell-wezterm: WezTerm の接続を確認できませんでした" >&2
       exit 1
+    '';
+  };
+
+  quickShellModF = pkgs.writeShellApplication {
+    name = "quick-shell-mod-f";
+    runtimeInputs = with pkgs; [jq niri tmux];
+    text = ''
+      if niri msg -j windows \
+        | jq -e --arg app_id "${appId}" 'any(.[]; .is_focused and .app_id == $app_id)' >/dev/null; then
+        tmux send-keys -t "${sessionName}" \
+          "${quickShellWezterm}/bin/quick-shell-wezterm" Enter
+      else
+        niri msg action maximize-column
+      fi
     '';
   };
 
@@ -102,10 +134,18 @@ in {
       internal = true;
       description = "Command used by niri to toggle Quick Shell.";
     };
+
+    modFCommand = lib.mkOption {
+      type = lib.types.str;
+      readOnly = true;
+      internal = true;
+      description = "Command used by niri for the Quick Shell-aware Mod+F binding.";
+    };
   };
 
   config = {
     t4ko.quickShell.command = "${quickShell}/bin/quick-shell";
+    t4ko.quickShell.modFCommand = "${quickShellModF}/bin/quick-shell-mod-f";
 
     home.packages = [
       quickShell

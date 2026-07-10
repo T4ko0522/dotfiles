@@ -75,7 +75,9 @@ niri はスクロール型タイルの Wayland compositor です。画面を固�
 
 同じキーをもう一度押すと、Quick Shell が非フォーカスなら呼び戻し、フォーカス中なら閉じます。シェルは `quick-shell` という tmux セッションで動くため、ウィンドウを閉じても作業状態は残ります。シェル側で `exit` するとセッションも終了します。
 
-Quick Shell 内で `quick-shell-wezterm` を実行すると、同じセッションを通常の WezTerm ウィンドウへ引き継ぎ、モーダル側を閉じます。プロンプトには通常のシェルとは別の、Quick Shell 専用 Starship 設定を使います。
+Quick Shell 内で `quick-shell-wezterm` を実行すると、同じセッションを最後に操作した WezTerm ウィンドウの新しいタブへ引き継ぎ、モーダル側を閉じます。WezTerm が起動していない場合は、新しいウィンドウを開きます。プロンプトには通常のシェルとは別の、Quick Shell 専用 Starship 設定を使います。
+
+Quick Shell がフォーカス中なら、`Win+F` でも同じ引き継ぎを実行します。それ以外のウィンドウでは、従来どおり現在の列を最大化します。
 
 ## フォーカス移動
 

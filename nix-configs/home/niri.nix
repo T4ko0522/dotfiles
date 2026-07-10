@@ -197,7 +197,10 @@ in {
     }
 
     binds {
-      ${import ./niri-keybind.nix {quickShellCommand = quickShell.command;}}
+      ${import ./niri-keybind.nix {
+      quickShellCommand = quickShell.command;
+      quickShellModFCommand = quickShell.modFCommand;
+    }}
     }
   '';
 }
