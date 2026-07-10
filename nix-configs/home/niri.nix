@@ -6,6 +6,8 @@
 }: let
   c = import ../lib/catppuccin-mocha.nix;
   cfg = config.t4ko.niri;
+  quickShell = config.t4ko.quickShell;
+  quickShellAppIdRegex = lib.replaceStrings ["\\"] ["\\\\"] (lib.escapeRegex quickShell.appId);
 
   renderMonitor = name: output: let
     parts =
@@ -171,6 +173,20 @@ in {
         clip-to-geometry true
     }
 
+    window-rule {
+        match app-id="^${quickShellAppIdRegex}$"
+
+        open-floating true
+        open-focused true
+        default-column-width { fixed 1200; }
+        default-window-height { fixed 420; }
+        default-floating-position x=0 y=120 relative-to="top"
+
+        focus-ring {
+            off
+        }
+    }
+
     spawn-at-startup "xwayland-satellite"
     spawn-at-startup "sh" "-c" "sleep 2 && fcitx5 -rd"
     spawn-at-startup "swaync"
@@ -181,7 +197,7 @@ in {
     }
 
     binds {
-      ${import ./niri-keybind.nix}
+      ${import ./niri-keybind.nix {quickShellCommand = quickShell.command;}}
     }
   '';
 }

@@ -1,7 +1,8 @@
-''
+{quickShellCommand}: ''
   Mod+Shift+Slash { show-hotkey-overlay; }
 
   Mod+Return { spawn "wezterm"; }
+  Mod+Shift+Return { spawn "${quickShellCommand}"; }
   Mod+T { spawn "wezterm"; }
   Alt+Space { spawn "vicinae" "open"; }
   Mod+V { spawn "vicinae" "deeplink" "vicinae://launch/clipboard/history"; }

@@ -4,6 +4,7 @@
     ./home/profiles/cursor.nix
     ./home/packages.nix
     ./home/xdg.nix
+    ./home/quick-shell.nix
     ./home/niri.nix
     ./home/wallpaper.nix
     ./home/swaync.nix
