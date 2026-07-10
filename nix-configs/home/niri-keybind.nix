@@ -5,7 +5,7 @@
   Mod+T { spawn "wezterm"; }
   Alt+Space { spawn "vicinae" "open"; }
   Mod+V { spawn "vicinae" "deeplink" "vicinae://launch/clipboard/history"; }
-  Mod+Q { close-window; }
+  Mod+E { close-window; }
   Mod+D { toggle-overview; }
 
   Mod+Left { move-column-left; }
