@@ -3,6 +3,10 @@
   pkgs,
   ...
 }: {
+  imports = [
+    ./regreet.nix
+  ];
+
   i18n.inputMethod = {
     enable = true;
     type = "fcitx5";
@@ -61,16 +65,6 @@
 
   services = {
     xserver.enable = false;
-
-    greetd = {
-      enable = true;
-      settings = {
-        default_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd niri-session";
-          user = "greeter";
-        };
-      };
-    };
 
     printing.enable = true;
 

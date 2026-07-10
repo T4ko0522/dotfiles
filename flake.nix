@@ -28,6 +28,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixos-loading-plymouth = {
+      url = "github:qboileau/nixos-load-plymouth";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v1.1.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # actrun.url = "github:mizchi/actrun";
   };
 
@@ -37,7 +47,9 @@
     home-manager,
     vial-qmk,
     vicinae,
+    lanzaboote,
     llm-agents,
+    nixos-loading-plymouth,
     spotify-cli,
     # actrun,
     ...
@@ -56,56 +68,64 @@
     mkNixos = {
       configuration,
       homeConfiguration,
+      extraModules ? [],
     }:
       nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = {
           inherit dotfilesDir keyboardLayout;
         };
-        modules = [
-          home-manager.nixosModules.home-manager
-          vicinae.nixosModules.default
-          configuration
-          {
-            nixpkgs.overlays = [
-              llm-agents.overlays.default
-              spotify-cli.overlays.default
-              # actrun.inputs.moonbit-overlay.overlays.default
-              # actrun.overlays.default
-              # (final: prev: {
-              #   actrun = prev.actrun.overrideAttrs (old: {
-              #     nativeBuildInputs = (old.nativeBuildInputs or []) ++ [final.makeWrapper];
-              #     postFixup =
-              #       (old.postFixup or "")
-              #       + ''
-              #         for bin in "$out"/bin/*; do
-              #           wrapProgram "$bin" --prefix LD_LIBRARY_PATH : "${final.openssl.out}/lib"
-              #         done
-              #       '';
-              #   });
-              # })
-            ];
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              backupFileExtension = "hm-backup";
-              extraSpecialArgs = {
-                inherit dotfilesDir keyboardLayout;
+        modules =
+          [
+            home-manager.nixosModules.home-manager
+            vicinae.nixosModules.default
+            nixos-loading-plymouth.nixosModules.default
+            configuration
+          ]
+          ++ extraModules
+          ++ [
+            {
+              nixpkgs.overlays = [
+                llm-agents.overlays.default
+                spotify-cli.overlays.default
+                # actrun.inputs.moonbit-overlay.overlays.default
+                # actrun.overlays.default
+                # (final: prev: {
+                #   actrun = prev.actrun.overrideAttrs (old: {
+                #     nativeBuildInputs = (old.nativeBuildInputs or []) ++ [final.makeWrapper];
+                #     postFixup =
+                #       (old.postFixup or "")
+                #       + ''
+                #         for bin in "$out"/bin/*; do
+                #           wrapProgram "$bin" --prefix LD_LIBRARY_PATH : "${final.openssl.out}/lib"
+                #         done
+                #       '';
+                #   });
+                # })
+              ];
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                backupFileExtension = "hm-backup";
+                extraSpecialArgs = {
+                  inherit dotfilesDir keyboardLayout;
+                };
+                sharedModules = [vicinae.homeManagerModules.default];
+                users.t4ko = import homeConfiguration;
               };
-              sharedModules = [vicinae.homeManagerModules.default];
-              users.t4ko = import homeConfiguration;
-            };
-          }
-        ];
+            }
+          ];
       };
 
     laptop = mkNixos {
       configuration = ./nix-configs/hosts/laptop;
       homeConfiguration = ./nix-configs/home.nix;
+      extraModules = [lanzaboote.nixosModules.lanzaboote];
     };
     desktop = mkNixos {
       configuration = ./nix-configs/hosts/desktop;
       homeConfiguration = ./nix-configs/home.nix;
+      extraModules = [lanzaboote.nixosModules.lanzaboote];
     };
     nixosCi = mkNixos {
       configuration = ./nix-configs/configuration-ci.nix;

@@ -10,19 +10,30 @@
   mainMonitors = lib.filterAttrs (_: monitor: monitor.focusAtStartup) niriCfg.monitors;
   mainMonitor = lib.head (lib.attrNames mainMonitors);
   secondaryMonitors = lib.attrNames (lib.filterAttrs (name: _: name != mainMonitor) niriCfg.monitors);
+  wallpaper = pkgs.fetchurl {
+    url = "https://raw.githubusercontent.com/NixOS/nixos-artwork/master/wallpapers/nix-wallpaper-nineish.png";
+    hash = "sha256-EMSD1XQLaqHs0NbLY0lS1oZ4rKznO+h9XOGDS121m9c=";
+  };
   nixosLogo = pkgs.fetchurl {
     url = "https://brand.nixos.org/logos/nixos-logo-default-gradient-black-regular-vertical-recommended.svg";
     hash = "sha256-gm9EU3wZVpW4yALwdSjVppDnMnpX8cbdsXS/Yzhpx74=";
   };
-  background = pkgs.runCommand "nixos-lockscreen.svg" {} ''
+  background =
+    pkgs.runCommand "nixos-lockscreen.png"
     {
-      printf '%s\n' '<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">'
-      printf '%s\n' '  <rect width="1920" height="1080" fill="#eff1f5"/>'
-      sed 's#<svg #<svg x="750" y="235" width="420" height="420" preserveAspectRatio="xMidYMid meet" #' "${nixosLogo}"
-      printf '%s\n' '  <text x="960" y="765" fill="${c.crust}" font-family="sans-serif" font-size="58" font-weight="600" text-anchor="middle">I use NixOS btw.</text>'
-      printf '%s\n' '</svg>'
-    } > "$out"
-  '';
+      nativeBuildInputs = [pkgs.imagemagick];
+    }
+    ''
+      magick "${wallpaper}" \
+        -resize '1920x1080^' \
+        -gravity center \
+        -extent 1920x1080 \
+        \( "${nixosLogo}" -background none -resize 420x420 \) \
+        -gravity north \
+        -geometry +0+235 \
+        -composite \
+        "$out"
+    '';
   swaylock = pkgs.swaylock.overrideAttrs (old: {
     postPatch =
       (old.postPatch or "")
@@ -34,15 +45,24 @@
   });
   lockscreen = pkgs.writeShellApplication {
     name = "lockscreen";
-    runtimeInputs = [pkgs.niri swaylock];
+    runtimeInputs = [
+      pkgs.niri
+      swaylock
+    ];
     text = ''
       restore_monitors() {
-        ${lib.concatMapStringsSep "\n" (monitor: "niri msg output ${lib.escapeShellArg monitor} on || true") secondaryMonitors}
+        ${lib.concatMapStringsSep "\n" (
+          monitor: "niri msg output ${lib.escapeShellArg monitor} on || true"
+        )
+        secondaryMonitors}
       }
 
       trap restore_monitors EXIT HUP INT TERM
 
-      ${lib.concatMapStringsSep "\n" (monitor: "niri msg output ${lib.escapeShellArg monitor} off || true") secondaryMonitors}
+      ${lib.concatMapStringsSep "\n" (
+          monitor: "niri msg output ${lib.escapeShellArg monitor} off || true"
+        )
+        secondaryMonitors}
       if swaylock \
         --color eff1f5 \
         --image ${lib.escapeShellArg "${mainMonitor}:${background}"} \

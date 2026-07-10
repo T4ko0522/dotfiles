@@ -2,6 +2,8 @@
   imports = [
     ./hardware-configuration.nix
     ../../modules
+    ../../modules/lanzaboote.nix
+    ../../modules/plymouth.nix
     ../../profiles/desktop.nix
     ../../profiles/nvidia-hybrid.nix
     ../../profiles/gaming.nix
@@ -10,6 +12,8 @@
   ];
 
   networking.hostName = "laptop";
+
+  t4ko.regreet.mainOutput = "HDMI-A-1";
 
   services.pipewire.wireplumber.extraConfig.bluetooth = {
     "wireplumber.settings" = {

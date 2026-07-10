@@ -2,6 +2,8 @@
   imports = [
     ./hardware-configuration.nix
     ../../modules
+    ../../modules/lanzaboote.nix
+    ../../modules/plymouth.nix
     ../../profiles/desktop.nix
     ../../profiles/nvidia.nix
     ../../profiles/gaming.nix
@@ -10,6 +12,8 @@
   ];
 
   networking.hostName = "desktop";
+
+  t4ko.regreet.mainOutput = "DP-2";
 
   home-manager.users.t4ko.t4ko.niri.monitors = {
     "DP-1" = {

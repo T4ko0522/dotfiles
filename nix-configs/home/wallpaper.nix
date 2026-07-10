@@ -65,6 +65,7 @@
       "--property=Restart=always"
       "--property=RestartSec=${cfg.restartSec}"
       "--property=RuntimeMaxSec=${cfg.runtimeMaxSec}"
+      "--property=TimeoutStopSec=5s"
     ]
     ++ lib.optionals (cfg.memoryMax != null) [
       "--property=MemoryMax=${cfg.memoryMax}"
@@ -166,7 +167,7 @@ in {
 
     fallbackImage = lib.mkOption {
       type = lib.types.nullOr lib.types.path;
-      default = ../assets/wallpapers/sea.png;
+      default = ../assets/wallpapers/nix.png;
       description = ''
         Static wallpaper rendered by swaybg on every output. It is spawned before
         linux-wallpaperengine so that it stays visible whenever the engine fails to
