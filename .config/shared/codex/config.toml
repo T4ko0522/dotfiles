@@ -1,5 +1,5 @@
-model = "gpt-5.6-terra"
-model_reasoning_effort = "medium"
+model = "gpt-5.6-luna"
+model_reasoning_effort = "high"
 service_tier = "default"
 default_permissions = "personal"
 
@@ -74,4 +74,10 @@ trust_level = "trusted"
 trust_level = "trusted"
 
 [projects."/home/t4ko/Project/github.com/t4ko0522/cf-edgeNix"]
+trust_level = "trusted"
+
+[projects."/home/t4ko/ダウンロード"]
+trust_level = "trusted"
+
+[projects."/home/t4ko/game"]
 trust_level = "trusted"
