@@ -1,4 +1,9 @@
-{pkgs, ...}: let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   librepods = pkgs.callPackage ../../pkgs/librepods/package.nix {};
 in {
   home.packages = with pkgs; [
@@ -10,4 +15,8 @@ in {
     mpv
     yt-dlp
   ];
+
+  home.activation.createLibrepodsConfigDirectory = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    mkdir -p "${config.xdg.configHome}/librepods"
+  '';
 }
