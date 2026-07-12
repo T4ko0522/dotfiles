@@ -1,5 +1,11 @@
 {config, ...}: {
   programs = {
+    neovim = {
+      enable = true;
+      withPython3 = true;
+      extraPython3Packages = ps: [ps.pynvim];
+    };
+
     go = {
       enable = true;
       env.GOPATH = "${config.home.homeDirectory}/go";

@@ -7,7 +7,6 @@
     ghostty
     jq
     lazygit
-    neovim
     nil
     peco
     starship
