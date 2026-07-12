@@ -8,8 +8,54 @@
 
     exec ${pkgs.nwg-bar}/bin/nwg-bar -p top -f -a middle -mt 34 -i 34 -t power-menu.json -s power-menu.css
   '';
+  outputDeviceMenu = pkgs.writeShellApplication {
+    name = "waybar-output-device-menu";
+    runtimeInputs = with pkgs; [
+      fuzzel
+      gawk
+      pulseaudio
+      wireplumber
+    ];
+    text = ''
+      sinks=$(${pkgs.wireplumber}/bin/wpctl status | ${pkgs.gawk}/bin/awk '
+        /Sinks:/ { in_sinks = 1; next }
+        /Sources:/ { in_sinks = 0 }
+        in_sinks && match($0, /[0-9]+\. /) {
+          id = substr($0, RSTART, RLENGTH - 2)
+          name = substr($0, RSTART + RLENGTH)
+          sub(/ *\[vol:.*\]$/, "", name)
+          marker = substr($0, 1, RSTART - 1) ~ /\*/ ? "* " : "  "
+          printf "%s\t%s%s\n", id, marker, name
+        }
+      ')
+
+      [ -n "$sinks" ] || exit 0
+
+      selected=$(${pkgs.fuzzel}/bin/fuzzel --dmenu --prompt='Audio: ' --width=70 --lines=8 <<< "$sinks") || exit 0
+      sink_id=$(printf '%s\n' "$selected" | ${pkgs.gawk}/bin/awk -F '\t' '{ print $1 }')
+      [ -n "$sink_id" ] || exit 0
+
+      ${pkgs.wireplumber}/bin/wpctl set-default "$sink_id"
+
+      sink_name=$(${pkgs.wireplumber}/bin/wpctl inspect "$sink_id" | ${pkgs.gawk}/bin/awk -F ' = ' '
+        $1 ~ /node.name/ {
+          gsub(/"/, "", $2)
+          print $2
+          exit
+        }
+      ')
+      [ -n "$sink_name" ] || exit 0
+
+      ${pkgs.pulseaudio}/bin/pactl list short sink-inputs |
+        ${pkgs.gawk}/bin/awk '{ print $1 }' |
+        while read -r stream_id; do
+          [ -n "$stream_id" ] && ${pkgs.pulseaudio}/bin/pactl move-sink-input "$stream_id" "$sink_name" || true
+        done
+    '';
+  };
 in {
   xdg.configFile = {
+    "waybar/config".force = true;
     "nwg-bar/power-menu.json".text = builtins.toJSON [
       {
         label = "_Sleep";
@@ -193,6 +239,8 @@ in {
           ];
           app_ids-mapping = {
             firefoxdeveloperedition = "firefox-developer-edition";
+            steam_app_900000001 = "steam_app_900000001";
+            steam_app_900000002 = "steam_app_900000002";
           };
           rewrite = {
             "Firefox Web Browser" = "Firefox";
@@ -391,7 +439,8 @@ in {
           max-volume = 100;
           scroll-step = 2;
           smooth-scrolling-threshold = 1;
-          on-click = "pavucontrol";
+          on-click = "${outputDeviceMenu}/bin/waybar-output-device-menu";
+          on-click-middle = "pavucontrol";
           on-click-right = "pamixer -t";
         };
 
