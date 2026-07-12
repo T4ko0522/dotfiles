@@ -82,7 +82,7 @@ in {
     ".git_template/hooks".source = store ".git_template/hooks";
     ".codex/AGENTS.md".source = store ".config/shared/codex/AGENTS.md";
     ".codex/agents".source = store ".config/shared/codex/agents";
-    ".codex/rules/default.rules".source = store ".config/shared/codex/default.rules";
+    ".codex/rules".source = store ".config/shared/codex/rules";
     ".claude/CLAUDE.md".source = store ".config/shared/claude/CLAUDE.md";
     ".claude/agents".source = store ".config/shared/claude/agents";
     ".claude/statusline.sh".source = store ".config/shared/claude/statusline.sh";
