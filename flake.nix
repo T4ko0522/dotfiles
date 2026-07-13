@@ -23,6 +23,8 @@
 
     llm-agents.url = "github:numtide/llm-agents.nix";
 
+    codex-desktop-linux.url = "github:ilysenko/codex-desktop-linux?rev=413e484f47d300243397280338f19beb187025b2";
+
     spotify-cli = {
       url = "github:T4ko0522/spotify-cli";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -51,6 +53,7 @@
     llm-agents,
     nixos-loading-plymouth,
     spotify-cli,
+    codex-desktop-linux,
     # actrun,
     ...
   }: let
@@ -110,7 +113,10 @@
                 extraSpecialArgs = {
                   inherit dotfilesDir keyboardLayout;
                 };
-                sharedModules = [vicinae.homeManagerModules.default];
+                sharedModules = [
+                  vicinae.homeManagerModules.default
+                  codex-desktop-linux.homeManagerModules.default
+                ];
                 users.t4ko = import homeConfiguration;
               };
             }

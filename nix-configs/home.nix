@@ -17,5 +17,6 @@
     ./home/firefox.nix
     ./home/vicinae.nix
     ./home/spotify.nix
+    ./home/codex-desktop-linux.nix
   ];
 }
