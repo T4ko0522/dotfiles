@@ -2,7 +2,6 @@
   imports = [
     ./hardware-configuration.nix
     ../../modules
-    ../../modules/lanzaboote.nix
     ../../modules/plymouth.nix
     ../../profiles/desktop.nix
     ../../profiles/nvidia-hybrid.nix
