@@ -4,6 +4,7 @@
     bat
     delta
     difftastic
+    diffnav
     doggo
     eza
     gcc
@@ -12,6 +13,7 @@
     gnumake
     gping
     gtop
+    gh-dash
     just
     lsd
     ripgrep

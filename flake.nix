@@ -120,7 +120,6 @@
     laptop = mkNixos {
       configuration = ./nix-configs/hosts/laptop;
       homeConfiguration = ./nix-configs/home.nix;
-      extraModules = [lanzaboote.nixosModules.lanzaboote];
     };
     desktop = mkNixos {
       configuration = ./nix-configs/hosts/desktop;
