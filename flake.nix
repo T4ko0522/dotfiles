@@ -77,6 +77,7 @@
         inherit system;
         specialArgs = {
           inherit dotfilesDir keyboardLayout;
+          nixosLoadingPlymouth = nixos-loading-plymouth;
         };
         modules =
           [

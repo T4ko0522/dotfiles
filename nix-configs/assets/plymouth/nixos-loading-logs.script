@@ -1,0 +1,117 @@
+# NixOS Loading Plymouth theme with a scrolling boot log overlay.
+
+Window.SetBackgroundTopColor(0.10, 0.10, 0.14);
+Window.SetBackgroundBottomColor(0.06, 0.06, 0.10);
+
+screen_width = Window.GetWidth();
+screen_height = Window.GetHeight();
+
+NUM_FRAMES = 37;
+for (i = 0; i < NUM_FRAMES; i++)
+    frame_image[i] = Image("frame-" + i + ".png");
+
+frame_width = frame_image[0].GetWidth();
+frame_height = frame_image[0].GetHeight();
+frame_sprite = Sprite(frame_image[0]);
+frame_sprite.SetX(screen_width / 2 - frame_width / 2);
+frame_sprite.SetY(screen_height / 2 - frame_height / 2);
+frame_sprite.SetOpacity(1);
+
+progress = 0;
+tick = 0;
+TICKS_PER_STEP = 2;
+
+fun refresh_callback() {
+    tick++;
+    if (tick < TICKS_PER_STEP)
+        return;
+    tick = 0;
+
+    frame_sprite.SetImage(frame_image[progress]);
+    progress++;
+    if (progress >= NUM_FRAMES)
+        progress = 0;
+}
+
+Plymouth.SetRefreshFunction(refresh_callback);
+
+# Keep the newest messages at the bottom of the log area.
+LOG_LINES = 28;
+LOG_LINE_HEIGHT = 24;
+LOG_MARGIN = 24;
+for (i = 0; i < LOG_LINES; i++) {
+    log_text[i] = "";
+    log_sprite[i] = Sprite();
+    log_sprite[i].SetOpacity(0);
+}
+
+fun message_callback(text) {
+    if (text == "")
+        return;
+
+    for (i = 0; i < LOG_LINES - 1; i++)
+        log_text[i] = log_text[i + 1];
+    log_text[LOG_LINES - 1] = text;
+
+    for (i = 0; i < LOG_LINES; i++) {
+        if (log_text[i] == "")
+            log_sprite[i].SetOpacity(0);
+        else {
+            log_image = Image.Text(log_text[i], 0.82, 0.86, 0.96);
+            log_sprite[i].SetImage(log_image);
+            log_sprite[i].SetPosition(LOG_MARGIN, LOG_MARGIN + i * LOG_LINE_HEIGHT, 10000 + i);
+            log_sprite[i].SetOpacity(1);
+        }
+    }
+}
+
+Plymouth.SetMessageFunction(message_callback);
+
+prompt_sprite = Sprite();
+prompt_sprite.SetOpacity(0);
+bullets_sprite = Sprite();
+bullets_sprite.SetOpacity(0);
+FULL_LOGO_FRAME = 18;
+
+fun password_callback(prompt, bullets) {
+    frame_sprite.SetImage(frame_image[FULL_LOGO_FRAME]);
+
+    prompt_image = Image.Text(prompt, 1, 1, 1);
+    prompt_sprite.SetImage(prompt_image);
+    prompt_sprite.SetPosition(
+        screen_width / 2 - prompt_image.GetWidth() / 2,
+        screen_height / 2 + frame_height / 2 + 30,
+        20000
+    );
+    prompt_sprite.SetOpacity(1);
+
+    if (bullets > 0) {
+        bullet_string = "";
+        for (i = 0; i < bullets; i++)
+            bullet_string = bullet_string + "●";
+        bullet_image = Image.Text(bullet_string, 0.75, 0.84, 0.96);
+        bullets_sprite.SetImage(bullet_image);
+        bullets_sprite.SetPosition(
+            screen_width / 2 - bullet_image.GetWidth() / 2,
+            screen_height / 2 + frame_height / 2 + 65,
+            20001
+        );
+        bullets_sprite.SetOpacity(1);
+    } else
+        bullets_sprite.SetOpacity(0);
+}
+
+Plymouth.SetDisplayPasswordFunction(password_callback);
+
+fun display_normal_callback() {
+    prompt_sprite.SetOpacity(0);
+    bullets_sprite.SetOpacity(0);
+}
+
+Plymouth.SetDisplayNormalFunction(display_normal_callback);
+
+fun quit_callback() {
+    frame_sprite.SetImage(frame_image[FULL_LOGO_FRAME]);
+}
+
+Plymouth.SetQuitFunction(quit_callback);
