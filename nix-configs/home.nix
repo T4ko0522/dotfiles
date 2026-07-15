@@ -14,6 +14,7 @@
     ./home/vr.nix
     ./home/zsh.nix
     ./home/programs.nix
+    ./home/nixvim
     ./home/firefox.nix
     ./home/vicinae.nix
     ./home/spotify.nix

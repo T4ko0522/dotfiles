@@ -14,6 +14,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixvim.url = "github:nix-community/nixvim/nixos-26.05";
+
     vial-qmk = {
       url = "git+https://github.com/vial-kb/vial-qmk?submodules=1";
       flake = false;
@@ -47,6 +49,7 @@
     self,
     nixpkgs,
     home-manager,
+    nixvim,
     vial-qmk,
     vicinae,
     lanzaboote,
@@ -115,6 +118,7 @@
                   inherit dotfilesDir keyboardLayout;
                 };
                 sharedModules = [
+                  nixvim.homeModules.nixvim
                   vicinae.homeManagerModules.default
                   codex-desktop-linux.homeManagerModules.default
                 ];

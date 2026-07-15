@@ -7,7 +7,7 @@
   # link (out-of-store): mkOutOfStoreSymlink で store の外にある「書き込み可能な実体」を指す。
   # dotfilesDir (= self.outPath) は store 内 (読み取り専用) なので、ライブの作業ツリー
   # (~/dotfiles) を基準に symlink を張る。プログラム自身が設定 dir/file へ書き戻すもの
-  # (lazygit の state.yml、nvim の lazy-lock.json、zsh の .zwc、codex/claude のランタイム状態、
+  # (lazygit の state.yml、zsh の .zwc、codex/claude のランタイム状態、
   # GUI 由来で再書き込みされる fcitx5 など) に使う。編集に rebuild は不要。
   link = path: config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/${path}";
 
@@ -68,7 +68,6 @@ in {
       "yazi".source = store ".config/shared/yazi";
       # out-of-store: プログラム自身が dir/file へ書き戻すもの。
       "lazygit".source = link ".config/shared/lazygit"; # state.yml を書き込む
-      "nvim".source = link ".config/shared/nvim"; # lazy-lock.json を書き込む
       "zed".source = link ".config/shared/zed"; # GUI 設定変更で settings.json を書き戻す
       "zsh/rc".source = link ".config/nixos/zsh/rc"; # .zwc を zcompile する
       "fcitx5/config".source = link ".config/nixos/fcitx5/config"; # GUI 設定で再書き込み
