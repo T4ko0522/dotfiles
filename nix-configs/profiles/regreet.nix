@@ -38,8 +38,8 @@ in {
         GTK.application_prefer_dark_theme = true;
 
         commands = {
-          reboot = ["loginctl" "reboot"];
-          poweroff = ["loginctl" "poweroff"];
+          reboot = ["${pkgs.systemd}/bin/systemctl" "--no-block" "reboot"];
+          poweroff = ["${pkgs.systemd}/bin/systemctl" "--no-block" "poweroff"];
         };
 
         widget.clock = {
