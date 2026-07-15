@@ -23,7 +23,7 @@
 
     llm-agents.url = "github:numtide/llm-agents.nix";
 
-    codex-desktop-linux.url = "github:ilysenko/codex-desktop-linux?rev=413e484f47d300243397280338f19beb187025b2";
+    codex-desktop-linux.url = "github:ilysenko/codex-desktop-linux?rev=9f2d5013912a72d95ab4e5bd003e959b7e7bb7da";
 
     spotify-cli = {
       url = "github:T4ko0522/spotify-cli";
