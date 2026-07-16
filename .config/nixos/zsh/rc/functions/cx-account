@@ -1,0 +1,199 @@
+#!/usr/bin/env zsh
+# ChatGPT/Codex OAuth は Claudex の profile ごとではなく ~/.codex/auth.json に
+# 保存される。その認証情報をアカウント名ごとに退避して、原子的に切り替える。
+
+emulate -L zsh
+setopt pipefail
+
+local command_name='cx-account'
+local action="${1:-}"
+local account="${2:-}"
+local state_dir="${CLAUDEX_ACCOUNTS_DIR:-${XDG_STATE_HOME:-$HOME/.local/state}/claudex/accounts}"
+local auth_file="${CLAUDEX_ACCOUNT_AUTH_FILE:-${CODEX_HOME:-$HOME/.codex}/auth.json}"
+local current_file="$state_dir/current"
+
+function _cx_account_usage {
+  print -u2 "Usage: $command_name {login|use|list} [account] [--headless]"
+  print -u2 '  login <account> [--headless]  ブラウザで認証し、認証情報を保存する'
+  print -u2 '  use <account>                 保存済みアカウントへ切り替える'
+  print -u2 '  list                          保存済みアカウントを表示する'
+}
+
+function _cx_account_valid_name {
+  [[ "$1" =~ '^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$' ]]
+}
+
+function _cx_account_prepare_state_dir {
+  mkdir -p -- "$state_dir" && chmod 700 -- "$state_dir"
+}
+
+function _cx_account_save_auth {
+  local name="$1"
+  local source="$2"
+  local target="$state_dir/$name.json"
+  local temporary
+
+  [[ -s "$source" ]] || return 1
+  temporary=$(mktemp "$state_dir/.${name}.json.XXXXXX") || return 1
+  if ! cp -- "$source" "$temporary" || ! chmod 600 -- "$temporary" || ! mv -f -- "$temporary" "$target"; then
+    rm -f -- "$temporary"
+    return 1
+  fi
+}
+
+function _cx_account_write_current {
+  local name="$1"
+  local temporary
+
+  temporary=$(mktemp "$state_dir/.current.XXXXXX") || return 1
+  if ! print -r -- "$name" >"$temporary" || ! chmod 600 -- "$temporary" || ! mv -f -- "$temporary" "$current_file"; then
+    rm -f -- "$temporary"
+    return 1
+  fi
+}
+
+function _cx_account_backup_current {
+  local current=''
+  local recovered_name
+
+  [[ -s "$auth_file" ]] || return 0
+  if [[ -r "$current_file" ]]; then
+    current=$(<"$current_file")
+  fi
+
+  if _cx_account_valid_name "$current"; then
+    _cx_account_save_auth "$current" "$auth_file"
+    return
+  fi
+
+  recovered_name="recovered-$(date +%Y%m%d-%H%M%S)"
+  _cx_account_save_auth "$recovered_name" "$auth_file" || return
+  print -u2 "$command_name: 現在の認証情報を $recovered_name として退避しました"
+}
+
+case "$action" in
+  list)
+    if (( $# != 1 )); then
+      _cx_account_usage
+      return 2
+    fi
+
+    local file name current=''
+    local found=0
+    [[ -r "$current_file" ]] && current=$(<"$current_file")
+    for file in "$state_dir"/*.json(N); do
+      name="${${file:t}%.json}"
+      if [[ "$name" == "$current" ]]; then
+        print -- "* $name"
+      else
+        print -- "  $name"
+      fi
+      found=1
+    done
+    (( found )) || print '保存済みアカウントはありません。cx-account login <account> で追加してください。'
+    ;;
+
+  use)
+    if (( $# != 2 )) || ! _cx_account_valid_name "$account"; then
+      _cx_account_usage
+      return 2
+    fi
+
+    local saved_auth="$state_dir/$account.json"
+    local temporary
+    if [[ ! -s "$saved_auth" ]]; then
+      print -u2 "$command_name: $account は未登録です。cx-account login $account を実行してください"
+      return 1
+    fi
+    _cx_account_prepare_state_dir || return
+    _cx_account_backup_current || {
+      print -u2 "$command_name: 現在の認証情報を退避できないため切り替えません"
+      return 1
+    }
+    mkdir -p -- "${auth_file:h}" || return
+    temporary=$(mktemp "${auth_file:h}/.auth.json.XXXXXX") || return
+    if ! cp -- "$saved_auth" "$temporary" || ! chmod 600 -- "$temporary" || ! mv -f -- "$temporary" "$auth_file"; then
+      rm -f -- "$temporary"
+      print -u2 "$command_name: 認証情報の切り替えに失敗しました"
+      return 1
+    fi
+    if ! _cx_account_write_current "$account"; then
+      print -u2 "$command_name: 認証情報は切り替わりましたが、現在アカウントの記録に失敗しました"
+      return 1
+    fi
+    print "ChatGPT アカウントを $account に切り替えました"
+    ;;
+
+  login)
+    if (( $# != 2 && $# != 3 )) || ! _cx_account_valid_name "$account" || [[ "${3:-}" != '' && "${3:-}" != '--headless' ]]; then
+      _cx_account_usage
+      return 2
+    fi
+    if ! command -v claudex >/dev/null 2>&1; then
+      print -u2 "$command_name: claudex が見つかりません"
+      return 127
+    fi
+    _cx_account_prepare_state_dir || return
+    mkdir -p -- "${auth_file:h}" || return
+    local before_login=''
+    local before_auth_inode=''
+    if [[ -e "$auth_file" ]]; then
+      before_auth_inode=$(stat -c '%i' -- "$auth_file") || return
+      before_login=$(mktemp "${auth_file:h}/.auth.json.before-login.XXXXXX") || return
+      if ! cp -- "$auth_file" "$before_login" || ! chmod 600 -- "$before_login"; then
+        rm -f -- "$before_login"
+        return 1
+      fi
+      _cx_account_backup_current || {
+        rm -f -- "$before_login"
+        print -u2 "$command_name: 現在の認証情報を退避できないためログインを開始しません"
+        return 1
+      }
+    fi
+
+    local -a login_args=(auth login chatgpt --profile "$account" --force)
+    [[ "${3:-}" == '--headless' ]] && login_args+=(--headless)
+    local login_status=0
+    local auth_updated=0
+    local after_auth_inode=''
+    claudex "${login_args[@]}"
+    login_status=$?
+    if [[ -s "$auth_file" ]]; then
+      after_auth_inode=$(stat -c '%i' -- "$auth_file") || return
+      if [[ -z "$before_login" ]] || ! cmp -s -- "$before_login" "$auth_file" || [[ "$before_auth_inode" != "$after_auth_inode" ]]; then
+        auth_updated=1
+      fi
+    fi
+    if (( login_status != 0 && ! auth_updated )); then
+      if [[ -n "$before_login" ]]; then
+        mv -f -- "$before_login" "$auth_file"
+      fi
+      print -u2 "$command_name: ログインに失敗したため、以前の認証情報を復元しました"
+      return 1
+    fi
+    if (( login_status != 0 )); then
+      print -u2 "$command_name: Claudex はエラー終了しましたが、認証情報が更新されているため続行します"
+    fi
+    if [[ ! -s "$auth_file" ]]; then
+      [[ -n "$before_login" ]] && mv -f -- "$before_login" "$auth_file"
+      print -u2 "$command_name: ログイン後の認証情報を確認できなかったため、以前の認証情報を復元しました"
+      return 1
+    fi
+    if ! _cx_account_save_auth "$account" "$auth_file"; then
+      [[ -n "$before_login" ]] && mv -f -- "$before_login" "$auth_file"
+      print -u2 "$command_name: 認証情報の保存に失敗したため、以前の認証情報を復元しました"
+      return 1
+    fi
+    rm -f -- "$before_login"
+    if ! _cx_account_write_current "$account"; then
+      print -u2 "$command_name: 認証情報は保存されましたが、現在アカウントの記録に失敗しました"
+      return 1
+    fi
+    print "ChatGPT アカウント $account を保存しました"
+    ;;
+
+  *)
+    _cx_account_usage
+    return 2
+    ;;
+esac
