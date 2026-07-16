@@ -23,8 +23,28 @@
       "bluez5.roles" = [
         "a2dp_sink"
         "a2dp_source"
+        "bap_sink"
+        "bap_source"
+        "hfp_hf"
+        "hfp_ag"
+        "hsp_hs"
+        "hsp_ag"
       ];
+      "bluez5.hfphsp-backend" = "native";
     };
+
+    "monitor.bluez.rules" = [
+      {
+        matches = [
+          {
+            "device.name" = "bluez_card.F8_1E_49_E1_E7_4B";
+          }
+        ];
+        actions.update-props = {
+          "device.profile" = "a2dp-sink";
+        };
+      }
+    ];
   };
 
   home-manager.users.t4ko.t4ko.niri.monitors = {
