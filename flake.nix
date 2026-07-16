@@ -23,6 +23,11 @@
 
     llm-agents.url = "github:numtide/llm-agents.nix";
 
+    claudex = {
+      url = "github:StringKe/claudex/v0.2.4";
+      flake = false;
+    };
+
     codex-desktop-linux.url = "github:ilysenko/codex-desktop-linux?rev=9f2d5013912a72d95ab4e5bd003e959b7e7bb7da";
 
     spotify-cli = {
@@ -51,6 +56,7 @@
     vicinae,
     lanzaboote,
     llm-agents,
+    claudex,
     nixos-loading-plymouth,
     spotify-cli,
     codex-desktop-linux,
@@ -112,7 +118,7 @@
                 useUserPackages = true;
                 backupFileExtension = "hm-backup";
                 extraSpecialArgs = {
-                  inherit dotfilesDir keyboardLayout;
+                  inherit claudex dotfilesDir keyboardLayout;
                 };
                 sharedModules = [
                   vicinae.homeManagerModules.default

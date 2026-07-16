@@ -25,6 +25,8 @@ fi
 alias lg='lazygit'
 alias ff='fastfetch'
 alias y='yy'
+alias cx='claudex run codex -m opus -- --dangerously-skip-permissions'
+
 
 function open {
   local target="${1:-.}"

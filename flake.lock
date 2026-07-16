@@ -58,6 +58,23 @@
         "type": "github"
       }
     },
+    "claudex": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1772183396,
+        "narHash": "sha256-YRsSUzrElmsBVTfUrP5iVtbCH6UA/oE+tP60juAf4zg=",
+        "owner": "StringKe",
+        "repo": "claudex",
+        "rev": "a1eb95957e71ab85d91aae8cdc3b7bb78bd4e9ea",
+        "type": "github"
+      },
+      "original": {
+        "owner": "StringKe",
+        "ref": "v0.2.4",
+        "repo": "claudex",
+        "type": "github"
+      }
+    },
     "codex-desktop-linux": {
       "inputs": {
         "flake-utils": "flake-utils",
@@ -347,6 +364,7 @@
     },
     "root": {
       "inputs": {
+        "claudex": "claudex",
         "codex-desktop-linux": "codex-desktop-linux",
         "home-manager": "home-manager",
         "lanzaboote": "lanzaboote",
