@@ -12,7 +12,10 @@ rustPlatform.buildRustPackage {
   src = applyPatches {
     inherit src;
     name = "claudex-source";
-    patches = [./reasoning-effort.patch];
+    patches = [
+      ./reasoning-effort.patch
+      ./oauth-keyring-fallback.patch
+    ];
   };
 
   cargoHash = "sha256-10Mmiofblkrc7DVw6y2U+odeue0Mv1UuLNHy4ClV91o=";
