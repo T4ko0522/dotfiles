@@ -95,7 +95,10 @@ in {
 
     # out-of-store: プログラム自身が書き戻すもの。
     ".gitconfig".source = link ".gitconfig"; # git config --global で書き込む
-    ".codex/config.toml".source = link ".config/shared/codex/config.toml"; # codex が実行時状態を書き戻す
+    # .codex/config.toml は home.activation.seedCodexConfig で管理する (下記)。
+    # out-of-store symlink にすると codex が marketplaces/plugins/mcp_servers 等の実行時状態を
+    # dotfiles の git 追跡ファイルへ書き戻し汚染するため、静的テンプレートから初回シードした
+    # 「実ファイル」を codex に所有させ、git ツリーから切り離す。
     ".claude/skills".source = link ".config/shared/apm/.claude/skills"; # apm install の生成物 (source は .config/shared/apm/packages/<category>/.apm/skills/)
   };
 
@@ -109,6 +112,22 @@ in {
     ${builtins.toJSON claudeSettings}
     EOF
     chmod 0644 "$claude_dir/settings.json"
+  '';
+
+  # Codex config.toml: 静的テンプレートから ~/.codex/config.toml を「実ファイル」として初回シードする。
+  # codex は起動時に marketplaces/plugins/mcp_servers 等をこのファイルへ書き戻すため、out-of-store
+  # symlink にすると dotfiles の git 追跡ファイルが汚染される。実ファイル化して codex に所有させ、
+  # dotfiles 側は静的な初期値テンプレートとしてのみ保持する (再生成可能に保つ)。
+  # 既存が symlink (旧構成の名残) または未作成の場合のみテンプレートで初期化し、実ファイルは温存する。
+  home.activation.seedCodexConfig = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    codex_cfg="${config.home.homeDirectory}/.codex/config.toml"
+    codex_tmpl="${config.home.homeDirectory}/dotfiles/.config/shared/codex/config.toml"
+    mkdir -p "${config.home.homeDirectory}/.codex"
+    if [ -L "$codex_cfg" ] || [ ! -e "$codex_cfg" ]; then
+      rm -f "$codex_cfg"
+      cp "$codex_tmpl" "$codex_cfg"
+      chmod u+w "$codex_cfg"
+    fi
   '';
 
   # apm install: .config/shared/apm/packages/<category>/.apm/skills/ (source) から各targetのskills dirへdeployする。
