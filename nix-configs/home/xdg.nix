@@ -3,8 +3,7 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   # link (out-of-store): mkOutOfStoreSymlink で store の外にある「書き込み可能な実体」を指す。
   # dotfilesDir (= self.outPath) は store 内 (読み取り専用) なので、ライブの作業ツリー
   # (~/dotfiles) を基準に symlink を張る。プログラム自身が設定 dir/file へ書き戻すもの
@@ -20,8 +19,7 @@ let
   claudeSettings = lib.recursiveUpdate (builtins.fromJSON (builtins.readFile (store ".config/shared/claude/settings.json"))) (
     builtins.fromJSON (builtins.readFile (store ".config/nixos/claude/settings.hooks.json"))
   );
-in
-{
+in {
   xdg = {
     mimeApps = {
       enable = true;
@@ -105,7 +103,7 @@ in
 
   # Claude settings.json: 共通 base に NixOS 固有 hooks をマージして生成する。
   # Windows 側の setup_windows.ps1 と同じく、通知 hook の依存は OS 固有ディレクトリに閉じ込める。
-  home.activation.generateClaudeSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+  home.activation.generateClaudeSettings = lib.hm.dag.entryAfter ["writeBoundary"] ''
     claude_dir="${config.home.homeDirectory}/.claude"
     mkdir -p "$claude_dir"
     rm -f "$claude_dir/settings.json"
@@ -120,7 +118,7 @@ in
   # symlink にすると dotfiles の git 追跡ファイルが汚染される。実ファイル化して codex に所有させ、
   # dotfiles 側は静的な初期値テンプレートとしてのみ保持する (再生成可能に保つ)。
   # 既存が symlink (旧構成の名残) または未作成の場合のみテンプレートで初期化し、実ファイルは温存する。
-  home.activation.seedCodexConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+  home.activation.seedCodexConfig = lib.hm.dag.entryAfter ["writeBoundary"] ''
     codex_cfg="${config.home.homeDirectory}/.codex/config.toml"
     codex_tmpl="${config.home.homeDirectory}/dotfiles/.config/shared/codex/config.toml"
     mkdir -p "${config.home.homeDirectory}/.codex"
@@ -133,7 +131,7 @@ in
 
   # apm install: .config/shared/apm/packages/<category>/.apm/skills/ (source) から各targetのskills dirへdeployする。
   # APMはCodex向けskillを`.agents/skills`に生成する。Codexは~/.codex/skills/.systemを保持する必要があるため、skillごとのリンクを後段で作る。
-  home.activation.apmInstallSkills = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+  home.activation.apmInstallSkills = lib.hm.dag.entryAfter ["writeBoundary"] ''
     cd "${config.home.homeDirectory}/dotfiles/.config/shared/apm"
     # activation は systemd 環境で走るため ~/.zshenv は読まれない。gh CLI の keyring からトークンを渡し、
     # apm install が mizchi/skills などを clone する際に GitHub 認証が通るようにする。
@@ -141,7 +139,7 @@ in
     ${pkgs.llm-agents.apm}/bin/apm install
   '';
 
-  home.activation.linkCodexSkills = lib.hm.dag.entryAfter [ "apmInstallSkills" ] ''
+  home.activation.linkCodexSkills = lib.hm.dag.entryAfter ["apmInstallSkills"] ''
     source_dir="${config.home.homeDirectory}/dotfiles/.config/shared/apm/.agents/skills"
     target_dir="${config.home.homeDirectory}/.codex/skills"
     mkdir -p "$target_dir"
@@ -153,7 +151,7 @@ in
   '';
 
   # opencode 向け skill: apm 生成物 (.agents/skills) を ~/.config/opencode/skills/ へ張る。
-  home.activation.linkOpencodeSkills = lib.hm.dag.entryAfter [ "apmInstallSkills" ] ''
+  home.activation.linkOpencodeSkills = lib.hm.dag.entryAfter ["apmInstallSkills"] ''
     source_dir="${config.home.homeDirectory}/dotfiles/.config/shared/apm/.agents/skills"
     target_dir="${config.home.homeDirectory}/.config/opencode/skills"
     mkdir -p "$target_dir"
