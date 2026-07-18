@@ -15,8 +15,9 @@
     "favorite_models": [],
     "model_parameters": []
   },
-  "vim_mode": true,
+  "vim_mode": false,
   "vim": {
+    "default_mode": "insert",
     "use_system_clipboard": "on_yank"
   },
   "close_panel_on_toggle": true,
