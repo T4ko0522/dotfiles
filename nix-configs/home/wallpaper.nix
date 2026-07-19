@@ -197,7 +197,7 @@ in {
 
     activePreset = lib.mkOption {
       type = lib.types.str;
-      default = "chill";
+      default = "blue-archive-2";
       description = "Wallpaper preset used by niri at startup.";
     };
 
@@ -286,6 +286,14 @@ in {
             DP-1 = "2895536764";
           };
         };
+        blue-archive-2 = {
+          inherit (cfg) wallpaperId;
+          perMonitor = {
+            HDMI-A-1 = "3508382267";
+            DP-1 = "2880401284";
+            DP-2 = "3650448635";
+          };
+        };
       };
       description = "Named Wallpaper Engine presets.";
     };
@@ -323,16 +331,5 @@ in {
     ];
 
     home.packages = [wallpaperPresetCommand];
-
-    home.activation.disableWallpaperEngineAutostart = lib.hm.dag.entryAfter ["writeBoundary"] ''
-      we_config="$HOME/.local/share/Steam/steamapps/common/wallpaper_engine/config.json"
-      if [ -f "$we_config" ]; then
-        ${pkgs.gnused}/bin/sed -i \
-          -e 's/"autostart" : true/"autostart" : false/g' \
-          -e 's/"autostartscheduler" : true/"autostartscheduler" : false/g' \
-          -e 's/"autostartx64" : true/"autostartx64" : false/g' \
-          "$we_config"
-      fi
-    '';
   };
 }
