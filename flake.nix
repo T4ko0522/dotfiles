@@ -96,7 +96,6 @@
           ++ [
             {
               nixpkgs.overlays = [
-                llm-agents.overlays.default
                 spotify-cli.overlays.default
                 # actrun.inputs.moonbit-overlay.overlays.default
                 # actrun.overlays.default
@@ -118,7 +117,7 @@
                 useUserPackages = true;
                 backupFileExtension = "hm-backup";
                 extraSpecialArgs = {
-                  inherit claudex dotfilesDir keyboardLayout;
+                  inherit claudex dotfilesDir keyboardLayout llm-agents;
                 };
                 sharedModules = [
                   vicinae.homeManagerModules.default
