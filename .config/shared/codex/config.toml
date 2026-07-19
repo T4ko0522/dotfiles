@@ -1,7 +1,7 @@
-model = "gpt-5.6-terra"
-model_reasoning_effort = "high"
+model = "gpt-5.6-luna"
+model_reasoning_effort = "xhigh"
 service_tier = "default"
-default_permissions = "personal"
+default_permissions = ":danger-full-access"
 
 [windows]
 sandbox = "elevated"
@@ -24,7 +24,7 @@ status_line = [
 [permissions.personal]
 
 [permissions.personal.filesystem]
-":root" = "write"
+":root" = "read"
 glob_scan_max_depth = 16
 
 [permissions.personal.filesystem.":workspace_roots"]
