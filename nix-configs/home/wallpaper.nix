@@ -43,6 +43,29 @@
     then cfg.monitors
     else preset.monitors;
   mkWallpaperIdForMonitor = preset: monitor: preset.perMonitor.${monitor} or preset.wallpaperId;
+  timePresetNames = [
+    "morning"
+    "day"
+    "evening"
+    "night"
+    "midnight"
+  ];
+  themeFiles = {
+    day = ./wallpaper/day.nix;
+    evening = ./wallpaper/evening.nix;
+    midnight = ./wallpaper/midnight.nix;
+    morning = ./wallpaper/morning.nix;
+    night = ./wallpaper/night.nix;
+  };
+  defaultPresets =
+    lib.mapAttrs (
+      _: themeFile:
+        import themeFile {
+          inherit (cfg) wallpaperId;
+        }
+    )
+    themeFiles;
+  availablePresets = lib.concatStringsSep " " (lib.attrNames cfg.presets);
   runtimeArgs =
     [
       "--fps"
@@ -52,10 +75,7 @@
       "--volume"
       "0"
     ]
-    ++ lib.optional cfg.noAudioProcessing "--no-audio-processing"
-    ++ lib.optional cfg.disableMouse "--disable-mouse"
-    ++ lib.optional cfg.disableParallax "--disable-parallax"
-    ++ lib.optional cfg.disableParticles "--disable-particles";
+    ++ lib.optional cfg.noAudioProcessing "--no-audio-processing";
   systemdRunArgs =
     [
       "--user"
@@ -93,7 +113,7 @@
   };
   mkPresetScriptCase = name: preset: let
     monitors = mkPresetMonitors preset;
-    args = lib.concatStringsSep " " (
+    args =
       [
         "--assets-dir"
         cfg.assetsDir
@@ -112,18 +132,16 @@
             preset.perMonitorScaling.${monitor}
           ]
       )
-      monitors
-    );
+      monitors;
   in ''
     ${lib.escapeShellArg name})
-      args=${lib.escapeShellArg args}
+      args=(${lib.escapeShellArgs args})
       ;;
   '';
   wallpaperPresetCommand = pkgs.writeShellApplication {
     name = "wallpaper-preset";
     runtimeInputs = [
       pkgs.coreutils
-      pkgs.linux-wallpaperengine
       pkgs.procps
       pkgs.systemd
     ];
@@ -131,7 +149,7 @@
       preset=''${1:-}
       if [ -z "$preset" ]; then
         echo "usage: wallpaper-preset <preset>" >&2
-        echo "available presets: ${lib.concatStringsSep " " (lib.attrNames cfg.presets)}" >&2
+        echo "available presets: ${availablePresets}" >&2
         exit 2
       fi
 
@@ -139,7 +157,7 @@
       ${lib.concatStringsSep "" (lib.mapAttrsToList mkPresetScriptCase cfg.presets)}
         *)
           echo "unknown wallpaper preset: $preset" >&2
-          echo "available presets: ${lib.concatStringsSep " " (lib.attrNames cfg.presets)}" >&2
+          echo "available presets: ${availablePresets}" >&2
           exit 2
           ;;
       esac
@@ -147,10 +165,38 @@
       systemctl --user stop wallpaper-engine.service 2>/dev/null || true
       pkill -u "$(id -u)" -f '(^|/)linux-wallpaperengine( |$)' || true
       systemctl --user reset-failed wallpaper-engine.service 2>/dev/null || true
-      # shellcheck disable=SC2086
-      systemd-run ${lib.escapeShellArgs systemdRunArgs} ${wallpaperEngineCommand}/bin/wallpaper-engine-managed $args
+      systemd-run ${lib.escapeShellArgs systemdRunArgs} ${lib.getExe wallpaperEngineCommand} "''${args[@]}"
     '';
   };
+  wallpaperTimeOfDayCommand = pkgs.writeShellApplication {
+    name = "wallpaper-time-of-day";
+    runtimeInputs = [pkgs.coreutils];
+    text = ''
+      case "$(date +%H)" in
+        05|06|07|08|09|10)
+          preset=${lib.escapeShellArg cfg.timePresets.morning}
+          ;;
+        11|12|13|14|15)
+          preset=${lib.escapeShellArg cfg.timePresets.day}
+          ;;
+        16|17|18)
+          preset=${lib.escapeShellArg cfg.timePresets.evening}
+          ;;
+        19|20|21|22|23|00|01)
+          preset=${lib.escapeShellArg cfg.timePresets.night}
+          ;;
+        02|03|04)
+          preset=${lib.escapeShellArg cfg.timePresets.midnight}
+          ;;
+      esac
+
+      ${lib.getExe wallpaperPresetCommand} "$preset"
+    '';
+  };
+  wallpaperStartupCommand =
+    if cfg.scheduleEnabled
+    then ''spawn-at-startup "${lib.getExe wallpaperTimeOfDayCommand}"''
+    else ''spawn-at-startup "${lib.getExe wallpaperPresetCommand}" "${cfg.activePreset}"'';
 in {
   options.t4ko.wallpaper = {
     wallpaperId = lib.mkOption {
@@ -197,8 +243,30 @@ in {
 
     activePreset = lib.mkOption {
       type = lib.types.str;
-      default = "blue-archive-2";
-      description = "Wallpaper preset used by niri at startup.";
+      default = "midnight";
+      description = "Fallback wallpaper preset used when time-based switching is disabled.";
+    };
+
+    scheduleEnabled = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable time-based wallpaper switching.";
+    };
+
+    timePresets = lib.mkOption {
+      type = lib.types.attrsOf lib.types.str;
+      default = {
+        morning = "morning";
+        day = "day";
+        evening = "evening";
+        night = "night";
+        midnight = "midnight";
+      };
+      description = ''
+        Wallpaper presets selected by time of day: morning 05:00-10:59, day
+        11:00-15:59, evening 16:00-18:59, night 19:00-01:59, and midnight
+        02:00-04:59.
+      '';
     };
 
     fps = lib.mkOption {
@@ -217,24 +285,6 @@ in {
       type = lib.types.bool;
       default = true;
       description = "Disable audio reactive processing in linux-wallpaperengine.";
-    };
-
-    disableMouse = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "Disable mouse interaction for wallpapers.";
-    };
-
-    disableParallax = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "Disable parallax effects for wallpapers.";
-    };
-
-    disableParticles = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Disable particle effects for scene wallpapers.";
     };
 
     memoryMax = lib.mkOption {
@@ -257,44 +307,7 @@ in {
 
     presets = lib.mkOption {
       type = lib.types.attrsOf presetType;
-      default = {
-        safe = {
-          inherit (cfg) wallpaperId;
-        };
-        chill = {
-          inherit (cfg) wallpaperId;
-          perMonitor = {
-            DP-2 = "3707489146";
-            HDMI-A-1 = "3635492501";
-            DP-1 = "3537678022";
-            eDP-1 = "3537678022";
-          };
-        };
-        racing = {
-          inherit (cfg) wallpaperId;
-          perMonitor = {
-            DP-2 = "3384344313";
-            HDMI-A-1 = "3293839756";
-            DP-1 = "3558158756";
-          };
-        };
-        blue-archive = {
-          inherit (cfg) wallpaperId;
-          perMonitor = {
-            DP-2 = "3021003237";
-            HDMI-A-1 = "3165339302";
-            DP-1 = "2895536764";
-          };
-        };
-        blue-archive-2 = {
-          inherit (cfg) wallpaperId;
-          perMonitor = {
-            HDMI-A-1 = "3508382267";
-            DP-1 = "2880401284";
-            DP-2 = "3650448635";
-          };
-        };
-      };
+      default = defaultPresets;
       description = "Named Wallpaper Engine presets.";
     };
 
@@ -305,11 +318,11 @@ in {
         lib.optionalString (cfg.fallbackImage != null) ''
           spawn-at-startup "${pkgs.swaybg}/bin/swaybg" "--mode" "${cfg.fallbackMode}" "--image" "${cfg.fallbackImage}"
         ''
-        + ''spawn-at-startup "${wallpaperPresetCommand}/bin/wallpaper-preset" "${cfg.activePreset}"'';
+        + wallpaperStartupCommand;
       description = ''
         Generated niri startup commands. When fallbackImage is set, swaybg is spawned
-        first as a static fallback layer, then managed linux-wallpaperengine is spawned
-        on top of it.
+        first as a static fallback layer, then the configured wallpaper command is
+        spawned on top of it.
       '';
     };
 
@@ -318,18 +331,61 @@ in {
       readOnly = true;
       description = "Command that applies a Wallpaper Engine preset.";
     };
+
+    timeOfDayCommand = lib.mkOption {
+      type = lib.types.package;
+      readOnly = true;
+      description = "Command that applies the Wallpaper Engine preset for the current time of day.";
+    };
   };
 
   config = {
-    t4ko.wallpaper.presetCommand = wallpaperPresetCommand;
+    t4ko.wallpaper = {
+      presetCommand = wallpaperPresetCommand;
+      timeOfDayCommand = wallpaperTimeOfDayCommand;
+    };
 
     assertions = [
       {
         assertion = lib.hasAttr cfg.activePreset cfg.presets;
         message = "t4ko.wallpaper.activePreset must be one of: ${lib.concatStringsSep ", " (lib.attrNames cfg.presets)}";
       }
+      {
+        assertion =
+          !cfg.scheduleEnabled
+          || lib.all (
+            name:
+              lib.hasAttr name cfg.timePresets
+              && lib.hasAttr cfg.timePresets.${name} cfg.presets
+          )
+          timePresetNames;
+        message = "Every t4ko.wallpaper.timePresets value must refer to a configured preset.";
+      }
     ];
 
     home.packages = [wallpaperPresetCommand];
+
+    systemd.user.services.wallpaper-time-of-day = lib.mkIf cfg.scheduleEnabled {
+      Unit.Description = "Apply the current time-of-day wallpaper preset";
+      Service = {
+        Type = "oneshot";
+        ExecStart = lib.getExe wallpaperTimeOfDayCommand;
+      };
+    };
+
+    systemd.user.timers.wallpaper-time-of-day = lib.mkIf cfg.scheduleEnabled {
+      Unit.Description = "Switch the wallpaper preset by time of day";
+      Timer = {
+        OnCalendar = [
+          "*-*-* 02:00:00"
+          "*-*-* 05:00:00"
+          "*-*-* 11:00:00"
+          "*-*-* 16:00:00"
+          "*-*-* 19:00:00"
+        ];
+        Persistent = true;
+      };
+      Install.WantedBy = ["timers.target"];
+    };
   };
 }
