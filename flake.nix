@@ -28,7 +28,7 @@
       flake = false;
     };
 
-    codex-desktop-linux.url = "github:ilysenko/codex-desktop-linux?rev=af24eadb41bef14b9dea9913e25d3ea239675868";
+    codex-desktop-linux.url = "github:ilysenko/codex-desktop-linux";
 
     spotify-cli = {
       url = "github:T4ko0522/spotify-cli";
