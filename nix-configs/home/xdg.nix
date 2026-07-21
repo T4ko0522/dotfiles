@@ -130,6 +130,49 @@ in {
     fi
   '';
 
+  # Codex の設定と Desktop の thread state は実行時に書き換えられるため、
+  # 過去の root-wide write を安全な値へ一度だけ移行する。
+  home.activation.migrateCodexSandboxState = lib.hm.dag.entryAfter ["seedCodexConfig"] ''
+    codex_dir="${config.home.homeDirectory}/.codex"
+    codex_cfg="$codex_dir/config.toml"
+
+    # 旧 personal profile の `:root = "write"` は workspace root として `/` を
+    # Desktop に渡し得る。現在のテンプレートと同じ read-only root に揃える。
+    if [ -f "$codex_cfg" ] \
+      && ${pkgs.gnugrep}/bin/grep -q '^default_permissions = "personal"$' "$codex_cfg" \
+      && ${pkgs.gnugrep}/bin/grep -q '^":root" = "write"$' "$codex_cfg"; then
+      ${pkgs.gnused}/bin/sed -i 's/^":root" = "write"$/":root" = "read"/' "$codex_cfg"
+    fi
+
+    # Retained roots are merged into later Desktop requests. Remove only `/` from
+    # this specific state key; project roots and all other Codex state are preserved.
+    for state_file in "$codex_dir/.codex-global-state.json" "$codex_dir/.codex-global-state.json.bak"; do
+      [ -f "$state_file" ] || continue
+      if ${pkgs.jq}/bin/jq -e '
+        any(
+          ((.["thread-writable-roots"] // {}) | to_entries[]?.value?);
+          type == "array" and any(.[]; . == "/")
+        )
+      ' "$state_file" >/dev/null; then
+        state_tmp="$state_file.tmp.$$"
+        if ${pkgs.jq}/bin/jq '
+          if type == "object" and (.["thread-writable-roots"] | type) == "object" then
+            .["thread-writable-roots"] |= with_entries(
+              .value |= if type == "array" then map(select(. != "/")) else . end
+            )
+          else
+            .
+          end
+        ' "$state_file" > "$state_tmp"; then
+          ${pkgs.coreutils}/bin/chmod --reference="$state_file" "$state_tmp"
+          ${pkgs.coreutils}/bin/mv "$state_tmp" "$state_file"
+        else
+          ${pkgs.coreutils}/bin/rm -f "$state_tmp"
+        fi
+      fi
+    done
+  '';
+
   # apm install: .config/shared/apm/packages/<category>/.apm/skills/ (source) から各targetのskills dirへdeployする。
   # APMはCodex向けskillを`.agents/skills`に生成する。Codexは~/.codex/skills/.systemを保持する必要があるため、skillごとのリンクを後段で作る。
   home.activation.apmInstallSkills = lib.hm.dag.entryAfter ["writeBoundary"] ''
