@@ -16,6 +16,7 @@ in {
     mpv
     obs-studio
     yt-dlp
+    zoom-us
   ];
 
   home.activation.createLibrepodsConfigDirectory = lib.hm.dag.entryAfter ["writeBoundary"] ''
