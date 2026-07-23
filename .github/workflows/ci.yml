@@ -4,137 +4,47 @@ on:
   push:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
-  chezmoi-windows:
-    name: Chezmoi Windows junctions
-    runs-on: windows-latest
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      nix_configs: ${{ steps.filter.outputs.nix_configs }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install chezmoi
-        shell: pwsh
-        run: choco install chezmoi --yes --no-progress
+      - name: Detect changed paths
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            nix_configs:
+              - 'nix-configs/**'
 
-      - name: Apply Windows profile
-        shell: pwsh
-        run: |
-          $destination = Join-Path $env:RUNNER_TEMP 'chezmoi-home'
-          New-Item -ItemType Directory -Path $destination -Force | Out-Null
-          chezmoi --source $PWD --destination $destination init --apply `
-            --promptChoice 'Environment profile=windows'
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-
-          $expected = @{
-            (Join-Path $destination 'AppData\Local\nvim') = (Join-Path $PWD 'mutable\windows\nvim')
-            (Join-Path $destination '.config\cava') = (Join-Path $PWD 'mutable\windows\cava')
-          }
-          foreach ($target in $expected.Keys) {
-            $item = Get-Item -LiteralPath $target -Force
-            if ($item.LinkType -ne 'Junction') {
-              throw "Expected junction: $target"
-            }
-            if ([IO.Path]::GetFullPath([string]$item.Target) -ne [IO.Path]::GetFullPath($expected[$target])) {
-              throw "Unexpected junction target: $target -> $($item.Target)"
-            }
-          }
+  lint:
+    name: Lint
+    uses: ./.github/workflows/lint.yml
 
   chezmoi:
-    name: Chezmoi contract
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    name: Chezmoi
+    uses: ./.github/workflows/chezmoi.yml
 
-      - name: Install Nix
-        uses: cachix/install-nix-action@v31
-        with:
-          extra_nix_config: |
-            experimental-features = nix-command flakes
+  build:
+    name: Build
+    uses: ./.github/workflows/build.yml
 
-      - name: Check chezmoi profiles and ownership
-        run: nix develop --command bash scripts/check_chezmoi.sh
-
-  wsl:
-    name: NixOS-WSL
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install Nix
-        uses: cachix/install-nix-action@v31
-        with:
-          extra_nix_config: |
-            experimental-features = nix-command flakes
-
-      - name: Check WSL configuration
-        run: bash scripts/check_wsl.sh
-
-  syntax:
-    name: Nix syntax
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install Nix
-        uses: cachix/install-nix-action@v31
-        with:
-          extra_nix_config: |
-            experimental-features = nix-command flakes
-
-      - name: Check Nix syntax
-        run: |
-          git ls-files '*.nix' \
-            | xargs -r -n1 nix-instantiate --parse --quiet >/dev/null
-
-  nix-formatting:
-    name: Nix formatting
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install Nix
-        uses: cachix/install-nix-action@v31
-        with:
-          extra_nix_config: |
-            experimental-features = nix-command flakes
-
-      - name: Check Nix formatting
-        run: nix run nixpkgs#alejandra -- --check .
-
-  markdown-lint:
-    name: Markdown lint
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install Nix
-        uses: cachix/install-nix-action@v31
-        with:
-          extra_nix_config: |
-            experimental-features = nix-command flakes
-
-      - name: Check Markdown lint
-        run: nix run nixpkgs#markdownlint-cli2 --
-
-  lua-formatting:
-    name: Lua formatting
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install Nix
-        uses: cachix/install-nix-action@v31
-        with:
-          extra_nix_config: |
-            experimental-features = nix-command flakes
-
-      - name: Check Lua formatting
-        run: |
-          git ls-files '*.lua' \
-            | xargs -r nix run nixpkgs#stylua -- --check
+  publish-cache:
+    name: Publish cache
+    needs: changes
+    if: >-
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/master' &&
+      needs.changes.outputs.nix_configs == 'true'
+    uses: ./.github/workflows/publish-cache.yml
+    secrets: inherit

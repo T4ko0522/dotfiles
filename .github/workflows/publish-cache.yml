@@ -3,20 +3,25 @@
 name: publish-cache
 
 on:
+  workflow_call:
+    inputs:
+      host:
+        description: "対象 host を 1 つだけ指定したい場合 (空なら matrix の全 host)"
+        required: false
+        type: string
   workflow_dispatch:
     inputs:
       host:
         description: "対象 host を 1 つだけ指定したい場合 (空なら matrix の全 host)"
         required: false
         type: string
-  push:
-    branches: [master]
 
 concurrency:
   group: publish-cache-${{ github.ref }}
   cancel-in-progress: false
 
-permissions: {}
+permissions:
+  contents: read
 
 jobs:
   publish:
