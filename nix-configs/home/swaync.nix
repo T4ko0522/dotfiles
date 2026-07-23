@@ -51,5 +51,5 @@ in {
       @define-color yellow ${c.yellow};
       @define-color red ${c.red};
     ''
-    + builtins.readFile ../../.config/nixos/swaync/style.css;
+    + builtins.readFile ../../dot_config/nixos/swaync/style.css;
 }

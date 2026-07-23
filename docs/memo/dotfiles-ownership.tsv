@@ -1,5 +1,6 @@
 profile	target	owner	mode	source
 windows	AppData/Local/nvim	chezmoi	junction	mutable/windows/nvim
+windows	.config/cava	chezmoi	junction	mutable/windows/cava
 nixos	.config/nvim	nix	nixvim	nix-configs/home/nixvim
 wsl	.config/nvim	unmanaged	none	-
 wsl	/etc/wsl.conf	nix	generated	nix-configs/hosts/wsl/default.nix

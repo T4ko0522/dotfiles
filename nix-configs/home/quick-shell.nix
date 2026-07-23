@@ -5,8 +5,8 @@
 }: let
   appId = "dev.t4ko.quickshell";
   sessionName = "quick-shell";
-  ghosttyConfig = ../../.config/nixos/ghostty-quick-shell.conf;
-  starshipConfig = ../../.config/nixos/starship-quick-shell.toml;
+  ghosttyConfig = ../../dot_config/nixos/ghostty-quick-shell.conf;
+  starshipConfig = ../../dot_config/nixos/starship-quick-shell.toml;
 
   quickShellSession = pkgs.writeShellApplication {
     name = "quick-shell-session";

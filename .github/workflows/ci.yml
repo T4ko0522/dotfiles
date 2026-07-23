@@ -5,6 +5,40 @@ on:
   workflow_dispatch:
 
 jobs:
+  chezmoi-windows:
+    name: Chezmoi Windows junctions
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install chezmoi
+        shell: pwsh
+        run: choco install chezmoi --yes --no-progress
+
+      - name: Apply Windows profile
+        shell: pwsh
+        run: |
+          $destination = Join-Path $env:RUNNER_TEMP 'chezmoi-home'
+          New-Item -ItemType Directory -Path $destination -Force | Out-Null
+          chezmoi --source $PWD --destination $destination init --apply `
+            --promptChoice 'Environment profile=windows'
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          $expected = @{
+            (Join-Path $destination 'AppData\Local\nvim') = (Join-Path $PWD 'mutable\windows\nvim')
+            (Join-Path $destination '.config\cava') = (Join-Path $PWD 'mutable\windows\cava')
+          }
+          foreach ($target in $expected.Keys) {
+            $item = Get-Item -LiteralPath $target -Force
+            if ($item.LinkType -ne 'Junction') {
+              throw "Expected junction: $target"
+            }
+            if ([IO.Path]::GetFullPath([string]$item.Target) -ne [IO.Path]::GetFullPath($expected[$target])) {
+              throw "Unexpected junction target: $target -> $($item.Target)"
+            }
+          }
+
   chezmoi:
     name: Chezmoi contract
     runs-on: ubuntu-latest

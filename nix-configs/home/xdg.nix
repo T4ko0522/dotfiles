@@ -17,8 +17,8 @@
   # 代わりに再現性が上がり、誤編集で壊れない。flake 評価で参照するため対象は Git track 必須。
   store = path: ../../. + "/${path}";
 
-  claudeSettings = lib.recursiveUpdate (builtins.fromJSON (builtins.readFile (store ".config/shared/claude/settings.json"))) (
-    builtins.fromJSON (builtins.readFile (store ".config/nixos/claude/settings.hooks.json"))
+  claudeSettings = lib.recursiveUpdate (builtins.fromJSON (builtins.readFile (store "dot_config/shared/claude/settings.json"))) (
+    builtins.fromJSON (builtins.readFile (store "dot_config/nixos/claude/settings.hooks.json"))
   );
 in {
   xdg = {
@@ -61,16 +61,16 @@ in {
     configFile = {
       "mimeapps.list".force = true;
       # in-store: プログラムが書き込まない静的設定。
-      "fastfetch".source = store ".config/shared/fastfetch";
-      "starship.toml".source = store ".config/shared/starship.toml";
-      "vim".source = store ".config/shared/vim";
-      "wezterm".source = store ".config/shared/wezterm";
-      "yazi".source = store ".config/shared/yazi";
+      "fastfetch".source = store "dot_config/shared/fastfetch";
+      "starship.toml".source = store "dot_config/shared/starship.toml";
+      "vim".source = store "dot_config/shared/vim";
+      "wezterm".source = store "dot_config/shared/wezterm";
+      "yazi".source = store "dot_config/shared/yazi";
       # out-of-store: プログラム自身が dir/file へ書き戻すもの。
-      "lazygit".source = link ".config/shared/lazygit"; # state.yml を書き込む
-      "zed".source = link ".config/shared/zed"; # GUI 設定変更で settings.json を書き戻す
-      "zsh/rc".source = link ".config/nixos/zsh/rc"; # .zwc を zcompile する
-      "fcitx5/config".source = link ".config/nixos/fcitx5/config"; # GUI 設定で再書き込み
+      "lazygit".source = link "dot_config/shared/lazygit"; # state.yml を書き込む
+      "zed".source = link "dot_config/shared/zed"; # GUI 設定変更で settings.json を書き戻す
+      "zsh/rc".source = link "dot_config/nixos/zsh/rc"; # .zwc を zcompile する
+      "fcitx5/config".source = link "dot_config/nixos/fcitx5/config"; # GUI 設定で再書き込み
     };
 
     dataFile."applications/mimeapps.list".force = true;
@@ -79,15 +79,15 @@ in {
   home.file = {
     # in-store: プログラムが書き込まない静的設定。
     ".git_template/hooks".source = store ".git_template/hooks";
-    ".codex/AGENTS.md".source = store ".config/shared/codex/AGENTS.md";
-    ".codex/agents".source = store ".config/shared/codex/agents";
-    ".codex/rules".source = store ".config/shared/codex/rules";
-    ".claude/CLAUDE.md".source = store ".config/shared/claude/CLAUDE.md";
-    ".claude/agents".source = store ".config/shared/claude/agents";
-    ".claude/statusline.sh".source = store ".config/shared/claude/statusline.sh";
-    ".claude/claude-icon.svg".source = store ".config/shared/claude/claude-icon.svg";
+    ".codex/AGENTS.md".source = store "dot_config/shared/codex/AGENTS.md";
+    ".codex/agents".source = store "dot_config/shared/codex/agents";
+    ".codex/rules".source = store "dot_config/shared/codex/rules";
+    ".claude/CLAUDE.md".source = store "dot_config/shared/claude/CLAUDE.md";
+    ".claude/agents".source = store "dot_config/shared/claude/agents";
+    ".claude/statusline.sh".source = store "dot_config/shared/claude/statusline.sh";
+    ".claude/claude-icon.svg".source = store "dot_config/shared/claude/claude-icon.svg";
     ".claude/claude-notify-hook.sh" = {
-      source = store ".config/nixos/claude/claude-notify-hook.sh";
+      source = store "dot_config/nixos/claude/claude-notify-hook.sh";
       executable = true;
     };
 
@@ -97,7 +97,7 @@ in {
     # out-of-store symlink にすると codex が marketplaces/plugins/mcp_servers 等の実行時状態を
     # dotfiles の git 追跡ファイルへ書き戻し汚染するため、静的テンプレートから初回シードした
     # 「実ファイル」を codex に所有させ、git ツリーから切り離す。
-    ".claude/skills".source = link ".config/shared/apm/.claude/skills"; # apm install の生成物 (source は .config/shared/apm/packages/<category>/.apm/skills/)
+    ".claude/skills".source = link "dot_config/shared/apm/.claude/skills"; # apm install の生成物
   };
 
   # Claude settings.json: 共通 base に NixOS 固有 hooks をマージして生成する。
@@ -119,7 +119,7 @@ in {
   # 既存が symlink (旧構成の名残) または未作成の場合のみテンプレートで初期化し、実ファイルは温存する。
   home.activation.seedCodexConfig = lib.hm.dag.entryAfter ["writeBoundary"] ''
     codex_cfg="${config.home.homeDirectory}/.codex/config.toml"
-    codex_tmpl="${config.home.homeDirectory}/dotfiles/.config/shared/codex/config.toml"
+    codex_tmpl="${config.home.homeDirectory}/dotfiles/dot_config/shared/codex/config.toml"
     mkdir -p "${config.home.homeDirectory}/.codex"
     if [ -L "$codex_cfg" ] || [ ! -e "$codex_cfg" ]; then
       rm -f "$codex_cfg"
@@ -171,10 +171,10 @@ in {
     done
   '';
 
-  # apm install: .config/shared/apm/packages/<category>/.apm/skills/ (source) から各targetのskills dirへdeployする。
+  # apm install: dot_config/shared/apm/packages/<category>/.apm/skills/から各targetのskills dirへdeployする。
   # APMはCodex向けskillを`.agents/skills`に生成する。Codexは~/.codex/skills/.systemを保持する必要があるため、skillごとのリンクを後段で作る。
   home.activation.apmInstallSkills = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    cd "${config.home.homeDirectory}/dotfiles/.config/shared/apm"
+    cd "${config.home.homeDirectory}/dotfiles/dot_config/shared/apm"
     # activation は systemd 環境で走るため ~/.zshenv は読まれない。gh CLI の keyring からトークンを渡し、
     # apm install が mizchi/skills などを clone する際に GitHub 認証が通るようにする。
     export GITHUB_TOKEN="$(${pkgs.gh}/bin/gh auth token 2>/dev/null || true)"
@@ -182,7 +182,7 @@ in {
   '';
 
   home.activation.linkCodexSkills = lib.hm.dag.entryAfter ["apmInstallSkills"] ''
-    source_dir="${config.home.homeDirectory}/dotfiles/.config/shared/apm/.agents/skills"
+    source_dir="${config.home.homeDirectory}/dotfiles/dot_config/shared/apm/.agents/skills"
     target_dir="${config.home.homeDirectory}/.codex/skills"
     mkdir -p "$target_dir"
     find "$target_dir" -maxdepth 1 -type l -lname "$source_dir/*" -delete
@@ -194,7 +194,7 @@ in {
 
   # opencode 向け skill: apm 生成物 (.agents/skills) を ~/.config/opencode/skills/ へ張る。
   home.activation.linkOpencodeSkills = lib.hm.dag.entryAfter ["apmInstallSkills"] ''
-    source_dir="${config.home.homeDirectory}/dotfiles/.config/shared/apm/.agents/skills"
+    source_dir="${config.home.homeDirectory}/dotfiles/dot_config/shared/apm/.agents/skills"
     target_dir="${config.home.homeDirectory}/.config/opencode/skills"
     mkdir -p "$target_dir"
     find "$target_dir" -maxdepth 1 -type l -lname "$source_dir/*" -delete

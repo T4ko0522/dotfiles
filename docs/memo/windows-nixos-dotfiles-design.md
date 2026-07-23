@@ -64,7 +64,6 @@ ownerは次のいずれかとする。
 | shell | chezmoi + PowerShell | Home Manager + zsh | Home Manager + zsh |
 | Git / Starship / Yazi / Lazygit | chezmoi | chezmoi | chezmoi |
 | WezTerm | chezmoi | chezmoi | 管理しない |
-| komorebi / YASB / whkd | chezmoi | 対象外 | 対象外 |
 | niri / waybar / swaync | 対象外 | Nix | 対象外 |
 | `/etc/wsl.conf` | 対象外 | 対象外 | NixOS-WSL |
 
@@ -72,11 +71,11 @@ ownerは次のいずれかとする。
 
 ### Windows
 
-LazyVimの実体を`mutable/windows/nvim`へ置き、`%LOCALAPPDATA%\nvim`からjunctionで参照する。Windowsのdirectory symlink権限に依存しないよう、chezmoiの`run_onchange_` PowerShell scriptでjunctionを作成する。
+LazyVimの実体を`mutable/windows/nvim`へ置き、`%LOCALAPPDATA%\nvim`からjunctionで参照する。Windowsのdirectory symlink権限に依存しないよう、chezmoiの`run_after_` PowerShell scriptでjunctionを収束させる。
 
 ### NixOS
 
-`feat/nixvim`は直接mergeせず、現在の`master`へモジュール単位で再移植する。Home Managerの`programs.neovim`と`~/.config/nvim` linkを撤去してからnixvimを有効にする。
+`feat/nixvim`でnixvimへの移行を完了した。Home Managerの`programs.neovim`と`~/.config/nvim` linkは撤去済みで、ftdetectとspell辞書は`nix-configs/home/nixvim/files`が所有する。
 
 ### NixOS-WSL
 
@@ -113,17 +112,14 @@ nixvimをimportせず、chezmoiでも`~/.config/nvim`を生成しない。将来
 
 ### Phase 2: Windows
 
-- `setup_windows.ps1`のリンク表をchezmoiへ段階移行する。
-- PowerShell、komorebi、YASB、whkd、cavaを`mutable/windows`へ移す。
-- Windows LazyVimを`mutable/windows/nvim`へ移す。
-- `setup_windows.ps1`をchezmoi bootstrapだけへ縮小する。
+- 完了: Windows LazyVimとcavaを`mutable/windows`へ移し、chezmoiのjunction所有へ切り替えた。
+- 次: PowerShell profile生成をchezmoiへ移す。
+- 最後に`setup_windows.ps1`をchezmoi bootstrapだけへ縮小する。
 
 ### Phase 3: NixOS nixvim
 
-- `feat/nixvim`の機能対応表を作る。
-- nixvim modulesを現行`master`へ再移植する。
-- NixOSだけでnixvimをimportする。
-- LazyVim依存のLinux側linkを撤去する。
+- `feat/nixvim`でNixOSのnixvim移行を完了した。
+- LazyVimとの機能差分を必要に応じて追跡する。
 
 ### Phase 4: 共有設定
 

@@ -1,9 +1,6 @@
 {{- if ne .profile "windows" }}
 AppData/**
 Documents/PowerShell/**
-komorebi.json
-komorebi.bar.json
-applications.json
 {{- end }}
 
 {{- if eq .profile "windows" }}

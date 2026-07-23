@@ -1,6 +1,6 @@
 # コピーモード — `copy_mode` key table
 
-定義箇所: [`.config/shared/wezterm/keymaps.lua`](../../../.config/shared/wezterm/keymaps.lua) の `key_tables.copy_mode`
+定義箇所: [`dot_config/shared/wezterm/keymaps.lua`](../../../dot_config/shared/wezterm/keymaps.lua) の `key_tables.copy_mode`
 
 `Leader → c` で起動。vim 風のキーバインドで移動・選択・コピー・検索を行う。
 

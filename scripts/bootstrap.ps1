@@ -47,7 +47,6 @@ $wingetPackages = @(
   @{ Id = 'wez.wezterm.nightly';    Name = 'WezTerm Nightly' }
   @{ Id = 'Rustlang.Rustup';        Name = 'Rustup' }
   @{ Id = 'karlstav.cava';          Name = 'cava' }
-  @{ Id = 'AmN.yasb';               Name = 'YASB' }
   @{ Id = 'mpv.net';                Name = 'mpv.net' }
 )
 
@@ -127,12 +126,11 @@ foreach ($b in $scoopBuckets) {
 # ---------------------------------------------------------------------------
 $scoopPackages = @(
   'main/7zip',
+  'main/chezmoi',
   'main/ffmpeg',
   'main/gcc',
   'main/starship',
   'main/mise',
-  'extras/komorebi',
-  'extras/whkd',
   'extras/lazygit',
   'extras/yazi',
   'extras/fastfetch',
