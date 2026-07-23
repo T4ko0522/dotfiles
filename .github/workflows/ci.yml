@@ -35,10 +35,6 @@ jobs:
     name: Chezmoi
     uses: ./.github/workflows/chezmoi.yml
 
-  build:
-    name: Build
-    uses: ./.github/workflows/build.yml
-
   publish-cache:
     name: Publish cache
     needs: changes
