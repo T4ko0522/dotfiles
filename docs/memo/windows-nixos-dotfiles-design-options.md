@@ -68,7 +68,7 @@ chezmoi source には `symlink_` エントリ（中身 = link 先 path、`.tmpl`
 | fcitx5 config | linux | chezmoi | B symlink |
 | **niri / waybar / swaync** | linux | **Nix** | Nix template（据え置き） |
 | package / service / systemd / system | linux | **Nix** | 据え置き |
-| powershell / cava | windows | chezmoi | A/B |
+| powershell / cava / YASB | windows | chezmoi | A/B |
 
 niri 系を Nix に残すのは、per-host monitor・palette・keyboard というデータを Nix が握っているため。これらを chezmoi に移すと、そのデータを `.chezmoidata` 等へ再実装する羽目になる（次節）。Linux 専用なので Windows との共有不要＝ chezmoi に出す動機も薄い。
 

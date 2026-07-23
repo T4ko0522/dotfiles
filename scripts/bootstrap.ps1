@@ -47,6 +47,7 @@ $wingetPackages = @(
   @{ Id = 'wez.wezterm.nightly';    Name = 'WezTerm Nightly' }
   @{ Id = 'Rustlang.Rustup';        Name = 'Rustup' }
   @{ Id = 'karlstav.cava';          Name = 'cava' }
+  @{ Id = 'AmN.yasb';               Name = 'YASB' }
   @{ Id = 'mpv.net';                Name = 'mpv.net' }
 )
 

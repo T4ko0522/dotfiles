@@ -44,6 +44,7 @@ $targets = @(
   @{ Src = "dot_config/shared/starship.toml"; Dst = ".config/starship.toml" },
   @{ Src = "dot_config/shared/fastfetch";     Dst = ".config/fastfetch" },
   @{ Src = "dot_config/windows/ccwin-notify"; Dst = ".config/ccwin-notify" },
+  @{ Src = "dot_config/windows/yasb";         Dst = ".config/yasb" },
   @{ Src = "dot_config/shared/vscode/settings.json";    Dst = (Join-Path $roamingDir "Code\User\settings.json") },
   @{ Src = "dot_config/shared/vscode/keybindings.json"; Dst = (Join-Path $roamingDir "Code\User\keybindings.json") },
   @{ Src = "dot_config/shared/vscode/snippets";         Dst = (Join-Path $roamingDir "Code\User\snippets") },

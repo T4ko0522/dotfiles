@@ -79,5 +79,9 @@ dot_config/nixos/zsh/**/*.zwc
 # PowerShell (Install-Module で入るモジュール)
 dot_config/windows/powershell/Modules/
 
+# YASB
+dot_config/windows/yasb/yasb.log
+dot_config/windows/yasb/.env
+
 # Cloudflare Wrangler
 .wrangler/*
