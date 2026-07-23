@@ -14,6 +14,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixvim.url = "github:nix-community/nixvim/nixos-26.05";
+
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL/main";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -52,6 +54,7 @@
     self,
     nixpkgs,
     home-manager,
+    nixvim,
     nixos-wsl,
     vial-qmk,
     vicinae,
@@ -121,7 +124,7 @@
                 extraSpecialArgs = {
                   inherit dotfilesDir editor homeDirectory keyboardLayout llm-agents username;
                 };
-                sharedModules = sharedHomeModules;
+                sharedModules = [nixvim.homeModules.nixvim] ++ sharedHomeModules;
                 users.${username} = import homeConfiguration;
               };
             }
