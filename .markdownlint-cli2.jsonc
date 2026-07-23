@@ -30,7 +30,7 @@
     ".config/claude/projects/**",
     ".config/claude/cache/**",
     ".config/claude/backups/**",
-    ".config/shared/lazygit/README.md"
+    "dot_config/shared/lazygit/README.md"
   ],
   // .gitignore の除外を反映
   "gitignore": true

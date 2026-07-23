@@ -5,7 +5,7 @@ os-switch host="laptop":
     nh os switch . -H {{ host }}
 
 skills-sync:
-    cd .config/shared/apm && apm install
+    cd dot_config/shared/apm && apm install
 
 fmt:
     git ls-files '*.nix' | xargs -r alejandra

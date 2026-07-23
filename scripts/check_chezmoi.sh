@@ -12,6 +12,13 @@ if [[ "$(<"$repo_root/.chezmoiroot")" != "chezmoi" ]]; then
   exit 1
 fi
 
+for mutable_dir in mutable/nvim mutable/cava; do
+  if [[ ! -d "$repo_root/$mutable_dir" ]]; then
+    printf 'mutable source does not exist: %s\n' "$mutable_dir" >&2
+    exit 1
+  fi
+done
+
 declare -A targets=()
 while IFS=$'\t' read -r profile target owner _mode _source; do
   [[ -z "$profile" || "$profile" == profile ]] && continue
@@ -54,6 +61,22 @@ for profile in windows nixos wsl; do
 
   if ! grep -q 'username = "t4ko"' "$rendered"; then
     printf 'username was not rendered for profile: %s\n' "$profile" >&2
+    exit 1
+  fi
+
+  rendered_script="$temp_dir/create-windows-junctions-$profile.ps1"
+  chezmoi \
+    --config "$rendered" \
+    execute-template \
+    --file "$repo_root/chezmoi/run_after_create-windows-junctions.ps1.tmpl" > "$rendered_script"
+  if [[ "$profile" == windows ]]; then
+    if ! grep -q 'mutable\\nvim' "$rendered_script" \
+      || ! grep -q 'mutable\\cava' "$rendered_script"; then
+      printf '%s\n' 'Windows junction script is incomplete' >&2
+      exit 1
+    fi
+  elif grep -q '[^[:space:]]' "$rendered_script"; then
+    printf 'Windows junction script rendered for profile: %s\n' "$profile" >&2
     exit 1
   fi
 

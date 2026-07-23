@@ -9,79 +9,79 @@ result
 result-*
 
 # lazygit
-.config/shared/lazygit/state.yml
+dot_config/shared/lazygit/state.yml
 
 # claude
-.config/shared/claude/.claude.json
-.config/shared/claude/.claude.json.backup*
-.config/shared/claude/cache/
-.config/shared/claude/ide/
-.config/shared/claude/debug/
-.config/shared/claude/plugins/
-.config/shared/claude/projects/
-.config/shared/claude/session-env/
-.config/shared/claude/statsig/
-.config/shared/claude/sessions/
-.config/shared/claude/skills/
-.config/shared/claude/tasks/
-.config/shared/claude/todos/
-.config/shared/claude/file-history/
-.config/shared/claude/history.jsonl
-.config/shared/claude/mcp-needs-auth-cache.json
-.config/shared/claude/shell-snapshots/
-.config/shared/claude/plans/
-.config/shared/claude/stats-cache.json
-.config/shared/claude/paste-cache/
-.config/shared/claude/image-cache/
-.config/shared/claude/telemetry/
-.config/shared/claude/backups/
-.config/shared/claude/.credentials.json
-.config/shared/claude/.last-cleanup
+dot_config/shared/claude/.claude.json
+dot_config/shared/claude/.claude.json.backup*
+dot_config/shared/claude/cache/
+dot_config/shared/claude/ide/
+dot_config/shared/claude/debug/
+dot_config/shared/claude/plugins/
+dot_config/shared/claude/projects/
+dot_config/shared/claude/session-env/
+dot_config/shared/claude/statsig/
+dot_config/shared/claude/sessions/
+dot_config/shared/claude/skills/
+dot_config/shared/claude/tasks/
+dot_config/shared/claude/todos/
+dot_config/shared/claude/file-history/
+dot_config/shared/claude/history.jsonl
+dot_config/shared/claude/mcp-needs-auth-cache.json
+dot_config/shared/claude/shell-snapshots/
+dot_config/shared/claude/plans/
+dot_config/shared/claude/stats-cache.json
+dot_config/shared/claude/paste-cache/
+dot_config/shared/claude/image-cache/
+dot_config/shared/claude/telemetry/
+dot_config/shared/claude/backups/
+dot_config/shared/claude/.credentials.json
+dot_config/shared/claude/.last-cleanup
 
 # codex
-.config/shared/codex/.tmp
-.config/shared/codex/.sandbox
-.config/shared/codex/.sandbox*
-.config/shared/codex/.codex-global-state.json
-.config/shared/codex/.personality_migration
-.config/shared/codex/cache/
-.config/shared/codex/log/
-.config/shared/codex/memories/
-.config/shared/codex/plugins/
-.config/shared/codex/rules/default.rules
-.config/shared/codex/sessions/
-.config/shared/codex/skills/
-.config/shared/codex/sqlite/
-.config/shared/codex/tmp/
-.config/shared/codex/vendor_imports/
-.config/shared/codex/auth.json
-.config/shared/codex/cap_sid
-.config/shared/codex/config.toml.bak-*
-.config/shared/codex/history.jsonl
-.config/shared/codex/logs_1.sqlite
-.config/shared/codex/goals_*
-.config/shared/codex/logs_1.sqlite*
-.config/shared/codex/models_cache.json
-.config/shared/codex/sandbox.log
-.config/shared/codex/session_index.jsonl
-.config/shared/codex/state_*.sqlite
-.config/shared/codex/state_*.sqlite*
-.config/shared/codex/version.json
-.config/shared/codex/installation_id
-.config/shared/codex/logs_2.sqlite
-.config/shared/codex/logs_2.sqlite-shm
-.config/shared/codex/logs_2.sqlite-wal
-.config/shared/codex/.codex-global-state.json.bak
+dot_config/shared/codex/.tmp
+dot_config/shared/codex/.sandbox
+dot_config/shared/codex/.sandbox*
+dot_config/shared/codex/.codex-global-state.json
+dot_config/shared/codex/.personality_migration
+dot_config/shared/codex/cache/
+dot_config/shared/codex/log/
+dot_config/shared/codex/memories/
+dot_config/shared/codex/plugins/
+dot_config/shared/codex/rules/default.rules
+dot_config/shared/codex/sessions/
+dot_config/shared/codex/skills/
+dot_config/shared/codex/sqlite/
+dot_config/shared/codex/tmp/
+dot_config/shared/codex/vendor_imports/
+dot_config/shared/codex/auth.json
+dot_config/shared/codex/cap_sid
+dot_config/shared/codex/config.toml.bak-*
+dot_config/shared/codex/history.jsonl
+dot_config/shared/codex/logs_1.sqlite
+dot_config/shared/codex/goals_*
+dot_config/shared/codex/logs_1.sqlite*
+dot_config/shared/codex/models_cache.json
+dot_config/shared/codex/sandbox.log
+dot_config/shared/codex/session_index.jsonl
+dot_config/shared/codex/state_*.sqlite
+dot_config/shared/codex/state_*.sqlite*
+dot_config/shared/codex/version.json
+dot_config/shared/codex/installation_id
+dot_config/shared/codex/logs_2.sqlite
+dot_config/shared/codex/logs_2.sqlite-shm
+dot_config/shared/codex/logs_2.sqlite-wal
+dot_config/shared/codex/.codex-global-state.json.bak
 
 # zsh
-.config/nixos/zsh/**/*.zwc
+dot_config/nixos/zsh/**/*.zwc
 
 # PowerShell (Install-Module で入るモジュール)
-.config/windows/powershell/Modules/
+dot_config/windows/powershell/Modules/
 
-# yasb
-.config/windows/yasb/yasb.log
-.config/windows/yasb/.env
+# YASB
+dot_config/windows/yasb/yasb.log
+dot_config/windows/yasb/.env
 
 # Cloudflare Wrangler
 .wrangler/*

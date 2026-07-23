@@ -475,7 +475,7 @@ in {
         @define-color peach ${c.peach};
         @define-color red ${c.red};
       ''
-      + builtins.readFile ../../.config/nixos/waybar/style.css;
+      + builtins.readFile ../../dot_config/nixos/waybar/style.css;
   };
 
   systemd.user.services.waybar.Service.ExecStartPre = "${pkgs.runtimeShell} -c '${pkgs.procps}/bin/pkill -u %u -f \"(^|/)waybar($|[[:space:]])\" || true'";

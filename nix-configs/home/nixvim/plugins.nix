@@ -46,9 +46,9 @@ in {
   ];
 
   extraFiles = {
-    "ftdetect/mdc.lua".source = ../../../.config/shared/nvim/ftdetect/mdc.lua;
-    "ftdetect/zsh.lua".source = ../../../.config/shared/nvim/ftdetect/zsh.lua;
-    "spell/tech.utf-8.add".source = ../../../.config/shared/nvim/spell/tech.utf-8.add;
+    "ftdetect/mdc.lua".source = ./files/ftdetect/mdc.lua;
+    "ftdetect/zsh.lua".source = ./files/ftdetect/zsh.lua;
+    "spell/tech.utf-8.add".source = ./files/spell/tech.utf-8.add;
   };
 
   plugins = {

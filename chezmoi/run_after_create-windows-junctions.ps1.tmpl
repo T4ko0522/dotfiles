@@ -1,0 +1,45 @@
+{{- if eq .profile "windows" }}
+#!/usr/bin/env pwsh
+
+$ErrorActionPreference = 'Stop'
+
+$repo = {{ .chezmoi.workingTree | quote }}
+$homeDir = {{ .chezmoi.destDir | quote }}
+$junctions = @(
+  @{
+    Source = Join-Path $repo 'mutable\nvim'
+    Target = Join-Path $homeDir 'AppData\Local\nvim'
+  },
+  @{
+    Source = Join-Path $repo 'mutable\cava'
+    Target = Join-Path $homeDir '.config\cava'
+  }
+)
+
+foreach ($junction in $junctions) {
+  $source = [IO.Path]::GetFullPath($junction.Source)
+  $target = [IO.Path]::GetFullPath($junction.Target)
+
+  if (-not (Test-Path -LiteralPath $source -PathType Container)) {
+    throw "Junction source does not exist: $source"
+  }
+
+  $targetItem = Get-Item -LiteralPath $target -Force -ErrorAction SilentlyContinue
+  if ($targetItem) {
+    if ($targetItem.LinkType -ne 'Junction') {
+      throw "Refusing to replace non-junction path: $target"
+    }
+
+    $currentSource = [IO.Path]::GetFullPath([string]$targetItem.Target)
+    if ($currentSource -eq $source) {
+      continue
+    }
+
+    Remove-Item -LiteralPath $target -Force
+  }
+
+  $targetParent = Split-Path -Parent $target
+  New-Item -ItemType Directory -Path $targetParent -Force | Out-Null
+  New-Item -ItemType Junction -Path $target -Target $source | Out-Null
+}
+{{- end }}

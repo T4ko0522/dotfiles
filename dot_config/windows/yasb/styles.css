@@ -611,9 +611,9 @@ color: rgb(203, 166, 247);
     color: rgb(203, 166, 247);
     font-size: 24px;
     font-weight: 600;
-    padding: 10px 0 20px 0;     
+    padding: 10px 0 20px 0;
 }
-.notes-menu .add-button,  
+.notes-menu .add-button,
 .notes-menu .cancel-button {
     padding: 8px;
     background-color: rgba(255, 255, 255, 0.1);
@@ -630,8 +630,8 @@ color: rgb(203, 166, 247);
     background-color: rgba(255, 255, 255, 0.2);
 }
 .notes-menu .scroll-area {
-    background: transparent; 
-    border: none; 
+    background: transparent;
+    border: none;
     border-radius:0;
 }
 .notes-menu .note-input {

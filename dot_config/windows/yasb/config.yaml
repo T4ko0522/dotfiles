@@ -249,10 +249,10 @@ widgets:
       label: "<span>{icon}</span> {level}"
       label_alt: "{volume}"
       volume_icons:
-        - "\ueee8" 
+        - "\ueee8"
         - "\uf026"
-        - "\uf027" 
-        - "\uf027"  
+        - "\uf027"
+        - "\uf027"
         - "\uf028"
       audio_menu:
         blur: True
@@ -325,7 +325,7 @@ widgets:
         label_alt: "<span>\uf473</span>"
         group_label:
           volume_labels: ["C", "D", "E", "F"]
-          show_label_name: true 
+          show_label_name: true
           blur: True
           round_corners: True
           round_corners_type: "normal"

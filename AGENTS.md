@@ -58,9 +58,9 @@ GitHub Actions は `.github/workflows/checks.yml` で以下を実行します。
 
 ## Claude Code の skill 管理 (apm)
 
-- skill の source は `.config/shared/apm/packages/<category>/.apm/skills/<name>/` に置き、apm (Agent Package Manager) で管理します。カテゴリ (`agent-llm`・`docs`・`git-ops` など) は local apm package で、root の `apm.yml` が `dependencies.apm: [./packages/<category>]` として参照します。
+- skill の source は `dot_config/shared/apm/packages/<category>/.apm/skills/<name>/` に置き、apm (Agent Package Manager) で管理します。カテゴリ (`agent-llm`・`docs`・`git-ops` など) は local apm package で、root の `apm.yml` が `dependencies.apm: [./packages/<category>]` として参照します。
 - 新しいカテゴリを追加する場合は `packages/<category>/apm.yml` を作成し、root の `apm.yml` の `dependencies.apm` へ追記してください。apm と Claude Code はどちらも skill のネスト配置に非対応のため、deploy 先はフラット (`.claude/skills/<name>/`) になります。skill 名はカテゴリを跨いで一意にしてください。
-- `apm install` (home-manager activation で自動実行、手動は `just skills-sync`) が各 package と外部依存を `.config/shared/apm/.claude/skills/` へ deploy します。
+- `apm install` (home-manager activation で自動実行、手動は `just skills-sync`) が各 package と外部依存を `dot_config/shared/apm/.claude/skills/` へ deploy します。
 - 外部 skill も root の `apm.yml` の `dependencies.apm` に追加できます。現在は `mizchi/skills` の一部 (nix-setup・justfile・apm-usage・conventional-changelog・gh-fix-ci・cloudflare/deploy・workers-otel-utels) を取り込んでいます。HEAD が動くため必ず `#<commit-sha>` でピンし、更新時は SHA を差し替えて `apm install` で lockfile を再生成してください。
 - 生成物 (`.claude/skills/`・`apm_modules/`) は gitignore されています。`~/.claude/skills` は生成物への symlink なので、skill の追加・編集は必ず source 側で行ってください。
 - `apm.lock.yaml` は外部依存のバージョン固定のため **追跡** しています (gitignore しない)。`dependencies.apm` を変更したら `apm install` を実行し、更新後の lockfile も併せてコミットしてください。

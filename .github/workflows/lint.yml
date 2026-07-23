@@ -1,0 +1,60 @@
+name: Lint
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  syntax:
+    name: Nix syntax
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Check Nix syntax
+        run: |
+          git ls-files '*.nix' \
+            | xargs -r -n1 nix-instantiate --parse --quiet >/dev/null
+
+  nix-formatting:
+    name: Nix formatting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Check Nix formatting
+        run: nix run nixpkgs#alejandra -- --check .
+
+  lua-formatting:
+    name: Lua formatting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Check Lua formatting
+        run: |
+          git ls-files '*.lua' \
+            | xargs -r nix run nixpkgs#stylua -- --check

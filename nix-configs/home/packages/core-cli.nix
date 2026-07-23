@@ -10,7 +10,6 @@
     peco
     starship
     tree-sitter
-    vim
     yazi
   ];
 }
