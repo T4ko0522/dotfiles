@@ -1,6 +1,6 @@
 # Windows / NixOS dotfiles 設計の深掘り（選択肢）
 
-`windows-nixos-dotfiles-design.md` の chezmoi 方針を、現リポジトリの実態に合わせて深掘りした設計選択肢メモ。ここは「決定済みの計画」ではなく「取りうる設計とトレードオフ」を並べる。
+`windows-nixos-dotfiles-design.md`の検討過程を残した資料。現在の決定事項は同文書を正とし、この文書内の`home/` source root、Maximal構成、両OS共通nvimなどの案は採用しない。
 
 ## 現状から見えた制約・論点
 
