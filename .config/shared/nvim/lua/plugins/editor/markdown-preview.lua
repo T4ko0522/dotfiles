@@ -17,8 +17,6 @@ return {
     local function toggle()
       vim.cmd("MarkdownPreviewToggle")
     end
-    -- WezTerm から Ctrl+Shift+V を F24 として受け取ってトグル
-    vim.keymap.set({ "n", "i" }, "<F24>", toggle, { desc = "Markdown Preview (browser)" })
     -- leader 経由のフォールバック
     vim.keymap.set("n", "<leader>mp", toggle, { desc = "Markdown Preview (browser)" })
   end,

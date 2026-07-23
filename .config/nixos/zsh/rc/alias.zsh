@@ -29,10 +29,6 @@ fi
 alias lg='lazygit'
 alias ff='fastfetch'
 alias y='yy'
-# 旧 `cx` エイリアスが読み込まれたままの既存シェルでも、関数版へ移行する。
-unalias cx 2>/dev/null
-alias cxa='cx-account'
-
 
 function open {
   local target="${1:-.}"

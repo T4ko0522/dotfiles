@@ -62,7 +62,6 @@ in {
       "mimeapps.list".force = true;
       # in-store: プログラムが書き込まない静的設定。
       "fastfetch".source = store ".config/shared/fastfetch";
-      "claudex/config.toml".source = link ".config/shared/claudex/config.toml"; # profile の追加・更新を claudex から行う
       "starship.toml".source = store ".config/shared/starship.toml";
       "vim".source = store ".config/shared/vim";
       "wezterm".source = store ".config/shared/wezterm";

@@ -11,6 +11,7 @@
   ];
 
   networking.hostName = "laptop";
+  system.stateVersion = "26.05";
 
   t4ko.regreet.mainOutput = "HDMI-A-1";
 

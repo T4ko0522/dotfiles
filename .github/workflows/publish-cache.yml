@@ -1,21 +1,4 @@
 # T4ko0522/cf-edgeNix の binary cache へ NixOS closure を publish する。
-#
-# 本 workflow は cf-edgeNix の scripts/publish.sh を再利用するため、
-# このリポジトリ (flake source) と cf-edgeNix を別 path で checkout して走らせる。
-# 元テンプレート: T4ko0522/cf-edgeNix:docs/templates/publish-cache.yml
-#
-# ── 事前準備 (Settings → Environments → production に登録) ─────────────────
-#   Secrets:
-#     CACHE_PRIVATE_KEY     NAR 署名用秘密鍵
-#     ADMIN_TOKEN           cf-edgeNix Worker の write API Bearer
-#     CLOUDFLARE_API_TOKEN  KV bulk write の最小権限トークン
-#     R2_ACCESS_KEY_ID      R2 S3 API のアクセスキー (R2 dashboard → Manage R2 API tokens)
-#     R2_SECRET_ACCESS_KEY  R2 S3 API のシークレットキー
-#   Variables:
-#     CLOUDFLARE_ACCOUNT_ID
-#     API_BASE_URL          deploy 済み cf-edgeNix Worker の URL
-#     R2_BUCKET_NAME        例: cf-edgenix-nar
-#     KV_NAMESPACE_ID
 
 name: publish-cache
 
@@ -46,9 +29,6 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       # 常に最新の publish.sh / publish.ts (bun で publish.ts を呼ぶ) を使うため main 先端を追従する。
-      # 注意: これは secret を扱う job なので、cf-edgeNix 側の任意の上流 commit が
-      # CACHE_PRIVATE_KEY / ADMIN_TOKEN / CLOUDFLARE_API_TOKEN を持った状態で即座に実行される。
-      # cf-edgeNix は自分のリポジトリである前提でこのリスクを許容している。
       - name: Checkout cf-edgeNix (publish tooling)
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:

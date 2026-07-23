@@ -15,6 +15,7 @@
     gping
     gtop
     gh-dash
+    git
     just
     lsd
     ripgrep
