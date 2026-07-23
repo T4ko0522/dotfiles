@@ -14,6 +14,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL/main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     vial-qmk = {
       url = "git+https://github.com/vial-kb/vial-qmk?submodules=1";
       flake = false;
@@ -52,6 +57,7 @@
     self,
     nixpkgs,
     home-manager,
+    nixos-wsl,
     vial-qmk,
     vicinae,
     lanzaboote,
@@ -77,53 +83,52 @@
     mkNixos = {
       configuration,
       homeConfiguration,
+      editor ? "nvim",
       extraModules ? [],
+      homeDirectory ? "/home/${username}",
+      platformModules ? [
+        vicinae.nixosModules.default
+        nixos-loading-plymouth.nixosModules.default
+      ],
+      sharedHomeModules ? [
+        vicinae.homeManagerModules.default
+        codex-desktop-linux.homeManagerModules.default
+      ],
+      systemOverlays ? [spotify-cli.overlays.default],
+      userExtraGroups ? [
+        "audio"
+        "input"
+        "networkmanager"
+        "plugdev"
+        "wheel"
+      ],
+      username ? "t4ko",
     }:
       nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = {
-          inherit dotfilesDir keyboardLayout;
+          inherit dotfilesDir homeDirectory keyboardLayout userExtraGroups username;
           nixosLoadingPlymouth = nixos-loading-plymouth;
         };
         modules =
           [
             home-manager.nixosModules.home-manager
-            vicinae.nixosModules.default
-            nixos-loading-plymouth.nixosModules.default
             configuration
           ]
+          ++ platformModules
           ++ extraModules
           ++ [
             {
-              nixpkgs.overlays = [
-                spotify-cli.overlays.default
-                # actrun.inputs.moonbit-overlay.overlays.default
-                # actrun.overlays.default
-                # (final: prev: {
-                #   actrun = prev.actrun.overrideAttrs (old: {
-                #     nativeBuildInputs = (old.nativeBuildInputs or []) ++ [final.makeWrapper];
-                #     postFixup =
-                #       (old.postFixup or "")
-                #       + ''
-                #         for bin in "$out"/bin/*; do
-                #           wrapProgram "$bin" --prefix LD_LIBRARY_PATH : "${final.openssl.out}/lib"
-                #         done
-                #       '';
-                #   });
-                # })
-              ];
+              nixpkgs.overlays = systemOverlays;
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 backupFileExtension = "hm-backup";
                 extraSpecialArgs = {
-                  inherit claudex dotfilesDir keyboardLayout llm-agents;
+                  inherit claudex dotfilesDir editor homeDirectory keyboardLayout llm-agents username;
                 };
-                sharedModules = [
-                  vicinae.homeManagerModules.default
-                  codex-desktop-linux.homeManagerModules.default
-                ];
-                users.t4ko = import homeConfiguration;
+                sharedModules = sharedHomeModules;
+                users.${username} = import homeConfiguration;
               };
             }
           ];
@@ -142,9 +147,17 @@
       configuration = ./nix-configs/configuration-ci.nix;
       homeConfiguration = ./nix-configs/home-ci.nix;
     };
+    wsl = mkNixos {
+      configuration = ./nix-configs/hosts/wsl;
+      homeConfiguration = ./nix-configs/home-wsl.nix;
+      platformModules = [nixos-wsl.nixosModules.default];
+      sharedHomeModules = [];
+      userExtraGroups = ["wheel"];
+      editor = "vim";
+    };
   in {
     nixosConfigurations = {
-      inherit laptop desktop;
+      inherit laptop desktop wsl;
       default = laptop;
       nixos-ci = nixosCi;
     };
@@ -153,6 +166,7 @@
       default = pkgs.mkShell {
         packages = with pkgs; [
           avrdude
+          chezmoi
           dfu-util
           gcc-arm-embedded
           git
