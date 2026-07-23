@@ -1,18 +1,20 @@
-{pkgs, ...}: {
-  users.users."t4ko" = {
+{
+  lib,
+  pkgs,
+  userExtraGroups,
+  username,
+  ...
+}: {
+  users.users.${username} = {
     isNormalUser = true;
     description = "T4ko";
-    extraGroups = [
-      "audio"
-      "input"
-      "networkmanager"
-      "plugdev"
-      "wheel"
-    ];
+    extraGroups = userExtraGroups;
     shell = pkgs.zsh;
   };
 
-  users.groups.plugdev = {};
+  users.groups = lib.optionalAttrs (lib.elem "plugdev" userExtraGroups) {
+    plugdev = {};
+  };
 
   programs.zsh.enable = true;
 }

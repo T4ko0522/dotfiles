@@ -7,6 +7,10 @@
   c = import ../lib/catppuccin-mocha.nix;
   niriCfg = config.t4ko.niri;
   wallpaperCfg = config.t4ko.wallpaper;
+  restoreWallpaperCommand =
+    if wallpaperCfg.scheduleEnabled
+    then lib.getExe wallpaperCfg.timeOfDayCommand
+    else "${lib.getExe wallpaperCfg.presetCommand} ${lib.escapeShellArg wallpaperCfg.activePreset}";
   mainMonitors = lib.filterAttrs (_: monitor: monitor.focusAtStartup) niriCfg.monitors;
   mainMonitor = lib.head (lib.attrNames mainMonitors);
   secondaryMonitors = lib.attrNames (lib.filterAttrs (name: _: name != mainMonitor) niriCfg.monitors);
@@ -84,7 +88,7 @@
       trap - EXIT HUP INT TERM
 
       if [ "$lock_status" -eq 0 ]; then
-        ${lib.getExe wallpaperCfg.presetCommand} ${lib.escapeShellArg wallpaperCfg.activePreset}
+        ${restoreWallpaperCommand}
       fi
 
       exit "$lock_status"

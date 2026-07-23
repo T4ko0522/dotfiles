@@ -13,6 +13,7 @@
       # Media
       "spotify"
       "osu-lazer-bin"
+      "zoom"
       # VRChat avatar tooling
       "unityhub"
       "corefonts"

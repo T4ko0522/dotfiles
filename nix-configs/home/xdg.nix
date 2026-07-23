@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  llm-agents,
   ...
 }: let
   # link (out-of-store): mkOutOfStoreSymlink で store の外にある「書き込み可能な実体」を指す。
@@ -16,10 +17,9 @@
   # 代わりに再現性が上がり、誤編集で壊れない。flake 評価で参照するため対象は Git track 必須。
   store = path: ../../. + "/${path}";
 
-  claudeSettings =
-    lib.recursiveUpdate
-    (builtins.fromJSON (builtins.readFile (store ".config/shared/claude/settings.json")))
-    (builtins.fromJSON (builtins.readFile (store ".config/nixos/claude/settings.hooks.json")));
+  claudeSettings = lib.recursiveUpdate (builtins.fromJSON (builtins.readFile (store ".config/shared/claude/settings.json"))) (
+    builtins.fromJSON (builtins.readFile (store ".config/nixos/claude/settings.hooks.json"))
+  );
 in {
   xdg = {
     mimeApps = {
@@ -93,7 +93,10 @@ in {
 
     # out-of-store: プログラム自身が書き戻すもの。
     ".gitconfig".source = link ".gitconfig"; # git config --global で書き込む
-    ".codex/config.toml".source = link ".config/shared/codex/config.toml"; # codex が実行時状態を書き戻す
+    # .codex/config.toml は home.activation.seedCodexConfig で管理する (下記)。
+    # out-of-store symlink にすると codex が marketplaces/plugins/mcp_servers 等の実行時状態を
+    # dotfiles の git 追跡ファイルへ書き戻し汚染するため、静的テンプレートから初回シードした
+    # 「実ファイル」を codex に所有させ、git ツリーから切り離す。
     ".claude/skills".source = link ".config/shared/apm/.claude/skills"; # apm install の生成物 (source は .config/shared/apm/packages/<category>/.apm/skills/)
   };
 
@@ -109,6 +112,65 @@ in {
     chmod 0644 "$claude_dir/settings.json"
   '';
 
+  # Codex config.toml: 静的テンプレートから ~/.codex/config.toml を「実ファイル」として初回シードする。
+  # codex は起動時に marketplaces/plugins/mcp_servers 等をこのファイルへ書き戻すため、out-of-store
+  # symlink にすると dotfiles の git 追跡ファイルが汚染される。実ファイル化して codex に所有させ、
+  # dotfiles 側は静的な初期値テンプレートとしてのみ保持する (再生成可能に保つ)。
+  # 既存が symlink (旧構成の名残) または未作成の場合のみテンプレートで初期化し、実ファイルは温存する。
+  home.activation.seedCodexConfig = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    codex_cfg="${config.home.homeDirectory}/.codex/config.toml"
+    codex_tmpl="${config.home.homeDirectory}/dotfiles/.config/shared/codex/config.toml"
+    mkdir -p "${config.home.homeDirectory}/.codex"
+    if [ -L "$codex_cfg" ] || [ ! -e "$codex_cfg" ]; then
+      rm -f "$codex_cfg"
+      cp "$codex_tmpl" "$codex_cfg"
+      chmod u+w "$codex_cfg"
+    fi
+  '';
+
+  # Codex の設定と Desktop の thread state は実行時に書き換えられるため、
+  # 過去の root-wide write を安全な値へ一度だけ移行する。
+  home.activation.migrateCodexSandboxState = lib.hm.dag.entryAfter ["seedCodexConfig"] ''
+    codex_dir="${config.home.homeDirectory}/.codex"
+    codex_cfg="$codex_dir/config.toml"
+
+    # 旧 personal profile の `:root = "write"` は workspace root として `/` を
+    # Desktop に渡し得る。現在のテンプレートと同じ read-only root に揃える。
+    if [ -f "$codex_cfg" ] \
+      && ${pkgs.gnugrep}/bin/grep -q '^default_permissions = "personal"$' "$codex_cfg" \
+      && ${pkgs.gnugrep}/bin/grep -q '^":root" = "write"$' "$codex_cfg"; then
+      ${pkgs.gnused}/bin/sed -i 's/^":root" = "write"$/":root" = "read"/' "$codex_cfg"
+    fi
+
+    # Retained roots are merged into later Desktop requests. Remove only `/` from
+    # this specific state key; project roots and all other Codex state are preserved.
+    for state_file in "$codex_dir/.codex-global-state.json" "$codex_dir/.codex-global-state.json.bak"; do
+      [ -f "$state_file" ] || continue
+      if ${pkgs.jq}/bin/jq -e '
+        any(
+          ((.["thread-writable-roots"] // {}) | to_entries[]?.value?);
+          type == "array" and any(.[]; . == "/")
+        )
+      ' "$state_file" >/dev/null; then
+        state_tmp="$state_file.tmp.$$"
+        if ${pkgs.jq}/bin/jq '
+          if type == "object" and (.["thread-writable-roots"] | type) == "object" then
+            .["thread-writable-roots"] |= with_entries(
+              .value |= if type == "array" then map(select(. != "/")) else . end
+            )
+          else
+            .
+          end
+        ' "$state_file" > "$state_tmp"; then
+          ${pkgs.coreutils}/bin/chmod --reference="$state_file" "$state_tmp"
+          ${pkgs.coreutils}/bin/mv "$state_tmp" "$state_file"
+        else
+          ${pkgs.coreutils}/bin/rm -f "$state_tmp"
+        fi
+      fi
+    done
+  '';
+
   # apm install: .config/shared/apm/packages/<category>/.apm/skills/ (source) から各targetのskills dirへdeployする。
   # APMはCodex向けskillを`.agents/skills`に生成する。Codexは~/.codex/skills/.systemを保持する必要があるため、skillごとのリンクを後段で作る。
   home.activation.apmInstallSkills = lib.hm.dag.entryAfter ["writeBoundary"] ''
@@ -116,12 +178,24 @@ in {
     # activation は systemd 環境で走るため ~/.zshenv は読まれない。gh CLI の keyring からトークンを渡し、
     # apm install が mizchi/skills などを clone する際に GitHub 認証が通るようにする。
     export GITHUB_TOKEN="$(${pkgs.gh}/bin/gh auth token 2>/dev/null || true)"
-    ${pkgs.llm-agents.apm}/bin/apm install
+    ${llm-agents.packages.${pkgs.system}.apm}/bin/apm install
   '';
 
   home.activation.linkCodexSkills = lib.hm.dag.entryAfter ["apmInstallSkills"] ''
     source_dir="${config.home.homeDirectory}/dotfiles/.config/shared/apm/.agents/skills"
     target_dir="${config.home.homeDirectory}/.codex/skills"
+    mkdir -p "$target_dir"
+    find "$target_dir" -maxdepth 1 -type l -lname "$source_dir/*" -delete
+    for skill in "$source_dir"/*; do
+      [ -d "$skill" ] || continue
+      ln -sfn "$skill" "$target_dir/$(basename "$skill")"
+    done
+  '';
+
+  # opencode 向け skill: apm 生成物 (.agents/skills) を ~/.config/opencode/skills/ へ張る。
+  home.activation.linkOpencodeSkills = lib.hm.dag.entryAfter ["apmInstallSkills"] ''
+    source_dir="${config.home.homeDirectory}/dotfiles/.config/shared/apm/.agents/skills"
+    target_dir="${config.home.homeDirectory}/.config/opencode/skills"
     mkdir -p "$target_dir"
     find "$target_dir" -maxdepth 1 -type l -lname "$source_dir/*" -delete
     for skill in "$source_dir"/*; do

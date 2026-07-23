@@ -1,6 +1,10 @@
 # common
 alias history='fc -l -10'
 alias v='nvim'
+# nixpkgs の zed-editor は `zeditor` のみ提供するため、`zed` で呼べるようにする
+if command -v zeditor >/dev/null 2>&1; then
+  alias zed='zeditor'
+fi
 alias yz='yazi'
 alias cls='clear'
 alias ct='/home/t4ko/Project/github.com/T4ko0522'

@@ -12,6 +12,7 @@
   ];
 
   networking.hostName = "desktop";
+  system.stateVersion = "26.05";
 
   t4ko.regreet.mainOutput = "DP-2";
 

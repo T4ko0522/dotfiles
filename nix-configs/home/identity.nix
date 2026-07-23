@@ -1,12 +1,16 @@
-_: {
+{
+  editor ? "nvim",
+  homeDirectory,
+  username,
+  ...
+}: {
   home = {
-    username = "t4ko";
-    homeDirectory = "/home/t4ko";
+    inherit homeDirectory username;
     stateVersion = "26.05";
 
     sessionVariables = {
-      EDITOR = "nvim";
-      VISUAL = "nvim";
+      EDITOR = editor;
+      VISUAL = editor;
     };
   };
 }

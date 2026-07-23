@@ -5,6 +5,38 @@ on:
   workflow_dispatch:
 
 jobs:
+  chezmoi:
+    name: Chezmoi contract
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Check chezmoi profiles and ownership
+        run: nix develop --command bash scripts/check_chezmoi.sh
+
+  wsl:
+    name: NixOS-WSL
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Check WSL configuration
+        run: bash scripts/check_wsl.sh
+
   syntax:
     name: Nix syntax
     runs-on: ubuntu-latest

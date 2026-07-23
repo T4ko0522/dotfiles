@@ -9,14 +9,17 @@
 {
   "diff_view_style": "unified",
   "cli_default_open_behavior": "existing_window",
+  "format_on_save": "off",
+  "formatter": "none",
   "agent": {
     "dock": "right",
     "sidebar_side": "left",
     "favorite_models": [],
     "model_parameters": []
   },
-  "vim_mode": true,
+  "vim_mode": false,
   "vim": {
+    "default_mode": "insert",
     "use_system_clipboard": "on_yank"
   },
   "close_panel_on_toggle": true,
@@ -48,7 +51,8 @@
     "catppuccin-icons": true
   },
   "project_panel": {
-    "dock": "left"
+    "dock": "left",
+    "drag_and_drop": false
   },
   "outline_panel": {
     "dock": "left"

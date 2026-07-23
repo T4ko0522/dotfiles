@@ -25,7 +25,7 @@ GitHub Actions は `.github/workflows/checks.yml` で以下を実行します。
 ## 構成
 
 - `flake.nix`: flake inputs と `nixosConfigurations` を定義します。
-- `nix-configs/hosts/`: ホスト別の構成入口です。`laptop/`・`desktop/` があり、各 `default.nix` と `hardware-configuration.nix` を持ちます。自動生成由来の hardware 設定は目的なしに整理しないでください。
+- `nix-configs/hosts/`: ホスト別の構成入口です。`laptop/`・`desktop/`・`wsl/`があります。物理ホストの自動生成由来のhardware設定は目的なしに整理しないでください。
 - `nix-configs/configuration-ci.nix`: CI build 用の最小構成です。
 - `nix-configs/modules/`: NixOS 共通基盤モジュールです。
 - `nix-configs/profiles/`: desktop、gaming、nvidia など用途別の NixOS profile です。
@@ -40,11 +40,12 @@ GitHub Actions は `.github/workflows/checks.yml` で以下を実行します。
 
 - `nixosConfigurations.laptop`: laptop ホスト構成
 - `nixosConfigurations.desktop`: desktop ホスト構成
+- `nixosConfigurations.wsl`: NixOS-WSL 用の CLI 構成
 - `nixosConfigurations.default`: `laptop` の alias
 - `nixosConfigurations.nixos-ci`: CI 用構成
 - `devShells.x86_64-linux.default`: QMK/Vial 作業用 shell
 
-`specialArgs` と Home Manager の `extraSpecialArgs` には `dotfilesDir` と `keyboardLayout` が渡されています。これらが必要な module では、ハードコードを増やさず既存の引数を使ってください。
+`specialArgs`とHome Managerの`extraSpecialArgs`には`dotfilesDir`、`keyboardLayout`、`username`、`homeDirectory`などが渡されています。これらが必要なmoduleでは、ハードコードを増やさず既存の引数を使ってください。
 
 ## ファイル配置ルール
 
@@ -94,4 +95,5 @@ package 追加や NixOS module 変更では、必要に応じて以下も確認�
 ```sh
 nix eval .#nixosConfigurations.default.config.home-manager.users.t4ko.home.packages --apply 'xs: builtins.length xs'
 nix eval .#nixosConfigurations.default.config.boot.kernelPackages.kernel.version --raw
+just wsl-check
 ```

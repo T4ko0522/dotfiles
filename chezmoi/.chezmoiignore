@@ -1,0 +1,21 @@
+{{- if ne .profile "windows" }}
+AppData/**
+Documents/PowerShell/**
+komorebi.json
+komorebi.bar.json
+applications.json
+{{- end }}
+
+{{- if eq .profile "windows" }}
+.config/niri/**
+.config/swaync/**
+.config/waybar/**
+{{- end }}
+
+{{- if eq .profile "wsl" }}
+.config/wezterm/**
+{{- end }}
+
+# Neovim is never a shared chezmoi target. Windows uses a junction to
+# mutable/windows/nvim; NixOS uses nixvim; WSL leaves it unmanaged.
+.config/nvim/**

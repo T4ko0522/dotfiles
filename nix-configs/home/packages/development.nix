@@ -2,6 +2,7 @@
   home.packages = with pkgs; [
     rustup
     nodejs
+    (pkgs.callPackage ../../pkgs/vite-plus/package.nix {})
     deno
     bun
     python3
