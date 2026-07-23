@@ -4,10 +4,10 @@ Vim 初心者向けに、本リポジトリの Neovim 設定 ([LazyVim](https://
 
 設定ファイル:
 
-- [`mutable/windows/nvim/lua/config/options.lua`](../../../mutable/windows/nvim/lua/config/options.lua) — Windows LazyVimのオプションとリーダーキー
-- [`mutable/windows/nvim/lua/config/keymaps.lua`](../../../mutable/windows/nvim/lua/config/keymaps.lua) — Windows LazyVimのカスタムキーマップ
-- [`mutable/windows/nvim/lua/config/autocmds.lua`](../../../mutable/windows/nvim/lua/config/autocmds.lua) — Windows LazyVimのautocmdとユーザーコマンド
-- [`mutable/windows/nvim/lua/plugins/`](../../../mutable/windows/nvim/lua/plugins/) — Windows LazyVimの各プラグイン設定
+- [`mutable/nvim/lua/config/options.lua`](../../../mutable/nvim/lua/config/options.lua) — Windows LazyVimのオプションとリーダーキー
+- [`mutable/nvim/lua/config/keymaps.lua`](../../../mutable/nvim/lua/config/keymaps.lua) — Windows LazyVimのカスタムキーマップ
+- [`mutable/nvim/lua/config/autocmds.lua`](../../../mutable/nvim/lua/config/autocmds.lua) — Windows LazyVimのautocmdとユーザーコマンド
+- [`mutable/nvim/lua/plugins/`](../../../mutable/nvim/lua/plugins/) — Windows LazyVimの各プラグイン設定
 
 ## 大事な前提
 

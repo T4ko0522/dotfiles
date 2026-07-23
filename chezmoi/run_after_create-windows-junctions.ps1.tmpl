@@ -7,11 +7,11 @@ $repo = {{ .chezmoi.workingTree | quote }}
 $homeDir = {{ .chezmoi.destDir | quote }}
 $junctions = @(
   @{
-    Source = Join-Path $repo 'mutable\windows\nvim'
+    Source = Join-Path $repo 'mutable\nvim'
     Target = Join-Path $homeDir 'AppData\Local\nvim'
   },
   @{
-    Source = Join-Path $repo 'mutable\windows\cava'
+    Source = Join-Path $repo 'mutable\cava'
     Target = Join-Path $homeDir '.config\cava'
   }
 )

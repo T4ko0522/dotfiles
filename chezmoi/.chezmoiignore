@@ -14,5 +14,5 @@ Documents/PowerShell/**
 {{- end }}
 
 # Neovim is never a shared chezmoi target. Windows uses a junction to
-# mutable/windows/nvim; NixOS uses nixvim; WSL leaves it unmanaged.
+# mutable/nvim; NixOS uses nixvim; WSL leaves it unmanaged.
 .config/nvim/**

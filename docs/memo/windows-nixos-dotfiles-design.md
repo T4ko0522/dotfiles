@@ -64,6 +64,7 @@ ownerは次のいずれかとする。
 | shell | chezmoi + PowerShell | Home Manager + zsh | Home Manager + zsh |
 | Git / Starship / Yazi / Lazygit | chezmoi | chezmoi | chezmoi |
 | WezTerm | chezmoi | chezmoi | 管理しない |
+| YASB | chezmoi | 対象外 | 対象外 |
 | niri / waybar / swaync | 対象外 | Nix | 対象外 |
 | `/etc/wsl.conf` | 対象外 | 対象外 | NixOS-WSL |
 
@@ -71,7 +72,7 @@ ownerは次のいずれかとする。
 
 ### Windows
 
-LazyVimの実体を`mutable/windows/nvim`へ置き、`%LOCALAPPDATA%\nvim`からjunctionで参照する。Windowsのdirectory symlink権限に依存しないよう、chezmoiの`run_after_` PowerShell scriptでjunctionを収束させる。
+LazyVimの実体を`mutable/nvim`へ置き、`%LOCALAPPDATA%\nvim`からjunctionで参照する。Windowsのdirectory symlink権限に依存しないよう、chezmoiの`run_after_` PowerShell scriptでjunctionを収束させる。
 
 ### NixOS
 
@@ -112,7 +113,7 @@ nixvimをimportせず、chezmoiでも`~/.config/nvim`を生成しない。将来
 
 ### Phase 2: Windows
 
-- 完了: Windows LazyVimとcavaを`mutable/windows`へ移し、chezmoiのjunction所有へ切り替えた。
+- 完了: Windows LazyVimとcavaを`mutable`へ移し、chezmoiのjunction所有へ切り替えた。
 - 次: PowerShell profile生成をchezmoiへ移す。
 - 最後に`setup_windows.ps1`をchezmoi bootstrapだけへ縮小する。
 

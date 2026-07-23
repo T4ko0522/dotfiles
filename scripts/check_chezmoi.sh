@@ -12,7 +12,7 @@ if [[ "$(<"$repo_root/.chezmoiroot")" != "chezmoi" ]]; then
   exit 1
 fi
 
-for mutable_dir in mutable/windows/nvim mutable/windows/cava; do
+for mutable_dir in mutable/nvim mutable/cava; do
   if [[ ! -d "$repo_root/$mutable_dir" ]]; then
     printf 'mutable source does not exist: %s\n' "$mutable_dir" >&2
     exit 1
@@ -70,8 +70,8 @@ for profile in windows nixos wsl; do
     execute-template \
     --file "$repo_root/chezmoi/run_after_create-windows-junctions.ps1.tmpl" > "$rendered_script"
   if [[ "$profile" == windows ]]; then
-    if ! grep -q 'mutable\\windows\\nvim' "$rendered_script" \
-      || ! grep -q 'mutable\\windows\\cava' "$rendered_script"; then
+    if ! grep -q 'mutable\\nvim' "$rendered_script" \
+      || ! grep -q 'mutable\\cava' "$rendered_script"; then
       printf '%s\n' 'Windows junction script is incomplete' >&2
       exit 1
     fi
