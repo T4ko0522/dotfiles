@@ -131,6 +131,8 @@ $scoopPackages = @(
   'main/gcc',
   'main/starship',
   'main/mise',
+  'extras/komorebi',
+  'extras/whkd',
   'extras/lazygit',
   'extras/yazi',
   'extras/fastfetch',

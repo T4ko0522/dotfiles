@@ -76,8 +76,11 @@ for profile in windows nixos wsl; do
     --file "$repo_root/chezmoi/run_after_create-windows-junctions.ps1.tmpl" > "$rendered_script"
   if [[ "$profile" == windows ]]; then
     if ! grep -q 'mutable\\nvim' "$rendered_script" \
-      || ! grep -q 'mutable\\cava' "$rendered_script"; then
-      printf '%s\n' 'Windows junction script is incomplete' >&2
+      || ! grep -q 'mutable\\cava' "$rendered_script" \
+      || ! grep -q 'CHEZMOI_WINDOWS_APPDATA' "$rendered_script" \
+      || ! grep -q 'CHEZMOI_WINDOWS_DOCUMENTS' "$rendered_script" \
+      || ! grep -q 'mutable\\shared\\zed' "$rendered_script"; then
+      printf '%s\n' 'Windows link script is incomplete' >&2
       exit 1
     fi
   elif grep -q '[^[:space:]]' "$rendered_script"; then
@@ -103,7 +106,7 @@ for profile in windows nixos wsl; do
 
   while IFS=$'\t' read -r row_profile target owner mode _source; do
     [[ "$row_profile" == "$profile" ]] || continue
-    [[ "$mode" == junction ]] && continue
+    [[ "$mode" == junction || "$mode" == native-link ]] && continue
 
     is_managed=false
     while IFS= read -r managed_target; do
@@ -138,6 +141,23 @@ for profile in windows nixos wsl; do
     --exclude scripts \
     --no-tty \
     apply
+
+  if [[ "$profile" == windows ]]; then
+    codex_config="$temp_dir/home-$profile/.codex/config.toml"
+    printf '\n# preserve-existing-config\n' >> "$codex_config"
+    chezmoi \
+      --source "$repo_root" \
+      --config "$rendered" \
+      --destination "$temp_dir/home-$profile" \
+      --exclude scripts \
+      --force \
+      --no-tty \
+      apply
+    if ! grep -q '# preserve-existing-config' "$codex_config"; then
+      printf '%s\n' 'chezmoi overwrote the existing Windows Codex config' >&2
+      exit 1
+    fi
+  fi
 
   claude_settings="$temp_dir/home-$profile/.claude/settings.json"
   if [[ ! -f "$claude_settings" ]]; then

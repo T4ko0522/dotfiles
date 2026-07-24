@@ -3,6 +3,14 @@ default:
 
 os-switch host="laptop":
     nh os switch . -H {{ host }}
+    just dotfiles-apply nixos
+
+wsl-switch:
+    sudo nixos-rebuild switch --flake .#wsl
+    just dotfiles-apply wsl
+
+dotfiles-apply profile:
+    chezmoi --source "{{justfile_directory()}}" init --apply --promptChoice "Environment profile={{ profile }}"
 
 skills-sync:
     cd mutable/shared/apm && apm install
