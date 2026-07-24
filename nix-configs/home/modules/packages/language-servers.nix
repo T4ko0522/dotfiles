@@ -6,7 +6,6 @@
     gofumpt
     gopls
     gotools
-    markdownlint-cli2
     marksman
     nixfmt
     prettier

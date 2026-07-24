@@ -7,7 +7,6 @@
   extraPackages = with pkgs; [
     gofumpt
     gotools
-    markdownlint-cli2
     nixfmt
     prettier
     statix

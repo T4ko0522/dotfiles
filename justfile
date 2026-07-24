@@ -10,14 +10,13 @@ wsl-switch:
     just dotfiles-apply wsl
 
 dotfiles-apply profile:
-    chezmoi --source "{{justfile_directory()}}" init --apply --promptChoice "Environment profile={{ profile }}"
+    chezmoi --source "{{ justfile_directory() }}" init --apply --promptChoice "Environment profile={{ profile }}"
 
 skills-sync:
     cd mutable/shared/apm && apm install
 
 fmt:
     git ls-files --cached --others --exclude-standard '*.nix' | while read -r file; do [ ! -f "$file" ] || printf '%s\0' "$file"; done | xargs -0 -r alejandra
-    nix run nixpkgs#markdownlint-cli2 -- --fix
     git ls-files --cached --others --exclude-standard '*.lua' | while read -r file; do [ ! -f "$file" ] || printf '%s\0' "$file"; done | xargs -0 -r nix run nixpkgs#stylua --
 
 syntax:
@@ -25,7 +24,6 @@ syntax:
 
 fmt-check:
     git ls-files --cached --others --exclude-standard '*.nix' | while read -r file; do [ ! -f "$file" ] || printf '%s\0' "$file"; done | xargs -0 -r alejandra --check
-    nix run nixpkgs#markdownlint-cli2 --
     git ls-files --cached --others --exclude-standard '*.lua' | while read -r file; do [ ! -f "$file" ] || printf '%s\0' "$file"; done | xargs -0 -r nix run nixpkgs#stylua -- --check
 
 lint:

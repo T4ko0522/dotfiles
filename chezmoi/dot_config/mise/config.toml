@@ -57,8 +57,6 @@ kubectl = "latest"
 "npm:oxfmt" = "latest"
 "npm:sdd-mcp" = "latest"
 "npm:vde-layout" = "0.0.9"
-"npm:markdownlint-cli" = "latest"
-"npm:markdownlint-cli2" = "latest"
 "npm:@openai/codex" = "latest"
 
 [settings]

@@ -1,5 +1,5 @@
 return {
-  -- Disable markdownlint (use rumdl instead via CLI)
+  -- Markdownはlint対象外
   {
     "mfussenegger/nvim-lint",
     opts = {
