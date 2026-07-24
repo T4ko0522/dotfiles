@@ -2,6 +2,12 @@ name: NixOS
 
 on:
   workflow_call:
+    inputs:
+      hosts:
+        description: "Build対象hostのJSON配列"
+        required: false
+        type: string
+        default: '["laptop","desktop","wsl","nixos-ci"]'
 
 permissions:
   contents: read
@@ -30,11 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        host:
-          - laptop
-          - desktop
-          - wsl
-          - nixos-ci
+        host: ${{ fromJSON(inputs.hosts) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

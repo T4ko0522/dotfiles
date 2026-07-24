@@ -10,6 +10,7 @@ jobs:
   windows:
     name: Windows availability
     runs-on: windows-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,8 +23,13 @@ jobs:
         shell: pwsh
         run: |
           $destination = Join-Path $env:RUNNER_TEMP 'chezmoi-home'
+          $env:CHEZMOI_WINDOWS_APPDATA = Join-Path $env:RUNNER_TEMP 'chezmoi-appdata'
+          $env:CHEZMOI_WINDOWS_DOCUMENTS = Join-Path $env:RUNNER_TEMP 'chezmoi-documents'
+          "CHEZMOI_WINDOWS_APPDATA=$env:CHEZMOI_WINDOWS_APPDATA" >> $env:GITHUB_ENV
+          "CHEZMOI_WINDOWS_DOCUMENTS=$env:CHEZMOI_WINDOWS_DOCUMENTS" >> $env:GITHUB_ENV
           New-Item -ItemType Directory -Path $destination -Force | Out-Null
           chezmoi --source $PWD --destination $destination init --apply `
+            --no-tty `
             --promptChoice 'Environment profile=windows'
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
@@ -54,14 +60,18 @@ jobs:
             '.config\fastfetch\config.jsonc',
             '.config\lazygit\config.yml',
             '.config\mise\config.toml',
+            '.config\komorebi\komorebi_start.ps1',
             '.config\starship.toml',
             '.config\vim\vimrc',
             '.config\wezterm\wezterm.lua',
+            '.config\whkdrc',
             '.config\yasb\config.yaml',
             '.config\yazi\yazi.toml',
             '.config\zed\settings.json',
             '.git_template\hooks\prepare-commit-msg',
             '.gitconfig',
+            'applications.json',
+            'komorebi.json',
             'Documents\PowerShell\Microsoft.PowerShell_profile.ps1'
           )
           foreach ($relative in $required) {
@@ -96,9 +106,24 @@ jobs:
             }
           }
 
+          $nativeLinks = @{
+            (Join-Path $env:CHEZMOI_WINDOWS_APPDATA 'yazi\config\yazi.toml') = (Join-Path $destination '.config\yazi\yazi.toml')
+            (Join-Path $env:CHEZMOI_WINDOWS_APPDATA 'Zed\settings.json') = (Join-Path $PWD 'mutable\shared\zed\settings.json')
+            (Join-Path $env:CHEZMOI_WINDOWS_DOCUMENTS 'PowerShell\Microsoft.PowerShell_profile.ps1') = (Join-Path $destination 'Documents\PowerShell\Microsoft.PowerShell_profile.ps1')
+          }
+          foreach ($target in $nativeLinks.Keys) {
+            $item = Get-Item -LiteralPath $target -Force
+            if (-not $item.LinkType) {
+              throw "Expected native symbolic link: $target"
+            }
+            if ([IO.Path]::GetFullPath([string]$item.Target) -ne [IO.Path]::GetFullPath($nativeLinks[$target])) {
+              throw "Unexpected native symbolic link target: $target -> $($item.Target)"
+            }
+          }
+
           $codexConfig = Join-Path $destination '.codex\config.toml'
           Add-Content -LiteralPath $codexConfig -Value "`n# preserve-existing-config"
-          chezmoi --source $PWD --destination $destination apply
+          chezmoi --source $PWD --destination $destination --force --no-tty apply
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           if (-not (Select-String -LiteralPath $codexConfig -SimpleMatch '# preserve-existing-config' -Quiet)) {
             throw 'chezmoi overwrote the existing Codex config'

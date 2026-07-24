@@ -43,7 +43,13 @@ jobs:
 
   nixos:
     name: NixOS
+    needs: changes
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      needs.changes.outputs.nix_configs == 'true'
     uses: ./.github/workflows/nixos.yml
+    with:
+      hosts: ${{ github.event_name == 'push' && '["wsl","nixos-ci"]' || '["laptop","desktop","wsl","nixos-ci"]' }}
 
   publish-cache:
     name: Publish cache
