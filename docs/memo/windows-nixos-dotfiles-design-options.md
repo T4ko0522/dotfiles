@@ -1,12 +1,12 @@
 # Windows / NixOS dotfiles 設計の深掘り（選択肢）
 
-`windows-nixos-dotfiles-design.md`の検討過程を残した資料。現在の決定事項は同文書を正とし、この文書内の`home/` source root、Maximal構成、両OS共通nvimなどの案は採用しない。
+`windows-nixos-dotfiles-design.md`の検討過程を残した資料。現在の決定事項は同文書を正とし、この文書内の`home/` source root、旧`dot_config/`、`setup_windows.ps1`、Maximal構成、両OS共通nvimなどのパスと案は移行前の記録であり、現行実装を表さない。
 
 ## 現状から見えた制約・論点
 
 調査で判明した、設計を縛る既存事実。
 
-- NixOS は `nix-configs/home/xdg.nix` で **二層戦略**を取っている。
+- NixOS は `nix-configs/home/modules/xdg/files.nix` で **二層戦略**を取っている。
   - out-of-store symlink（`mkOutOfStoreSymlink`, xdg.nix:11）: 実行時に書き戻る／頻繁に変わるもの。lazygit `state.yml`、nvim `lazy-lock.json`、codex `config.toml`、zsh `rc`、fcitx5 `config`、`.gitconfig`、claude `skills`。**rebuild 不要・repo を直接 live-edit** が狙い。
   - in-store readonly: 静的なもの。starship、fastfetch、vim、wezterm、yazi。変更に `just os-switch` が要る。
 - Claude `settings.json` は **shared base + OS 固有 hooks のマージ生成**。NixOS は `home.activation`（xdg.nix:100-108）、Windows は `setup_windows.ps1`（144-162）で**同じことを二重実装**している。

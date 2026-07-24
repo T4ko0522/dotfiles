@@ -2,10 +2,10 @@
 
 設定ファイル:
 
-- [`dot_config/shared/wezterm/wezterm.lua`](../../../dot_config/shared/wezterm/wezterm.lua) — エントリポイント
-- [`dot_config/shared/wezterm/keymaps.lua`](../../../dot_config/shared/wezterm/keymaps.lua) — グローバル / `tab_ops` / `pane_ops` / `resize_pane` / `activate_pane` / `copy_mode`
-- [`dot_config/shared/wezterm/workspace.lua`](../../../dot_config/shared/wezterm/workspace.lua) — ワークスペース / `workspace_mode`
-- [`dot_config/shared/wezterm/modules/opacity.lua`](../../../dot_config/shared/wezterm/modules/opacity.lua) — `setting_mode`
+- [`chezmoi/dot_config/wezterm/wezterm.lua`](../../../chezmoi/dot_config/wezterm/wezterm.lua) — エントリポイント
+- [`chezmoi/dot_config/wezterm/keymaps.lua`](../../../chezmoi/dot_config/wezterm/keymaps.lua) — グローバル / `tab_ops` / `pane_ops` / `resize_pane` / `activate_pane` / `copy_mode`
+- [`chezmoi/dot_config/wezterm/workspace.lua`](../../../chezmoi/dot_config/wezterm/workspace.lua) — ワークスペース / `workspace_mode`
+- [`chezmoi/dot_config/wezterm/modules/opacity.lua`](../../../chezmoi/dot_config/wezterm/modules/opacity.lua) — `setting_mode`
 
 ## 前提
 

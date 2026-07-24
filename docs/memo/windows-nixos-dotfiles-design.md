@@ -27,12 +27,11 @@ dotfiles/
     dot_config/
   mutable/                     # chezmoi変換対象外の書き込み可能な実体
     shared/
-    windows/
-      nvim/                    # LazyVim
-      powershell/
+    nvim/                      # Windows LazyVim
+    cava/                      # Windows Cava runtime files
     nixos/
   nix-configs/                 # NixOS、Home Manager、nixvim
-  scripts/
+  scripts/                     # bootstrapとCI契約検査のみ
   docs/
 ```
 
@@ -76,7 +75,7 @@ LazyVimの実体を`mutable/nvim`へ置き、`%LOCALAPPDATA%\nvim`からjunction
 
 ### NixOS
 
-`feat/nixvim`でnixvimへの移行を完了した。Home Managerの`programs.neovim`と`~/.config/nvim` linkは撤去済みで、ftdetectとspell辞書は`nix-configs/home/nixvim/files`が所有する。
+`feat/nixvim`でnixvimへの移行を完了した。Home Managerの`programs.neovim`と`~/.config/nvim` linkは撤去済みで、Nixvim設定は`nix-configs/home/modules/editors/nixvim`が所有する。
 
 ### NixOS-WSL
 
@@ -104,7 +103,7 @@ nixvimをimportせず、chezmoiでも`~/.config/nvim`を生成しない。将来
 
 ### Phase 1: NixOS-WSL
 
-実装済み。`nixosConfigurations.wsl`と`nix-configs/home-wsl.nix`を入口とする。
+実装済み。`nixosConfigurations.wsl`と`nix-configs/hosts/wsl/home.nix`を入口とする。
 
 - `nixos-wsl` inputと`nixosConfigurations.wsl`を追加する。
 - usernameとhome directoryをホスト引数化する。
@@ -113,9 +112,9 @@ nixvimをimportせず、chezmoiでも`~/.config/nvim`を生成しない。将来
 
 ### Phase 2: Windows
 
-- 完了: Windows LazyVimとcavaを`mutable`へ移し、chezmoiのjunction所有へ切り替えた。
-- 次: PowerShell profile生成をchezmoiへ移す。
-- 最後に`setup_windows.ps1`をchezmoi bootstrapだけへ縮小する。
+- Windows LazyVimとcavaを`mutable`へ移し、chezmoiのjunction所有へ切り替えた。
+- PowerShell、YASB、mise、ccwin-notifyをchezmoi sourceへ移した。
+- 独自の`setup_windows.ps1`を廃止し、`bootstrap.ps1`からchezmoiを直接適用する。
 
 ### Phase 3: NixOS nixvim
 
@@ -124,15 +123,15 @@ nixvimをimportせず、chezmoiでも`~/.config/nvim`を生成しない。将来
 
 ### Phase 4: 共有設定
 
-- Starship、Fastfetch、Git、Yazi、Lazygit、WezTermの順にchezmoiへ移す。
-- 書き戻し対象だけを`mutable/shared`へ置く。
-- Home Managerの`xdg.configFile`と`home.file`を対象ごとに縮小する。
+- Starship、Fastfetch、Git、Vim、Yazi、Lazygit、WezTerm、Zedをchezmoiへ移した。
+- 書き戻し対象だけを`mutable/shared`へ置いた。
+- Home Managerの所有をNix固有targetだけへ縮小した。
 
 ### Phase 5: 整理
 
-- Claude settings生成のNix/PowerShell二重実装をchezmoi templateへ統合する。
-- 存在しないsourceを参照する旧Windows設定を削除する。
-- bootstrap、README、keybinding documentationを更新する。
+- Claude settings生成のNix/PowerShell二重実装をchezmoi templateへ統合した。
+- 存在しないsourceを参照する旧Windows設定と補助scriptを削除した。
+- GitHub ActionsでNixOS 4構成とWindows profileの可用性を検証する。
 
 ## 検証
 
