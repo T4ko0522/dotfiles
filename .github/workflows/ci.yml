@@ -2,6 +2,7 @@ name: Checks
 
 on:
   push:
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -26,6 +27,9 @@ jobs:
           filters: |
             nix_configs:
               - 'nix-configs/**'
+              - 'flake.nix'
+              - 'flake.lock'
+              - 'scripts/check_profiles.sh'
 
   lint:
     name: Lint
@@ -34,6 +38,10 @@ jobs:
   chezmoi:
     name: Chezmoi
     uses: ./.github/workflows/chezmoi.yml
+
+  nixos:
+    name: NixOS
+    uses: ./.github/workflows/nixos.yml
 
   publish-cache:
     name: Publish cache

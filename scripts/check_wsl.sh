@@ -3,7 +3,7 @@
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-flake_ref="$repo_root"
+flake_ref="${1:-$repo_root}"
 
 assert_json() {
   local attribute=$1
