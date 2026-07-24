@@ -12,12 +12,17 @@ if [[ "$(<"$repo_root/.chezmoiroot")" != "chezmoi" ]]; then
   exit 1
 fi
 
-for mutable_dir in mutable/nvim mutable/cava; do
+for mutable_dir in mutable/nvim mutable/cava mutable/shared/apm mutable/shared/lazygit mutable/shared/zed mutable/nixos/fcitx5; do
   if [[ ! -d "$repo_root/$mutable_dir" ]]; then
     printf 'mutable source does not exist: %s\n' "$mutable_dir" >&2
     exit 1
   fi
 done
+
+if [[ ! -f "$repo_root/mutable/shared/gitconfig" ]]; then
+  printf '%s\n' 'mutable source does not exist: mutable/shared/gitconfig' >&2
+  exit 1
+fi
 
 declare -A targets=()
 while IFS=$'\t' read -r profile target owner _mode _source; do
@@ -87,6 +92,37 @@ for profile in windows nixos wsl; do
   fi
 
   mkdir -p "$temp_dir/home-$profile"
+  managed_file="$temp_dir/managed-$profile"
+  chezmoi \
+    --source "$repo_root" \
+    --config "$rendered" \
+    --destination "$temp_dir/home-$profile" \
+    managed \
+    --include files,symlinks \
+    --path-style relative > "$managed_file"
+
+  while IFS=$'\t' read -r row_profile target owner mode _source; do
+    [[ "$row_profile" == "$profile" ]] || continue
+    [[ "$mode" == junction ]] && continue
+
+    is_managed=false
+    while IFS= read -r managed_target; do
+      if [[ "$managed_target" == "$target" || "$managed_target" == "$target/"* ]]; then
+        is_managed=true
+        break
+      fi
+    done < "$managed_file"
+
+    if [[ "$owner" == chezmoi && "$is_managed" != true ]]; then
+      printf 'chezmoi target is missing for %s: %s\n' "$profile" "$target" >&2
+      exit 1
+    fi
+    if [[ "$owner" != chezmoi && "$is_managed" == true ]]; then
+      printf 'non-chezmoi target is managed for %s: %s\n' "$profile" "$target" >&2
+      exit 1
+    fi
+  done < "$ownership_file"
+
   chezmoi \
     --source "$repo_root" \
     --config "$rendered" \
@@ -94,4 +130,42 @@ for profile in windows nixos wsl; do
     --no-tty \
     --dry-run \
     apply
+
+  chezmoi \
+    --source "$repo_root" \
+    --config "$rendered" \
+    --destination "$temp_dir/home-$profile" \
+    --exclude scripts \
+    --no-tty \
+    apply
+
+  claude_settings="$temp_dir/home-$profile/.claude/settings.json"
+  if [[ ! -f "$claude_settings" ]]; then
+    printf 'Claude settings were not rendered for profile: %s\n' "$profile" >&2
+    exit 1
+  fi
+  case "$profile" in
+    windows)
+      if ! grep -q '%USERPROFILE%.*ccwin-hook.ps1' "$claude_settings"; then
+        printf '%s\n' 'Windows Claude hooks were not rendered' >&2
+        exit 1
+      fi
+      if grep -Eq 'C:\\Users\\(HP|takow)' "$temp_dir/home-$profile/.config/yasb/config.yaml"; then
+        printf '%s\n' 'YASB contains a hard-coded user profile' >&2
+        exit 1
+      fi
+      ;;
+    nixos)
+      if ! grep -q 'claude-notify-hook.sh' "$claude_settings"; then
+        printf '%s\n' 'NixOS Claude hooks were not rendered' >&2
+        exit 1
+      fi
+      ;;
+    wsl)
+      if grep -q '"hooks"' "$claude_settings"; then
+        printf '%s\n' 'WSL Claude settings unexpectedly contain hooks' >&2
+        exit 1
+      fi
+      ;;
+  esac
 done
