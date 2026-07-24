@@ -1,16 +1,11 @@
 {{- if ne .profile "windows" }}
 AppData/**
 Documents/PowerShell/**
-.config/komorebi/**
 .config/ccwin-notify/**
 .config/mise/**
-.config/whkdrc
 .config/yasb/**
 .claude/ccwin-hook.ps1
 .codex/config.toml
-applications.json
-komorebi.bar.json
-komorebi.json
 {{- end }}
 
 {{- if ne .profile "nixos" }}

@@ -4,11 +4,6 @@ windows	.config/cava	chezmoi	junction	mutable/cava
 windows	AppData/Roaming/yazi/config	chezmoi	native-link	chezmoi/dot_config/yazi
 windows	AppData/Roaming/Zed	chezmoi	native-link	mutable/shared/zed
 windows	MyDocuments/PowerShell	chezmoi	native-link	chezmoi/Documents/PowerShell
-windows	komorebi.json	chezmoi	copy	chezmoi/komorebi.json
-windows	komorebi.bar.json	chezmoi	copy	chezmoi/komorebi.bar.json
-windows	applications.json	chezmoi	copy	chezmoi/applications.json
-windows	.config/komorebi	chezmoi	copy	chezmoi/dot_config/komorebi
-windows	.config/whkdrc	chezmoi	copy	chezmoi/dot_config/whkdrc
 nixos	.config/nvim	nix	nixvim	nix-configs/home/modules/editors/nixvim
 wsl	.config/nvim	unmanaged	none	-
 wsl	/etc/wsl.conf	nix	generated	nix-configs/hosts/wsl/default.nix

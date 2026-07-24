@@ -60,18 +60,14 @@ jobs:
             '.config\fastfetch\config.jsonc',
             '.config\lazygit\config.yml',
             '.config\mise\config.toml',
-            '.config\komorebi\komorebi_start.ps1',
             '.config\starship.toml',
             '.config\vim\vimrc',
             '.config\wezterm\wezterm.lua',
-            '.config\whkdrc',
             '.config\yasb\config.yaml',
             '.config\yazi\yazi.toml',
             '.config\zed\settings.json',
             '.git_template\hooks\prepare-commit-msg',
             '.gitconfig',
-            'applications.json',
-            'komorebi.json',
             'Documents\PowerShell\Microsoft.PowerShell_profile.ps1'
           )
           foreach ($relative in $required) {

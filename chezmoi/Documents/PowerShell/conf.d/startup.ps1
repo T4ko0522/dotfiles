@@ -16,39 +16,6 @@ Register-EngineEvent -SourceIdentifier PowerShell.OnIdle -MaxTriggerCount 1 -Act
 # https://github.com/antfu-collective/ni とNew-Itemの競合を無効化
 Remove-Item Alias:ni -Force -ErrorAction Ignore
 
-# モニター構成変更後の手動再セットアップ。
-function Restart-Komorebi {
-    $startScript = Join-Path $env:USERPROFILE '.config\komorebi\komorebi_start.ps1'
-    if (-not (Test-Path -LiteralPath $startScript)) {
-        Write-Error "komorebi_start.ps1 が見つかりません: $startScript"
-        return
-    }
-    Get-Process -Name komorebi, whkd -ErrorAction SilentlyContinue |
-        Stop-Process -Force -ErrorAction SilentlyContinue
-    & $startScript
-}
-
-# komorebi + whkd 自動起動 (接続モニターに合わせた一時設定で起動)
-if (Get-Command komorebic -ErrorAction SilentlyContinue) {
-    $komorebiAlive = $false
-    if (Get-Process -Name komorebi -ErrorAction SilentlyContinue) {
-        komorebic state 2>$null | Out-Null
-        $komorebiAlive = ($LASTEXITCODE -eq 0)
-    }
-    if (-not $komorebiAlive) {
-        Get-Process -Name komorebi, whkd -ErrorAction SilentlyContinue |
-            Stop-Process -Force -ErrorAction SilentlyContinue
-        $startScript = Join-Path $env:USERPROFILE '.config\komorebi\komorebi_start.ps1'
-        if (Test-Path -LiteralPath $startScript) {
-            Start-Process -FilePath 'pwsh' `
-                -ArgumentList '-NoLogo', '-NoProfile', '-NonInteractive', '-File', $startScript `
-                -WindowStyle Hidden
-        } else {
-            Start-Process komorebic -ArgumentList 'start', '--whkd' -WindowStyle Hidden
-        }
-    }
-}
-
 # yasb 自動起動
 if (-not (Get-Process -Name yasb -ErrorAction SilentlyContinue)) {
     Start-Process yasb -WindowStyle Hidden

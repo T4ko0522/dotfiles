@@ -1,10 +1,6 @@
 watch_stylesheet: true
 watch_config: true
 debug: false
-komorebi:
-  start_command: "komorebic start"
-  stop_command: "komorebic stop"
-  reload_command: "komorebic stop && komorebic start"
 bars:
   status-bar:
     enabled: true
@@ -53,7 +49,6 @@ bars:
       right:
         [
           "weather",
-          "komorebi_workspaces",
           "clock",
           "cava",
           "media",
@@ -63,19 +58,6 @@ bars:
           "power_menu"
         ]
 widgets:
-  komorebi_workspaces:
-    type: "komorebi.workspaces.WorkspaceWidget"
-    options:
-      label_offline: "komorebi offline"
-      label_workspace_btn: "{index}"
-      label_workspace_active_btn: "{index}"
-      label_workspace_populated_btn: "{index}"
-      label_default_name: "{index}"
-      label_zero_index: false
-      hide_empty_workspaces: false
-      hide_if_offline: true
-      animation: true
-      enable_scroll_switching: true
   glazewm_workspaces:
     type: "glazewm.workspaces.GlazewmWorkspacesWidget"
     options:
