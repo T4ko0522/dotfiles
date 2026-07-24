@@ -1,0 +1,18 @@
+{
+  imports = [
+    ./base.nix
+    ../modules/hardware/kernel.nix
+    ../modules/hardware/qmk.nix
+    ../modules/hardware/xkb.nix
+    ../modules/services/bluetooth.nix
+    ../modules/services/docker.nix
+    ../modules/services/networkmanager.nix
+    ../modules/services/tailscale.nix
+    ../modules/desktop/audio.nix
+    ../modules/desktop/fonts.nix
+    ../modules/desktop/input-method.nix
+    ../modules/desktop/niri.nix
+    ../modules/desktop/portal.nix
+    ../modules/desktop/regreet.nix
+  ];
+}

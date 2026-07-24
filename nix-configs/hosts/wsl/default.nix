@@ -1,9 +1,6 @@
 {username, ...}: {
   imports = [
-    ../../modules/nh.nix
-    ../../modules/nix.nix
-    ../../modules/unfree.nix
-    ../../modules/users.nix
+    ../../feature/profiles/wsl.nix
   ];
 
   networking.hostName = "nixos-wsl";
@@ -25,8 +22,6 @@
       user.default = username;
     };
   };
-
-  programs.nix-ld.enable = true;
 
   system.stateVersion = "26.05";
 }

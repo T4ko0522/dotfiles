@@ -77,76 +77,40 @@
       fcitxLayout = "jp";
     };
 
-    mkNixos = {
-      configuration,
-      homeConfiguration,
-      editor ? "nvim",
-      extraModules ? [],
-      homeDirectory ? "/home/${username}",
-      platformModules ? [
-        vicinae.nixosModules.default
-        nixos-loading-plymouth.nixosModules.default
-      ],
-      sharedHomeModules ? [
-        vicinae.homeManagerModules.default
-        codex-desktop-linux.homeManagerModules.default
-      ],
-      systemOverlays ? [spotify-cli.overlays.default],
-      userExtraGroups ? [
-        "audio"
-        "input"
-        "networkmanager"
-        "plugdev"
-        "wheel"
-      ],
-      username ? "t4ko",
-    }:
-      nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = {
-          inherit dotfilesDir homeDirectory keyboardLayout userExtraGroups username;
-          nixosLoadingPlymouth = nixos-loading-plymouth;
-        };
-        modules =
-          [
-            home-manager.nixosModules.home-manager
-            configuration
-          ]
-          ++ platformModules
-          ++ extraModules
-          ++ [
-            {
-              nixpkgs.overlays = systemOverlays;
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                backupFileExtension = "hm-backup";
-                extraSpecialArgs = {
-                  inherit dotfilesDir editor homeDirectory keyboardLayout llm-agents username;
-                };
-                sharedModules = [nixvim.homeModules.nixvim] ++ sharedHomeModules;
-                users.${username} = import homeConfiguration;
-              };
-            }
-          ];
-      };
+    mkNixos = import ./nix-configs/lib/mk-nixos.nix {
+      inherit
+        codex-desktop-linux
+        home-manager
+        llm-agents
+        nixos-loading-plymouth
+        nixpkgs
+        nixvim
+        spotify-cli
+        system
+        vicinae
+        ;
+    };
 
     laptop = mkNixos {
       configuration = ./nix-configs/hosts/laptop;
-      homeConfiguration = ./nix-configs/home.nix;
+      homeConfiguration = ./nix-configs/hosts/laptop/home.nix;
+      inherit dotfilesDir keyboardLayout;
     };
     desktop = mkNixos {
       configuration = ./nix-configs/hosts/desktop;
-      homeConfiguration = ./nix-configs/home.nix;
+      homeConfiguration = ./nix-configs/hosts/desktop/home.nix;
+      inherit dotfilesDir keyboardLayout;
       extraModules = [lanzaboote.nixosModules.lanzaboote];
     };
     nixosCi = mkNixos {
-      configuration = ./nix-configs/configuration-ci.nix;
-      homeConfiguration = ./nix-configs/home-ci.nix;
+      configuration = ./nix-configs/hosts/ci;
+      homeConfiguration = ./nix-configs/home/profiles/ci.nix;
+      inherit dotfilesDir keyboardLayout;
     };
     wsl = mkNixos {
       configuration = ./nix-configs/hosts/wsl;
-      homeConfiguration = ./nix-configs/home-wsl.nix;
+      homeConfiguration = ./nix-configs/hosts/wsl/home.nix;
+      inherit dotfilesDir keyboardLayout;
       platformModules = [nixos-wsl.nixosModules.default];
       sharedHomeModules = [];
       userExtraGroups = ["wheel"];
