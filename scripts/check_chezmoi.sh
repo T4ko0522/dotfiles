@@ -54,7 +54,10 @@ done < "$ownership_file"
 
 for profile in windows nixos wsl; do
   rendered="$temp_dir/chezmoi-$profile.toml"
-  chezmoi execute-template \
+  chezmoi \
+    --config /dev/null \
+    --config-format toml \
+    execute-template \
     --init \
     --promptChoice "Environment profile=$profile" \
     --file "$repo_root/chezmoi/.chezmoi.toml.tmpl" > "$rendered"
