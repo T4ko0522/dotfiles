@@ -1,7 +1,6 @@
 #!/usr/bin/env pwsh
 # -----------------------------------------------------------------------------
-# bootstrap.ps1 — dotfiles の依存関係を一括インストール
-# 完了後 `scripts\setup_windows.ps1` を実行してリンクを張る。
+# bootstrap.ps1 — Windows依存関係を導入し、chezmoi profileを適用する。
 # -----------------------------------------------------------------------------
 
 $ErrorActionPreference = 'Stop'
@@ -167,4 +166,11 @@ foreach ($pkg in $scoopPackages) {
 }
 
 Write-Host "`n[OK] Bootstrap completed." -ForegroundColor Green
-Write-Host "次に: pwsh -ExecutionPolicy Bypass -File .\scripts\setup_windows.ps1" -ForegroundColor White
+
+$repo = Split-Path -Parent $PSScriptRoot
+chezmoi --source $repo init --apply --promptChoice 'Environment profile=windows'
+if ($LASTEXITCODE -ne 0) {
+  throw "chezmoi apply failed with exit code $LASTEXITCODE"
+}
+
+Write-Host "[OK] Windows profile applied." -ForegroundColor Green

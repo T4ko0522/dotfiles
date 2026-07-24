@@ -90,7 +90,7 @@ widgets:
       label_placeholder: "👋 Hi there!"
       class_name: "greeting-widget"
       exec_options:
-        run_cmd: "powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\takow\\.config\\yasb\\greeting.ps1"
+        run_cmd: "powershell.exe -NoProfile -ExecutionPolicy Bypass -File {{ .chezmoi.destDir | toString | replace "\\" "\\\\" }}\\.config\\yasb\\greeting.ps1"
         run_interval: 60000
         return_format: "string"
         hide_empty: false
@@ -99,7 +99,7 @@ widgets:
     type: "yasb.wallpapers.WallpapersWidget"
     options:
       label: "<span>\uf03e</span>"
-      image_path: "C:\\Users\\HP\\Pictures\\Wallpapers"
+      image_path: "{{ .chezmoi.destDir | toString | replace "\\" "\\\\" }}\\Pictures\\Wallpapers"
       change_automatically: false # Automatically change wallpaper
       update_interval: 60
       gallery:
@@ -141,10 +141,10 @@ widgets:
       label: "<span>\udb80\udf5c</span>"
       menu_list:
         - { title: "Home", path: "~" }
-        - { title: "Downloads", path: "C:\\Users\\HP\\Downloads"}
-        - { title: "Documents", path: "C:\\Users\\HP\\Documents"}
-        - { title: "Pictures", path: "C:\\Users\\HP\\Pictures"}
-        - { title: "Videos", path: "C:\\Users\\HP\\Videos"}
+        - { title: "Downloads", path: "{{ .chezmoi.destDir | toString | replace "\\" "\\\\" }}\\Downloads"}
+        - { title: "Documents", path: "{{ .chezmoi.destDir | toString | replace "\\" "\\\\" }}\\Documents"}
+        - { title: "Pictures", path: "{{ .chezmoi.destDir | toString | replace "\\" "\\\\" }}\\Pictures"}
+        - { title: "Videos", path: "{{ .chezmoi.destDir | toString | replace "\\" "\\\\" }}\\Videos"}
       system_menu: true
       power_menu: false
       blur: true

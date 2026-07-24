@@ -19,10 +19,11 @@ $Kind = switch ($Kind.ToLower()) {
 }
 
 # dev ビルド (リポジトリ内 bin/) を優先しつつ、なければ scoop インストール版に fallback
+$projectDir = Join-Path $env:USERPROFILE "Project\github.com\t4ko0522\ccwin-notify"
 $devCandidates = @(
-  "C:\Users\takow\Project\github.com\t4ko0522\ccwin-notify\bin\ccwin.exe",
-  "C:\Users\takow\Project\github.com\t4ko0522\ccwin-notify\ccwin.exe",
-  "C:\Users\takow\Project\github.com\t4ko0522\ccwin-notify\ccwin-dev.exe"
+  (Join-Path $projectDir "bin\ccwin.exe"),
+  (Join-Path $projectDir "ccwin.exe"),
+  (Join-Path $projectDir "ccwin-dev.exe")
 )
 $ccwin = $null
 foreach ($c in $devCandidates) {
