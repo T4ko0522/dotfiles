@@ -5,20 +5,20 @@ os-switch host="laptop":
     nh os switch . -H {{ host }}
 
 skills-sync:
-    cd dot_config/shared/apm && apm install
+    cd mutable/shared/apm && apm install
 
 fmt:
-    git ls-files '*.nix' | xargs -r alejandra
+    git ls-files --cached --others --exclude-standard '*.nix' | while read -r file; do [ ! -f "$file" ] || printf '%s\0' "$file"; done | xargs -0 -r alejandra
     nix run nixpkgs#markdownlint-cli2 -- --fix
-    git ls-files '*.lua' | xargs -r nix run nixpkgs#stylua --
+    git ls-files --cached --others --exclude-standard '*.lua' | while read -r file; do [ ! -f "$file" ] || printf '%s\0' "$file"; done | xargs -0 -r nix run nixpkgs#stylua --
 
 syntax:
-    git ls-files '*.nix' | xargs -r -n1 nix-instantiate --parse --quiet >/dev/null
+    git ls-files --cached --others --exclude-standard '*.nix' | while read -r file; do [ ! -f "$file" ] || printf '%s\0' "$file"; done | xargs -0 -r -n1 nix-instantiate --parse --quiet >/dev/null
 
 fmt-check:
-    git ls-files '*.nix' | xargs -r alejandra --check
+    git ls-files --cached --others --exclude-standard '*.nix' | while read -r file; do [ ! -f "$file" ] || printf '%s\0' "$file"; done | xargs -0 -r alejandra --check
     nix run nixpkgs#markdownlint-cli2 --
-    git ls-files '*.lua' | xargs -r nix run nixpkgs#stylua -- --check
+    git ls-files --cached --others --exclude-standard '*.lua' | while read -r file; do [ ! -f "$file" ] || printf '%s\0' "$file"; done | xargs -0 -r nix run nixpkgs#stylua -- --check
 
 lint:
     statix check .
@@ -29,8 +29,11 @@ chezmoi-check:
 wsl-check:
     bash scripts/check_wsl.sh
 
+profile-check:
+    bash scripts/check_profiles.sh
+
 build host="laptop":
     nix build .#nixosConfigurations.{{ host }}.config.system.build.toplevel
 
-ci: syntax fmt-check chezmoi-check wsl-check
+ci: syntax fmt-check chezmoi-check wsl-check profile-check
     nix build .#nixosConfigurations.nixos-ci.config.system.build.toplevel

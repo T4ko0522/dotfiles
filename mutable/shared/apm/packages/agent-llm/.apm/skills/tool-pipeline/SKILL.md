@@ -65,7 +65,7 @@ $SKILL_DIR/
 ### サブエージェント配置
 
 エージェント定義は `~/.claude/agents/` 配下に置く（Claude Code の subagent 探索パス）。
-このリポでは `.config/claude/agents/` に実体があり、`setup_windows.ps1` で `~/.claude/agents/` にリンクされる。
+このリポでは `chezmoi/private_dot_claude/agents/` をsource stateとして管理する。
 
 | エージェント名 | 使用フェーズ | モデル |
 |---|---|---|
