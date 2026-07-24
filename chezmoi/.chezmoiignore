@@ -1,6 +1,15 @@
 {{- if ne .profile "windows" }}
 AppData/**
 Documents/PowerShell/**
+.config/ccwin-notify/**
+.config/mise/**
+.config/yasb/**
+.claude/ccwin-hook.ps1
+.codex/config.toml
+{{- end }}
+
+{{- if ne .profile "nixos" }}
+.claude/claude-notify-hook.sh
 {{- end }}
 
 {{- if eq .profile "windows" }}
@@ -11,6 +20,7 @@ Documents/PowerShell/**
 
 {{- if eq .profile "wsl" }}
 .config/wezterm/**
+.config/zed
 {{- end }}
 
 # Neovim is never a shared chezmoi target. Windows uses a junction to

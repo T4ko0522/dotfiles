@@ -1,0 +1,49 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "AskUserQuestion|ExitPlanMode",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/claude-notify-hook.sh PreToolUse 2>/dev/null",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/claude-notify-hook.sh Notification 2>/dev/null",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/claude-notify-hook.sh Stop 2>/dev/null",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/claude-notify-hook.sh SubagentStop 2>/dev/null",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

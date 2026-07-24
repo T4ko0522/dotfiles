@@ -1,0 +1,10 @@
+{{- $base := include ".chezmoitemplates/claude-settings-base.json" | fromJson -}}
+{{- if eq .profile "windows" -}}
+{{- $hooks := include ".chezmoitemplates/claude-settings-windows-hooks.json" | fromJson -}}
+{{ mergeOverwrite $base $hooks | toPrettyJson }}
+{{- else if eq .profile "nixos" -}}
+{{- $hooks := include ".chezmoitemplates/claude-settings-nixos-hooks.json" | fromJson -}}
+{{ mergeOverwrite $base $hooks | toPrettyJson }}
+{{- else -}}
+{{ $base | toPrettyJson }}
+{{- end }}

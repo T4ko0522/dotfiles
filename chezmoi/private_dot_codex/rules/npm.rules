@@ -1,0 +1,27 @@
+# npmの実行を禁止し、pnpmでの実行を促す。
+prefix_rule(
+  pattern = ["npm"],
+  decision = "forbidden",
+  justification = "Use `pnpm` instead of `npm`.",
+)
+
+# npxの実行を禁止し、pnpm dlxでの実行を促す。
+prefix_rule(
+  pattern = ["npx"],
+  decision = "forbidden",
+  justification = "Use `pnpm dlx` instead of `npx`.",
+)
+
+# pnpxの実行を禁止し、pnpm dlxでの実行を促す。
+prefix_rule(
+  pattern = ["pnpx"],
+  decision = "forbidden",
+  justification = "Use `pnpm dlx` instead of `pnpx`.",
+)
+
+# pnpm createの実行を禁止し、自分でプロジェクトを作成することを促す。
+prefix_rule(
+  pattern = ["pnpm", "create"],
+  decision = "forbidden",
+  justification = "Create a project manually instead of using `pnpm create`.",
+)

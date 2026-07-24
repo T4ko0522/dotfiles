@@ -1,0 +1,257 @@
+# starship.toml と揃えた Catppuccin Mocha 系パレット
+#   mauve     #cba6f7  directory アクセント
+#   lavender  #b4befe  git / time アクセント
+#   yellow    #f9e2af  python アクセント
+#   peach     #fab387  cmd_duration アクセント
+#   surface0  #313244  アクセント上の前景
+#   dark_bg   #1d2230  git status の暗背景
+# UI 配色を最小限上書きしつつ、filetype はファイル種別の色を公式 Catppuccin Mocha
+# flavor の値で定義する。icon はデフォルトに委ねる。
+
+[flavor]
+dark  = ""
+light = ""
+
+# : App {{{
+
+[app]
+overall = {}
+
+# : }}}
+
+
+# : Manager {{{
+
+[mgr]
+cwd = { fg = "#cba6f7", bold = true }
+
+# Find
+find_keyword  = { fg = "#f9e2af", bold = true, italic = true, underline = true }
+find_position = { fg = "#cba6f7", bg = "reset", bold = true, italic = true }
+
+# Symlink
+symlink_target = { fg = "#a6adc8", italic = true }
+
+# Marker
+marker_copied   = { fg = "#a6e3a1", bg = "#a6e3a1" }
+marker_cut      = { fg = "#f38ba8", bg = "#f38ba8" }
+marker_marked   = { fg = "#94e2d5", bg = "#94e2d5" }
+marker_selected = { fg = "#f9e2af", bg = "#f9e2af" }
+marker_symbol   = "│"
+
+# Count
+count_copied   = { fg = "#313244", bg = "#a6e3a1" }
+count_cut      = { fg = "#313244", bg = "#f38ba8" }
+count_selected = { fg = "#313244", bg = "#f9e2af" }
+
+# Border
+border_symbol = "│"
+border_style  = { fg = "#b4befe" }
+
+# Highlighting
+syntect_theme = ""
+
+# : }}}
+
+
+# : Filetype {{{
+
+# ファイル種別ごとの文字色。公式 catppuccin-mocha flavor の rules に準拠。
+#   teal   #94e2d5  image
+#   yellow #f9e2af  audio / video
+#   pink   #f5c2e7  archive
+#   green  #a6e3a1  document (pdf / doc / rtf)
+#   overlay2 #9399b2  欠落 / 失効した仮想ファイル
+#   text   #cdd6f4  フォールバック (通常ファイル)
+#   mauve  #cba6f7  ディレクトリ (UI アクセントに統一)
+[filetype]
+rules = [
+	# Image
+	{ mime = "image/*", fg = "#94e2d5" },
+	# Media
+	{ mime = "{audio,video}/*", fg = "#f9e2af" },
+	# Archive
+	{ mime = "application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}", fg = "#f5c2e7" },
+	# Document
+	{ mime = "application/{pdf,doc,rtf}", fg = "#a6e3a1" },
+	# Virtual file system
+	{ mime = "vfs/{absent,stale}", fg = "#9399b2" },
+	# Fallback
+	{ url = "*",  fg = "#cdd6f4" },
+	# ディレクトリは UI アクセント (mauve) に統一
+	{ url = "*/", fg = "#cba6f7" },
+]
+
+# : }}}
+
+
+# : Tabs {{{
+
+[tabs]
+# starship の directory モジュールに揃える
+active    = { fg = "#313244", bg = "#cba6f7", bold = true }
+inactive  = { fg = "#a6adc8", bg = "#1d2230" }
+sep_inner = { open = "", close = "" }
+sep_outer = { open = "", close = "" }
+
+# : }}}
+
+
+# : Indicator {{{
+
+[indicator]
+# カーソル行 / 親列のハイライト
+parent  = { fg = "#313244", bg = "#b4befe" }
+current = { fg = "#313244", bg = "#cba6f7", bold = true }
+preview = { underline = true }
+padding = { open = "", close = "" }
+
+# : }}}
+
+
+# : Mode {{{
+
+[mode]
+# starship の directory / git / cmd_duration の三色を mode に対応させる
+normal_main = { fg = "#313244", bg = "#cba6f7", bold = true }
+normal_alt  = { fg = "#cba6f7", bg = "#1d2230" }
+
+select_main = { fg = "#313244", bg = "#f9e2af", bold = true }
+select_alt  = { fg = "#f9e2af", bg = "#1d2230" }
+
+unset_main  = { fg = "#313244", bg = "#fab387", bold = true }
+unset_alt   = { fg = "#fab387", bg = "#1d2230" }
+
+# : }}}
+
+
+# : Status bar {{{
+
+[status]
+overall   = { fg = "#cdd6f4", bg = "#1d2230" }
+sep_left  = { open = "", close = "" }
+sep_right = { open = "", close = "" }
+
+# Permissions
+perm_sep   = { fg = "#6c7086" }
+perm_type  = { fg = "#a6e3a1" }
+perm_read  = { fg = "#f9e2af" }
+perm_write = { fg = "#fab387" }
+perm_exec  = { fg = "#89dceb" }
+
+# Progress
+progress_label  = { fg = "#313244", bold = true }
+progress_normal = { fg = "#b4befe", bg = "#1d2230" }
+progress_error  = { fg = "#f9e2af", bg = "#f38ba8" }
+
+# : }}}
+
+
+# : Which {{{
+
+[which]
+cols            = 3
+mask            = { bg = "#181825" }
+cand            = { fg = "#b4befe", bold = true }
+rest            = { fg = "#6c7086" }
+desc            = { fg = "#cba6f7" }
+separator       = "  "
+separator_style = { fg = "#6c7086" }
+
+# : }}}
+
+
+# : Confirmation {{{
+
+[confirm]
+border     = { fg = "#b4befe" }
+title      = { fg = "#cba6f7", bold = true }
+body       = { fg = "#cdd6f4" }
+list       = { fg = "#cdd6f4" }
+btn_yes    = { fg = "#313244", bg = "#cba6f7", bold = true }
+btn_no     = { fg = "#a6adc8" }
+btn_labels = [ "  [Y]es  ", "  (N)o  " ]
+
+# : }}}
+
+
+# : Spotter {{{
+
+[spot]
+border = { fg = "#b4befe" }
+title  = { fg = "#cba6f7", bold = true }
+tbl_col = { fg = "#f9e2af", bold = true }
+tbl_cell = { fg = "#313244", bg = "#cba6f7" }
+
+# : }}}
+
+
+# : Notification {{{
+
+[notify]
+title_info  = { fg = "#a6e3a1" }
+title_warn  = { fg = "#f9e2af" }
+title_error = { fg = "#f38ba8" }
+
+icon_info  = ""
+icon_warn  = ""
+icon_error = ""
+
+# : }}}
+
+
+# : Picker {{{
+
+[pick]
+border   = { fg = "#b4befe" }
+active   = { fg = "#313244", bg = "#cba6f7", bold = true }
+inactive = { fg = "#cdd6f4" }
+
+# : }}}
+
+
+# : Input {{{
+
+[input]
+border   = { fg = "#b4befe" }
+title    = { fg = "#cba6f7" }
+value    = { fg = "#cdd6f4" }
+selected = { fg = "#313244", bg = "#b4befe" }
+
+# : }}}
+
+
+# : Completion {{{
+
+[cmp]
+border   = { fg = "#b4befe" }
+active   = { fg = "#313244", bg = "#b4befe", bold = true }
+inactive = { fg = "#cdd6f4" }
+
+icon_file    = ""
+icon_folder  = ""
+icon_command = ""
+
+# : }}}
+
+
+# : Task manager {{{
+
+[tasks]
+border  = { fg = "#b4befe" }
+title   = { fg = "#cba6f7", bold = true }
+hovered = { fg = "#fab387", underline = true }
+
+# : }}}
+
+
+# : Help menu {{{
+
+[help]
+on      = { fg = "#b4befe" }
+run     = { fg = "#cba6f7" }
+desc    = { fg = "#cdd6f4" }
+hovered = { fg = "#313244", bg = "#cba6f7", bold = true }
+footer  = { fg = "#313244", bg = "#b4befe" }
+
+# : }}}

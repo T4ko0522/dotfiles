@@ -1,0 +1,82 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+  "diff_view_style": "unified",
+  "cli_default_open_behavior": "existing_window",
+  "format_on_save": "off",
+  "formatter": "none",
+  "agent": {
+    "dock": "right",
+    "sidebar_side": "left",
+    "favorite_models": [],
+    "model_parameters": []
+  },
+  "vim_mode": false,
+  "vim": {
+    "default_mode": "insert",
+    "use_system_clipboard": "on_yank"
+  },
+  "close_panel_on_toggle": true,
+  "minimap": {
+    "show": "auto"
+  },
+  "buffer_font_fallbacks": [
+    "PlemolJP Console NF"
+  ],
+  "buffer_font_family": "UDEV Gothic NF",
+  "file_types": {
+    "typescript": [
+      "*.ts"
+    ],
+    "typescriptreact": [
+      "*.tsx"
+    ]
+  },
+  "agent_servers": {
+    "codex-acp": {
+      "type": "registry"
+    },
+    "claude-acp": {
+      "type": "registry"
+    }
+  },
+  "auto_install_extensions": {
+    "catppuccin": true,
+    "catppuccin-icons": true
+  },
+  "project_panel": {
+    "dock": "left",
+    "drag_and_drop": false
+  },
+  "outline_panel": {
+    "dock": "left"
+  },
+  "git_panel": {
+    "tree_view": true,
+    "sort_by_path": true,
+    "dock": "left"
+  },
+  "tabs": {
+    "file_icons": true,
+    "git_status": true
+  },
+  "icon_theme": {
+    "mode": "system",
+    "light": "Catppuccin Latte",
+    "dark": "Material Icon Theme"
+  },
+  "base_keymap": "VSCode",
+  "ui_font_size": 16,
+  "buffer_font_size": 14.0,
+  "theme": {
+    "mode": "system",
+    "light": "Catppuccin Latte",
+    "dark": "Catppuccin Frappé",
+  },
+}
