@@ -1,5 +1,5 @@
 lockfile_version: '1'
-generated_at: '2026-07-20T11:09:35.046865+00:00'
+generated_at: '2026-07-24T19:05:23.536468+00:00'
 apm_version: 0.26.0
 dependencies:
 - repo_url: _local/agent-llm
@@ -21,11 +21,11 @@ dependencies:
   - .claude/skills/tool-pipeline/references/tui-guidelines.md
   deployed_file_hashes:
     .agents/skills/team/SKILL.md: sha256:c01f884842ffcaf9bb1b884dffd3a5539b9acd8bc57af1bdde27181cd2dc194d
-    .agents/skills/tool-pipeline/SKILL.md: sha256:ab70664420844f952a976e7782955dd1aac47c477fd79f03b999dae0be459a34
+    .agents/skills/tool-pipeline/SKILL.md: sha256:85e6b2cfa85674ac38016c86abe399a0e6bc6a29c6d112f0a12ad269833b1481
     .agents/skills/tool-pipeline/references/artifact-templates.md: sha256:b3f51f06107a751ca54690125b7eb285c6c8df18afc0317fb0f11d6fb57c44d3
     .agents/skills/tool-pipeline/references/tui-guidelines.md: sha256:86c4d33b84af0b2a643d7e1b09cacc2065b3c590a6ac1484026ffeb0f9728b72
     .claude/skills/team/SKILL.md: sha256:c01f884842ffcaf9bb1b884dffd3a5539b9acd8bc57af1bdde27181cd2dc194d
-    .claude/skills/tool-pipeline/SKILL.md: sha256:ab70664420844f952a976e7782955dd1aac47c477fd79f03b999dae0be459a34
+    .claude/skills/tool-pipeline/SKILL.md: sha256:85e6b2cfa85674ac38016c86abe399a0e6bc6a29c6d112f0a12ad269833b1481
     .claude/skills/tool-pipeline/references/artifact-templates.md: sha256:b3f51f06107a751ca54690125b7eb285c6c8df18afc0317fb0f11d6fb57c44d3
     .claude/skills/tool-pipeline/references/tui-guidelines.md: sha256:86c4d33b84af0b2a643d7e1b09cacc2065b3c590a6ac1484026ffeb0f9728b72
   source: local
@@ -5161,7 +5161,7 @@ deployments:
   owners:
   - ./packages/agent-llm
   active_owner: ./packages/agent-llm
-  content_hash: sha256:ab70664420844f952a976e7782955dd1aac47c477fd79f03b999dae0be459a34
+  content_hash: sha256:85e6b2cfa85674ac38016c86abe399a0e6bc6a29c6d112f0a12ad269833b1481
 - kind: project-relative
   target: claude
   value: .claude/skills/tool-pipeline/references/artifact-templates.md
@@ -8725,7 +8725,7 @@ deployments:
   owners:
   - ./packages/agent-llm
   active_owner: ./packages/agent-llm
-  content_hash: sha256:ab70664420844f952a976e7782955dd1aac47c477fd79f03b999dae0be459a34
+  content_hash: sha256:85e6b2cfa85674ac38016c86abe399a0e6bc6a29c6d112f0a12ad269833b1481
 - kind: project-relative
   target: codex
   value: .agents/skills/tool-pipeline/references/artifact-templates.md
