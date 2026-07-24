@@ -5,14 +5,13 @@
   lib,
   stdenv,
 }:
-stdenv.mkDerivation {
+stdenv.mkDerivation rec {
   pname = "vite-plus";
-  version = "latest";
+  version = "0.2.6";
 
   src = fetchurl {
-    url = "https://github.com/voidzero-dev/vite-plus/releases/latest/download/vp-x86_64-unknown-linux-gnu.tar.gz";
-    # Update this hash when the latest Vite+ release changes.
-    hash = "sha256-Pwu2w1AAtNFJWf9zRkTdjFsMfi5rP2ia7yw+UguBzUU=";
+    url = "https://github.com/voidzero-dev/vite-plus/releases/download/v${version}/vp-x86_64-unknown-linux-gnu.tar.gz";
+    hash = "sha256-f46IAFyVK6+WkW50qQHNPJ6f4Wtoj9WEdOjsOhfTpkE=";
   };
 
   nativeBuildInputs = [autoPatchelfHook];

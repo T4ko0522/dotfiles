@@ -22,6 +22,14 @@ expect nixosConfigurations.desktop.config.networking.hostName desktop
 expect nixosConfigurations.wsl.config.networking.hostName nixos-wsl
 expect nixosConfigurations.nixos-ci.config.networking.hostName nixos
 
+nix eval "$flake#nixosConfigurations.wsl.config.home-manager.users.t4ko.home.packages" \
+  --apply 'packages: assert builtins.any (package: (package.pname or "") == "vim") packages; "ok"' \
+  --raw >/dev/null
+
+nix eval "$flake#nixosConfigurations.nixos-ci.config.home-manager.users.t4ko.home.packages" \
+  --apply 'packages: assert !(builtins.any (package: (package.pname or "") == "brave") packages); "ok"' \
+  --raw >/dev/null
+
 for host in laptop desktop; do
   nix eval "$flake#nixosConfigurations.$host.config.home-manager.users.t4ko.programs.nixvim.enable" \
     --apply 'enabled: assert enabled; "ok"' --raw >/dev/null
