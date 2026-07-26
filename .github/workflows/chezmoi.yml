@@ -1,0 +1,159 @@
+name: Chezmoi
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    name: Windows availability
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install chezmoi
+        shell: pwsh
+        run: choco install chezmoi --yes --no-progress
+
+      - name: Apply Windows profile
+        shell: pwsh
+        run: |
+          $destination = Join-Path $env:RUNNER_TEMP 'chezmoi-home'
+          $env:CHEZMOI_WINDOWS_APPDATA = Join-Path $env:RUNNER_TEMP 'chezmoi-appdata'
+          $env:CHEZMOI_WINDOWS_DOCUMENTS = Join-Path $env:RUNNER_TEMP 'chezmoi-documents'
+          "CHEZMOI_WINDOWS_APPDATA=$env:CHEZMOI_WINDOWS_APPDATA" >> $env:GITHUB_ENV
+          "CHEZMOI_WINDOWS_DOCUMENTS=$env:CHEZMOI_WINDOWS_DOCUMENTS" >> $env:GITHUB_ENV
+          New-Item -ItemType Directory -Path $destination -Force | Out-Null
+          chezmoi --source $PWD --destination $destination init --apply `
+            --no-tty `
+            --promptChoice 'Environment profile=windows'
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          $expected = @{
+            (Join-Path $destination 'AppData\Local\nvim') = (Join-Path $PWD 'mutable\nvim')
+            (Join-Path $destination '.config\cava') = (Join-Path $PWD 'mutable\cava')
+          }
+          foreach ($target in $expected.Keys) {
+            $item = Get-Item -LiteralPath $target -Force
+            if ($item.LinkType -ne 'Junction') {
+              throw "Expected junction: $target"
+            }
+            if ([IO.Path]::GetFullPath([string]$item.Target) -ne [IO.Path]::GetFullPath($expected[$target])) {
+              throw "Unexpected junction target: $target -> $($item.Target)"
+            }
+          }
+
+      - name: Verify managed configuration
+        shell: pwsh
+        run: |
+          $destination = Join-Path $env:RUNNER_TEMP 'chezmoi-home'
+          $required = @(
+            '.claude\CLAUDE.md',
+            '.claude\settings.json',
+            '.codex\AGENTS.md',
+            '.codex\config.toml',
+            '.config\ccwin-notify\config.toml',
+            '.config\fastfetch\config.jsonc',
+            '.config\lazygit\config.yml',
+            '.config\mise\config.toml',
+            '.config\starship.toml',
+            '.config\vim\vimrc',
+            '.config\wezterm\wezterm.lua',
+            '.config\yasb\config.yaml',
+            '.config\yazi\yazi.toml',
+            '.config\zed\settings.json',
+            '.git_template\hooks\prepare-commit-msg',
+            '.gitconfig',
+            'Documents\PowerShell\Microsoft.PowerShell_profile.ps1'
+          )
+          foreach ($relative in $required) {
+            $target = Join-Path $destination $relative
+            if (-not (Test-Path -LiteralPath $target)) {
+              throw "Missing managed target: $relative"
+            }
+          }
+
+          $settings = Get-Content -LiteralPath (Join-Path $destination '.claude\settings.json') -Raw | ConvertFrom-Json
+          if (-not $settings.hooks.Notification) {
+            throw 'Windows Claude hooks were not merged'
+          }
+
+          $yasb = Get-Content -LiteralPath (Join-Path $destination '.config\yasb\config.yaml') -Raw
+          if ($yasb -match 'C:\\Users\\(?:HP|takow)') {
+            throw 'YASB contains a hard-coded user profile'
+          }
+
+          $links = @{
+            (Join-Path $destination '.config\lazygit') = (Join-Path $PWD 'mutable\shared\lazygit')
+            (Join-Path $destination '.config\zed') = (Join-Path $PWD 'mutable\shared\zed')
+            (Join-Path $destination '.gitconfig') = (Join-Path $PWD 'mutable\shared\gitconfig')
+          }
+          foreach ($target in $links.Keys) {
+            $item = Get-Item -LiteralPath $target -Force
+            if (-not $item.LinkType) {
+              throw "Expected symbolic link: $target"
+            }
+            if ([IO.Path]::GetFullPath([string]$item.Target) -ne [IO.Path]::GetFullPath($links[$target])) {
+              throw "Unexpected symbolic link target: $target -> $($item.Target)"
+            }
+          }
+
+          $nativeLinks = @{
+            (Join-Path $env:CHEZMOI_WINDOWS_APPDATA 'yazi\config\yazi.toml') = (Join-Path $destination '.config\yazi\yazi.toml')
+            (Join-Path $env:CHEZMOI_WINDOWS_APPDATA 'Zed\settings.json') = (Join-Path $PWD 'mutable\shared\zed\settings.json')
+            (Join-Path $env:CHEZMOI_WINDOWS_DOCUMENTS 'PowerShell\Microsoft.PowerShell_profile.ps1') = (Join-Path $destination 'Documents\PowerShell\Microsoft.PowerShell_profile.ps1')
+          }
+          foreach ($target in $nativeLinks.Keys) {
+            $item = Get-Item -LiteralPath $target -Force
+            if (-not $item.LinkType) {
+              throw "Expected native symbolic link: $target"
+            }
+            if ([IO.Path]::GetFullPath([string]$item.Target) -ne [IO.Path]::GetFullPath($nativeLinks[$target])) {
+              throw "Unexpected native symbolic link target: $target -> $($item.Target)"
+            }
+          }
+
+          $codexConfig = Join-Path $destination '.codex\config.toml'
+          Add-Content -LiteralPath $codexConfig -Value "`n# preserve-existing-config"
+          chezmoi --source $PWD --destination $destination --force --no-tty apply
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if (-not (Select-String -LiteralPath $codexConfig -SimpleMatch '# preserve-existing-config' -Quiet)) {
+            throw 'chezmoi overwrote the existing Codex config'
+          }
+
+      - name: Parse PowerShell sources
+        shell: pwsh
+        run: |
+          $parseErrors = @()
+          $files = Get-ChildItem -Path scripts, chezmoi -Filter '*.ps1' -Recurse -File
+          foreach ($file in $files) {
+            $tokens = $null
+            $errors = $null
+            [Management.Automation.Language.Parser]::ParseFile($file.FullName, [ref]$tokens, [ref]$errors) | Out-Null
+            foreach ($error in $errors) {
+              $parseErrors += "$($file.FullName): $($error.Message)"
+            }
+          }
+          if ($parseErrors.Count -gt 0) {
+            throw ($parseErrors -join "`n")
+          }
+
+  contract:
+    name: Contract
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Check profiles and ownership
+        run: nix develop --command bash scripts/check_chezmoi.sh

@@ -1,5 +1,0 @@
-[submodule "corne"]
-	path = corne
-	url = https://github.com/t4ko0522/corne_v4.git
-	branch = main
-	update = merge

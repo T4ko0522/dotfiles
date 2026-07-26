@@ -1,16 +1,15 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ../../modules
-    ../../modules/plymouth.nix
-    ../../profiles/desktop.nix
-    ../../profiles/nvidia-hybrid.nix
-    ../../profiles/gaming.nix
-    # ../../profiles/vr.nix
-    ../../profiles/desktop-apps.nix
+    ../../feature/profiles/workstation.nix
+    ../../feature/modules/desktop/plymouth.nix
+    ../../feature/modules/hardware/nvidia-hybrid.nix
+    ../../feature/profiles/gaming.nix
+    # ../../feature/profiles/vr.nix
   ];
 
   networking.hostName = "laptop";
+  system.stateVersion = "26.05";
 
   t4ko.regreet.mainOutput = "HDMI-A-1";
 
@@ -45,24 +44,6 @@
         };
       }
     ];
-  };
-
-  home-manager.users.t4ko.t4ko.niri.monitors = {
-    "eDP-1" = {
-      mode = "1920x1080@165.016";
-      position = {
-        x = 0;
-        y = 0;
-      };
-    };
-    "HDMI-A-1" = {
-      focusAtStartup = true;
-      mode = "1920x1080@60.000";
-      position = {
-        x = 1920;
-        y = 0;
-      };
-    };
   };
 
   boot.loader.systemd-boot.enable = true;

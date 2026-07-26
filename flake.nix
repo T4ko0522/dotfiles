@@ -14,6 +14,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixvim.url = "github:nix-community/nixvim/nixos-26.05";
+
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL/main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     vial-qmk = {
       url = "git+https://github.com/vial-kb/vial-qmk?submodules=1";
       flake = false;
@@ -22,11 +29,6 @@
     vicinae.url = "github:vicinaehq/vicinae";
 
     llm-agents.url = "github:numtide/llm-agents.nix";
-
-    claudex = {
-      url = "github:StringKe/claudex/v0.2.4";
-      flake = false;
-    };
 
     codex-desktop-linux.url = "github:ilysenko/codex-desktop-linux";
 
@@ -52,11 +54,12 @@
     self,
     nixpkgs,
     home-manager,
+    nixvim,
+    nixos-wsl,
     vial-qmk,
     vicinae,
     lanzaboote,
     llm-agents,
-    claudex,
     nixos-loading-plymouth,
     spotify-cli,
     codex-desktop-linux,
@@ -74,77 +77,48 @@
       fcitxLayout = "jp";
     };
 
-    mkNixos = {
-      configuration,
-      homeConfiguration,
-      extraModules ? [],
-    }:
-      nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = {
-          inherit dotfilesDir keyboardLayout;
-          nixosLoadingPlymouth = nixos-loading-plymouth;
-        };
-        modules =
-          [
-            home-manager.nixosModules.home-manager
-            vicinae.nixosModules.default
-            nixos-loading-plymouth.nixosModules.default
-            configuration
-          ]
-          ++ extraModules
-          ++ [
-            {
-              nixpkgs.overlays = [
-                spotify-cli.overlays.default
-                # actrun.inputs.moonbit-overlay.overlays.default
-                # actrun.overlays.default
-                # (final: prev: {
-                #   actrun = prev.actrun.overrideAttrs (old: {
-                #     nativeBuildInputs = (old.nativeBuildInputs or []) ++ [final.makeWrapper];
-                #     postFixup =
-                #       (old.postFixup or "")
-                #       + ''
-                #         for bin in "$out"/bin/*; do
-                #           wrapProgram "$bin" --prefix LD_LIBRARY_PATH : "${final.openssl.out}/lib"
-                #         done
-                #       '';
-                #   });
-                # })
-              ];
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                backupFileExtension = "hm-backup";
-                extraSpecialArgs = {
-                  inherit claudex dotfilesDir keyboardLayout llm-agents;
-                };
-                sharedModules = [
-                  vicinae.homeManagerModules.default
-                  codex-desktop-linux.homeManagerModules.default
-                ];
-                users.t4ko = import homeConfiguration;
-              };
-            }
-          ];
-      };
+    mkNixos = import ./nix-configs/lib/mk-nixos.nix {
+      inherit
+        codex-desktop-linux
+        home-manager
+        llm-agents
+        nixos-loading-plymouth
+        nixpkgs
+        nixvim
+        spotify-cli
+        system
+        vicinae
+        ;
+    };
 
     laptop = mkNixos {
       configuration = ./nix-configs/hosts/laptop;
-      homeConfiguration = ./nix-configs/home.nix;
+      homeConfiguration = ./nix-configs/hosts/laptop/home.nix;
+      inherit dotfilesDir keyboardLayout;
     };
     desktop = mkNixos {
       configuration = ./nix-configs/hosts/desktop;
-      homeConfiguration = ./nix-configs/home.nix;
+      homeConfiguration = ./nix-configs/hosts/desktop/home.nix;
+      inherit dotfilesDir keyboardLayout;
       extraModules = [lanzaboote.nixosModules.lanzaboote];
     };
     nixosCi = mkNixos {
-      configuration = ./nix-configs/configuration-ci.nix;
-      homeConfiguration = ./nix-configs/home-ci.nix;
+      configuration = ./nix-configs/hosts/ci;
+      homeConfiguration = ./nix-configs/home/profiles/ci.nix;
+      inherit dotfilesDir keyboardLayout;
+    };
+    wsl = mkNixos {
+      configuration = ./nix-configs/hosts/wsl;
+      homeConfiguration = ./nix-configs/hosts/wsl/home.nix;
+      inherit dotfilesDir keyboardLayout;
+      platformModules = [nixos-wsl.nixosModules.default];
+      sharedHomeModules = [];
+      userExtraGroups = ["wheel"];
+      editor = "vim";
     };
   in {
     nixosConfigurations = {
-      inherit laptop desktop;
+      inherit laptop desktop wsl;
       default = laptop;
       nixos-ci = nixosCi;
     };
@@ -153,6 +127,7 @@
       default = pkgs.mkShell {
         packages = with pkgs; [
           avrdude
+          chezmoi
           dfu-util
           gcc-arm-embedded
           git

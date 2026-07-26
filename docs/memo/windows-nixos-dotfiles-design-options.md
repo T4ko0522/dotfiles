@@ -1,19 +1,19 @@
 # Windows / NixOS dotfiles 設計の深掘り（選択肢）
 
-`windows-nixos-dotfiles-design.md` の chezmoi 方針を、現リポジトリの実態に合わせて深掘りした設計選択肢メモ。ここは「決定済みの計画」ではなく「取りうる設計とトレードオフ」を並べる。
+`windows-nixos-dotfiles-design.md`の検討過程を残した資料。現在の決定事項は同文書を正とし、この文書内の`home/` source root、旧`dot_config/`、`setup_windows.ps1`、Maximal構成、両OS共通nvimなどのパスと案は移行前の記録であり、現行実装を表さない。
 
 ## 現状から見えた制約・論点
 
 調査で判明した、設計を縛る既存事実。
 
-- NixOS は `nix-configs/home/xdg.nix` で **二層戦略**を取っている。
+- NixOS は `nix-configs/home/modules/xdg/files.nix` で **二層戦略**を取っている。
   - out-of-store symlink（`mkOutOfStoreSymlink`, xdg.nix:11）: 実行時に書き戻る／頻繁に変わるもの。lazygit `state.yml`、nvim `lazy-lock.json`、codex `config.toml`、zsh `rc`、fcitx5 `config`、`.gitconfig`、claude `skills`。**rebuild 不要・repo を直接 live-edit** が狙い。
   - in-store readonly: 静的なもの。starship、fastfetch、vim、wezterm、yazi。変更に `just os-switch` が要る。
 - Claude `settings.json` は **shared base + OS 固有 hooks のマージ生成**。NixOS は `home.activation`（xdg.nix:100-108）、Windows は `setup_windows.ps1`（144-162）で**同じことを二重実装**している。
 - niri / waybar / swaync は **Nix がテンプレート生成**している。per-host monitor（laptop/desktop で出力構成が違う）、Catppuccin palette、keyboard layout(`jp`/`jp106`) を Nix 値で KDL/JSON/CSS に埋め込む（niri.nix:67-186 ほか）。これらは Linux 専用かつ Nix ネイティブ。
 - Windows は `setup_windows.ps1` が 41 エントリのリンク表 + symlink→hardlink→copy フォールバック（75-104）を手書きしている。
 - flake は `laptop` / `desktop` / `nixos-ci` の 3 ホスト。hostname 判定あり。
-- CI は alejandra / nix-instantiate / statix / nixos-ci build。taplo・markdownlint は未統合。
+- CI は alejandra / nix-instantiate / statix / nixos-ci build。taplo は未統合。
 
 **含意**: chezmoi が素直に置き換えられるのは「Claude settings のマージ二重実装」と「Windows のリンク表」。逆に **niri 系の Nix テンプレートは chezmoi に移せない**（移すと per-host/palette/keyboard のデータ源を失う）。そして既存が大事にしている **live-edit（out-of-store）の性質を chezmoi の既定モデルが壊しうる**——ここが最大の論点。
 
@@ -68,13 +68,13 @@ chezmoi source には `symlink_` エントリ（中身 = link 先 path、`.tmpl`
 | fcitx5 config | linux | chezmoi | B symlink |
 | **niri / waybar / swaync** | linux | **Nix** | Nix template（据え置き） |
 | package / service / systemd / system | linux | **Nix** | 据え置き |
-| komorebi / yasb / whkd / powershell / cava | windows | chezmoi | A/B |
+| powershell / cava / YASB | windows | chezmoi | A/B |
 
 niri 系を Nix に残すのは、per-host monitor・palette・keyboard というデータを Nix が握っているため。これらを chezmoi に移すと、そのデータを `.chezmoidata` 等へ再実装する羽目になる（次節）。Linux 専用なので Windows との共有不要＝ chezmoi に出す動機も薄い。
 
 ## 共有データの扱い（palette / keyboard / per-host）
 
-Nix 側には `specialArgs`（keyboardLayout, dotfilesDir）、per-host monitors、Catppuccin palette がある。chezmoi 側には `.chezmoidata` + `.chezmoi.hostname`。**同じ値を両 OS で使いたくなったとき**（例: Catppuccin を Windows の wezterm/yasb でも統一）にデータ源が二つになる。
+Nix 側には `specialArgs`（keyboardLayout, dotfilesDir）、per-host monitors、Catppuccin palette がある。chezmoi 側には `.chezmoidata` + `.chezmoi.hostname`。**同じ値を両 OS で使いたくなったとき**（例: Catppuccin を Windows の wezterm でも統一）にデータ源が二つになる。
 
 - 案 1: **分離（疎結合）**。Nix の desktop データは Nix 内に閉じ、chezmoi 側 cross-platform 設定は `.chezmoidata` に独自定義。重複は許容。実装が単純で初手向き。
 - 案 2: **単一ソース**。`palette.toml` / `theme.toml` を 1 つ置き、Nix は `builtins.fromTOML`、chezmoi は `.chezmoidata.toml`（または `include | fromToml`）で**両方が同じファイルを読む**。色やキーボードを一元化できる。やや構築コスト。
@@ -87,7 +87,7 @@ Nix 側には `specialArgs`（keyboardLayout, dotfilesDir）、per-host monitors
 
 ```gotmpl
 {{/* home/dot_claude/settings.json.tmpl */}}
-{{- $base := include ".config/shared/claude/settings.json" | fromJson -}}
+{{- $base := include "dot_config/shared/claude/settings.json" | fromJson -}}
 {{- $os := eq .chezmoi.os "windows" | ternary "windows" "nixos" -}}
 {{- $hooks := include (printf ".config/%s/claude/settings.hooks.json" $os) | fromJson -}}
 {{ mergeOverwrite $base $hooks | toPrettyJson }}
@@ -97,7 +97,7 @@ Nix 側には `specialArgs`（keyboardLayout, dotfilesDir）、per-host monitors
 
 ただし注意（Codex 指摘）:
 
-- `include` は **source directory 相対**。`.chezmoiroot=home/` にするなら、上記 `.config/shared/...` は `home/` 配下に置かれている必要がある。レイアウト確定前に最小 PoC で解決を確認すること。
+- `include` は **source directory 相対**。`.chezmoiroot=home/` にするなら、上記 `dot_config/shared/...` は `home/` 配下に置かれている必要がある。レイアウト確定前に最小 PoC で解決を確認すること。
 - `mergeOverwrite` は **deep merge だが deep copy ではなく右側優先、配列は連結しない**。現 PS は `hooks` を丸ごと差し替え、Nix は `recursiveUpdate`。テンプレート化前に **JSON fixture テスト**で挙動を固定し、両 OS で一致させること。
 
 ## 書き戻し系の symlink 設計（Windows junction も統一）
@@ -112,7 +112,7 @@ Nix 側には `specialArgs`（keyboardLayout, dotfilesDir）、per-host monitors
 
 - Linux: `mkOutOfStoreSymlink`（xdg.nix の out-of-store 群）を chezmoi symlink へ移譲。
 - Windows: junction（setup_windows.ps1）を chezmoi symlink へ移譲。chezmoi は Windows で symlink 権限が無ければ挙動が変わるため、**ディレクトリは junction 相当が要るか**を要検証（未解決点）。
-- 実体は `live/`（仮）= chezmoi 変換外の plain ツリーに置く。現状の `.config/shared` の役割をここが引き継ぐ。
+- 実体は `live/`（仮）= chezmoi 変換外の plain ツリーに置く。現状の `dot_config/shared` の役割をここが引き継ぐ。
 
 ## Home Manager と chezmoi の衝突回避（correctness）
 
@@ -182,9 +182,9 @@ chezmoi は主に Windows、NixOS は現状の HM 維持。
 2. **`symlink_` で Windows junction まで置換する前提は危険**。chezmoi の `symlink_` は symbolic link を作る機能で junction 互換を保証しない。現 PS の「dir=junction / file=symlink→hardlink→copy」フォールバックは Windows 権限問題を踏んだ知見。**Windows ディレクトリは `symlink_` 前提にせず `run_onchange_` で junction を明示作成**すべき。開発者モード/権限の現実も要検証。
 3. **HM↔chezmoi の排他所有は「不変条件の明記」だけでは不足**。HM 生成 path と chezmoi 管理 path の**交差を CI で検出する仕組みが必須**。activation 順序では根本解決しない（同一 path を両者が持った時点で負け）。
 4. **`mergeOverwrite` は deep merge だが deep copy ではない・右側優先・配列は連結されない**。現 PS は `hooks` を丸ごと差し替え、Nix は `recursiveUpdate`。**テンプレート化前に JSON fixture テストで挙動を固定**し、両 OS で一致させること。
-5. **`.chezmoiroot=home/` と `include` パスが矛盾している**（実バグ）。chezmoi の `include` は **source directory 相対**。source root を `home/` にすると、本メモの Claude 例が使う `.config/shared/...` という include パスはズレる。**最小 PoC で確認してから**実装すること。
+5. **`.chezmoiroot=home/` と `include` パスが矛盾している**（実バグ）。chezmoi の `include` は **source directory 相対**。source root を `home/` にすると、本メモの Claude 例が使う `dot_config/shared/...` という include パスはズレる。**最小 PoC で確認してから**実装すること。
 6. **見落とし代替**: 「Windows だけ chezmoi、NixOS は現状 HM 維持」が技術的に最小リスク。ユーザー方針（nixos 最低限）とはズレるが、選択肢として明記すべき。次点は「Claude settings と Windows 共有対象だけ chezmoi、live-edit 系（nvim/lazygit/zsh/fcitx5）は当面 HM out-of-store のまま」。
-7. **後戻り不能点**: `.config/shared` を `live/` へ大移動 → HM リンク削除、の局面。ここで Windows junction 代替が不完全だと両 OS の足場が同時に崩れる。**先に「Windows symlink_/run_ の PoC」「Claude settings の fixture テスト」「HM/chezmoi path 交差チェック」を用意してから移行**。
+7. **後戻り不能点**: `dot_config/shared` を `live/` へ大移動 → HM リンク削除、の局面。ここで Windows junction 代替が不完全だと両 OS の足場が同時に崩れる。**先に「Windows symlink_/run_ の PoC」「Claude settings の fixture テスト」「HM/chezmoi path 交差チェック」を用意してから移行**。
 
 Codex の自己推奨: **Hybrid**。chezmoi は Windows bootstrap / Windows 配置 / Claude settings 生成 / 真に cross-platform な静的 dotfiles から始め、NixOS の二層戦略と niri/waybar/swaync は維持。Windows dir は junction を `run_onchange_` で明示。
 
@@ -209,7 +209,7 @@ Codex の自己推奨: **Hybrid**。chezmoi は Windows bootstrap / Windows 配�
 
 1. **最終形（案 1 Maximal）と移行本線（案 2 Hybrid）の二段構えで進めるか**、いきなり Maximal か。
 2. Codex 推奨どおり **Hybrid 起点**（Windows + Claude settings + cross-platform 静的から）にするか、ユーザー方針優先で Maximal を急ぐか。
-3. **symlink stub の実体ツリー名**（`live/`?）と `.config/shared` からの移設手順。
+3. **symlink stub の実体ツリー名**（`live/`?）と `dot_config/shared` からの移設手順。
 4. **共有データを案 1（分離）で始めるか案 2（単一 toml）にするか**。
 5. niri/waybar/swaync を **完全に Nix 据え置き**でよいか（Windows と見た目を揃える要求が無いか）。
 6. codex config を `private_` で足りるか `encrypted_` まで要るか。

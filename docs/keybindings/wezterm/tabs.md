@@ -1,6 +1,6 @@
 # タブ — `tab_ops` key table
 
-定義箇所: [`.config/shared/wezterm/keymaps.lua`](../../../.config/shared/wezterm/keymaps.lua) の `key_tables.tab_ops`
+定義箇所: [`chezmoi/dot_config/wezterm/keymaps.lua`](../../../chezmoi/dot_config/wezterm/keymaps.lua) の `key_tables.tab_ops`
 
 `Alt+a` でトグル起動。`one_shot = false` のため操作後も継続。再度 `Alt+a` か `Esc` で終了。
 

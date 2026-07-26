@@ -1,0 +1,51 @@
+name: NixOS
+
+on:
+  workflow_call:
+    inputs:
+      hosts:
+        description: "Build対象hostのJSON配列"
+        required: false
+        type: string
+        default: '["laptop","desktop","wsl","nixos-ci"]'
+
+permissions:
+  contents: read
+
+jobs:
+  contracts:
+    name: Profile contracts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Check profile contracts
+        run: bash scripts/check_profiles.sh
+
+  build:
+    name: Build ${{ matrix.host }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        host: ${{ fromJSON(inputs.hosts) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Build configuration
+        run: nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel

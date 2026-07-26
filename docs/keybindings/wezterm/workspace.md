@@ -1,6 +1,6 @@
 # ワークスペース
 
-定義箇所: [`.config/shared/wezterm/workspace.lua`](../../../.config/shared/wezterm/workspace.lua)
+定義箇所: [`chezmoi/dot_config/wezterm/workspace.lua`](../../../chezmoi/dot_config/wezterm/workspace.lua)
 
 `scratch` ワークスペースは一時的な作業領域として扱われ、`Ctrl+Cmd+n` / `Ctrl+Cmd+p` の巡回からは除外される。`Ctrl+Cmd+s` のトグルで `scratch` へ移動した際は、移動前のワークスペースを記憶しており、再度同キーで元に戻る。
 
