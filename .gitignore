@@ -4,6 +4,8 @@
 # temporary
 .temp/
 
+# keys
+keys/*
 # Nix
 result
 result-*

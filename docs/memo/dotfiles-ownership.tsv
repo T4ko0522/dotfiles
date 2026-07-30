@@ -52,3 +52,6 @@ windows	.config/yasb	chezmoi	template	chezmoi/dot_config/yasb
 windows	.gitconfig	chezmoi	link	mutable/shared/gitconfig
 nixos	.gitconfig	chezmoi	link	mutable/shared/gitconfig
 wsl	.gitconfig	chezmoi	link	mutable/shared/gitconfig
+windows	.git_template/hooks	chezmoi	copy	chezmoi/private_dot_git_template/hooks
+nixos	.git_template/hooks	chezmoi	copy	chezmoi/private_dot_git_template/hooks
+wsl	.git_template/hooks	chezmoi	copy	chezmoi/private_dot_git_template/hooks

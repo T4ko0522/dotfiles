@@ -8,6 +8,11 @@
 COMMIT_MSG_FILE="$1"
 COMMIT_SOURCE="$2"
 
+# git-secrets の merge 検査を実行する。未導入の環境でも既存の git hook は動かす。
+if command -v git-secrets >/dev/null 2>&1; then
+  git secrets --prepare_commit_msg_hook -- "$@" || exit $?
+fi
+
 # merge, squash 等はスキップ
 case "$COMMIT_SOURCE" in
   merge|squash) exit 0 ;;

@@ -24,6 +24,31 @@ if [[ ! -f "$repo_root/mutable/shared/gitconfig" ]]; then
   exit 1
 fi
 
+git_template_dir="$repo_root/chezmoi/private_dot_git_template/hooks"
+for hook in commit-msg pre-commit prepare-commit-msg; do
+  if [[ ! -f "$git_template_dir/executable_$hook" ]]; then
+    printf 'git hook source does not exist: %s\n' "$git_template_dir/executable_$hook" >&2
+    exit 1
+  fi
+done
+
+templatedir="$(git config --file "$repo_root/mutable/shared/gitconfig" --get init.templatedir)"
+if [[ "$templatedir" != '~/.git_template' ]]; then
+  printf 'git template directory is inconsistent: %s\n' "$templatedir" >&2
+  exit 1
+fi
+
+hooks_path="$(git config --file "$repo_root/mutable/shared/gitconfig" --get core.hookspath)"
+if [[ "$hooks_path" != '~/.git_template/hooks' ]]; then
+  printf 'git hooks path is inconsistent: %s\n' "$hooks_path" >&2
+  exit 1
+fi
+
+if ! command -v git-secrets >/dev/null 2>&1; then
+  printf '%s\n' 'git-secrets is required by the managed Git hooks' >&2
+  exit 1
+fi
+
 declare -A targets=()
 while IFS=$'\t' read -r profile target owner _mode _source; do
   [[ -z "$profile" || "$profile" == profile ]] && continue
@@ -144,6 +169,38 @@ for profile in windows nixos wsl; do
     --exclude scripts \
     --no-tty \
     apply
+
+  git_init_dir="$temp_dir/git-init-$profile"
+  git_init_output="$(
+    HOME="$temp_dir/home-$profile" \
+    XDG_CONFIG_HOME="$temp_dir/home-$profile/.config" \
+    GIT_CONFIG_GLOBAL="$temp_dir/home-$profile/.gitconfig" \
+    GIT_CONFIG_NOSYSTEM=1 \
+    git init "$git_init_dir" 2>&1
+  )"
+  if grep -Fq 'templates not found' <<<"$git_init_output"; then
+    printf 'git init emitted a template warning for profile: %s\n%s\n' "$profile" "$git_init_output" >&2
+    exit 1
+  fi
+  for hook in commit-msg pre-commit prepare-commit-msg; do
+    if [[ ! -f "$git_init_dir/.git/hooks/$hook" ]]; then
+      printf 'git init did not copy hook for %s: %s\n' "$profile" "$hook" >&2
+      exit 1
+    fi
+  done
+  active_hooks_path="$(
+    HOME="$temp_dir/home-$profile" \
+    XDG_CONFIG_HOME="$temp_dir/home-$profile/.config" \
+    GIT_CONFIG_GLOBAL="$temp_dir/home-$profile/.gitconfig" \
+    GIT_CONFIG_NOSYSTEM=1 \
+    git -C "$git_init_dir" rev-parse --git-path hooks
+  )"
+  for hook in commit-msg pre-commit prepare-commit-msg; do
+    if [[ ! -f "$active_hooks_path/$hook" ]]; then
+      printf 'active git hook is missing for %s: %s\n' "$profile" "$hook" >&2
+      exit 1
+    fi
+  done
 
   if [[ "$profile" == windows ]]; then
     codex_config="$temp_dir/home-$profile/.codex/config.toml"

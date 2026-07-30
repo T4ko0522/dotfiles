@@ -16,6 +16,7 @@
     gtop
     gh-dash
     git
+    git-secrets
     just
     lsd
     ripgrep

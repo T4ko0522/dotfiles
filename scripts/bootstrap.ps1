@@ -136,6 +136,7 @@ $scoopPackages = @(
   'extras/fastfetch',
   'extras/ghq',
   'extras/peco',
+  'main/git-secrets',
   'nerd-fonts/JetBrainsMono-NF-Propo',
   't4ko0522/ccwin',
   't4ko0522/spt'

@@ -131,6 +131,7 @@
           dfu-util
           gcc-arm-embedded
           git
+          git-secrets
           gnumake
           qmk
           unzip

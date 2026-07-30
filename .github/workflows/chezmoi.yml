@@ -66,6 +66,8 @@ jobs:
             '.config\yasb\config.yaml',
             '.config\yazi\yazi.toml',
             '.config\zed\settings.json',
+            '.git_template\hooks\commit-msg',
+            '.git_template\hooks\pre-commit',
             '.git_template\hooks\prepare-commit-msg',
             '.gitconfig',
             'Documents\PowerShell\Microsoft.PowerShell_profile.ps1'
