@@ -25,6 +25,8 @@ jobs:
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
+            extra-substituters = https://codex-desktop-linux.cachix.org
+            extra-trusted-public-keys = codex-desktop-linux.cachix.org-1:nX/xy6AdK9hQE24A8ALGjkCKj2ObFmcnemiL5Cid4nk=
 
       - name: Check profile contracts
         run: bash scripts/check_profiles.sh
@@ -42,6 +44,8 @@ jobs:
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
+            extra-substituters = https://codex-desktop-linux.cachix.org
+            extra-trusted-public-keys = codex-desktop-linux.cachix.org-1:nX/xy6AdK9hQE24A8ALGjkCKj2ObFmcnemiL5Cid4nk=
 
       - name: Build laptop
         run: nix build --no-link .#nixosConfigurations.laptop.config.system.build.toplevel
@@ -68,6 +72,8 @@ jobs:
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
+            extra-substituters = https://codex-desktop-linux.cachix.org
+            extra-trusted-public-keys = codex-desktop-linux.cachix.org-1:nX/xy6AdK9hQE24A8ALGjkCKj2ObFmcnemiL5Cid4nk=
 
       - name: Build configuration
         run: nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel
