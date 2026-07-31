@@ -132,6 +132,7 @@ jobs:
             if ! bash .cf-edgenix/scripts/publish.sh; then
               failed+=("$host")
             fi
+            rm -rf "$CACHE_DIR"
             echo "::endgroup::"
           done
           if [ ${#failed[@]} -ne 0 ]; then
