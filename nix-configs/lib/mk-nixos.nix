@@ -3,6 +3,7 @@
   home-manager,
   llm-agents,
   nixos-loading-plymouth,
+  noctalia,
   nixpkgs,
   nixvim,
   spotify-cli,
@@ -19,10 +20,12 @@
   platformModules ? [
     vicinae.nixosModules.default
     nixos-loading-plymouth.nixosModules.default
+    noctalia.nixosModules.default
   ],
   sharedHomeModules ? [
     vicinae.homeManagerModules.default
     codex-desktop-linux.homeManagerModules.default
+    noctalia.homeModules.default
   ],
   systemOverlays ? [spotify-cli.overlays.default],
   userExtraGroups ? [

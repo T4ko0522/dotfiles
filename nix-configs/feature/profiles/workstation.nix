@@ -12,6 +12,7 @@
     ../modules/desktop/fonts.nix
     ../modules/desktop/input-method.nix
     ../modules/desktop/niri.nix
+    ../modules/desktop/noctalia.nix
     ../modules/desktop/portal.nix
     ../modules/desktop/regreet.nix
   ];

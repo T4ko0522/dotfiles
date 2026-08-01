@@ -34,6 +34,8 @@
 
     vicinae.url = "github:vicinaehq/vicinae";
 
+    noctalia.url = "github:noctalia-dev/noctalia/cachix";
+
     llm-agents.url = "github:numtide/llm-agents.nix";
 
     codex-desktop-linux.url = "github:ilysenko/codex-desktop-linux";
@@ -64,6 +66,7 @@
     nixos-wsl,
     vial-qmk,
     vicinae,
+    noctalia,
     lanzaboote,
     llm-agents,
     nixos-loading-plymouth,
@@ -89,6 +92,7 @@
         home-manager
         llm-agents
         nixos-loading-plymouth
+        noctalia
         nixpkgs
         nixvim
         spotify-cli
