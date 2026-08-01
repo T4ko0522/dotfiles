@@ -83,7 +83,6 @@
   }: let
     system = "x86_64-linux";
     pkgs = nixpkgs.legacyPackages.${system};
-    dotfilesDir = self.outPath;
     keyboardLayout = {
       xkbLayout = "jp";
       xkbModel = "jp106";
@@ -110,23 +109,23 @@
     laptop = mkNixos {
       configuration = ./nix-configs/hosts/laptop;
       homeConfiguration = ./nix-configs/hosts/laptop/home.nix;
-      inherit dotfilesDir keyboardLayout;
+      inherit keyboardLayout;
     };
     desktop = mkNixos {
       configuration = ./nix-configs/hosts/desktop;
       homeConfiguration = ./nix-configs/hosts/desktop/home.nix;
-      inherit dotfilesDir keyboardLayout;
+      inherit keyboardLayout;
       extraModules = [lanzaboote.nixosModules.lanzaboote];
     };
     nixosCi = mkNixos {
       configuration = ./nix-configs/hosts/ci;
       homeConfiguration = ./nix-configs/home/profiles/ci.nix;
-      inherit dotfilesDir keyboardLayout;
+      inherit keyboardLayout;
     };
     wsl = mkNixos {
       configuration = ./nix-configs/hosts/wsl;
       homeConfiguration = ./nix-configs/hosts/wsl/home.nix;
-      inherit dotfilesDir keyboardLayout;
+      inherit keyboardLayout;
       platformModules = [nixos-wsl.nixosModules.default];
       sharedHomeModules = [];
       userExtraGroups = ["wheel"];

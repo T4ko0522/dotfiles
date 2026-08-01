@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: T4ko0522/cf-edgeNix
-          ref: main
+          ref: c35c572e60e6c58a947662e2c6fecf64b5f1835d
           path: .cf-edgenix
 
       # nixos-ci は CI 検証用なので publish 対象外、default は laptop の alias なので除外。
@@ -74,18 +74,14 @@ jobs:
             trusted-public-keys = nix.t4ko.pet-1:0eRO18L1/5diWYWboKKPTejQGhGCHNITwELiUaX7Kps= vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc= niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g= codex-desktop-linux.cachix.org-1:nX/xy6AdK9hQE24A8ALGjkCKj2ObFmcnemiL5Cid4nk= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
             accept-flake-config = true
 
-      # /nix/store を全 host 共通でキャッシュ。1 job 内で laptop → desktop と直列に build するので
-      # 2 host 間の共通依存は同一ランで自然に共有され、次回ラン以降は cache から復元される。
-      - name: Cache /nix/store
+      # 既存の /nix/store cache は復元にだけ使う。build結果は自前binary cacheへpublishされるため、
+      # job後にstoreをGC・再圧縮してActions cacheへ二重保存しない。
+      - name: Restore /nix/store cache
         uses: nix-community/cache-nix-action@7df957e333c1e5da7721f60227dbba6d06080569 # v7
         with:
           primary-key: nix-${{ runner.os }}-${{ hashFiles('flake.lock') }}
           restore-prefixes-first-match: nix-${{ runner.os }}-
-          gc-max-store-size-linux: 8G
-          purge: true
-          purge-prefixes: nix-${{ runner.os }}-
-          purge-created: 0
-          purge-primary-key: never
+          save: false
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
@@ -104,12 +100,12 @@ jobs:
         working-directory: .cf-edgenix
         run: bun install --frozen-lockfile
 
-      # 各 host を順次 publish。publish.sh は 1 host 単位の API なので loop で回す。
-      # 1 host 目で /nix/store に乗った共通依存は 2 host 目でそのまま再利用される。
-      # 1 host が失敗しても残りを試行し、最後に集約して exit する (旧 fail-fast: false 相当)。
-      - name: Build, sign & publish (each host)
+      # 全 host を 1 回の build / copy / upstream prune で publishする。
+      # laptop と desktop の共通 closure を同じ CACHE_DIR で再利用し、二重圧縮を避ける。
+      - name: Build, sign & publish
         env:
           HOSTS: ${{ steps.hosts.outputs.list }}
+          CACHE_DIR: ${{ runner.temp }}/cf-edgenix-cache
           CACHE_PRIVATE_KEY: ${{ secrets.CACHE_PRIVATE_KEY }}
           API_BASE_URL: ${{ vars.API_BASE_URL }}
           ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
@@ -123,19 +119,7 @@ jobs:
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
         run: |
-          failed=()
-          for host in $HOSTS; do
-            echo "::group::publish $host"
-            export HOST="$host"
-            export CACHE_DIR="${RUNNER_TEMP}/cache-${host}"
-            mkdir -p "$CACHE_DIR"
-            if ! bash .cf-edgenix/scripts/publish.sh; then
-              failed+=("$host")
-            fi
-            rm -rf "$CACHE_DIR"
-            echo "::endgroup::"
-          done
-          if [ ${#failed[@]} -ne 0 ]; then
-            echo "failed hosts: ${failed[*]}" >&2
-            exit 1
-          fi
+          trap 'rm -rf -- "$CACHE_DIR"' EXIT
+          mkdir -p "$CACHE_DIR"
+          read -r -a hosts <<< "$HOSTS"
+          bash .cf-edgenix/scripts/publish.sh "${hosts[@]}"
