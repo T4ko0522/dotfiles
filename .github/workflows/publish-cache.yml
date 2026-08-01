@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: T4ko0522/cf-edgeNix
-          ref: main
+          ref: c35c572e60e6c58a947662e2c6fecf64b5f1835d
           path: .cf-edgenix
 
       # nixos-ci は CI 検証用なので publish 対象外、default は laptop の alias なので除外。
@@ -104,12 +104,12 @@ jobs:
         working-directory: .cf-edgenix
         run: bun install --frozen-lockfile
 
-      # 各 host を順次 publish。publish.sh は 1 host 単位の API なので loop で回す。
-      # 1 host 目で /nix/store に乗った共通依存は 2 host 目でそのまま再利用される。
-      # 1 host が失敗しても残りを試行し、最後に集約して exit する (旧 fail-fast: false 相当)。
-      - name: Build, sign & publish (each host)
+      # 全 host を 1 回の build / copy / upstream prune で publishする。
+      # laptop と desktop の共通 closure を同じ CACHE_DIR で再利用し、二重圧縮を避ける。
+      - name: Build, sign & publish
         env:
           HOSTS: ${{ steps.hosts.outputs.list }}
+          CACHE_DIR: ${{ runner.temp }}/cf-edgenix-cache
           CACHE_PRIVATE_KEY: ${{ secrets.CACHE_PRIVATE_KEY }}
           API_BASE_URL: ${{ vars.API_BASE_URL }}
           ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
@@ -123,19 +123,7 @@ jobs:
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
         run: |
-          failed=()
-          for host in $HOSTS; do
-            echo "::group::publish $host"
-            export HOST="$host"
-            export CACHE_DIR="${RUNNER_TEMP}/cache-${host}"
-            mkdir -p "$CACHE_DIR"
-            if ! bash .cf-edgenix/scripts/publish.sh; then
-              failed+=("$host")
-            fi
-            rm -rf "$CACHE_DIR"
-            echo "::endgroup::"
-          done
-          if [ ${#failed[@]} -ne 0 ]; then
-            echo "failed hosts: ${failed[*]}" >&2
-            exit 1
-          fi
+          trap 'rm -rf -- "$CACHE_DIR"' EXIT
+          mkdir -p "$CACHE_DIR"
+          read -r -a hosts <<< "$HOSTS"
+          bash .cf-edgenix/scripts/publish.sh "${hosts[@]}"
