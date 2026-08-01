@@ -9,6 +9,8 @@
     gotools
     nixfmt
     prettier
+    ruff
+    shfmt
     statix
     stylua
   ];
@@ -20,6 +22,34 @@
   };
 
   plugins = {
+    conform-nvim = {
+      enable = true;
+      settings = {
+        format_on_save = {
+          lsp_format = "fallback";
+          timeout_ms = 3000;
+        };
+        formatters_by_ft = {
+          bash = ["shfmt"];
+          css = ["prettier"];
+          go = ["gofumpt"];
+          html = ["prettier"];
+          javascript = ["prettier"];
+          javascriptreact = ["prettier"];
+          json = ["prettier"];
+          jsonc = ["prettier"];
+          lua = ["stylua"];
+          markdown = ["prettier"];
+          nix = ["nixfmt"];
+          python = ["ruff_format"];
+          typescript = ["prettier"];
+          typescriptreact = ["prettier"];
+          yaml = ["prettier"];
+          zsh = ["shfmt"];
+        };
+        formatters.prettier.require_cwd = true;
+      };
+    };
     emmet.enable = true;
     markdown-preview = {
       enable = true;
@@ -126,9 +156,6 @@
       end
     '')
     (lib.mkOrder 1140 ''
-      vim.g.bracey_auto_start_browser = 1
-      vim.g.bracey_refresh_on_save = 1
-      vim.g.bracey_server_allow_remote_connections = 0
       vim.g.user_emmet_leader_key = "<C-y>"
       vim.g.user_emmet_settings = {
         variables = { lang = "ja" },

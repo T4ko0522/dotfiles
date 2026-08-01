@@ -13,7 +13,18 @@
       nil_ls.enable = true;
       pyright.enable = true;
       ruff.enable = true;
-      tailwindcss.enable = true;
+      tailwindcss = {
+        enable = true;
+        config.filetypes = [
+          "css"
+          "html"
+          "javascript"
+          "javascriptreact"
+          "typescript"
+          "typescriptreact"
+          "vue"
+        ];
+      };
       taplo.enable = true;
       vtsls.enable = true;
     };
@@ -24,11 +35,15 @@
       enable = true;
       setupLspCapabilities = true;
       settings = {
+        cmdline.enabled = false;
         completion = {
           documentation.window.border = "rounded";
           menu.border = "rounded";
         };
-        keymap.preset = "default";
+        keymap = {
+          preset = "default";
+          "<CR>" = ["fallback"];
+        };
         sources = {
           cmdline = [];
           providers.lazydev = {
@@ -40,6 +55,10 @@
         };
       };
     };
+
+    friendly-snippets.enable = true;
+
+    luasnip.enable = true;
 
     lazydev = {
       enable = true;

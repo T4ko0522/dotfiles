@@ -25,7 +25,7 @@
     map("n", "<C-w><Right>", "<C-w>>", silent)
     map("n", "<C-w><Up>", "<C-w>+", silent)
     map("n", "<C-w><Down>", "<C-w>-", silent)
-    map("n", "<C-j>", vim.diagnostic.goto_next, { noremap = true, silent = true, desc = "Next diagnostic" })
+    map("n", "<C-j>", function() vim.diagnostic.jump({ count = 1 }) end, { noremap = true, silent = true, desc = "Next diagnostic" })
 
     map({ "n", "x" }, "<A-h>", "10h", { desc = "Move 10 chars left" })
     map({ "n", "x" }, "<A-j>", "10j", { desc = "Move 10 lines down" })
@@ -49,6 +49,7 @@
     map("n", "<leader>p", function() Snacks.picker.pickers() end, { desc = "Pickers" })
     map("n", "<leader>y", "<cmd>Yazi<CR>", { desc = "Open Yazi" })
     map("n", "<leader>P", "<cmd>PasteImage<CR>", { desc = "Paste image" })
+    map({ "n", "v" }, "<leader>cf", function() require("conform").format({ async = true, lsp_format = "fallback" }) end, { desc = "Format buffer" })
     map({ "n", "i" }, "<F24>", "<cmd>MarkdownPreviewToggle<CR>", { desc = "Markdown preview" })
     map("n", "<leader>gd", "<cmd>DiffviewOpen<CR>", { desc = "Open diff view" })
     map("n", "<leader>gD", "<cmd>DiffviewClose<CR>", { desc = "Close diff view" })
@@ -66,7 +67,7 @@
 
     map("n", "gh", function()
       local target = vim.fn.expand("<cfile>")
-      if target:match("^https?://") then vim.ui.open(target) else vim.cmd("normal! gF!") end
+      if target:match("^https?://") then vim.ui.open(target) else vim.cmd("normal! gF") end
     end, { desc = "Open link or file" })
     map("n", "gx", function()
       local word = vim.fn.expand("<cWORD>")
@@ -75,7 +76,7 @@
     end, { desc = "Open URL or AWS ARN" })
     map("n", "<leader>gR", function()
       local repository = vim.fn.expand("<cfile>")
-      if repository:match(".+/[^/]+") then vim.ui.open("https://github.com/" .. repository) else vim.cmd("normal! gF!") end
+      if repository:match(".+/[^/]+") then vim.ui.open("https://github.com/" .. repository) else vim.cmd("normal! gF") end
     end, { desc = "Open GitHub repository" })
     map("n", "#", function()
       vim.api.nvim_feedkeys(":%s/" .. vim.fn.expand("<cword>") .. "//g", "n", false)

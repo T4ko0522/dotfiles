@@ -29,7 +29,7 @@
       text = text:gsub("\n%[%^%d+%]:[^\n]*", ""):gsub("<https?://[^>]+>", "")
       text = text:gsub("%[([^%]]-)%]%([^%)]+%)", "%1")
       text = text:gsub("#+", ""):gsub("%*%*", ""):gsub("%*", ""):gsub("_", ""):gsub("[%[%]%(%)]", ""):gsub("-", "")
-      print("ファイル全体の文字数（記法除去後）: " .. #text:gsub("%s+", ""))
+      print("ファイル全体の文字数（記法除去後）: " .. vim.fn.strchars(text:gsub("%s+", "")))
     end, {})
 
     vim.api.nvim_create_user_command("CoAuthoredBy", function(command)

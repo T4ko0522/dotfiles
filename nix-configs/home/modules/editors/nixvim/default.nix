@@ -20,6 +20,7 @@
       fzf
       gh
       git
+      imagemagick
       lazygit
       nodejs
       ripgrep

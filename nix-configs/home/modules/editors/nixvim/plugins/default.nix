@@ -5,11 +5,11 @@
     ./git.nix
     ./languages.nix
     ./navigation.nix
+    ./testing.nix
     ./ui.nix
   ];
 
   extraPlugins = with pkgs.vimPlugins; [
-    bracey-vim
     dracula-nvim
     incline-nvim
     nvim-ufo
