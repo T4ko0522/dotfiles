@@ -20,6 +20,7 @@ jobs:
       contents: read
     outputs:
       nix_configs: ${{ steps.filter.outputs.nix_configs }}
+      physical_configs: ${{ steps.filter.outputs.physical_configs }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,6 +35,21 @@ jobs:
               - 'flake.nix'
               - 'flake.lock'
               - 'scripts/check_profiles.sh'
+            physical_configs:
+              - 'flake.nix'
+              - 'flake.lock'
+              - 'nix-configs/assets/**'
+              - 'nix-configs/lib/**'
+              - 'nix-configs/pkgs/**'
+              - 'nix-configs/feature/modules/**'
+              - 'nix-configs/feature/profiles/base.nix'
+              - 'nix-configs/feature/profiles/gaming.nix'
+              - 'nix-configs/feature/profiles/vr.nix'
+              - 'nix-configs/feature/profiles/workstation.nix'
+              - 'nix-configs/home/modules/**'
+              - 'nix-configs/home/profiles/workstation.nix'
+              - 'nix-configs/hosts/laptop/**'
+              - 'nix-configs/hosts/desktop/**'
 
   lint:
     name: Lint
@@ -59,6 +75,6 @@ jobs:
     if: >-
       github.event_name == 'push' &&
       github.ref == 'refs/heads/master' &&
-      needs.changes.outputs.nix_configs == 'true'
+      needs.changes.outputs.physical_configs == 'true'
     uses: ./.github/workflows/publish-cache.yml
     secrets: inherit
