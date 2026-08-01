@@ -11,11 +11,11 @@
   vicinae,
 }: {
   configuration,
-  dotfilesDir,
   editor ? "nvim",
   extraModules ? [],
   homeConfiguration,
   homeDirectory ? "/home/${username}",
+  dotfilesPath ? "${homeDirectory}/dotfiles",
   keyboardLayout,
   platformModules ? [
     vicinae.nixosModules.default
@@ -45,7 +45,7 @@ in
   nixpkgs.lib.nixosSystem {
     inherit system;
     specialArgs = {
-      inherit dotfilesDir homeDirectory keyboardLayout localPackages userExtraGroups username;
+      inherit dotfilesPath homeDirectory keyboardLayout localPackages userExtraGroups username;
       nixosLoadingPlymouth = nixos-loading-plymouth;
     };
     modules =
@@ -63,7 +63,7 @@ in
             useUserPackages = true;
             backupFileExtension = "hm-backup";
             extraSpecialArgs = {
-              inherit dotfilesDir editor homeDirectory keyboardLayout llm-agents localPackages username;
+              inherit editor homeDirectory keyboardLayout llm-agents localPackages username;
             };
             sharedModules = [nixvim.homeModules.nixvim] ++ sharedHomeModules;
             users.${username} = import homeConfiguration;

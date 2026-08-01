@@ -1,6 +1,6 @@
-{dotfilesDir, ...}: {
+{dotfilesPath, ...}: {
   programs.nh = {
     enable = true;
-    flake = dotfilesDir;
+    flake = dotfilesPath;
   };
 }
