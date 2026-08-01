@@ -25,8 +25,8 @@ jobs:
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
-            extra-substituters = https://codex-desktop-linux.cachix.org
-            extra-trusted-public-keys = codex-desktop-linux.cachix.org-1:nX/xy6AdK9hQE24A8ALGjkCKj2ObFmcnemiL5Cid4nk=
+            extra-substituters = https://nix.t4ko.pet https://vicinae.cachix.org https://cache.numtide.com https://codex-desktop-linux.cachix.org
+            extra-trusted-public-keys = nix.t4ko.pet-1:0eRO18L1/5diWYWboKKPTejQGhGCHNITwELiUaX7Kps= vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc= niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g= codex-desktop-linux.cachix.org-1:nX/xy6AdK9hQE24A8ALGjkCKj2ObFmcnemiL5Cid4nk=
 
       - name: Check profile contracts
         run: bash scripts/check_profiles.sh
@@ -44,8 +44,8 @@ jobs:
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
-            extra-substituters = https://codex-desktop-linux.cachix.org
-            extra-trusted-public-keys = codex-desktop-linux.cachix.org-1:nX/xy6AdK9hQE24A8ALGjkCKj2ObFmcnemiL5Cid4nk=
+            extra-substituters = https://nix.t4ko.pet https://vicinae.cachix.org https://cache.numtide.com https://codex-desktop-linux.cachix.org
+            extra-trusted-public-keys = nix.t4ko.pet-1:0eRO18L1/5diWYWboKKPTejQGhGCHNITwELiUaX7Kps= vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc= niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g= codex-desktop-linux.cachix.org-1:nX/xy6AdK9hQE24A8ALGjkCKj2ObFmcnemiL5Cid4nk=
 
       - name: Build laptop
         run: nix build --no-link .#nixosConfigurations.laptop.config.system.build.toplevel
@@ -72,8 +72,8 @@ jobs:
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
-            extra-substituters = https://codex-desktop-linux.cachix.org
-            extra-trusted-public-keys = codex-desktop-linux.cachix.org-1:nX/xy6AdK9hQE24A8ALGjkCKj2ObFmcnemiL5Cid4nk=
+            extra-substituters = https://nix.t4ko.pet https://vicinae.cachix.org https://cache.numtide.com https://codex-desktop-linux.cachix.org
+            extra-trusted-public-keys = nix.t4ko.pet-1:0eRO18L1/5diWYWboKKPTejQGhGCHNITwELiUaX7Kps= vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc= niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g= codex-desktop-linux.cachix.org-1:nX/xy6AdK9hQE24A8ALGjkCKj2ObFmcnemiL5Cid4nk=
 
       - name: Build configuration
         run: nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel

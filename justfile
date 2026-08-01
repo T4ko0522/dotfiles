@@ -38,8 +38,14 @@ wsl-check:
 profile-check:
     bash scripts/check_profiles.sh
 
+binary-cache-check:
+    bash scripts/check_binary_caches.sh
+
+nixvim-check:
+    bash scripts/check-nixvim.sh
+
 build host="laptop":
     nix build .#nixosConfigurations.{{ host }}.config.system.build.toplevel
 
-ci: syntax fmt-check chezmoi-check wsl-check profile-check
+ci: syntax fmt-check chezmoi-check wsl-check profile-check binary-cache-check
     nix build .#nixosConfigurations.nixos-ci.config.system.build.toplevel
