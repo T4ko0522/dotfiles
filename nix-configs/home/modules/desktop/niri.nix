@@ -188,9 +188,13 @@ in {
         }
     }
 
+    layer-rule {
+        match namespace="^noctalia-backdrop"
+        place-within-backdrop true
+    }
+
     spawn-at-startup "xwayland-satellite"
     spawn-at-startup "sh" "-c" "sleep 2 && fcitx5 -rd"
-    spawn-at-startup "swaync"
     spawn-at-startup "noctalia"
     ${config.t4ko.wallpaper.niriSpawnCommand}
 

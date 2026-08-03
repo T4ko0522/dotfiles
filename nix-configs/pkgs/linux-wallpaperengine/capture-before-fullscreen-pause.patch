@@ -1,0 +1,9 @@
+diff --git a/src/WallpaperEngine/Application/WallpaperApplication.cpp b/src/WallpaperEngine/Application/WallpaperApplication.cpp
+index 50aa230..85d6bb2 100644
+--- a/src/WallpaperEngine/Application/WallpaperApplication.cpp
++++ b/src/WallpaperEngine/Application/WallpaperApplication.cpp
+@@ -820 +820,3 @@ void WallpaperApplication::render () {
+-		if (this->m_fullScreenDetector->anythingFullscreen () && this->m_context.state.general.keepRunning) {
++		if (this->m_fullScreenDetector->anythingFullscreen ()
++		    && this->m_context.state.general.keepRunning
++		    && (!this->m_context.settings.screenshot.take || this->m_screenShotTaken)) {

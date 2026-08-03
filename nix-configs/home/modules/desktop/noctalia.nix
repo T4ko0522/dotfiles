@@ -2,9 +2,14 @@
   programs.noctalia = {
     enable = true;
     settings = {
+      backdrop = {
+        enabled = true;
+        blur_intensity = 0.6;
+        tint_intensity = 0.2;
+      };
       bar.default.enabled = false;
       lockscreen.enabled = false;
-      notification.enable_daemon = false;
+      notification.enable_daemon = true;
       shell = {
         setup_wizard_enabled = false;
         panel = {

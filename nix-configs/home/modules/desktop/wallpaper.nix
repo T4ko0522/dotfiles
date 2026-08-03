@@ -1,10 +1,13 @@
 {
   config,
   lib,
+  localPackages,
   pkgs,
   ...
 }: let
   cfg = config.t4ko.wallpaper;
+  backdropCacheDir = "${config.xdg.cacheHome}/wallpaper-engine-backdrop";
+  noctaliaCommand = lib.getExe config.programs.noctalia.package;
   presetType = lib.types.submodule {
     options = {
       wallpaperId = lib.mkOption {
@@ -43,6 +46,55 @@
     then cfg.monitors
     else preset.monitors;
   mkWallpaperIdForMonitor = preset: monitor: preset.perMonitor.${monitor} or preset.wallpaperId;
+  monitorSize = name: let
+    monitor = config.t4ko.niri.monitors.${name} or (throw "Missing t4ko.niri.monitors.${name}");
+    modeMatch =
+      if monitor.mode == null
+      then null
+      else builtins.match "([0-9]+)x([0-9]+)@.*" monitor.mode;
+    rawWidth =
+      if modeMatch == null
+      then throw "t4ko.niri.monitors.${name}.mode must use WIDTHxHEIGHT@REFRESH"
+      else builtins.fromJSON (lib.elemAt modeMatch 0);
+    rawHeight = builtins.fromJSON (lib.elemAt modeMatch 1);
+    rotated = builtins.elem monitor.transform [
+      "90"
+      "270"
+      "flipped-90"
+      "flipped-270"
+    ];
+  in {
+    width =
+      if rotated
+      then rawHeight
+      else rawWidth;
+    height =
+      if rotated
+      then rawWidth
+      else rawHeight;
+  };
+  mkCaptureLayout = monitors:
+    lib.foldl' (
+      layout: name: let
+        size = monitorSize name;
+      in {
+        width = layout.width + size.width;
+        height = lib.max layout.height size.height;
+        specs =
+          layout.specs
+          ++ [
+            {
+              inherit name;
+              x = layout.width;
+              inherit (size) height width;
+            }
+          ];
+      }
+    ) {
+      width = 0;
+      height = 0;
+      specs = [];
+    } (lib.sort builtins.lessThan monitors);
   timePresetNames = [
     "morning"
     "day"
@@ -93,7 +145,7 @@
   wallpaperEngineCommand = pkgs.writeShellApplication {
     name = "wallpaper-engine-managed";
     runtimeInputs = [
-      pkgs.linux-wallpaperengine
+      localPackages.linuxWallpaperengineCapture
     ];
     text = ''
       linux-wallpaperengine "$@" &
@@ -113,6 +165,7 @@
   };
   mkPresetScriptCase = name: preset: let
     monitors = mkPresetMonitors preset;
+    captureLayout = mkCaptureLayout monitors;
     args =
       [
         "--assets-dir"
@@ -133,15 +186,30 @@
           ]
       )
       monitors;
+    cropSpecArgs =
+      lib.concatMap (
+        spec: [
+          spec.name
+          (toString spec.x)
+          (toString spec.width)
+          (toString spec.height)
+        ]
+      )
+      captureLayout.specs;
   in ''
     ${lib.escapeShellArg name})
       args=(${lib.escapeShellArgs args})
+      capture_width=${toString captureLayout.width}
+      capture_height=${toString captureLayout.height}
+      crop_specs=(${lib.escapeShellArgs cropSpecArgs})
       ;;
   '';
   wallpaperPresetCommand = pkgs.writeShellApplication {
     name = "wallpaper-preset";
     runtimeInputs = [
       pkgs.coreutils
+      pkgs.findutils
+      pkgs.imagemagick
       pkgs.procps
       pkgs.systemd
     ];
@@ -162,10 +230,74 @@
           ;;
       esac
 
+      generation="$(date +%s%N)"
+      mkdir -p ${lib.escapeShellArg backdropCacheDir}
+      find ${lib.escapeShellArg backdropCacheDir} -maxdepth 1 -type f -name 'capture-*.png' -delete
+      screenshot_path=${lib.escapeShellArg backdropCacheDir}/capture-"$generation".png
+      rm -f "$screenshot_path"
+      args+=(--screenshot "$screenshot_path" --screenshot-delay 5)
+
       systemctl --user stop wallpaper-engine.service 2>/dev/null || true
       pkill -u "$(id -u)" -f '(^|/)linux-wallpaperengine( |$)' || true
       systemctl --user reset-failed wallpaper-engine.service 2>/dev/null || true
       systemd-run ${lib.escapeShellArgs systemdRunArgs} ${lib.getExe wallpaperEngineCommand} "''${args[@]}"
+
+      capture_ready=false
+      for _ in $(seq 1 300); do
+        if [ -s "$screenshot_path" ] && magick identify "$screenshot_path" >/dev/null 2>&1; then
+          capture_ready=true
+          break
+        fi
+        sleep 0.1
+      done
+
+      if [ "$capture_ready" != true ]; then
+        echo "Wallpaper Engine backdrop capture timed out: $screenshot_path" >&2
+        exit 1
+      fi
+
+      read -r actual_width actual_height < <(magick identify -format '%w %h\n' "$screenshot_path")
+      if [ "$actual_width" -ne "$capture_width" ] || [ "$actual_height" -ne "$capture_height" ]; then
+        echo "Unexpected Wallpaper Engine capture size: ''${actual_width}x''${actual_height} (expected ''${capture_width}x''${capture_height})" >&2
+        rm -f "$screenshot_path"
+        exit 1
+      fi
+
+      backdrop_status=0
+      for ((i = 0; i < ''${#crop_specs[@]}; i += 4)); do
+        monitor=''${crop_specs[i]}
+        x=''${crop_specs[i + 1]}
+        width=''${crop_specs[i + 2]}
+        height=''${crop_specs[i + 3]}
+        output_path=${lib.escapeShellArg backdropCacheDir}/backdrop-"$monitor-$generation".png
+
+        magick "$screenshot_path" -crop "''${width}x''${height}+''${x}+0" +repage "$output_path"
+
+        updated=false
+        for _ in $(seq 1 40); do
+          if ${noctaliaCommand} msg wallpaper-set "$monitor" "$output_path" >/dev/null 2>&1; then
+            updated=true
+            break
+          fi
+          sleep 0.25
+        done
+
+        if [ "$updated" != true ]; then
+          echo "Failed to update Noctalia backdrop for $monitor" >&2
+          backdrop_status=1
+          continue
+        fi
+
+        find ${lib.escapeShellArg backdropCacheDir} \
+          -maxdepth 1 \
+          -type f \
+          -name "backdrop-$monitor-*.png" \
+          ! -path "$output_path" \
+          -delete
+      done
+
+      rm -f "$screenshot_path"
+      exit "$backdrop_status"
     '';
   };
   wallpaperTimeOfDayCommand = pkgs.writeShellApplication {
