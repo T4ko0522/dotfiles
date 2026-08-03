@@ -14,6 +14,7 @@
     ../modules/desktop/appearance.nix
     ../modules/desktop/quick-shell.nix
     ../modules/desktop/niri.nix
+    ../modules/desktop/niri-popup.nix
     ../modules/desktop/noctalia.nix
     ../modules/desktop/lockscreen.nix
     ../modules/desktop/wallpaper.nix
