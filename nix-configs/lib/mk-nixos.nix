@@ -2,6 +2,7 @@
   codex-desktop-linux,
   home-manager,
   llm-agents,
+  nani-translate-linux,
   nixos-loading-plymouth,
   noctalia,
   nixpkgs,
@@ -25,6 +26,7 @@
   sharedHomeModules ? [
     vicinae.homeManagerModules.default
     codex-desktop-linux.homeManagerModules.default
+    nani-translate-linux.homeManagerModules.default
     noctalia.homeModules.default
   ],
   systemOverlays ? [spotify-cli.overlays.default],

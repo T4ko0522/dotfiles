@@ -23,6 +23,7 @@
     ../modules/apps/vr.nix
     ../modules/editors/nixvim
     ../modules/apps/firefox.nix
+    ../modules/apps/nani-translate.nix
     ../modules/apps/vicinae.nix
     ../modules/apps/spotify.nix
     ../modules/agents/apm.nix

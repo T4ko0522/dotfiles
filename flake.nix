@@ -46,6 +46,8 @@
 
     codex-desktop-linux.url = "github:ilysenko/codex-desktop-linux";
 
+    nani-translate-linux.url = "git+https://github.com/zunoser/nani-translate-linux-mirror.git?ref=feat/linux-ocr";
+
     spotify-cli = {
       url = "github:T4ko0522/spotify-cli";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -76,6 +78,7 @@
     lanzaboote,
     llm-agents,
     nixos-loading-plymouth,
+    nani-translate-linux,
     spotify-cli,
     codex-desktop-linux,
     # actrun,
@@ -96,6 +99,7 @@
         codex-desktop-linux
         home-manager
         llm-agents
+        nani-translate-linux
         nixos-loading-plymouth
         noctalia
         nixpkgs
