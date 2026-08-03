@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: T4ko0522/cf-edgeNix
-          ref: c35c572e60e6c58a947662e2c6fecf64b5f1835d
+          ref: 2212b89b1b455eb2d803c08ae3c2b85cf3700267
           path: .cf-edgenix
 
       # nixos-ci は CI 検証用なので publish 対象外、default は laptop の alias なので除外。
