@@ -12,7 +12,7 @@ if [[ "$(<"$repo_root/.chezmoiroot")" != "chezmoi" ]]; then
   exit 1
 fi
 
-for mutable_dir in mutable/nvim mutable/cava mutable/shared/apm mutable/shared/lazygit mutable/shared/zed mutable/nixos/fcitx5; do
+for mutable_dir in mutable/nvim mutable/cava mutable/shared/apm mutable/shared/lazygit mutable/shared/zed mutable/fcitx5; do
   if [[ ! -d "$repo_root/$mutable_dir" ]]; then
     printf 'mutable source does not exist: %s\n' "$mutable_dir" >&2
     exit 1

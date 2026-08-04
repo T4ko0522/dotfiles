@@ -28,7 +28,7 @@ nixos	.config/waybar	nix	generated	nix-configs/home/modules/desktop/waybar.nix
 windows	Documents/PowerShell	chezmoi	copy	chezmoi/Documents/PowerShell
 windows	.config/zed	chezmoi	link	mutable/shared/zed
 nixos	.config/zed	chezmoi	link	mutable/shared/zed
-nixos	.config/fcitx5/config	nix	link	mutable/nixos/fcitx5/config
+nixos	.config/fcitx5/config	nix	link	mutable/fcitx5/config
 nixos	.config/zsh/rc	nix	store	nix-configs/home/modules/shell/zsh/files/rc
 windows	.config/vim	chezmoi	copy	chezmoi/dot_config/vim
 nixos	.config/vim	chezmoi	copy	chezmoi/dot_config/vim
