@@ -1,82 +1,117 @@
 // Zed settings
-//
-// For information on how to configure Zed, see the Zed
-// documentation: https://zed.dev/docs/configuring-zed
-//
-// To see all of Zed's default settings without changing your
-// custom settings, run `zed: open default settings` from the
-// command palette (cmd-shift-p / ctrl-shift-p)
 {
+  // エディターの基本動作
   "diff_view_style": "unified",
   "cli_default_open_behavior": "existing_window",
   "format_on_save": "off",
   "formatter": "none",
-  "agent": {
-    "dock": "right",
-    "sidebar_side": "left",
-    "favorite_models": [],
-    "model_parameters": []
-  },
-  "vim_mode": false,
-  "vim": {
-    "default_mode": "insert",
-    "use_system_clipboard": "on_yank"
-  },
   "close_panel_on_toggle": true,
+
+  // Vim mode
+  // "vim_mode": false,
+  // "vim": {
+  //   "default_mode": "insert",
+  //   "use_system_clipboard": "on_yank"
+  // },
+
+  // エディターの表示
   "minimap": {
-    "show": "auto"
+    "show": "always"
   },
-  "buffer_font_fallbacks": [
-    "PlemolJP Console NF"
-  ],
+  "scrollbar": {
+    "show": "never"
+  },
+  "indent_guides": {
+    "enabled": true,
+    "line_width": 1,
+    "active_line_width": 1,
+    "coloring": "fixed",
+    "background_coloring": "disabled"
+  },
+
+  // フォント
   "buffer_font_family": "UDEV Gothic NF",
-  "file_types": {
-    "typescript": [
-      "*.ts"
-    ],
-    "typescriptreact": [
-      "*.tsx"
-    ]
-  },
+  "ui_font_size": 16,
+  "buffer_font_size": 14.0,
+
+  // AI エージェント
   "agent_servers": {
     "codex-acp": {
       "type": "registry"
-    },
-    "claude-acp": {
-      "type": "registry"
     }
   },
+
+  // 自動インストールする拡張機能
   "auto_install_extensions": {
     "catppuccin": true,
-    "catppuccin-icons": true
+    "catppuccin-blur": true,
+    "material-icons": true,
+    "toml": true,
+    "svelete": true,
+    "nix": true,
+    "powershell": true
   },
+
+  // プロジェクトパネル
   "project_panel": {
     "dock": "left",
-    "drag_and_drop": false
+    "button": true,
+    "git_status": true,
+    "auto_reveal_entries": true
   },
+
+  // アウトラインパネル
   "outline_panel": {
-    "dock": "left"
+    "dock": "right"
   },
+
+  // Git
+  "git": {
+    "git_gutter": "tracked_files",
+    "inline_blame": {
+      "enabled": true,
+      "show_commit_summary": true,
+      "padding": 7
+    },
+    "branch_picker": {
+      "show_author_name": true
+    }
+  },
+
+  // Git パネル
   "git_panel": {
     "tree_view": true,
     "sort_by_path": true,
     "dock": "left"
   },
+
+  // タブ
   "tabs": {
     "file_icons": true,
     "git_status": true
   },
-  "icon_theme": {
-    "mode": "system",
-    "light": "Catppuccin Latte",
-    "dark": "Material Icon Theme"
-  },
-  "base_keymap": "VSCode",
-  "ui_font_size": 16,
-  "buffer_font_size": 14.0,
-  "theme": {
-    "mode": "system",
-    "light": "Catppuccin Latte",
-    "dark": "Catppuccin Frappé",
-  },
+
+  // テーマとアイコン
+  "icon_theme": "Material Icon Theme",
+  "theme": "Catppuccin Mocha (Blur) [Light]",
+
+  // テーマの透過・配色調整
+  "experimental.theme_overrides": {
+    "background": "#11111b80",
+    "surface.background": "#00000000",
+    "elevated_surface.background": "#181825ff",
+    "element.background": "#00000000",
+    "editor.background": "#00000000",
+    "editor.gutter.background": "#00000000",
+    "editor.subheader.background": "#181825ff",
+    "panel.background": "#00000000",
+    "panel.overlay_background": "#11111bcc",
+    "tab_bar.background": "#00000000",
+    "tab.active_background": "#11111b66",
+    "tab.inactive_background": "#00000000",
+    "title_bar.background": "#00000000",
+    "title_bar.inactive_background": "#00000000",
+    "toolbar.background": "#00000000",
+    "status_bar.background": "#00000000"
+  }
 }

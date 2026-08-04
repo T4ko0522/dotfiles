@@ -188,6 +188,15 @@ in {
         }
     }
 
+    window-rule {
+        match app-id="^dev\\.zed\\.Zed$"
+        draw-border-with-background false
+        background-effect {
+            xray false
+            blur true
+        }
+    }
+
     layer-rule {
         match namespace="^noctalia-backdrop"
         place-within-backdrop true
