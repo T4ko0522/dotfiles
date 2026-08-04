@@ -34,7 +34,7 @@ for host in laptop desktop; do
   nix eval "$flake#nixosConfigurations.$host.config.home-manager.users.t4ko.programs.nixvim.enable" \
     --apply 'enabled: assert enabled; "ok"' --raw >/dev/null
   nix eval "$flake#nixosConfigurations.$host.config.home-manager.users.t4ko.programs.noctalia.settings" \
-    --apply 'settings: assert !settings.wallpaper.enabled; assert settings.backdrop.enabled; assert settings.backdrop.blur_intensity > 0; assert settings.notification.enable_daemon; "ok"' \
+    --apply 'settings: let config = builtins.fromTOML (builtins.readFile settings); in assert !config.wallpaper.enabled; assert config.backdrop.enabled; assert config.backdrop.blur_intensity > 0; assert config.notification.enable_daemon; "ok"' \
     --raw >/dev/null
   nix eval "$flake#nixosConfigurations.$host.config.home-manager.users.t4ko.xdg.configFile" \
     --apply 'files: assert builtins.hasAttr "niri/config.kdl" files; assert builtins.hasAttr "swaync/config.json" files; assert builtins.hasAttr "waybar/config" files; assert !builtins.hasAttr "fastfetch" files; assert !builtins.hasAttr "lazygit" files; assert !builtins.hasAttr "starship.toml" files; assert !builtins.hasAttr "vim" files; assert !builtins.hasAttr "wezterm" files; assert !builtins.hasAttr "yazi" files; assert !builtins.hasAttr "zed" files; "ok"' \

@@ -1,0 +1,218 @@
+# Declarative Noctalia configuration managed by Home Manager.
+# GUI overrides remain app-owned in ~/.local/state/noctalia/settings.toml.
+
+[backdrop]
+blur_intensity = 0.6
+enabled = true
+tint_intensity = 0.2
+
+[bar.default]
+enabled = false
+
+[control_center]
+sidebar = "full"
+sidebar_section = "full"
+
+[[control_center.shortcuts]]
+type = "wifi"
+
+[[control_center.shortcuts]]
+type = "bluetooth"
+
+[[control_center.shortcuts]]
+type = "caffeine"
+
+[[control_center.shortcuts]]
+type = "power_profile"
+
+[desktop_widgets]
+schema_version = 2
+widget_order = [
+  "desktop-widget-0000000000000002",
+  "desktop-widget-0000000000000003",
+  "desktop-widget-0000000000000004",
+]
+
+[desktop_widgets.grid]
+cell_size = 8
+major_interval = 4
+visible = true
+
+[desktop_widgets.widget.desktop-widget-0000000000000002]
+box_height = 184.0
+box_width = 392.0
+cx = 1710.0
+cy = 958.0
+output = "DP-2"
+rotation = 0.0
+type = "media_player"
+
+[desktop_widgets.widget.desktop-widget-0000000000000003]
+box_height = 152.0
+box_width = 256.0
+cx = 144.0
+cy = 120.0
+output = "DP-2"
+rotation = 0.0
+type = "sysmon"
+
+[desktop_widgets.widget.desktop-widget-0000000000000003.settings]
+stat = "cpu_usage"
+stat2 = "cpu_temp"
+
+[desktop_widgets.widget.desktop-widget-0000000000000004]
+box_height = 80.0
+box_width = 272.0
+cx = 1756.0
+cy = 104.0
+output = "DP-2"
+rotation = 0.0
+type = "weather"
+
+[dock]
+active_monitor_only = true
+active_opacity = 1.0
+active_scale = 1.0
+auto_hide = true
+background_opacity = 0.55
+border = "outline"
+border_width = 1.0
+concave_edge_corners = false
+cross_axis_padding = 8
+enabled = true
+icon_size = 38
+inactive_opacity = 0.78
+inactive_scale = 0.9
+item_spacing = 8
+launcher_position = "start"
+layer = "overlay"
+magnification = true
+magnification_scale = 1.35
+main_axis_padding = 12
+margin_edge = 12
+margin_ends = 16
+monitors = ["DP-2"]
+position = "left"
+radius = 24
+radius_bottom_left = 24
+radius_bottom_right = 24
+radius_top_left = 24
+radius_top_right = 24
+reserve_space = false
+shadow = true
+show_dots = true
+smart_auto_hide = false
+
+[hot_corners]
+enabled = true
+
+[location]
+auto_locate = true
+
+[lockscreen]
+enabled = false
+
+[lockscreen_widgets]
+enabled = false
+schema_version = 2
+widget_order = [
+  "lockscreen-login-box@HDMI-A-1",
+  "lockscreen-login-box@DP-2",
+  "lockscreen-login-box@DP-1",
+]
+
+[lockscreen_widgets.grid]
+cell_size = 16
+major_interval = 4
+visible = true
+
+[lockscreen_widgets.widget."lockscreen-login-box@DP-1"]
+box_height = 196.0
+box_width = 810.0
+cx = 540.0
+cy = 1738.0
+output = "DP-1"
+rotation = 0.0
+type = "login_box"
+
+[lockscreen_widgets.widget."lockscreen-login-box@DP-1".settings]
+background_color = "surface_variant"
+background_opacity = 0.88
+background_radius = 12.0
+center_password_text = false
+input_opacity = 1.0
+input_radius = 6.0
+layout = "regular"
+show_caps_lock = true
+show_keyboard_layout = true
+show_login_button = true
+show_media = true
+show_session_buttons = true
+show_unlock_hint = true
+show_weather = true
+
+[lockscreen_widgets.widget."lockscreen-login-box@DP-2"]
+box_height = 196.0
+box_width = 810.0
+cx = 960.0
+cy = 898.0
+output = "DP-2"
+rotation = 0.0
+type = "login_box"
+
+[lockscreen_widgets.widget."lockscreen-login-box@DP-2".settings]
+background_color = "surface_variant"
+background_opacity = 0.88
+background_radius = 12.0
+center_password_text = false
+input_opacity = 1.0
+input_radius = 6.0
+layout = "regular"
+show_caps_lock = true
+show_keyboard_layout = true
+show_login_button = true
+show_media = true
+show_session_buttons = true
+show_unlock_hint = true
+show_weather = true
+
+[lockscreen_widgets.widget."lockscreen-login-box@HDMI-A-1"]
+box_height = 196.0
+box_width = 810.0
+cx = 960.0
+cy = 898.0
+output = "HDMI-A-1"
+rotation = 0.0
+type = "login_box"
+
+[lockscreen_widgets.widget."lockscreen-login-box@HDMI-A-1".settings]
+background_color = "surface_variant"
+background_opacity = 0.88
+background_radius = 12.0
+center_password_text = false
+input_opacity = 1.0
+input_radius = 6.0
+layout = "regular"
+show_caps_lock = true
+show_keyboard_layout = true
+show_login_button = true
+show_media = true
+show_session_buttons = true
+show_unlock_hint = true
+show_weather = true
+
+[notification]
+enable_daemon = true
+
+[shell]
+setup_wizard_enabled = false
+
+[shell.panel]
+control_center_placement = "floating"
+control_center_position = "top_right"
+
+[theme]
+builtin = "Catppuccin"
+
+[wallpaper]
+enabled = false

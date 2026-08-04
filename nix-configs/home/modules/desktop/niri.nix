@@ -193,6 +193,13 @@ in {
         place-within-backdrop true
     }
 
+    layer-rule {
+        match namespace="^noctalia-dock$"
+        background-effect {
+            xray false
+        }
+    }
+
     spawn-at-startup "xwayland-satellite"
     spawn-at-startup "sh" "-c" "sleep 2 && fcitx5 -rd"
     spawn-at-startup "noctalia"
