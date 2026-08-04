@@ -253,18 +253,17 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1785781970,
-        "narHash": "sha256-Te4+r9AP5k1UsMNLrYDEkTvZl8BaCGYBJV2rKtn6M1A=",
-        "ref": "feat/linux-ocr",
-        "rev": "8a69be1f19a395ed4c979bdf4b98fc4792f50c86",
-        "revCount": 3,
+        "lastModified": 1785857772,
+        "narHash": "sha256-JMEQH9x8Pb9cHW4JbWfFBcqxsh4JkPDR5k8dCnphUTU=",
+        "ref": "refs/heads/main",
+        "rev": "9d6fec627a620841c27c7e67e8e7b5719ce9b465",
+        "revCount": 8,
         "type": "git",
-        "url": "https://github.com/zunoser/nani-translate-linux-mirror.git"
+        "url": "https://github.com/zunoser/nani-translate-linux.git"
       },
       "original": {
-        "ref": "feat/linux-ocr",
         "type": "git",
-        "url": "https://github.com/zunoser/nani-translate-linux-mirror.git"
+        "url": "https://github.com/zunoser/nani-translate-linux.git"
       }
     },
     "nixos-loading-plymouth": {

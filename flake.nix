@@ -46,7 +46,7 @@
 
     codex-desktop-linux.url = "github:ilysenko/codex-desktop-linux";
 
-    nani-translate-linux.url = "git+https://github.com/zunoser/nani-translate-linux-mirror.git?ref=feat/linux-ocr";
+    nani-translate-linux.url = "git+https://github.com/zunoser/nani-translate-linux.git";
 
     spotify-cli = {
       url = "github:T4ko0522/spotify-cli";
