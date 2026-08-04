@@ -235,7 +235,7 @@
       find ${lib.escapeShellArg backdropCacheDir} -maxdepth 1 -type f -name 'capture-*.png' -delete
       screenshot_path=${lib.escapeShellArg backdropCacheDir}/capture-"$generation".png
       rm -f "$screenshot_path"
-      args+=(--screenshot "$screenshot_path" --screenshot-delay 5)
+      args+=(--screenshot "$screenshot_path" --screenshot-delay 150)
 
       systemctl --user stop wallpaper-engine.service 2>/dev/null || true
       pkill -u "$(id -u)" -f '(^|/)linux-wallpaperengine( |$)' || true

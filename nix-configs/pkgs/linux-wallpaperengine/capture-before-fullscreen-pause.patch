@@ -7,3 +7,10 @@ index 50aa230..85d6bb2 100644
 +		if (this->m_fullScreenDetector->anythingFullscreen ()
 +		    && this->m_context.state.general.keepRunning
 +		    && (!this->m_context.settings.screenshot.take || this->m_screenShotTaken)) {
+diff --git a/src/WallpaperEngine/Application/ApplicationContext.cpp b/src/WallpaperEngine/Application/ApplicationContext.cpp
+index 1c427c4..ab6a38d 100644
+--- a/src/WallpaperEngine/Application/ApplicationContext.cpp
++++ b/src/WallpaperEngine/Application/ApplicationContext.cpp
+@@ -534 +534 @@ ApplicationContext::ApplicationContext (int argc, char* argv[]) : m_argc (argc),
+-	    = std::max<uint32_t> (0, std::min<uint32_t> (this->settings.screenshot.delay, 5));
++	    = std::max<uint32_t> (0, std::min<uint32_t> (this->settings.screenshot.delay, 300));
