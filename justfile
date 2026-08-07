@@ -28,24 +28,28 @@ fmt-check:
 
 lint:
     statix check .
+    deadnix --fail .
 
 chezmoi-check:
-    nix develop --command bash scripts/check_chezmoi.sh
+    nix develop --command bash scripts/ci/check-chezmoi.sh
 
 wsl-check:
-    bash scripts/check_wsl.sh
+    bash scripts/ci/check-wsl.sh
 
 profile-check:
-    bash scripts/check_profiles.sh
+    bash scripts/ci/check-profiles.sh
 
 binary-cache-check:
-    bash scripts/check_binary_caches.sh
+    bash scripts/ci/check-binary-caches.sh
+
+ci-script-test:
+    bash scripts/ci/tests/check-publish-cooldown-test.sh
 
 nixvim-check:
-    bash scripts/check-nixvim.sh
+    bash scripts/ci/check-nixvim.sh
 
 build host="laptop":
     nix build .#nixosConfigurations.{{ host }}.config.system.build.toplevel
 
-ci: syntax fmt-check chezmoi-check wsl-check profile-check binary-cache-check
-    nix build .#nixosConfigurations.nixos-ci.config.system.build.toplevel
+ci: syntax fmt-check chezmoi-check wsl-check profile-check binary-cache-check ci-script-test
+    nix build .#nixosConfigurations.laptop.config.system.build.toplevel

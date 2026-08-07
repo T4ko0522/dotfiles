@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-repo_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+repo_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)"
 nixvim_attr=".#nixosConfigurations.default.config.home-manager.users.t4ko.programs.nixvim.build"
 nix_cache_options=(
   --option substituters "https://cache.nixos.org/"

@@ -168,7 +168,7 @@ foreach ($pkg in $scoopPackages) {
 
 Write-Host "`n[OK] Bootstrap completed." -ForegroundColor Green
 
-$repo = Split-Path -Parent $PSScriptRoot
+$repo = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 chezmoi --source $repo init --apply --promptChoice 'Environment profile=windows'
 if ($LASTEXITCODE -ne 0) {
   throw "chezmoi apply failed with exit code $LASTEXITCODE"

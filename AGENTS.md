@@ -7,18 +7,18 @@
 - Nix ファイルを整形: `just fmt`
 - Nix 構文チェック: `just syntax`
 - Nix lint: `just lint`
-- NixOS 構成を build: `just build`
+- laptop の NixOS 構成を build: `just build`
 - CI 相当の確認: `just ci`
 
 `just lint` は `statix check .` を実行します。既存の style warning が残っている場合は失敗することがあります。警告修正が目的でない変更では、無関係な大規模修正に広げないでください。
 
 ## CI
 
-GitHub Actions は `.github/workflows/checks.yml` で以下を実行します。
+GitHub Actions は `.github/workflows/ci.yml` から各 workflow を呼び出し、以下を実行します。
 
 - `git ls-files '*.nix' | xargs -r -n1 nix-instantiate --parse --quiet`
 - `alejandra --check .`
-- `nix build .#nixosConfigurations.nixos-ci.config.system.build.toplevel`
+- laptop・desktop・wsl の NixOS 構成を build
 
 ローカルでは `just ci` がこれに近い確認です。
 
@@ -26,7 +26,6 @@ GitHub Actions は `.github/workflows/checks.yml` で以下を実行します。
 
 - `flake.nix`: flake inputs と `nixosConfigurations` を定義します。
 - `nix-configs/hosts/`: ホスト別の構成入口です。`laptop/`・`desktop/`・`wsl/`があります。物理ホストの自動生成由来のhardware設定は目的なしに整理しないでください。
-- `nix-configs/hosts/ci/`: CI build 用の最小構成です。
 - `nix-configs/feature/modules/`: NixOS の単一機能モジュールです。
 - `nix-configs/feature/profiles/`: base、workstation、gaming など用途別の NixOS profile です。
 - `nix-configs/home/`: Home Manager 設定です。
@@ -42,7 +41,6 @@ GitHub Actions は `.github/workflows/checks.yml` で以下を実行します。
 - `nixosConfigurations.desktop`: desktop ホスト構成
 - `nixosConfigurations.wsl`: NixOS-WSL 用の CLI 構成
 - `nixosConfigurations.default`: `laptop` の alias
-- `nixosConfigurations.nixos-ci`: CI 用構成
 - `devShells.x86_64-linux.default`: QMK/Vial 作業用 shell
 
 `specialArgs`とHome Managerの`extraSpecialArgs`には`dotfilesDir`、`keyboardLayout`、`username`、`homeDirectory`などが渡されています。これらが必要なmoduleでは、ハードコードを増やさず既存の引数を使ってください。
