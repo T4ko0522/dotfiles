@@ -2,7 +2,7 @@ name: Update flake lock
 
 on:
   schedule:
-    - cron: "15 3 * * 1"
+    - cron: "15 3 * * *"
   workflow_dispatch:
 
 permissions:
@@ -55,6 +55,6 @@ jobs:
           commit-message: "chore(deps): flake.lockを更新"
           title: "chore(deps): flake.lockを更新"
           body: |
-            `nix flake update`による週次の全flake input更新です。
+            `nix flake update`による日次の全flake input更新です。
 
             PR CIでlaptop、desktop、wsl、nixos-ciをbuildし、手動でmergeします。
