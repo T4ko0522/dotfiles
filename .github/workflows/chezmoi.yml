@@ -158,4 +158,4 @@ jobs:
             experimental-features = nix-command flakes
 
       - name: Check profiles and ownership
-        run: nix develop --command bash scripts/check_chezmoi.sh
+        run: nix develop --command bash scripts/ci/check-chezmoi.sh

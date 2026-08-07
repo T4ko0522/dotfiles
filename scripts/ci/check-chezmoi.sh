@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 ownership_file="$repo_root/docs/memo/dotfiles-ownership.tsv"
 temp_dir="$(mktemp -d)"
 trap 'rm -rf "$temp_dir"' EXIT
