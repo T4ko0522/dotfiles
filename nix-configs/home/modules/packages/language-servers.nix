@@ -1,6 +1,7 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
     biome
+    deadnix
     docker-compose-language-service
     dockerfile-language-server
     gofumpt

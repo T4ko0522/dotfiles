@@ -14,16 +14,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Nix
-        uses: cachix/install-nix-action@v31
-        with:
-          extra_nix_config: |
-            experimental-features = nix-command flakes
+      - name: Setup Nix
+        uses: ./.github/actions/setup-nix
 
       - name: Check Nix syntax
         run: |
           git ls-files '*.nix' \
             | xargs -r -n1 nix-instantiate --parse --quiet >/dev/null
+
+      - name: Check binary cache configuration
+        run: bash scripts/ci/check-binary-caches.sh
+
+      - name: Test CI scripts
+        run: bash scripts/ci/tests/check-publish-cooldown-test.sh
 
   nix-formatting:
     name: Nix formatting
@@ -32,11 +35,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Nix
-        uses: cachix/install-nix-action@v31
-        with:
-          extra_nix_config: |
-            experimental-features = nix-command flakes
+      - name: Setup Nix
+        uses: ./.github/actions/setup-nix
 
       - name: Check Nix formatting
         run: nix run nixpkgs#alejandra -- --check .
@@ -48,11 +48,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Nix
-        uses: cachix/install-nix-action@v31
-        with:
-          extra_nix_config: |
-            experimental-features = nix-command flakes
+      - name: Setup Nix
+        uses: ./.github/actions/setup-nix
 
       - name: Check Lua formatting
         run: |

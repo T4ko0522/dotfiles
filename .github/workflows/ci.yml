@@ -34,7 +34,7 @@ jobs:
               - 'nix-configs/**'
               - 'flake.nix'
               - 'flake.lock'
-              - 'scripts/check_profiles.sh'
+              - 'scripts/ci/check-profiles.sh'
             physical_configs:
               - 'flake.nix'
               - 'flake.lock'

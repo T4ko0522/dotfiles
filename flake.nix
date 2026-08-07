@@ -121,11 +121,6 @@
       inherit keyboardLayout;
       extraModules = [lanzaboote.nixosModules.lanzaboote];
     };
-    nixosCi = mkNixos {
-      configuration = ./nix-configs/hosts/ci;
-      homeConfiguration = ./nix-configs/home/profiles/ci.nix;
-      inherit keyboardLayout;
-    };
     wsl = mkNixos {
       configuration = ./nix-configs/hosts/wsl;
       homeConfiguration = ./nix-configs/hosts/wsl/home.nix;
@@ -139,7 +134,6 @@
     nixosConfigurations = {
       inherit laptop desktop wsl;
       default = laptop;
-      nixos-ci = nixosCi;
     };
 
     devShells.${system} = {

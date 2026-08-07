@@ -40,7 +40,7 @@ jobs:
           ref: main
           path: .cf-edgenix
 
-      # nixos-ci は CI 検証用なので publish 対象外、default は laptop の alias なので除外。
+      # default は laptop の alias なので publish 対象外。
       # workflow_dispatch.inputs.host が空なら両方、指定があれば allowlist 内のもののみ。
       - name: Resolve target hosts
         id: hosts
@@ -61,18 +61,9 @@ jobs:
             esac
           fi
 
-      # flake.nix の nixConfig.extra-substituters は trusted-user 制約で runner では効かないため、
-      # ここで明示的に substituter / trusted-public-keys を inject する。
-      # 通常の NixOS 構成 (nix-configs/feature/modules/core/nix.nix) と同じ cache を使う。
       # 自前 cache を優先し、前回 publish 済みの store path を再利用する。
-      - name: Install Nix
-        uses: cachix/install-nix-action@08dcb3a5e62fa31e2da3d490afc4176ef55ecd72 # v30
-        with:
-          extra_nix_config: |
-            experimental-features = nix-command flakes
-            substituters = https://nix.t4ko.pet https://vicinae.cachix.org https://cache.numtide.com https://codex-desktop-linux.cachix.org https://cache.nixos.org/
-            trusted-public-keys = nix.t4ko.pet-1:0eRO18L1/5diWYWboKKPTejQGhGCHNITwELiUaX7Kps= vicinae.cachix.org-1:1kDrfienkGHPYbkpNj1mWTr7Fm1+zcenzgTizIcI3oc= niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g= codex-desktop-linux.cachix.org-1:nX/xy6AdK9hQE24A8ALGjkCKj2ObFmcnemiL5Cid4nk= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
-            accept-flake-config = true
+      - name: Setup Nix
+        uses: ./.github/actions/setup-nix
 
       # 既存の /nix/store cache は復元にだけ使う。build結果は自前binary cacheへpublishされるため、
       # job後にstoreをGC・再圧縮してActions cacheへ二重保存しない。

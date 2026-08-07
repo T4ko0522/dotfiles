@@ -2,7 +2,8 @@
 
 set -euo pipefail
 
-flake="${1:-.}"
+repo_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)"
+flake="${1:-$repo_root}"
 
 expect() {
   local expression=$1
@@ -20,14 +21,9 @@ expect nixosConfigurations.laptop.config.home-manager.users.t4ko.home.sessionVar
 expect nixosConfigurations.laptop.config.networking.hostName laptop
 expect nixosConfigurations.desktop.config.networking.hostName desktop
 expect nixosConfigurations.wsl.config.networking.hostName nixos-wsl
-expect nixosConfigurations.nixos-ci.config.networking.hostName nixos
 
 nix eval "$flake#nixosConfigurations.wsl.config.home-manager.users.t4ko.home.packages" \
   --apply 'packages: assert builtins.any (package: (package.pname or "") == "vim") packages; "ok"' \
-  --raw >/dev/null
-
-nix eval "$flake#nixosConfigurations.nixos-ci.config.home-manager.users.t4ko.home.packages" \
-  --apply 'packages: assert !(builtins.any (package: (package.pname or "") == "brave") packages); "ok"' \
   --raw >/dev/null
 
 for host in laptop desktop; do

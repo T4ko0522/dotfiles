@@ -2,7 +2,11 @@
 
 set -euo pipefail
 
+repo_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)"
+cd "$repo_root"
+
 cache_file="flake.nix"
+setup_action=".github/actions/setup-nix/action.yml"
 
 cache_json="$(nix-instantiate --eval --strict --json --expr "(import ./$cache_file).nixConfig")"
 jq -e '
@@ -11,6 +15,23 @@ jq -e '
 ' <<<"$cache_json" >/dev/null
 
 rg -Fq "flake.nix" nix-configs/feature/modules/core/nix.nix
+
+if [[ ! -f "$setup_action" ]]; then
+  printf 'missing shared Nix setup action: %s\n' "$setup_action" >&2
+  exit 1
+fi
+
+while IFS= read -r value; do
+  if ! rg -Fq "$value" "$setup_action"; then
+    printf 'shared Nix setup action is missing cache setting: %s\n' "$value" >&2
+    exit 1
+  fi
+done < <(jq -r '."extra-substituters"[], ."extra-trusted-public-keys"[]' <<<"$cache_json")
+
+if rg -l -q 'cachix/install-nix-action' .github/workflows; then
+  printf '%s\n' 'workflows must use the shared Nix setup action' >&2
+  exit 1
+fi
 
 if rg -q 'https://(nix\.t4ko\.pet|vicinae\.cachix\.org|cache\.numtide\.com|codex-desktop-linux\.cachix\.org|noctalia\.cachix\.org|cache\.nixos\.org)' \
   nix-configs/feature/modules/core/nix.nix; then
