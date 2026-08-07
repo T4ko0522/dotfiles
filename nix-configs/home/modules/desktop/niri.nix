@@ -99,7 +99,7 @@ in {
 
         focus-ring {
             width 4.6
-            active-gradient from="${c.mauve}" to="${c.lavender}" angle=45 relative-to="workspace-view"
+            active-gradient from="#ffffff" to="#cfe8ff" angle=45 relative-to="workspace-view"
             inactive-color "#00000000"
             urgent-color "${c.red}"
         }
@@ -110,10 +110,10 @@ in {
 
         shadow {
             on
-            softness 32
-            spread 4
-            offset x=0 y=6
-            color "#00000070"
+            softness 36
+            spread 5
+            offset x=0 y=0
+            color "#ffffff55"
             inactive-color "#00000048"
         }
 
