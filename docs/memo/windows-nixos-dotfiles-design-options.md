@@ -12,8 +12,8 @@
 - Claude `settings.json` は **shared base + OS 固有 hooks のマージ生成**。NixOS は `home.activation`（xdg.nix:100-108）、Windows は `setup_windows.ps1`（144-162）で**同じことを二重実装**している。
 - niri / waybar / swaync は **Nix がテンプレート生成**している。per-host monitor（laptop/desktop で出力構成が違う）、Catppuccin palette、keyboard layout(`jp`/`jp106`) を Nix 値で KDL/JSON/CSS に埋め込む（niri.nix:67-186 ほか）。これらは Linux 専用かつ Nix ネイティブ。
 - Windows は `setup_windows.ps1` が 41 エントリのリンク表 + symlink→hardlink→copy フォールバック（75-104）を手書きしている。
-- flake は `laptop` / `desktop` / `nixos-ci` の 3 ホスト。hostname 判定あり。
-- CI は alejandra / nix-instantiate / statix / nixos-ci build。taplo は未統合。
+- flake は `laptop` / `desktop` / `wsl` の 3 ホスト。hostname 判定あり。
+- CI は alejandra / nix-instantiate / statix と実ホスト構成の build。taplo は未統合。
 
 **含意**: chezmoi が素直に置き換えられるのは「Claude settings のマージ二重実装」と「Windows のリンク表」。逆に **niri 系の Nix テンプレートは chezmoi に移せない**（移すと per-host/palette/keyboard のデータ源を失う）。そして既存が大事にしている **live-edit（out-of-store）の性質を chezmoi の既定モデルが壊しうる**——ここが最大の論点。
 
