@@ -1,4 +1,8 @@
-{pkgs, ...}: let
+{
+  localPackages,
+  pkgs,
+  ...
+}: let
   c = import ../../../lib/theme.nix;
   powerMenu = pkgs.writeShellScriptBin "waybar-power-menu" ''
     if ${pkgs.procps}/bin/pgrep -u "$USER" -x nwg-bar >/dev/null; then
@@ -102,6 +106,7 @@ in {
         "group/right-status" = {
           orientation = "horizontal";
           modules = [
+            "custom/codexbar"
             "battery"
             "custom/separator3"
             "backlight"
@@ -152,6 +157,16 @@ in {
           exec = "sh -c '[ -d /sys/class/backlight ] && [ \"$(ls -A /sys/class/backlight 2>/dev/null)\" ] && ls /sys/class/power_supply 2>/dev/null | grep -q \"^BAT\" && echo \"|\"'";
           tooltip = false;
           interval = "once";
+        };
+
+        "custom/codexbar" = {
+          cursor = true;
+          exec = "${localPackages.codexbar}/bin/codexbar --remaining --icon '󰚩' --color-low '${c.green}' --color-mid '${c.yellow}' --color-high '${c.peach}' --color-critical '${c.red}'";
+          return-type = "json";
+          interval = 300;
+          signal = 12;
+          tooltip = true;
+          on-click = "xdg-open https://chatgpt.com/codex/settings/usage";
         };
 
         "custom/power" = {

@@ -120,6 +120,7 @@
       #custom-menu,
       #clock,
       #custom-notification,
+      #custom-codexbar,
       #custom-separator,
       #custom-separator2,
       #custom-separator3,
@@ -141,6 +142,7 @@
       #custom-menu:active,
       #clock:active,
       #custom-notification:active,
+      #custom-codexbar:active,
       #custom-power:active,
       #wlr-taskbar button:active {
         animation: module-press 160ms ease-out;
@@ -157,6 +159,7 @@
       #custom-menu:hover,
       #clock:hover,
       #custom-notification:hover,
+      #custom-codexbar:hover,
       #custom-power:hover,
       #wlr-taskbar button:hover {
         background-color: alpha(@mauve, 0.16);
