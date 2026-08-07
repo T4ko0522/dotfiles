@@ -7,8 +7,8 @@ if command -v zeditor >/dev/null 2>&1; then
 fi
 alias yz='yazi'
 alias cls='clear'
-alias ct='/home/t4ko/Project/github.com/T4ko0522'
-alias cdp='/home/t4koProject'
+alias cdt='/home/t4ko/Project/github.com/T4ko0522'
+alias cdp='/home/t4ko/Project'
 alias la='lsd -lah'
 alias ..='../'
 alias ...='../../'
