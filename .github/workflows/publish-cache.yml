@@ -21,10 +21,34 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
+  actions: read
   contents: read
 
 jobs:
+  cooldown:
+    runs-on: ubuntu-latest
+    outputs:
+      should-publish: ${{ steps.check.outputs.should-publish }}
+
+    steps:
+      - name: Checkout dotfiles
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Check successful publish cooldown
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          should_publish="$(
+            bash scripts/ci/check-publish-cooldown.sh \
+              --repository "${{ github.repository }}" \
+              --cooldown-seconds 3600
+          )"
+          echo "should-publish=$should_publish" >> "$GITHUB_OUTPUT"
+
   publish:
+    needs: cooldown
+    if: needs.cooldown.outputs.should-publish == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     environment: production
