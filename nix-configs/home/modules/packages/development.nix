@@ -12,6 +12,7 @@
     python3
     uv
     zig
+    openssl
     golangci-lint
     hyperfine
     kubectl
