@@ -2,6 +2,7 @@
   imports = [./core-cli.nix];
 
   home.packages = with pkgs; [
+    baobab
     brave
     fuzzel
     gh
@@ -12,6 +13,7 @@
     nautilus
     pavucontrol
     playerctl
+    pulseaudio
     qt6Packages.fcitx5-configtool
     spotify
     swaybg
