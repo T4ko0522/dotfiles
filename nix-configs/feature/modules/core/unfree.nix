@@ -21,6 +21,7 @@
       "terraform"
       # LLM agents
       "claude-code"
+      "codex-desktop"
       # NVIDIA proprietary drivers
       "nvidia-x11"
       "nvidia-settings"

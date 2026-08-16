@@ -1,14 +1,17 @@
 {
+  codex-desktop-linux,
   llm-agents,
   pkgs,
   ...
-}: {
+}: let
+  codexPackage = llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex;
+  codexDesktopPackage = pkgs.callPackage ../../../pkgs/codex-desktop/package.nix {
+    basePackage = codex-desktop-linux.packages.${pkgs.stdenv.hostPlatform.system}.codex-desktop;
+  };
+in {
   programs.codexDesktopLinux = {
     enable = true;
-    # package は Desktop が app-server コア (CODEX_CLI_PATH) として使う codex 本体。
-    # トップレベルの pkgs.codex は 0.133.0 と古く、タスク作成時にツール定義へ inputSchema を
-    # 付与しないためバックエンドが "missing field `inputSchema`" で弾く。llm.nix で PATH に
-    # llm-agents の codex と揃え、新しいコアを使わせる。
-    package = llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex;
+    package = codexDesktopPackage;
+    cliPackage = codexPackage;
   };
 }
