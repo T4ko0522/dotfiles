@@ -80,6 +80,11 @@ in {
         touchpad {
             tap
             natural-scroll
+            dwt
+            drag-lock
+            click-method "clickfinger"
+            accel-speed 0.4
+            scroll-factor 0.6
         }
     }
 
