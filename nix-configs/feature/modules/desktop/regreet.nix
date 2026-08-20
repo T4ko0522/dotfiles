@@ -55,6 +55,14 @@ in {
       user = "greeter";
     };
 
+    systemd.services.greetd = {
+      environment = {
+        RUST_BACKTRACE = "1";
+        RUST_LOG = "greetd=debug";
+      };
+      serviceConfig.LogLevelMax = "debug";
+    };
+
     environment.etc."greetd/niri.kdl".text = ''
         input {
           keyboard {
