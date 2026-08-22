@@ -18,4 +18,9 @@
       };
     };
   };
+
+  t4ko.wallpaper.monitors = [
+    "HDMI-A-1"
+    "eDP-1"
+  ];
 }
