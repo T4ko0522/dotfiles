@@ -1,7 +1,8 @@
 model = "gpt-5.6-luna"
 model_reasoning_effort = "xhigh"
 service_tier = "default"
-default_permissions = ":danger-full-access"
+approval_policy = "never"
+sandbox_mode = "danger-full-access"
 
 [windows]
 sandbox = "elevated"
@@ -20,22 +21,6 @@ status_line = [
 [tui.model_availability_nux]
 "gpt-5.5" = 4
 "gpt-5.6-sol" = 4
-
-[permissions.personal]
-
-[permissions.personal.filesystem]
-":root" = "read"
-glob_scan_max_depth = 16
-
-[permissions.personal.filesystem.":workspace_roots"]
-"**/.env" = "deny"
-"**/.env.local" = "deny"
-"**/.env.production" = "deny"
-"**/.env.development" = "deny"
-"**/credentials.json" = "deny"
-
-[permissions.personal.network]
-enabled = true
 
 [projects."/home/t4ko/dotfiles"]
 trust_level = "trusted"
