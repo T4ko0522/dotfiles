@@ -33,7 +33,7 @@
         -resize '1920x1080^' \
         -gravity center \
         -extent 1920x1080 \
-        \( "${nixosLogo}" -background none -resize 420x420 \) \
+        \( -background none "${nixosLogo}" -resize 420x420 \) \
         -gravity north \
         -geometry +0+235 \
         -composite \
