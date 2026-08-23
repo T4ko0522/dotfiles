@@ -117,7 +117,7 @@
       #pulseaudio,
       #pulseaudio.input,
       #wlr-taskbar,
-      #custom-menu,
+      #custom-eco-mode,
       #clock,
       #custom-notification,
       #custom-codexbar,
@@ -139,7 +139,7 @@
       #bluetooth:active,
       #pulseaudio:active,
       #pulseaudio.input:active,
-      #custom-menu:active,
+      #custom-eco-mode:active,
       #clock:active,
       #custom-notification:active,
       #custom-codexbar:active,
@@ -156,7 +156,7 @@
       #bluetooth:hover,
       #pulseaudio:hover,
       #pulseaudio.input:hover,
-      #custom-menu:hover,
+      #custom-eco-mode:hover,
       #clock:hover,
       #custom-notification:hover,
       #custom-codexbar:hover,
@@ -226,9 +226,15 @@
       }
 
       #custom-power,
-      #custom-menu {
+      #custom-eco-mode {
         font-size: 14px;
         color: @lavender;
+      }
+
+      #custom-eco-mode.enabled {
+        background-color: alpha(@green, 0.2);
+        color: @green;
+        box-shadow: inset 0 0 0 1px alpha(@green, 0.32);
       }
 
       #mpris {

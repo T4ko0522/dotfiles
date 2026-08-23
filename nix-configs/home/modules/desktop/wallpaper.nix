@@ -7,6 +7,7 @@
 }: let
   cfg = config.t4ko.wallpaper;
   backdropCacheDir = "${config.xdg.cacheHome}/wallpaper-engine-backdrop";
+  ecoModeStateFile = "${config.t4ko.ecoMode.stateDirectory}/enabled";
   noctaliaCommand = lib.getExe config.programs.noctalia.package;
   presetType = lib.types.submodule {
     options = {
@@ -325,10 +326,22 @@
       ${lib.getExe wallpaperPresetCommand} "$preset"
     '';
   };
-  wallpaperStartupCommand =
-    if cfg.scheduleEnabled
-    then ''spawn-at-startup "${lib.getExe wallpaperTimeOfDayCommand}"''
-    else ''spawn-at-startup "${lib.getExe wallpaperPresetCommand}" "${cfg.activePreset}"'';
+  wallpaperRestoreCommand = pkgs.writeShellApplication {
+    name = "wallpaper-restore";
+    runtimeInputs = [pkgs.coreutils];
+    text = ''
+      if [ -e ${lib.escapeShellArg ecoModeStateFile} ]; then
+        exit 0
+      fi
+
+      ${
+        if cfg.scheduleEnabled
+        then "exec ${lib.getExe wallpaperTimeOfDayCommand}"
+        else "exec ${lib.getExe wallpaperPresetCommand} ${lib.escapeShellArg cfg.activePreset}"
+      }
+    '';
+  };
+  wallpaperStartupCommand = ''spawn-at-startup "${lib.getExe wallpaperRestoreCommand}"'';
 in {
   options.t4ko.wallpaper = {
     wallpaperId = lib.mkOption {
@@ -469,12 +482,19 @@ in {
       readOnly = true;
       description = "Command that applies the Wallpaper Engine preset for the current time of day.";
     };
+
+    restoreCommand = lib.mkOption {
+      type = lib.types.package;
+      readOnly = true;
+      description = "Command that restores the configured wallpaper unless eco mode is enabled.";
+    };
   };
 
   config = {
     t4ko.wallpaper = {
       presetCommand = wallpaperPresetCommand;
       timeOfDayCommand = wallpaperTimeOfDayCommand;
+      restoreCommand = wallpaperRestoreCommand;
     };
 
     assertions = [
@@ -495,13 +515,16 @@ in {
       }
     ];
 
-    home.packages = [wallpaperPresetCommand];
+    home.packages = [
+      wallpaperPresetCommand
+      wallpaperRestoreCommand
+    ];
 
     systemd.user.services.wallpaper-time-of-day = lib.mkIf cfg.scheduleEnabled {
       Unit.Description = "Apply the current time-of-day wallpaper preset";
       Service = {
         Type = "oneshot";
-        ExecStart = lib.getExe wallpaperTimeOfDayCommand;
+        ExecStart = lib.getExe wallpaperRestoreCommand;
       };
     };
 

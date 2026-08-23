@@ -1,4 +1,6 @@
 {
+  config,
+  lib,
   localPackages,
   pkgs,
   ...
@@ -12,6 +14,30 @@
 
     exec ${pkgs.nwg-bar}/bin/nwg-bar -p top -f -a middle -mt 34 -i 34 -t power-menu.json -s power-menu.css
   '';
+  jsonFormat = pkgs.formats.json {};
+  normalWaybarConfig = config.xdg.configFile."waybar/config".source;
+  ecoBar =
+    config.programs.waybar.settings.mainBar
+    // {
+      modules-center = lib.remove "cava" config.programs.waybar.settings.mainBar.modules-center;
+    };
+  ecoBarWithoutModules = removeAttrs ecoBar ["modules"];
+  ecoBarModules = lib.optionalAttrs (ecoBar.modules != null) ecoBar.modules;
+  ecoWaybarConfig = jsonFormat.generate "waybar-eco-config.json" [
+    (lib.filterAttrs (_: value: value != null) (ecoBarWithoutModules // ecoBarModules))
+  ];
+  waybarLauncher = pkgs.writeShellApplication {
+    name = "waybar-managed";
+    runtimeInputs = [pkgs.waybar];
+    text = ''
+      config_file=${normalWaybarConfig}
+      if [ -e ${lib.escapeShellArg "${config.t4ko.ecoMode.stateDirectory}/enabled"} ]; then
+        config_file=${ecoWaybarConfig}
+      fi
+
+      exec waybar --config "$config_file"
+    '';
+  };
 in {
   xdg.configFile = {
     "waybar/config".force = true;
@@ -126,7 +152,7 @@ in {
           modules = [
             "custom/power"
             "custom/separator"
-            "custom/menu"
+            "custom/eco-mode"
             "idle_inhibitor"
           ];
         };
@@ -177,11 +203,14 @@ in {
           on-click-right = "niri msg action quit";
         };
 
-        "custom/menu" = {
+        "custom/eco-mode" = {
           cursor = true;
-          format = "";
-          tooltip = "Toggle Overview";
-          on-click = "niri msg action toggle-overview";
+          exec = "${lib.getExe config.t4ko.ecoMode.command} status";
+          return-type = "json";
+          interval = 60;
+          signal = 13;
+          on-click = lib.getExe config.t4ko.ecoMode.toggleCommand;
+          on-click-right = "niri msg action toggle-overview";
         };
 
         idle_inhibitor = {
@@ -440,5 +469,6 @@ in {
   };
 
   systemd.user.services.waybar.Service.ExecStartPre = "${pkgs.runtimeShell} -c '${pkgs.procps}/bin/pkill -u %u -f \"(^|/)waybar($|[[:space:]])\" || true'";
+  systemd.user.services.waybar.Service.ExecStart = lib.mkForce (lib.getExe waybarLauncher);
   systemd.user.services.waybar.Unit.X-SwitchMethod = "restart";
 }

@@ -8,10 +8,7 @@
   c = import ../../../lib/theme.nix;
   niriCfg = config.t4ko.niri;
   wallpaperCfg = config.t4ko.wallpaper;
-  restoreWallpaperCommand =
-    if wallpaperCfg.scheduleEnabled
-    then lib.getExe wallpaperCfg.timeOfDayCommand
-    else "${lib.getExe wallpaperCfg.presetCommand} ${lib.escapeShellArg wallpaperCfg.activePreset}";
+  restoreWallpaperCommand = lib.getExe wallpaperCfg.restoreCommand;
   mainMonitors = lib.filterAttrs (_: monitor: monitor.focusAtStartup) niriCfg.monitors;
   mainMonitor = lib.head (lib.attrNames mainMonitors);
   secondaryMonitors = lib.attrNames (lib.filterAttrs (name: _: name != mainMonitor) niriCfg.monitors);

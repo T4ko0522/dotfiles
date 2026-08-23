@@ -13,6 +13,7 @@
     ../modules/packages/wayland.nix
     ../modules/desktop/appearance.nix
     ../modules/desktop/quick-shell.nix
+    ../modules/desktop/eco-mode.nix
     ../modules/desktop/niri.nix
     ../modules/desktop/niri-popup.nix
     ../modules/desktop/noctalia.nix
