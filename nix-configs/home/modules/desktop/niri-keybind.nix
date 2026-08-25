@@ -50,6 +50,7 @@
   Mod+9 { focus-workspace 9; }
 
   Mod+R { switch-preset-column-width; }
+  Mod+Shift+R { switch-preset-column-width-back; }
   Mod+F { spawn "${quickShellModFCommand}"; }
   Mod+Shift+F { fullscreen-window; }
   Mod+C { center-column; }

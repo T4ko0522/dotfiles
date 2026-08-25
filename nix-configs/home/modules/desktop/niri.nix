@@ -95,16 +95,18 @@ in {
         background-color "${c.crust}"
 
         preset-column-widths {
+            proportion 0.25
             proportion 0.33333
             proportion 0.5
             proportion 0.66667
+            proportion 1.0
         }
 
         default-column-width { proportion 0.5; }
 
         focus-ring {
             width 4.6
-            active-gradient from="#ffffff" to="#cfe8ff" angle=45 relative-to="workspace-view"
+            active-gradient from="#89b4fa" to="#f5c2e7" angle=45 relative-to="workspace-view" in="oklab"
             inactive-color "#00000000"
             urgent-color "${c.red}"
         }
