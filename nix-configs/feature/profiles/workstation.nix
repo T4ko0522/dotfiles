@@ -7,6 +7,7 @@
     ../modules/services/bluetooth.nix
     ../modules/services/docker.nix
     ../modules/services/networkmanager.nix
+    ../modules/services/removable-storage.nix
     ../modules/services/tailscale.nix
     ../modules/desktop/audio.nix
     ../modules/desktop/fonts.nix
