@@ -9,6 +9,7 @@ set -euo pipefail
 : "${ECO_MODE_WALLPAPER_RESTORE_UNIT:?ECO_MODE_WALLPAPER_RESTORE_UNIT is required}"
 : "${ECO_MODE_WAYBAR_UNIT:?ECO_MODE_WAYBAR_UNIT is required}"
 : "${ECO_MODE_POWER_PROFILES_COMMAND:?ECO_MODE_POWER_PROFILES_COMMAND is required}"
+: "${ECO_MODE_LIGHTING_COMMAND:=}"
 
 enabled_file="$ECO_MODE_STATE_DIR/enabled"
 restore_units_file="$ECO_MODE_STATE_DIR/restore-units"
@@ -70,6 +71,14 @@ enable_power_saver() {
   "$ECO_MODE_POWER_PROFILES_COMMAND" set power-saver >/dev/null 2>&1 || true
 }
 
+set_lighting() {
+  local state=$1
+
+  if [[ -n "$ECO_MODE_LIGHTING_COMMAND" ]]; then
+    "$ECO_MODE_LIGHTING_COMMAND" "$state" >/dev/null 2>&1 || true
+  fi
+}
+
 enable_mode() {
   lock_state
 
@@ -83,6 +92,7 @@ enable_mode() {
 
   stop_targets
   enable_power_saver
+  set_lighting off
   reload_waybar
 }
 
@@ -130,6 +140,7 @@ disable_mode() {
     rm -f "$power_profile_file"
   fi
 
+  set_lighting on
   reload_waybar
   return "$restore_status"
 }
@@ -140,6 +151,7 @@ apply_mode() {
   if [[ -e "$enabled_file" ]]; then
     stop_targets
     enable_power_saver
+    set_lighting off
   fi
 }
 
