@@ -1,4 +1,8 @@
 {
+  config,
+  lib,
+  ...
+}: {
   imports = [
     ./hardware-configuration.nix
     ../../feature/profiles/workstation.nix
@@ -16,4 +20,18 @@
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+
+  services.hardware.openrgb = {
+    enable = true;
+    motherboard = "intel";
+  };
+
+  systemd.services.openrgb.serviceConfig.ExecStart = lib.mkForce (lib.escapeShellArgs [
+    (lib.getExe config.services.hardware.openrgb.package)
+    "--server"
+    "--server-host"
+    "127.0.0.1"
+    "--server-port"
+    (toString config.services.hardware.openrgb.server.port)
+  ]);
 }

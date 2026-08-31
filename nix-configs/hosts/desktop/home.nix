@@ -1,5 +1,8 @@
 {
-  imports = [../../home/profiles/workstation.nix];
+  imports = [
+    ../../home/profiles/workstation.nix
+    ../../home/modules/desktop/galleria-case-lighting.nix
+  ];
 
   t4ko.niri.monitors = {
     "DP-1" = {

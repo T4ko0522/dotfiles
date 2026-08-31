@@ -75,7 +75,9 @@ set_lighting() {
   local state=$1
 
   if [[ -n "$ECO_MODE_LIGHTING_COMMAND" ]]; then
-    "$ECO_MODE_LIGHTING_COMMAND" "$state" >/dev/null 2>&1 || true
+    if ! "$ECO_MODE_LIGHTING_COMMAND" "$state" >/dev/null; then
+      printf 'failed to set eco mode lighting: %s\n' "$state" >&2
+    fi
   fi
 }
 
