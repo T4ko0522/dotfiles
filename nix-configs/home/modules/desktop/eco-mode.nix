@@ -24,6 +24,7 @@
       export ECO_MODE_WALLPAPER_RESTORE_UNIT=${lib.escapeShellArg wallpaperRestoreUnit}
       export ECO_MODE_WAYBAR_UNIT=${lib.escapeShellArg waybarUnit}
       export ECO_MODE_POWER_PROFILES_COMMAND=${lib.escapeShellArg (lib.getExe' pkgs.power-profiles-daemon "powerprofilesctl")}
+      export ECO_MODE_LIGHTING_COMMAND=${lib.escapeShellArg (lib.optionalString (cfg.lightingCommand != null) (lib.getExe cfg.lightingCommand))}
 
       exec ${pkgs.bash}/bin/bash ${./eco-mode/eco-mode.sh} "$@"
     '';
@@ -56,6 +57,12 @@ in {
         "wivrn.service"
       ];
       description = "User services stopped while eco mode is enabled and restored only when they were previously active.";
+    };
+
+    lightingCommand = lib.mkOption {
+      type = lib.types.nullOr lib.types.package;
+      default = null;
+      description = "Optional command used to turn desktop lighting on or off with eco mode.";
     };
 
     command = lib.mkOption {

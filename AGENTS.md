@@ -74,6 +74,7 @@ GitHub Actions は `.github/workflows/ci.yml` から各 workflow を呼び出し
 ## 変更時の注意
 
 - ユーザーの未 commit 変更を勝手に戻さないでください。
+- この dotfiles リポジトリでは、新しいテストファイルやテスト用 fixture を追加しないでください。変更の確認には既存の CI コマンド、Nix の評価・build、実環境での動作確認を使ってください。
 - `flake.lock` の `"version": 7` は lock file 形式のバージョンです。Linux kernel version ではありません。
 - Home Manager package を追加する場合は、system package と user package のどちらに置くべきか確認してください。個人用 GUI/CLI は通常 `nix-configs/home/modules/packages/` 側です。
 - `dogdns` のように nixpkgs で削除済みの package は、評価エラーの案内に従って代替 package を使ってください。
