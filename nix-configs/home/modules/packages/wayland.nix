@@ -7,6 +7,7 @@
     blueman
     brightnessctl
     cava
+    ddcutil
     libnotify
     networkmanagerapplet
     pamixer

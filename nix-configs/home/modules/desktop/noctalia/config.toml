@@ -25,6 +25,9 @@ type = "caffeine"
 [[control_center.shortcuts]]
 type = "power_profile"
 
+[brightness]
+enable_ddcutil = true
+
 [desktop_widgets]
 schema_version = 2
 widget_order = [
