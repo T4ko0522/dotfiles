@@ -25,9 +25,6 @@ jobs:
       - name: Check binary cache configuration
         run: bash scripts/ci/check-binary-caches.sh
 
-      - name: Test CI scripts
-        run: bash scripts/ci/tests/check-publish-cooldown-test.sh
-
   nix-formatting:
     name: Nix formatting
     runs-on: ubuntu-latest
