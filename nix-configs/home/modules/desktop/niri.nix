@@ -206,6 +206,8 @@ in {
 
     window-rule {
         match title="^Picture in picture$"
+        match title="^Picture-in-Picture$"
+        match title="^ピクチャー イン ピクチャー$"
 
         open-floating true
         default-column-width { fixed 240; }
