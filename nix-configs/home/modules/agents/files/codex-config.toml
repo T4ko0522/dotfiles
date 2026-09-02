@@ -4,6 +4,9 @@ service_tier = "default"
 approval_policy = "never"
 sandbox_mode = "danger-full-access"
 
+[desktop]
+"selected-avatar-id" = "custom:reimu"
+
 [tui]
 theme = "monokai-extended-origin"
 status_line = [

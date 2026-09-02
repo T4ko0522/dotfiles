@@ -7,6 +7,7 @@
     inherit (pkgs) lib;
   };
   codexbar = pkgs.callPackage ./codexbar/package.nix {};
+  codexPetReimu = pkgs.callPackage ./codex-pets/reimu.nix {};
   librepods = pkgs.callPackage ./librepods/package.nix {};
   linuxWallpaperengineCapture = pkgs.callPackage ./linux-wallpaperengine/package.nix {};
   plymouthTheme = pkgs.callPackage ./plymouth-theme/package.nix {

@@ -205,6 +205,26 @@ in {
     }
 
     window-rule {
+        match title="^Codex Pet Overlay$"
+
+        open-floating true
+        open-focused false
+
+        // Codex owns the transparent native overlay's bounds and bottom-right anchor.
+        // Applying Niri size/position rules here moves the large backing surface instead
+        // of the mascot, which can leave the visible pet at the top edge.
+        draw-border-with-background false
+
+        focus-ring {
+            off
+        }
+
+        shadow {
+            off
+        }
+    }
+
+    window-rule {
         match title="^Picture in picture$"
         match title="^Picture-in-Picture$"
         match title="^ピクチャー イン ピクチャー$"
