@@ -1,6 +1,6 @@
 # ペイン
 
-定義箇所: [`chezmoi/dot_config/wezterm/keymaps.lua`](../../../chezmoi/dot_config/wezterm/keymaps.lua) の `key_tables` 配下 `pane_ops` / `resize_pane` / `activate_pane`
+定義箇所: [`nix-configs/home/modules/apps/wezterm/files/keymaps.lua`](../../../nix-configs/home/modules/apps/wezterm/files/keymaps.lua) の `key_tables` 配下 `pane_ops` / `resize_pane` / `activate_pane`
 
 ## `pane_ops` — `Alt+q` で起動
 
@@ -18,7 +18,7 @@
 | `a` | 移動モード `activate_pane` へ遷移（1 秒タイムアウト） |
 | `Esc` | モード終了 |
 
-## `resize_pane` — `pane_ops → s` で起動
+## `resize_pane` — `pane_ops → s` または `Leader → s` で起動
 
 `one_shot = false`。`Enter` で抜けるまで連続操作可。
 
@@ -29,6 +29,7 @@
 | `k` | 上方向へ 1 単位リサイズ |
 | `l` | 右方向へ 1 単位リサイズ |
 | `Enter` | モード終了 |
+| `Esc` | モード終了 |
 
 ## `activate_pane` — `pane_ops → a` で起動
 

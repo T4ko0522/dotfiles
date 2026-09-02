@@ -55,10 +55,6 @@ jobs:
     name: Lint
     uses: ./.github/workflows/lint.yml
 
-  chezmoi:
-    name: Chezmoi
-    uses: ./.github/workflows/chezmoi.yml
-
   nixos:
     name: NixOS
     needs: changes

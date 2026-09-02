@@ -1,7 +1,10 @@
 {
+  actrun,
+  agent-skills,
   codex-desktop-linux,
   home-manager,
   llm-agents,
+  mizchi-skills,
   nani-translate-linux,
   nixos-loading-plymouth,
   noctalia,
@@ -65,9 +68,9 @@ in
             useUserPackages = true;
             backupFileExtension = "hm-backup";
             extraSpecialArgs = {
-              inherit codex-desktop-linux editor homeDirectory keyboardLayout llm-agents localPackages username;
+              inherit actrun agent-skills codex-desktop-linux dotfilesPath editor homeDirectory keyboardLayout llm-agents localPackages mizchi-skills username;
             };
-            sharedModules = [nixvim.homeModules.nixvim] ++ sharedHomeModules;
+            sharedModules = [nixvim.homeModules.nixvim agent-skills.homeManagerModules.default] ++ sharedHomeModules;
             users.${username} = import homeConfiguration;
           };
         }

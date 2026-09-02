@@ -2,10 +2,10 @@
 
 設定ファイル:
 
-- [`chezmoi/dot_config/wezterm/wezterm.lua`](../../../chezmoi/dot_config/wezterm/wezterm.lua) — エントリポイント
-- [`chezmoi/dot_config/wezterm/keymaps.lua`](../../../chezmoi/dot_config/wezterm/keymaps.lua) — グローバル / `tab_ops` / `pane_ops` / `resize_pane` / `activate_pane` / `copy_mode`
-- [`chezmoi/dot_config/wezterm/workspace.lua`](../../../chezmoi/dot_config/wezterm/workspace.lua) — ワークスペース / `workspace_mode`
-- [`chezmoi/dot_config/wezterm/modules/opacity.lua`](../../../chezmoi/dot_config/wezterm/modules/opacity.lua) — `setting_mode`
+- [`nix-configs/home/modules/apps/wezterm/files/wezterm.lua`](../../../nix-configs/home/modules/apps/wezterm/files/wezterm.lua) — エントリポイント
+- [`nix-configs/home/modules/apps/wezterm/files/keymaps.lua`](../../../nix-configs/home/modules/apps/wezterm/files/keymaps.lua) — グローバル / `tab_ops` / `pane_ops` / `resize_pane` / `activate_pane` / `copy_mode`
+- [`nix-configs/home/modules/apps/wezterm/files/workspace.lua`](../../../nix-configs/home/modules/apps/wezterm/files/workspace.lua) — ワークスペース / `workspace_mode`
+- [`nix-configs/home/modules/apps/wezterm/files/modules/opacity.lua`](../../../nix-configs/home/modules/apps/wezterm/files/modules/opacity.lua) — `setting_mode`
 
 ## 前提
 

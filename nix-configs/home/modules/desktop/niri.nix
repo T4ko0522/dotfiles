@@ -204,6 +204,27 @@ in {
         }
     }
 
+    window-rule {
+        match title="^Picture in picture$"
+
+        open-floating true
+        default-column-width { fixed 240; }
+        default-window-height { fixed 135; }
+        default-floating-position x=20 y=20 relative-to="top-right"
+
+        opacity 1.0
+        draw-border-with-background false
+
+        border {
+            off
+        }
+
+        background-effect {
+            blur false
+            xray false
+        }
+    }
+
     layer-rule {
         match namespace="^noctalia-backdrop"
         place-within-backdrop true

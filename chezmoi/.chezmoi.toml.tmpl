@@ -1,5 +1,0 @@
-{{- $profiles := list "windows" "nixos" "wsl" -}}
-{{- $profile := promptChoiceOnce . "profile" "Environment profile" $profiles "nixos" -}}
-[data]
-profile = {{ $profile | quote }}
-username = "t4ko"

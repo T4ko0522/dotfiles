@@ -25,13 +25,23 @@
     ../modules/apps/vr.nix
     ../modules/editors/nixvim
     ../modules/apps/firefox.nix
+    ../modules/apps/lazygit.nix
     ../modules/apps/nani-translate.nix
     ../modules/apps/vicinae.nix
+    ../modules/apps/vmagicmirror.nix
     ../modules/apps/spotify.nix
-    ../modules/agents/apm.nix
+    ../modules/apps/wezterm.nix
+    ../modules/apps/zed.nix
+    ../modules/agents/agent-skills.nix
+    ../modules/agents/claude.nix
     ../modules/agents/codex.nix
+    ../modules/agents/codex-config.nix
     ../modules/agents/codex-desktop.nix
+    ../modules/development/git.nix
+    ../modules/terminal/configs.nix
     ../modules/xdg/files.nix
     ../modules/xdg/mime-apps.nix
   ];
+
+  t4ko.claude.notifications.enable = true;
 }

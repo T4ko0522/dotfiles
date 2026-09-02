@@ -23,7 +23,7 @@ expect nixosConfigurations.desktop.config.networking.hostName desktop
 expect nixosConfigurations.wsl.config.networking.hostName nixos-wsl
 
 nix eval "$flake#nixosConfigurations.wsl.config.home-manager.users.t4ko.home.packages" \
-  --apply 'packages: assert builtins.any (package: (package.pname or "") == "vim") packages; "ok"' \
+  --apply 'packages: assert builtins.any (package: (package.pname or "") == "vim") packages; assert !builtins.any (package: (package.pname or "") == "chezmoi") packages; "ok"' \
   --raw >/dev/null
 
 for host in laptop desktop; do
@@ -33,19 +33,27 @@ for host in laptop desktop; do
     --apply 'settings: let config = builtins.fromTOML (builtins.readFile settings); in assert !config.wallpaper.enabled; assert config.backdrop.enabled; assert config.backdrop.blur_intensity > 0; assert config.notification.enable_daemon; "ok"' \
     --raw >/dev/null
   nix eval "$flake#nixosConfigurations.$host.config.home-manager.users.t4ko.xdg.configFile" \
-    --apply 'files: assert builtins.hasAttr "niri/config.kdl" files; assert builtins.hasAttr "swaync/config.json" files; assert builtins.hasAttr "waybar/config" files; assert !builtins.hasAttr "fastfetch" files; assert !builtins.hasAttr "lazygit" files; assert !builtins.hasAttr "starship.toml" files; assert !builtins.hasAttr "vim" files; assert !builtins.hasAttr "wezterm" files; assert !builtins.hasAttr "yazi" files; assert !builtins.hasAttr "zed" files; "ok"' \
+    --apply 'files: assert builtins.hasAttr "niri/config.kdl" files; assert builtins.hasAttr "swaync/config.json" files; assert builtins.hasAttr "waybar/config" files; assert builtins.hasAttr "fastfetch" files; assert builtins.hasAttr "lazygit" files; assert builtins.hasAttr "starship.toml" files; assert builtins.hasAttr "vim/vimrc" files; assert builtins.hasAttr "wezterm" files; assert builtins.hasAttr "yazi" files; assert builtins.hasAttr "zed" files; "ok"' \
     --raw >/dev/null
   nix eval "$flake#nixosConfigurations.$host.config.home-manager.users.t4ko.home.file" \
-    --apply 'files: assert !builtins.hasAttr ".claude/CLAUDE.md" files; assert !builtins.hasAttr ".claude/settings.json" files; assert !builtins.hasAttr ".codex/AGENTS.md" files; assert !builtins.hasAttr ".gitconfig" files; assert !builtins.hasAttr ".git_template/hooks" files; "ok"' \
+    --apply 'files: assert builtins.hasAttr ".claude/CLAUDE.md" files; assert builtins.hasAttr ".claude/settings.json" files; assert builtins.hasAttr ".codex/AGENTS.md" files; assert builtins.hasAttr ".gitconfig" files; assert builtins.hasAttr ".git_template/hooks/pre-commit" files; "ok"' \
     --raw >/dev/null
 done
 
 nix eval "$flake#nixosConfigurations.wsl.config.home-manager.users.t4ko.programs.nixvim.enable" \
   --apply 'enabled: assert !enabled; "ok"' --raw >/dev/null
 
+nix eval "$flake#nixosConfigurations.wsl.config.home-manager.users.t4ko.xdg.configFile" \
+  --apply 'files: assert builtins.hasAttr "fastfetch" files; assert builtins.hasAttr "lazygit" files; assert builtins.hasAttr "starship.toml" files; assert builtins.hasAttr "vim/vimrc" files; assert builtins.hasAttr "yazi" files; assert !builtins.hasAttr "wezterm" files; assert !builtins.hasAttr "zed" files; "ok"' \
+  --raw >/dev/null
+
+nix eval "$flake#nixosConfigurations.wsl.config.home-manager.users.t4ko.home.file" \
+  --apply 'files: assert builtins.hasAttr ".claude/CLAUDE.md" files; assert builtins.hasAttr ".codex/AGENTS.md" files; assert builtins.hasAttr ".gitconfig" files; assert builtins.hasAttr ".git_template/hooks/pre-commit" files; "ok"' \
+  --raw >/dev/null
+
 codex_seed="$(nix eval "$flake#nixosConfigurations.laptop.config.home-manager.users.t4ko.home.activation.seedCodexConfig.data" --raw)"
-if [[ "$codex_seed" != *'/dotfiles/chezmoi/.chezmoitemplates/codex-config.toml'* ]]; then
-  printf '%s\n' 'Codex seed does not use the chezmoi template source' >&2
+if [[ "$codex_seed" != *'/nix/store/'*'-codex-config.toml'* ]]; then
+  printf '%s\n' 'Codex seed does not use the Nix store source' >&2
   exit 1
 fi
 if [[ "$codex_seed" != *'[ -L "$codex_cfg" ] || [ ! -e "$codex_cfg" ]'* ]]; then

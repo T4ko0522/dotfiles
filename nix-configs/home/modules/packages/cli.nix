@@ -1,8 +1,6 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
-    # actrun
     bat
-    chezmoi
     delta
     difftastic
     diffnav
