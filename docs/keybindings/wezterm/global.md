@@ -2,7 +2,7 @@
 
 key table に入っていない通常状態で常時有効なキーバインド。
 
-定義箇所: [`chezmoi/dot_config/wezterm/keymaps.lua`](../../../chezmoi/dot_config/wezterm/keymaps.lua) の `keys` テーブル
+定義箇所: [`nix-configs/home/modules/apps/wezterm/files/keymaps.lua`](../../../nix-configs/home/modules/apps/wezterm/files/keymaps.lua) の `keys` テーブル
 
 ## コマンドパレット / 設定
 
@@ -17,10 +17,10 @@ key table に入っていない通常状態で常時有効なキーバインド�
 | キー | 動作 |
 | --- | --- |
 | `Ctrl+c` | 選択範囲をクリップボードへコピー |
-| `Ctrl+v` | クリップボードから貼り付け |
+| `Ctrl+v` / `Ctrl+Shift+v` | クリップボードから貼り付け |
 | `Ctrl+Shift+Space` | QuickSelect 起動（URL / git hash / IP / path 等を 1 文字キーで選択） |
 
-QuickSelect の追加パターンは [`wezterm.lua`](../../../chezmoi/dot_config/wezterm/wezterm.lua) の `config.quick_select_patterns` で定義可能（現在は未設定で WezTerm 既定パターンのみ）。
+QuickSelect の追加パターンは [`nix-configs/home/modules/apps/wezterm/files/wezterm.lua`](../../../nix-configs/home/modules/apps/wezterm/files/wezterm.lua) の `config.quick_select_patterns` で定義可能（現在は未設定で WezTerm 既定パターンのみ）。
 
 ## フォントサイズ
 
@@ -36,7 +36,8 @@ QuickSelect の追加パターンは [`wezterm.lua`](../../../chezmoi/dot_config
 
 | キー | 起動するモード | 詳細 |
 | --- | --- | --- |
-| `Leader → c` | `copy_mode` | [copy-mode.md](./copy-mode.md) |
+| `Leader → v` | `copy_mode` | [copy-mode.md](./copy-mode.md) |
+| `Leader → s` | `resize_pane` | [panes.md](./panes.md) |
 | `Leader → w` | `workspace_mode`（fuzzy 選択メニュー併発） | [workspace.md](./workspace.md) |
 
 ## モード起動 (直接)

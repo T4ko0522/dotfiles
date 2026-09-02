@@ -1,8 +1,8 @@
 # コピーモード — `copy_mode` key table
 
-定義箇所: [`chezmoi/dot_config/wezterm/keymaps.lua`](../../../chezmoi/dot_config/wezterm/keymaps.lua) の `key_tables.copy_mode`
+定義箇所: [`nix-configs/home/modules/apps/wezterm/files/keymaps.lua`](../../../nix-configs/home/modules/apps/wezterm/files/keymaps.lua) の `key_tables.copy_mode`
 
-`Leader → c` で起動。vim 風のキーバインドで移動・選択・コピー・検索を行う。
+`Leader → v` で起動。vim 風のキーバインドで移動・選択・コピー・検索を行う。
 
 ## カーソル移動
 
