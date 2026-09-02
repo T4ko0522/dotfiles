@@ -1,0 +1,84 @@
+// Zed keymap
+//
+// Neovim (LazyVim) 設定の操作感を Zed に寄せた keymap。
+// 元設定: ~/.config/nvim/lua/config/{keymaps,options}.lua
+//
+// - Leader: , (カンマ)
+// - LocalLeader: \
+// - ヤンク時のみシステムクリップボードに連携 (settings.json の vim.use_system_clipboard: on_yank)
+[
+  // ===== Workspace (vim_mode 問わず) =====
+  {
+    "context": "Workspace",
+    "bindings": {
+      "ctrl-/": "terminal_panel::ToggleFocus"
+    }
+  },
+
+  // ===== Insert モード: emacs 風行頭/行末 =====
+  {
+    "context": "vim_mode == insert",
+    "bindings": {
+      "ctrl-a": "editor::MoveToBeginningOfLine",
+      "ctrl-e": "editor::MoveToEndOfLine"
+    }
+  },
+
+  // ===== Normal モード共通 =====
+  {
+    "context": "vim_mode == normal && !VimWaiting && !menu",
+    "bindings": {
+      // 数値 increment / decrement (Neovim では +/- に再マップしている)
+      "+": "vim::Increment",
+      "-": "vim::Decrement",
+
+      // タブナビゲーション
+      "tab": "pane::ActivateNextItem",
+      "shift-tab": "pane::ActivatePrevItem",
+
+      // ウィンドウ分割 (Neovim: ss/sv)
+      "s s": "pane::SplitDown",
+      "s v": "pane::SplitRight",
+
+      // ウィンドウ間移動 (Neovim: sh/sj/sk/sl)
+      "s h": "workspace::ActivatePaneLeft",
+      "s j": "workspace::ActivatePaneDown",
+      "s k": "workspace::ActivatePaneUp",
+      "s l": "workspace::ActivatePaneRight",
+
+      // 次の診断へジャンプ (Neovim: <C-j>)
+      "ctrl-j": "editor::GoToDiagnostic",
+
+      // Leader (,) を奪うため、f/F/t/T の逆方向を ;, に再マップ
+      "; ,": "vim::RepeatFindReversed",
+
+      // ===== Leader (,) chord =====
+      ", ,": "file_finder::Toggle",            // Find Files
+      ", /": "pane::DeploySearch",             // Grep (Project Search)
+      ", e": "project_panel::Toggle",          // Explorer (visibility toggle)
+      ", f f": "file_finder::Toggle",          // Find Files
+      ", f r": "file_finder::Toggle",          // Recent Files (Zed では file_finder と統合)
+      ", g": "git_panel::Toggle",              // Git Panel (visibility toggle)
+      ", n n": "notification_panel::Toggle",
+      ", x x": "diagnostics::Deploy"
+    }
+  },
+
+  // ===== Visual モード共通 =====
+  {
+    "context": "vim_mode == visual && !VimWaiting && !menu",
+    "bindings": {
+      "; ,": "vim::RepeatFindReversed"
+    }
+  },
+
+  // ===== エディタなし (パネルにフォーカス時など) =====
+  {
+    "context": "EmptyPane || SharedScreen",
+    "bindings": {
+      ", ,": "file_finder::Toggle",
+      ", /": "pane::DeploySearch",
+      ", e": "project_panel::Toggle"
+    }
+  }
+]

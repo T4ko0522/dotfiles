@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# git-secrets が導入済みならステージ済みファイルを検査する。
+if command -v git-secrets >/dev/null 2>&1; then
+  exec git secrets --pre_commit_hook -- "$@"
+fi
+
+exit 0

@@ -7,6 +7,5 @@
     claude-code
     codex
     opencode
-    apm
   ];
 }

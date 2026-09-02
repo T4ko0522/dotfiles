@@ -44,6 +44,22 @@
 
     llm-agents.url = "github:numtide/llm-agents.nix";
 
+    agent-skills = {
+      url = "github:Kyure-A/agent-skills-nix";
+      inputs.home-manager.follows = "home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    mizchi-skills = {
+      url = "github:mizchi/skills/5aaf2d126a04a8b079fd5184eb1860f232afffd3";
+      flake = false;
+    };
+
+    actrun = {
+      url = "github:mizchi/actrun/3ea136d34e7ee071986bbaaad54e40aa496b8488";
+      flake = false;
+    };
+
     codex-desktop-linux.url = "github:ilysenko/codex-desktop-linux";
 
     nani-translate-linux.url = "git+https://github.com/zunoser/nani-translate-linux.git";
@@ -63,11 +79,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # actrun.url = "github:mizchi/actrun";
   };
 
   outputs = {
     self,
+    actrun,
+    agent-skills,
     nixpkgs,
     home-manager,
     nixvim,
@@ -81,7 +98,7 @@
     nani-translate-linux,
     spotify-cli,
     codex-desktop-linux,
-    # actrun,
+    mizchi-skills,
     ...
   }: let
     system = "x86_64-linux";
@@ -96,6 +113,8 @@
 
     mkNixos = import ./nix-configs/lib/mk-nixos.nix {
       inherit
+        actrun
+        agent-skills
         codex-desktop-linux
         home-manager
         llm-agents
@@ -104,6 +123,7 @@
         noctalia
         nixpkgs
         nixvim
+        mizchi-skills
         spotify-cli
         system
         vicinae
@@ -140,7 +160,6 @@
       default = pkgs.mkShell {
         packages = with pkgs; [
           avrdude
-          chezmoi
           dfu-util
           gcc-arm-embedded
           git
