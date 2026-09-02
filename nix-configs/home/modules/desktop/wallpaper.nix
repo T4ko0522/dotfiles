@@ -358,7 +358,7 @@ in {
 
     fallbackImage = lib.mkOption {
       type = lib.types.nullOr lib.types.path;
-      default = ../../../assets/wallpapers/nix.png;
+      default = ../../../assets/wallpapers/black-plaine-nix.png;
       description = ''
         Static wallpaper rendered by swaybg on every output. It is spawned before
         linux-wallpaperengine so that it stays visible whenever the engine fails to
