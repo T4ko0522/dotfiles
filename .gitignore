@@ -11,7 +11,7 @@ result
 result-*
 
 # lazygit
-mutable/shared/lazygit/state.yml
+nix-configs/home/modules/apps/lazygit/files/state.yml
 
 # Cloudflare Wrangler
 .wrangler/*

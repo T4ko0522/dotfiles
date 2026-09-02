@@ -1,6 +1,6 @@
 # Dotfiles
 
-NixOS、NixOS-WSL、Windowsの環境を管理しているdotfiles.
+NixOS と NixOS-WSL の環境を Home Manager とともに管理する dotfiles.
 
 ## Nix
 
@@ -29,7 +29,7 @@ NixOS、NixOS-WSL、Windowsの環境を管理しているdotfiles.
 
 Inspired by [akazdayo/nix-configs](https://github.com/akazdayo/nix-configs), [moons-14/dotfiles](https://github.com/moons-14/dotfiles), [mozumasu/dotfiles](https://github.com/mozumasu/dotfiles).
 
-NixOSの再構築後にchezmoi profileを適用し、Home Managerの対象外へ移したdotfileも配置する。
+NixOS の設定とユーザー環境は Home Manager とともに適用されます。
 
 ```sh
 just os-switch laptop
@@ -37,14 +37,9 @@ just os-switch laptop
 
 ## NixOS-WSL
 
-NixOS-WSLの初期イメージ内でこのリポジトリをcloneし、NixOS構成とchezmoiの`wsl` profileを適用する。
+NixOS-WSL は `t4ko` ユーザー、Windows interop、CLI 用 Home Manager profile を有効にします。desktop package と Neovim 設定は含みません。
 
 ```sh
 just wsl-switch
-```
-
-WSL構成は`t4ko`ユーザー、Windows interop、CLI用Home Manager profileを有効にする。desktop packageとNeovim設定は含まない。
-
-```sh
 just wsl-check
 ```

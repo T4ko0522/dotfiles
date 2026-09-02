@@ -43,25 +43,23 @@ GitHub Actions は `.github/workflows/ci.yml` から各 workflow を呼び出し
 - `nixosConfigurations.default`: `laptop` の alias
 - `devShells.x86_64-linux.default`: QMK/Vial 作業用 shell
 
-`specialArgs`とHome Managerの`extraSpecialArgs`には`dotfilesDir`、`keyboardLayout`、`username`、`homeDirectory`などが渡されています。これらが必要なmoduleでは、ハードコードを増やさず既存の引数を使ってください。
+`specialArgs`とHome Managerの`extraSpecialArgs`には`dotfilesPath`、`keyboardLayout`、`username`、`homeDirectory`などが渡されています。これらが必要なmoduleでは、ハードコードを増やさず既存の引数を使ってください。
 
 ## ファイル配置ルール
 
 - `nix-configs/feature/modules/` は複数構成で共有する単一機能の NixOS 設定を置きます。module から profile を import しません。
 - `nix-configs/feature/profiles/` は用途別の機能 bundle です。module の実装を持たず、原則として imports で構成します。
 - `nix-configs/home/modules/` は単一の Home Manager 機能、`nix-configs/home/profiles/` はその bundle を置きます。
+- 書き戻し不要な静的設定は `nix-configs/home/modules/**/files/` に置き、Home Manager から Nix store 経由で配置します。
+- アプリが書き戻す実体は、担当する Home Manager module の `files/` に置き、`dotfilesPath` を使う `mkOutOfStoreSymlink` で管理します。
 - `nix-configs/home/modules/packages/*.nix` は目的別の `home.packages` group です。CLI、development、gaming など既存分類に合わせてください。
 - `nix-configs/pkgs/` は derivation のみを置き、feature/Home module 内で package を定義しません。
 - 新しい Nix ファイルは、参照元の `imports` に必ず追加してください。flake 評価で使う新規ファイルは Git に track されている必要があります。
 
-## Claude Code の skill 管理 (apm)
+## Agent Skills
 
-- skill の source は `mutable/shared/apm/packages/<category>/.apm/skills/<name>/` に置き、apm (Agent Package Manager) で管理します。カテゴリ (`agent-llm`・`docs`・`git-ops` など) は local apm package で、root の `apm.yml` が `dependencies.apm: [./packages/<category>]` として参照します。
-- 新しいカテゴリを追加する場合は `packages/<category>/apm.yml` を作成し、root の `apm.yml` の `dependencies.apm` へ追記してください。apm と Claude Code はどちらも skill のネスト配置に非対応のため、deploy 先はフラット (`.claude/skills/<name>/`) になります。skill 名はカテゴリを跨いで一意にしてください。
-- `apm install` (home-manager activation で自動実行、手動は `just skills-sync`) が各 package と外部依存を `mutable/shared/apm/.claude/skills/` へ deploy します。
-- 外部 skill も root の `apm.yml` の `dependencies.apm` に追加できます。現在は `mizchi/skills` の一部 (nix-setup・justfile・apm-usage・conventional-changelog・gh-fix-ci・cloudflare/deploy・workers-otel-utels) を取り込んでいます。HEAD が動くため必ず `#<commit-sha>` でピンし、更新時は SHA を差し替えて `apm install` で lockfile を再生成してください。
-- 生成物 (`.claude/skills/`・`apm_modules/`) は gitignore されています。`~/.claude/skills` は生成物への symlink なので、skill の追加・編集は必ず source 側で行ってください。
-- `apm.lock.yaml` は外部依存のバージョン固定のため **追跡** しています (gitignore しない)。`dependencies.apm` を変更したら `apm install` を実行し、更新後の lockfile も併せてコミットしてください。
+- `Kyure-A/agent-skills-nix` が skills を Home Manager で各 agent target へ配置します。
+- 自作 skill は `nix-configs/home/modules/agents/files/skills/<name>/` にフラットに置きます。外部 skill の source と選択は `agents/agent-skills.nix` で管理します。
 
 ## スタイル
 
@@ -70,6 +68,10 @@ GitHub Actions は `.github/workflows/ci.yml` から各 workflow を呼び出し
 - package list は原則 `with pkgs; [ ... ]` の既存スタイルに合わせます。
 - 新しいファイル名は小文字の kebab-case を使います。
 - 設定の移動や refactor では、挙動変更と構造変更を混ぜないでください。
+
+## 開発スタイル
+
+- この dotfiles リポジトリでは TDD を必須としません。変更内容に応じて既存の Nix 構文・評価・build や実環境で確認してください。
 
 ## 変更時の注意
 
