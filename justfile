@@ -3,17 +3,9 @@ default:
 
 os-switch host="laptop":
     nh os switch . -H {{ host }}
-    just dotfiles-apply nixos
 
 wsl-switch:
     sudo nixos-rebuild switch --flake .#wsl
-    just dotfiles-apply wsl
-
-dotfiles-apply profile:
-    chezmoi --source "{{ justfile_directory() }}" init --apply --promptChoice "Environment profile={{ profile }}"
-
-skills-sync:
-    cd mutable/shared/apm && apm install
 
 fmt:
     git ls-files --cached --others --exclude-standard '*.nix' | while read -r file; do [ ! -f "$file" ] || printf '%s\0' "$file"; done | xargs -0 -r alejandra
@@ -29,9 +21,6 @@ fmt-check:
 lint:
     statix check .
     deadnix --fail .
-
-chezmoi-check:
-    nix develop --command bash scripts/ci/check-chezmoi.sh
 
 wsl-check:
     bash scripts/ci/check-wsl.sh
@@ -51,5 +40,5 @@ nixvim-check:
 build host="laptop":
     nix build .#nixosConfigurations.{{ host }}.config.system.build.toplevel
 
-ci: syntax fmt-check chezmoi-check wsl-check profile-check binary-cache-check ci-script-test
+ci: syntax fmt-check wsl-check profile-check binary-cache-check ci-script-test
     nix build .#nixosConfigurations.laptop.config.system.build.toplevel
