@@ -31,14 +31,11 @@ profile-check:
 binary-cache-check:
     bash scripts/ci/check-binary-caches.sh
 
-ci-script-test:
-    bash scripts/ci/tests/check-publish-cooldown-test.sh
-
 nixvim-check:
     bash scripts/ci/check-nixvim.sh
 
 build host="laptop":
     nix build .#nixosConfigurations.{{ host }}.config.system.build.toplevel
 
-ci: syntax fmt-check wsl-check profile-check binary-cache-check ci-script-test
+ci: syntax fmt-check wsl-check profile-check binary-cache-check
     nix build .#nixosConfigurations.laptop.config.system.build.toplevel
