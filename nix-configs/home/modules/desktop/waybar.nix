@@ -468,7 +468,9 @@ in {
       + builtins.readFile ./waybar/files/style.css;
   };
 
-  systemd.user.services.waybar.Service.ExecStartPre = "${pkgs.runtimeShell} -c '${pkgs.procps}/bin/pkill -u %u -f \"(^|/)waybar($|[[:space:]])\" || true'";
-  systemd.user.services.waybar.Service.ExecStart = lib.mkForce (lib.getExe waybarLauncher);
+  systemd.user.services.waybar.Service = {
+    ExecStartPre = "${pkgs.runtimeShell} -c '${pkgs.procps}/bin/pkill -u %u -f \"(^|/)waybar($|[[:space:]])\" || true'";
+    ExecStart = lib.mkForce (lib.getExe waybarLauncher);
+  };
   systemd.user.services.waybar.Unit.X-SwitchMethod = "restart";
 }

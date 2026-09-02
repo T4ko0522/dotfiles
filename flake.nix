@@ -86,7 +86,6 @@
   };
 
   outputs = {
-    self,
     actrun,
     agent-skills,
     nixpkgs,

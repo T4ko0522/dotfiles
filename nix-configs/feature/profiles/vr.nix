@@ -1,7 +1,6 @@
 {
   config,
   localPackages,
-  pkgs,
   ...
 }: {
   # WiVRn: Meta Quest を無線で OpenXR ランタイム化する (SteamVR 不要)。
