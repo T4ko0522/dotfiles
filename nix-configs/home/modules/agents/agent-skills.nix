@@ -41,18 +41,54 @@ in {
     };
 
     skills.explicit = {
-      tool-pipeline = { from = "local"; path = "tool-pipeline"; };
-      markdown-session-format = { from = "local"; path = "markdown-session-format"; };
-      git-commit = { from = "local"; path = "git-commit"; };
-      github-thread-fetcher = { from = "local"; path = "github-thread-fetcher"; };
-      pr-summarizer = { from = "local"; path = "pr-summarizer"; };
-      nix-setup = { from = "mizchi"; path = "tooling/nix-setup"; };
-      justfile = { from = "mizchi"; path = "tooling/justfile"; };
-      conventional-changelog = { from = "mizchi"; path = "tooling/conventional-changelog"; };
-      gh-fix-ci = { from = "mizchi"; path = "devops/gh-fix-ci"; };
-      deploy = { from = "mizchi"; path = "cloudflare/deploy"; };
-      workers-otel-utels = { from = "mizchi"; path = "cloudflare/workers-otel-utels"; };
-      actrun = { from = "actrun"; path = "actrun"; };
+      tool-pipeline = {
+        from = "local";
+        path = "tool-pipeline";
+      };
+      markdown-session-format = {
+        from = "local";
+        path = "markdown-session-format";
+      };
+      git-commit = {
+        from = "local";
+        path = "git-commit";
+      };
+      github-thread-fetcher = {
+        from = "local";
+        path = "github-thread-fetcher";
+      };
+      pr-summarizer = {
+        from = "local";
+        path = "pr-summarizer";
+      };
+      nix-setup = {
+        from = "mizchi";
+        path = "tooling/nix-setup";
+      };
+      justfile = {
+        from = "mizchi";
+        path = "tooling/justfile";
+      };
+      conventional-changelog = {
+        from = "mizchi";
+        path = "tooling/conventional-changelog";
+      };
+      gh-fix-ci = {
+        from = "mizchi";
+        path = "devops/gh-fix-ci";
+      };
+      deploy = {
+        from = "mizchi";
+        path = "cloudflare/deploy";
+      };
+      workers-otel-utels = {
+        from = "mizchi";
+        path = "cloudflare/workers-otel-utels";
+      };
+      actrun = {
+        from = "actrun";
+        path = "actrun";
+      };
     };
 
     targets = {
