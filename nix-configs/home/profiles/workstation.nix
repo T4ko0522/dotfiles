@@ -25,6 +25,7 @@
     ../modules/apps/vr.nix
     ../modules/editors/nixvim
     ../modules/apps/firefox.nix
+    ../modules/apps/handy.nix
     ../modules/apps/lazygit.nix
     ../modules/apps/nani-translate.nix
     ../modules/apps/vicinae.nix

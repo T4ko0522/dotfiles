@@ -15,6 +15,7 @@
     localPackages.waycal
     waybar
     wl-clipboard
+    wtype
     xwayland-satellite
     xdg-utils
   ];

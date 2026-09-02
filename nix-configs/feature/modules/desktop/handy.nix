@@ -1,0 +1,3 @@
+{...}: {
+  programs.handy.enable = true;
+}
