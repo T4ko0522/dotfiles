@@ -2,6 +2,7 @@
   actrun,
   agent-skills,
   codex-desktop-linux,
+  handy,
   home-manager,
   llm-agents,
   mizchi-skills,
@@ -22,11 +23,13 @@
   dotfilesPath ? "${homeDirectory}/dotfiles",
   keyboardLayout,
   platformModules ? [
+    handy.nixosModules.default
     vicinae.nixosModules.default
     nixos-loading-plymouth.nixosModules.default
     noctalia.nixosModules.default
   ],
   sharedHomeModules ? [
+    handy.homeManagerModules.default
     vicinae.homeManagerModules.default
     codex-desktop-linux.homeManagerModules.default
     nani-translate-linux.homeManagerModules.default

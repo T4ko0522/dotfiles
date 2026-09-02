@@ -26,6 +26,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    handy = {
+      url = "github:cjpais/Handy";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nixvim.url = "github:nix-community/nixvim/nixos-26.05";
 
     nixos-wsl = {
@@ -86,6 +91,7 @@
     agent-skills,
     nixpkgs,
     home-manager,
+    handy,
     nixvim,
     nixos-wsl,
     vial-qmk,
@@ -116,6 +122,7 @@
         agent-skills
         codex-desktop-linux
         home-manager
+        handy
         llm-agents
         nani-translate-linux
         nixos-loading-plymouth
