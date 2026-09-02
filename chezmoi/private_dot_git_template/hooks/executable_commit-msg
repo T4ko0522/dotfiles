@@ -1,8 +1,0 @@
-#!/bin/sh
-
-# git-secrets が導入済みならコミットメッセージを検査する。
-if command -v git-secrets >/dev/null 2>&1; then
-  exec git secrets --commit_msg_hook -- "$@"
-fi
-
-exit 0
