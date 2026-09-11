@@ -1,6 +1,5 @@
 {
   codex-desktop-linux,
-  fastpotify,
   home-manager,
   llm-agents,
   nani-translate-linux,
@@ -67,7 +66,7 @@ in
             useUserPackages = true;
             backupFileExtension = "hm-backup";
             extraSpecialArgs = {
-              inherit codex-desktop-linux dotfilesPath editor fastpotify homeDirectory keyboardLayout llm-agents localPackages personal-skills username;
+              inherit codex-desktop-linux dotfilesPath editor homeDirectory keyboardLayout llm-agents localPackages personal-skills username;
             };
             sharedModules = [nixvim.homeModules.nixvim] ++ sharedHomeModules;
             users.${username} = import homeConfiguration;
