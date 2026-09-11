@@ -1,9 +1,14 @@
-{pkgs, ...}: {
+{
+  fastpotify,
+  pkgs,
+  ...
+}: {
   imports = [./core-cli.nix];
 
   home.packages = with pkgs; [
     baobab
     brave
+    fastpotify.packages.${pkgs.stdenv.hostPlatform.system}.fastpotify
     fuzzel
     gh
     google-chrome

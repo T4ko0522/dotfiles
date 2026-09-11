@@ -26,11 +26,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    handy = {
-      url = "github:cjpais/Handy";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     nixvim.url = "github:nix-community/nixvim/nixos-26.05";
 
     nixos-wsl = {
@@ -63,6 +58,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    fastpotify.url = "github:crmne/fastpotify";
+
     nixos-loading-plymouth = {
       url = "github:qboileau/nixos-load-plymouth";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -77,7 +74,6 @@
   outputs = {
     nixpkgs,
     home-manager,
-    handy,
     nixvim,
     nixos-wsl,
     vial-qmk,
@@ -87,6 +83,7 @@
     llm-agents,
     nixos-loading-plymouth,
     nani-translate-linux,
+    fastpotify,
     spotify-cli,
     codex-desktop-linux,
     personal-skills,
@@ -105,8 +102,8 @@
     mkNixos = import ./nix-configs/lib/mk-nixos.nix {
       inherit
         codex-desktop-linux
+        fastpotify
         home-manager
-        handy
         llm-agents
         nani-translate-linux
         nixos-loading-plymouth
