@@ -11,7 +11,6 @@
     ../modules/services/tailscale.nix
     ../modules/desktop/audio.nix
     ../modules/desktop/fonts.nix
-    ../modules/desktop/handy.nix
     ../modules/desktop/input-method.nix
     ../modules/desktop/niri.nix
     ../modules/desktop/noctalia.nix
