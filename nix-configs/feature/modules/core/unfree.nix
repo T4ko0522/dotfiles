@@ -22,7 +22,6 @@
       # LLM agents
       "claude-code"
       "codex-desktop"
-      "codex-desktop-pet-overlay"
       # NVIDIA proprietary drivers
       "nvidia-x11"
       "nvidia-settings"

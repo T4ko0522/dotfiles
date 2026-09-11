@@ -27,9 +27,6 @@
   '';
   launcher = pkgs.writeShellScript "codex-desktop" ''
     ${patchBrowserCache}
-    export CODEX_PET_OVERLAY_MODE=passive
-    export CODEX_PET_OVERLAY_LOCK_POSITION=1
-    export CODEX_PET_OVERLAY_GRAVITY=bottom-right
     exec ${basePackage}/bin/codex-desktop "$@"
   '';
 in
