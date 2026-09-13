@@ -8,6 +8,7 @@
   };
   codexbar = pkgs.callPackage ./codexbar/package.nix {};
   codexPetReimu = pkgs.callPackage ./codex-pets/reimu.nix {};
+  kooha = pkgs.callPackage ./kooha/package.nix {};
   librepods = pkgs.callPackage ./librepods/package.nix {};
   linuxWallpaperengineCapture = pkgs.callPackage ./linux-wallpaperengine/package.nix {};
   plymouthTheme = pkgs.callPackage ./plymouth-theme/package.nix {
@@ -20,6 +21,7 @@
   vitePlus = pkgs.callPackage ./vite-plus/package.nix {};
   waycal = pkgs.callPackage ./waycal/package.nix {};
   winresizer = pkgs.callPackage ./vim-plugins/winresizer/package.nix {};
+  xwaylandSatellite = pkgs.callPackage ./xwayland-satellite/package.nix {};
   wivrnNvenc =
     (pkgs.callPackage ./wivrn/package.nix {cudaSupport = true;}).overrideAttrs
     (old: {

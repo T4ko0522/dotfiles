@@ -17,7 +17,7 @@
     wl-clipboard
     xclip
     wtype
-    xwayland-satellite
+    localPackages.xwaylandSatellite
     xdg-utils
   ];
 }

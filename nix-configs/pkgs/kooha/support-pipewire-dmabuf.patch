@@ -1,0 +1,97 @@
+diff --git a/src/pipeline.rs b/src/pipeline.rs
+--- a/src/pipeline.rs
++++ b/src/pipeline.rs
+@@ -243,19 +243,56 @@ fn make_videocrop(data: &SelectAreaData) -> Result<gst::Element> {
+     Ok(crop)
+ }
+ 
++fn make_dmabuf_download() -> Result<gst::Bin> {
++    let bin = gst::Bin::new();
++    let glupload = gst::ElementFactory::make("glupload").build()?;
++    let glcolorconvert = gst::ElementFactory::make("glcolorconvert").build()?;
++    // Force color conversion: passthrough RGBA readback produces black frames on NVIDIA.
++    let glcolorconvert_capsfilter = gst::ElementFactory::make("capsfilter")
++        .property(
++            "caps",
++            gst::Caps::builder("video/x-raw")
++                .features(["memory:GLMemory"])
++                .field("format", "BGRA")
++                .build(),
++        )
++        .build()?;
++    let gldownload = gst::ElementFactory::make("gldownload").build()?;
++
++    bin.add_many([
++        &glupload,
++        &glcolorconvert,
++        &glcolorconvert_capsfilter,
++        &gldownload,
++    ])?;
++    gst::Element::link_many([
++        &glupload,
++        &glcolorconvert,
++        &glcolorconvert_capsfilter,
++        &gldownload,
++    ])?;
++
++    let sink_pad = glupload.static_pad("sink").unwrap();
++    bin.add_pad(&gst::GhostPad::with_target(&sink_pad)?)?;
++    let src_pad = gldownload.static_pad("src").unwrap();
++    bin.add_pad(&gst::GhostPad::with_target(&src_pad)?)?;
++
++    Ok(bin)
++}
++
+ /// Creates a bin with a src pad for multiple pipewire streams.
+ ///
+ /// Single stream:
+ ///
+-/// pipewiresrc -> videoflip -> videorate
++/// pipewiresrc -> dmabuf-download -> videoflip -> videorate
+ ///
+ /// Multiple streams:
+ ///
+-/// pipewiresrc1 -> videoflip -> |
+-///                              |
+-/// pipewiresrc2 -> videoflip -> | -> compositor -> videorate
+-///                              |
+-/// pipewiresrcn -> videoflip -> |
++/// pipewiresrc1 -> dmabuf-download -> videoflip -> |
++///                                                |
++/// pipewiresrc2 -> dmabuf-download -> videoflip -> | -> compositor -> videorate
++///                                                |
++/// pipewiresrcn -> dmabuf-download -> videoflip -> |
+ pub fn make_videosrc_bin(
+     fd: RawFd,
+     streams: &[Stream],
+@@ -281,9 +318,15 @@ pub fn make_videosrc_bin(
+         [] => bail!("No streams provided"),
+         [stream] => {
+             let pipewiresrc = make_pipewiresrc(fd, &stream.node_id().to_string())?;
++            let dmabuf_download = make_dmabuf_download()?;
+             let videoflip = make_videoflip()?;
+-            bin.add_many([&pipewiresrc, &videoflip])?;
+-            gst::Element::link_many([&pipewiresrc, &videoflip, &videorate])?;
++            bin.add_many([&pipewiresrc, dmabuf_download.upcast_ref(), &videoflip])?;
++            gst::Element::link_many([
++                &pipewiresrc,
++                dmabuf_download.upcast_ref(),
++                &videoflip,
++                &videorate,
++            ])?;
+         }
+         streams => {
+             let compositor = gst::ElementFactory::make("compositor").build()?;
+@@ -293,9 +336,10 @@ pub fn make_videosrc_bin(
+             let mut last_pos = 0;
+             for stream in streams {
+                 let pipewiresrc = make_pipewiresrc(fd, &stream.node_id().to_string())?;
++                let dmabuf_download = make_dmabuf_download()?;
+                 let videoflip = make_videoflip()?;
+-                bin.add_many([&pipewiresrc, &videoflip])?;
+-                pipewiresrc.link(&videoflip)?;
++                bin.add_many([&pipewiresrc, dmabuf_download.upcast_ref(), &videoflip])?;
++                gst::Element::link_many([&pipewiresrc, dmabuf_download.upcast_ref(), &videoflip])?;
+ 
+                 let compositor_sink_pad = compositor
+                     .request_pad_simple("sink_%u")

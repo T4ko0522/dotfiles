@@ -2,6 +2,7 @@
   config,
   lib,
   keyboardLayout,
+  localPackages,
   ...
 }: let
   c = import ../../../lib/theme.nix;
@@ -239,14 +240,19 @@ in {
         }
     }
 
-    spawn-at-startup "xwayland-satellite"
+    window-rule {
+        match app-id="^steam_app_3548580$"
+        open-fullscreen false
+        open-maximized-to-edges true
+    }
+
+    xwayland-satellite {
+        path "${localPackages.xwaylandSatellite}/bin/xwayland-satellite"
+    }
+
     spawn-at-startup "sh" "-c" "sleep 2 && fcitx5 -rd"
     spawn-at-startup "noctalia"
     ${config.t4ko.wallpaper.niriSpawnCommand}
-
-    environment {
-        DISPLAY ":0"
-    }
 
     binds {
       ${import ./niri-keybind.nix {

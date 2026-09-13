@@ -12,7 +12,7 @@
     gimp
     imv
     localPackages.librepods
-    kooha
+    localPackages.kooha
     mpv
     obs-studio
     yt-dlp
