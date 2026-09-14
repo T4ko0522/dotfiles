@@ -5,9 +5,8 @@
 }: ''
   Mod+Shift+Slash { show-hotkey-overlay; }
 
-  Mod+Return { spawn "wezterm"; }
-  Mod+Shift+Return { spawn "${quickShellCommand}"; }
-  Mod+T { spawn "wezterm"; }
+  Mod+Q { spawn "wezterm"; }
+  Mod+Shift+Q { spawn "${quickShellCommand}"; }
   Alt+Space { spawn "vicinae" "open"; }
   Alt+Tab { spawn "noctalia" "msg" "window-switcher"; }
   Mod+S { spawn "noctalia" "msg" "panel-toggle" "control-center"; }
