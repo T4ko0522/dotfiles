@@ -60,6 +60,7 @@ case "$first_line" in
   chore:*|chore\(*\):*)       emoji="🔧" ;;
   remove:*|remove\(*\):*)     emoji="🔥" ;;
   deploy:*|deploy\(*\):*)     emoji="🚀" ;;
+  tada:*|tada\(*\):*)         emoji="🎉" ;;
 esac
 
 if [ -z "$emoji" ]; then
