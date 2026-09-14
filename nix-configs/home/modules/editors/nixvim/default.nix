@@ -5,7 +5,7 @@
 }: {
   programs.nixvim = {
     enable = true;
-    defaultEditor = true;
+    defaultEditor = false;
     viAlias = true;
     vimAlias = true;
     withPython3 = true;

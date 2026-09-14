@@ -17,7 +17,7 @@ expect() {
 }
 
 expect nixosConfigurations.wsl.config.home-manager.users.t4ko.home.sessionVariables.EDITOR vim
-expect nixosConfigurations.laptop.config.home-manager.users.t4ko.home.sessionVariables.EDITOR nvim
+expect nixosConfigurations.laptop.config.home-manager.users.t4ko.home.sessionVariables.EDITOR "zeditor --wait"
 expect nixosConfigurations.laptop.config.networking.hostName laptop
 expect nixosConfigurations.desktop.config.networking.hostName desktop
 expect nixosConfigurations.wsl.config.networking.hostName nixos-wsl

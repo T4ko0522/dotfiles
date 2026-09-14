@@ -13,7 +13,7 @@
   vicinae,
 }: {
   configuration,
-  editor ? "nvim",
+  editor ? "zeditor --wait",
   extraModules ? [],
   homeConfiguration,
   homeDirectory ? "/home/${username}",

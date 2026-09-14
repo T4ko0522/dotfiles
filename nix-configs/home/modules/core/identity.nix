@@ -1,5 +1,5 @@
 {
-  editor ? "nvim",
+  editor ? "zeditor --wait",
   homeDirectory,
   username,
   ...
