@@ -20,6 +20,5 @@
     ripgrep
     spotify-cli
     unzip
-    zoxide
   ];
 }

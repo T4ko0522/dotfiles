@@ -3,12 +3,10 @@
     alejandra
     fastfetch
     fd
-    fzf
     jq
     lazygit
     nil
     peco
-    starship
     tree-sitter
     yazi
   ];
