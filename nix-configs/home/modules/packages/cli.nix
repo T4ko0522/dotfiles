@@ -12,7 +12,6 @@
     gnumake
     gping
     gtop
-    gh-dash
     git
     git-secrets
     just
