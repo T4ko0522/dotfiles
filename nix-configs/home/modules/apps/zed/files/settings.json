@@ -30,7 +30,8 @@
   },
 
   // フォント
-  "buffer_font_family": "UDEV Gothic NF",
+  "buffer_font_family": "LINE Seed JP_OTF",
+  "ui_font_family": "LINE Seed JP_OTF",
   "ui_font_size": 16,
   "buffer_font_size": 14.0,
 
