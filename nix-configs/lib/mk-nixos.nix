@@ -66,7 +66,7 @@ in
             useUserPackages = true;
             backupFileExtension = "hm-backup";
             extraSpecialArgs = {
-              inherit codex-desktop-linux dotfilesPath editor homeDirectory keyboardLayout llm-agents localPackages personal-skills username;
+              inherit codex-desktop-linux dotfilesPath editor homeDirectory keyboardLayout llm-agents localPackages personal-skills username vicinae;
             };
             sharedModules = [nixvim.homeModules.nixvim] ++ sharedHomeModules;
             users.${username} = import homeConfiguration;

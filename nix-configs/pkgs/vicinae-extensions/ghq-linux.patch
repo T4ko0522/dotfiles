@@ -1,0 +1,99 @@
+diff --git a/package.json b/package.json
+index 190974e91..71fa02b10 100644
+--- a/package.json
++++ b/package.json
+@@ -31,18 +31,10 @@
+       "required": true,
+       "placeholder": "/User/username/ghq/src",
+       "default": "~/ghq/src"
+-    },
+-    {
+-      "label": "Editor",
+-      "name": "EDITOR",
+-      "title": "Editor",
+-      "description": "Pick your editor to open the repository.",
+-      "type": "appPicker",
+-      "required": true
+     }
+   ],
+   "dependencies": {
+-    "@raycast/api": "^1.67.1",
++    "@raycast/api": "1.102.3",
+     "@raycast/utils": "^1.12.4",
+     "fzf": "^0.5.2"
+   },
+@@ -52,1 +44,1 @@
+-    "@types/react": "18.2.27",
++    "@types/react": "19.0.10",
+@@ -61,9 +53,6 @@
+     "lint": "ray lint",
+     "publish": "npx @raycast/api@latest publish"
+   },
+-  "platforms": [
+-    "macOS"
+-  ],
+   "overrides": {
+     "brace-expansion": "5.0.9",
+     "js-yaml@4": "4.3.1"
+diff --git a/src/editor/index.tsx b/src/editor/index.tsx
+index dd89b4933..ad8a4920f 100644
+--- a/src/editor/index.tsx
++++ b/src/editor/index.tsx
+@@ -1,6 +1,5 @@
+-import { runAppleScript } from "@raycast/utils";
++import { open } from "@raycast/api";
+ 
+-export function lanuchEditor(editor: string, path: string) {
+-  const script = `tell application "${editor}" to open "${path}"`;
+-  return runAppleScript(script);
++export function launchEditor(path: string) {
++  return open(path, "dev.zed.Zed");
+ }
+diff --git a/src/list.tsx b/src/list.tsx
+index 3692616ea..1ef82dcd1 100644
+--- a/src/list.tsx
++++ b/src/list.tsx
+@@ -1,7 +1,7 @@
+ import { useCallback, useEffect, useState } from "react";
+ import { Action, ActionPanel, List, getPreferenceValues, closeMainWindow, clearSearchBar, Icon } from "@raycast/api";
+ import { fetchGHQList } from "./ghq";
+-import { lanuchEditor } from "./editor";
++import { launchEditor } from "./editor";
+ import { Fzf } from "fzf";
+ import { showFailureToast } from "@raycast/utils";
+ 
+@@ -13,11 +13,9 @@ async function cleanup() {
+ function getPreference() {
+   const preferences = getPreferenceValues<{
+     GHQ_ROOT_PATH: string;
+-    EDITOR: { bundleId: string; name: string; path: string };
+   }>();
+   console.log(preferences);
+   let rootPath = preferences.GHQ_ROOT_PATH.trim();
+-  const editor = preferences.EDITOR.path;
+ 
+   // replace ~ with the actual home directory
+   if (rootPath.startsWith("~")) {
+@@ -26,12 +24,11 @@ function getPreference() {
+ 
+   return {
+     rootPath,
+-    editor,
+   };
+ }
+ 
+ export default function Command() {
+-  const { rootPath, editor } = getPreference();
++  const { rootPath } = getPreference();
+   const [paths, setPaths] = useState<string[]>([]);
+   const [result, setResult] = useState<string[]>([]);
+   const [isLoading, setIsLoading] = useState(true);
+@@ -51,7 +48,7 @@ export default function Command() {
+       const projectPath = `${rootPath}/${paths[index]}`;
+ 
+       try {
+-        await lanuchEditor(editor, projectPath);
++        await launchEditor(projectPath);
+         await cleanup();
+       } catch (e) {
+         await showFailureToast(e, { title: "Can not open Editor" });
