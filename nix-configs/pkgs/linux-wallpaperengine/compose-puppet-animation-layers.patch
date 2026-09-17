@@ -1,0 +1,322 @@
+diff --git a/src/WallpaperEngine/Data/Model/Object.h b/src/WallpaperEngine/Data/Model/Object.h
+index d893515..4ce6f73 100644
+--- a/src/WallpaperEngine/Data/Model/Object.h
++++ b/src/WallpaperEngine/Data/Model/Object.h
+@@ -89,6 +89,7 @@ struct ImageEffect {
+  */
+ struct ImageAnimationLayer {
+     int id;
++    bool additive;
+     UserSettingUniquePtr rate;
+     UserSettingUniquePtr visible;
+     UserSettingUniquePtr blend;
+diff --git a/src/WallpaperEngine/Data/Parsers/ObjectParser.cpp b/src/WallpaperEngine/Data/Parsers/ObjectParser.cpp
+index 898348e..50b4e6d 100644
+--- a/src/WallpaperEngine/Data/Parsers/ObjectParser.cpp
++++ b/src/WallpaperEngine/Data/Parsers/ObjectParser.cpp
+@@ -312,6 +312,7 @@ ImageAnimationLayerUniquePtr ObjectParser::parseAnimationLayer (const JSON& it,
+ 
+     return std::make_unique<ImageAnimationLayer> (ImageAnimationLayer {
+ 	.id = it.require<int> ("id", "Animation layer must have an id"),
++	.additive = it.optional ("additive", false),
+ 	.rate = it.user ("rate", properties, 1.0f),
+ 	.visible = it.user ("visible", properties, false),
+ 	.blend = it.user ("blend", properties, 1.0f),
+diff --git a/src/WallpaperEngine/Render/Objects/CImage.cpp b/src/WallpaperEngine/Render/Objects/CImage.cpp
+index aa2b158..3d4d97c 100644
+--- a/src/WallpaperEngine/Render/Objects/CImage.cpp
++++ b/src/WallpaperEngine/Render/Objects/CImage.cpp
+@@ -33,6 +33,18 @@ using namespace WallpaperEngine::Data::Builders;
+ using namespace WallpaperEngine::Data::Utils;
+ 
+ namespace {
++constexpr float kPuppetScaleEpsilon = 1.0e-6f;
++
++glm::quat puppetRotation (const glm::vec3& rotation) {
++    // Keep animation transforms in the model's coordinate space. The final
++    // upload converts the skinned vertex positions to renderer coordinates.
++    return glm::normalize (
++	glm::angleAxis (rotation.z, glm::vec3 (0.0f, 0.0f, 1.0f))
++	* glm::angleAxis (rotation.y, glm::vec3 (0.0f, 1.0f, 0.0f))
++	* glm::angleAxis (rotation.x, glm::vec3 (1.0f, 0.0f, 0.0f))
++    );
++}
++
+ bool isMagentaNeonTint (const glm::vec3& color) { return color.r > 0.55f && color.g < 0.25f && color.b > 0.45f; }
+ 
+ std::optional<glm::vec3> findMagentaCompositeTint (const Image& image, const std::vector<int>& skippedEffectIds) {
+@@ -582,3 +594,21 @@ bool CImage::loadPuppetAnimationData (const std::vector<char>& data, const size_
+ 	    bindWorld[index] = parent >= 0 ? bindWorld[parent] * local : local;
+-	    this->m_puppetBones.push_back ({ .parent = parent, .inverseBindWorld = glm::inverse (bindWorld[index]) });
++
++	    PuppetPose bindLocal;
++	    bindLocal.position = glm::vec3 (local[3]);
++	    glm::mat3 bindRotation (local);
++	    for (int axis = 0; axis < 3; axis++) {
++		bindLocal.scale[axis] = glm::length (glm::vec3 (bindRotation[axis]));
++		if (bindLocal.scale[axis] > kPuppetScaleEpsilon) {
++		    bindRotation[axis] /= bindLocal.scale[axis];
++		}
++	    }
++	    if (glm::determinant (bindRotation) < 0.0f) {
++		bindLocal.scale.x = -bindLocal.scale.x;
++		bindRotation[0] = -bindRotation[0];
++	    }
++	    bindLocal.rotation = glm::normalize (glm::quat_cast (bindRotation));
++
++	    this->m_puppetBones.push_back (
++		{ .parent = parent, .inverseBindWorld = glm::inverse (bindWorld[index]), .bindLocal = bindLocal }
++	    );
+ 	}
+@@ -664,6 +698,13 @@ bool CImage::loadPuppetAnimationData (const std::vector<char>& data, const size_
+ 	return false;
+     }
+ 
++    if (!this->m_puppetAnimations.empty ()) {
++	sLog.out (
++	    "Loaded puppet animation ", *this->getImage ().model->puppet, " skeleton=", skeletonVersion,
++	    " bones=", this->m_puppetBones.size (), " animations=", this->m_puppetAnimations.size ()
++	);
++    }
++
+     return !this->m_puppetAnimations.empty ();
+ }
+ 
+@@ -672,9 +713,28 @@ void CImage::updatePuppetAnimation () {
+ 	return;
+     }
+ 
+-    // pick the animation from the first visible animation layer, defaulting to the first animation available
+-    const PuppetAnimation* animation = &this->m_puppetAnimations.front ();
+-    float rate = 1.0f;
++    const size_t boneCount = this->m_puppetBones.size ();
++    std::vector<PuppetPose> pose;
++    pose.reserve (boneCount);
++    for (const auto& bone : this->m_puppetBones) {
++	pose.push_back (bone.bindLocal);
++    }
++
++    const auto framePosition = [this] (const PuppetAnimation& animation, const float rate) {
++	const size_t sampleCount = animation.tracks.front ().size ();
++	const float span = static_cast<float> (sampleCount - 1);
++	float position = this->getScene ().getTime () * animation.fps * rate;
++	if (span <= 0.0f) {
++	    return 0.0f;
++	}
++	if (animation.loop) {
++	    position = std::fmod (position, span);
++	    return position < 0.0f ? position + span : position;
++	}
++	return std::clamp (position, 0.0f, span);
++    };
++
++    bool appliedLayer = false;
+     for (const auto& layer : this->getImage ().animationLayers) {
+ 	if (!layer->visible->value->getBool ()) {
+ 	    continue;
+@@ -689,32 +749,61 @@ void CImage::updatePuppetAnimation () {
+ 	    continue;
+ 	}
+ 
+-	animation = &*match;
+-	rate = layer->rate->value->getFloat ();
+-	break;
+-    }
++	std::vector<PuppetPose> sampled;
++	if (!this->samplePuppetAnimation (*match, framePosition (*match, layer->rate->value->getFloat ()), sampled)) {
++	    continue;
++	}
+ 
+-    const size_t boneCount = this->m_puppetBones.size ();
+-    if (animation->tracks.size () != boneCount || animation->tracks.front ().empty ()) {
+-	return;
+-    }
++	const float layerBlend = std::clamp (layer->blend->value->getFloat (), 0.0f, 1.0f);
++	if (layer->additive) {
++	    std::vector<PuppetPose> reference;
++	    if (!this->samplePuppetAnimation (*match, 0.0f, reference)) {
++		continue;
++	    }
+ 
+-    const size_t sampleCount = animation->tracks.front ().size ();
+-    const auto span = static_cast<float> (sampleCount - 1);
+-    float framePosition = this->getScene ().getTime () * animation->fps * rate;
+-    if (span <= 0.0f) {
+-	framePosition = 0.0f;
+-    } else if (animation->loop) {
+-	framePosition = std::fmod (framePosition, span);
+-	if (framePosition < 0.0f) {
+-	    framePosition += span;
++	    for (size_t index = 0; index < boneCount; index++) {
++		pose[index].position += (sampled[index].position - reference[index].position) * layerBlend;
++
++		const glm::quat rotationDelta
++		    = glm::normalize (glm::inverse (reference[index].rotation) * sampled[index].rotation);
++		pose[index].rotation = glm::normalize (
++		    pose[index].rotation
++		    * glm::slerp (glm::quat (1.0f, 0.0f, 0.0f, 0.0f), rotationDelta, layerBlend)
++		);
++
++		for (int component = 0; component < 3; component++) {
++		    float ratio = 1.0f;
++		    if (std::abs (reference[index].scale[component]) > kPuppetScaleEpsilon) {
++			ratio = sampled[index].scale[component] / reference[index].scale[component];
++			if (!std::isfinite (ratio)) {
++			    ratio = 1.0f;
++			}
++		    }
++		    pose[index].scale[component] *= glm::mix (1.0f, ratio, layerBlend);
++		}
++	    }
++	} else {
++	    for (size_t index = 0; index < boneCount; index++) {
++		pose[index].position = glm::mix (pose[index].position, sampled[index].position, layerBlend);
++		pose[index].rotation = glm::normalize (
++		    glm::slerp (pose[index].rotation, sampled[index].rotation, layerBlend)
++		);
++		pose[index].scale = glm::mix (pose[index].scale, sampled[index].scale, layerBlend);
++	    }
+ 	}
+-    } else {
+-	framePosition = std::clamp (framePosition, 0.0f, span);
++	appliedLayer = true;
++    }
++
++    // Preserve the old fallback for wallpapers without usable layer metadata.
++    if (!appliedLayer
++	&& !this->samplePuppetAnimation (
++	    this->m_puppetAnimations.front (), framePosition (this->m_puppetAnimations.front (), 1.0f), pose
++	)) {
++	return;
+     }
+ 
+     std::vector<glm::mat4> skin (boneCount);
+-    this->evaluatePuppetSkin (*animation, framePosition, skin);
++    this->evaluatePuppetPose (pose, skin);
+ 
+     this->m_puppetSkinnedPositions.resize (this->m_puppetRawPositions.size ());
+     const size_t vertexCount = this->m_puppetRawPositions.size () / 3;
+@@ -752,30 +841,51 @@ void CImage::updatePuppetAnimation () {
+     this->updatePuppetPositionBuffer (this->m_puppetSize, this->m_puppetSkinnedPositions);
+ }
+ 
+-void CImage::evaluatePuppetSkin (
+-    const PuppetAnimation& animation, const float framePosition, std::vector<glm::mat4>& skin
++bool CImage::samplePuppetAnimation (
++    const PuppetAnimation& animation, const float framePosition, std::vector<PuppetPose>& pose
+ ) const {
+     const size_t boneCount = this->m_puppetBones.size ();
++    if (animation.tracks.size () != boneCount || animation.tracks.empty () || animation.tracks.front ().empty ()) {
++	return false;
++    }
++
+     const size_t sampleCount = animation.tracks.front ().size ();
++
++    for (const auto& track : animation.tracks) {
++	if (track.size () != sampleCount || track.empty ()) {
++	    return false;
++	}
++    }
++
+     const auto frame = std::min (static_cast<size_t> (framePosition), sampleCount - 1);
+     const size_t nextFrame = std::min (frame + 1, sampleCount - 1);
+     const float blend = framePosition - static_cast<float> (frame);
+ 
+-    std::vector<glm::mat4> world (boneCount);
++    pose.resize (boneCount);
+     for (size_t index = 0; index < boneCount; index++) {
+ 	const auto& from = animation.tracks[index][frame];
+ 	const auto& to = animation.tracks[index][nextFrame];
+-	const glm::vec3 position = glm::mix (from.position, to.position, blend);
+-	const glm::vec3 rotation = glm::mix (from.rotation, to.rotation, blend);
+-	const glm::vec3 scale = glm::mix (from.scale, to.scale, blend);
+-
+-	// rotations are authored in WE's y-down space while the mesh lives in y-up
+-	// coordinates: conjugating by the y-flip negates the x and z rotations
+-	glm::mat4 local = glm::translate (glm::mat4 (1.0f), position);
+-	local = glm::rotate (local, -rotation.z, glm::vec3 (0.0f, 0.0f, 1.0f));
+-	local = glm::rotate (local, rotation.y, glm::vec3 (0.0f, 1.0f, 0.0f));
+-	local = glm::rotate (local, -rotation.x, glm::vec3 (1.0f, 0.0f, 0.0f));
+-	local = glm::scale (local, scale);
++	pose[index].position = glm::mix (from.position, to.position, blend);
++	pose[index].rotation = glm::normalize (glm::slerp (puppetRotation (from.rotation), puppetRotation (to.rotation), blend));
++	pose[index].scale = glm::mix (from.scale, to.scale, blend);
++    }
++
++    return true;
++}
++
++void CImage::evaluatePuppetPose (const std::vector<PuppetPose>& pose, std::vector<glm::mat4>& skin) const {
++    const size_t boneCount = this->m_puppetBones.size ();
++    if (pose.size () != boneCount) {
++	skin.assign (boneCount, glm::mat4 (1.0f));
++	return;
++    }
++
++    skin.resize (boneCount);
++    std::vector<glm::mat4> world (boneCount);
++    for (size_t index = 0; index < boneCount; index++) {
++	glm::mat4 local = glm::translate (glm::mat4 (1.0f), pose[index].position);
++	local *= glm::mat4_cast (pose[index].rotation);
++	local = glm::scale (local, pose[index].scale);
+ 
+ 	const int parent = this->m_puppetBones[index].parent;
+ 	world[index] = parent >= 0 ? world[parent] * local : local;
+@@ -783,6 +893,17 @@ void CImage::evaluatePuppetSkin (
+     }
+ }
+ 
++void CImage::evaluatePuppetSkin (
++    const PuppetAnimation& animation, const float framePosition, std::vector<glm::mat4>& skin
++) const {
++    std::vector<PuppetPose> pose;
++    if (!this->samplePuppetAnimation (animation, framePosition, pose)) {
++	skin.assign (this->m_puppetBones.size (), glm::mat4 (1.0f));
++	return;
++    }
++    this->evaluatePuppetPose (pose, skin);
++}
++
+ glm::vec2 CImage::computePuppetCanvasSize (const glm::vec2& size) const {
+     // autosize: measure the mesh across every animation frame and grow the canvas
+     // symmetrically so the animated puppet never clips at the FBO edges
+diff --git a/src/WallpaperEngine/Render/Objects/CImage.h b/src/WallpaperEngine/Render/Objects/CImage.h
+index ffe1a7e..69841fc 100644
+--- a/src/WallpaperEngine/Render/Objects/CImage.h
++++ b/src/WallpaperEngine/Render/Objects/CImage.h
+@@ -10,6 +10,7 @@
+ #include "../TextureProvider.h"
+ #include "WallpaperEngine/Scripting/ScriptableObject.h"
+ 
++#include <glm/gtc/quaternion.hpp>
+ #include <glm/vec3.hpp>
+ #include <vector>
+ 
+@@ -62,9 +63,16 @@ protected:
+     void updateScreenSpacePosition ();
+ 
+ private:
++    struct PuppetPose {
++	glm::vec3 position = {};
++	glm::quat rotation = glm::quat (1.0f, 0.0f, 0.0f, 0.0f);
++	glm::vec3 scale = glm::vec3 (1.0f);
++    };
++
+     struct PuppetBone {
+ 	int parent = -1;
+ 	glm::mat4 inverseBindWorld = glm::mat4 (1.0f);
++	PuppetPose bindLocal = {};
+     };
+ 
+     struct PuppetAnimationFrame {
+@@ -85,6 +93,10 @@ private:
+     bool loadPuppetMesh (const glm::vec2& size);
+     bool loadPuppetAnimationData (const std::vector<char>& data, size_t mdlsOffset);
+     void updatePuppetAnimation ();
++    [[nodiscard]] bool samplePuppetAnimation (
++	const PuppetAnimation& animation, float framePosition, std::vector<PuppetPose>& pose
++    ) const;
++    void evaluatePuppetPose (const std::vector<PuppetPose>& pose, std::vector<glm::mat4>& skin) const;
+     void evaluatePuppetSkin (const PuppetAnimation& animation, float framePosition, std::vector<glm::mat4>& skin) const;
+     [[nodiscard]] glm::vec2 computePuppetCanvasSize (const glm::vec2& size) const;
+     void updatePuppetPositionBuffer (const glm::vec2& size, const std::vector<GLfloat>& rawPositions);

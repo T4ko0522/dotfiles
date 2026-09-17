@@ -28,5 +28,8 @@ linux-wallpaperengine.overrideAttrs (old: {
       ./capture-before-fullscreen-pause.patch
       ./puppet-warp-skeletal-animation.patch
       ./preserve-authored-image-size.patch
+      ./mdls0003-per-bone-metadata.patch
+      ./compose-puppet-animation-layers.patch
+      ./effects-before-puppet-skin.patch
     ];
 })

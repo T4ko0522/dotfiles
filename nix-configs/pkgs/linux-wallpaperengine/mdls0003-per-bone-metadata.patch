@@ -1,0 +1,17 @@
+diff --git a/src/WallpaperEngine/Render/Objects/CImage.cpp b/src/WallpaperEngine/Render/Objects/CImage.cpp
+index aa2b158..8afb673 100644
+--- a/src/WallpaperEngine/Render/Objects/CImage.cpp
++++ b/src/WallpaperEngine/Render/Objects/CImage.cpp
+@@ -573,7 +573,11 @@ bool CImage::loadPuppetAnimationData (const std::vector<char>& data, const size_
+ 	    ensure (matrixSize);
+ 	    std::memcpy (glm::value_ptr (local), data.data () + cursor, matrixSize);
+ 	    cursor += matrixSize;
+-	    cursor += 1; // null separator
++	    if (skeletonVersion == "MDLS0003") {
++		readString (); // per-bone metadata JSON
++	    } else {
++		cursor += 1; // null separator
++	    }
+ 
+ 	    bindWorld[index] = parent >= 0 ? bindWorld[parent] * local : local;
+ 	    this->m_puppetBones.push_back ({ .parent = parent, .inverseBindWorld = glm::inverse (bindWorld[index]) });

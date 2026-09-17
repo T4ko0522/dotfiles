@@ -1,0 +1,171 @@
+diff --git a/src/WallpaperEngine/Render/Objects/CImage.cpp b/src/WallpaperEngine/Render/Objects/CImage.cpp
+index 78e6750..a9e5a31 100644
+--- a/src/WallpaperEngine/Render/Objects/CImage.cpp
++++ b/src/WallpaperEngine/Render/Objects/CImage.cpp
+@@ -121,6 +121,7 @@ CImage::CImage (Wallpapers::CScene& scene, const Image& image) :
+     CObject (scene, image), CRenderable (scene, image, *image.model->material), ScriptableObject (scene, image),
+     m_sceneSpacePosition (GL_NONE), m_copySpacePosition (GL_NONE), m_passSpacePosition (GL_NONE),
+     m_texcoordCopy (GL_NONE), m_texcoordPass (GL_NONE), m_modelViewProjectionScreen (),
+-    m_modelViewProjectionPass (glm::mat4 (1.0)), m_modelViewProjectionCopy (), m_modelViewProjectionScreenInverse (),
++    m_modelViewProjectionPuppet (), m_modelViewProjectionPass (glm::mat4 (1.0)), m_modelViewProjectionCopy (),
++    m_modelViewProjectionScreenInverse (), m_modelViewProjectionPuppetInverse (),
+     m_modelViewProjectionPassInverse (glm::inverse (m_modelViewProjectionPass)), m_modelViewProjectionCopyInverse (),
+     m_modelMatrix (), m_viewProjectionMatrix (), m_image (image), m_pos (), m_initialized (false) {
+@@ -187,11 +188,8 @@ CImage::CImage (Wallpapers::CScene& scene, const Image& image) :
+ 	// TODO: CHANGE ALIGNMENT TOO?
+     }
+-    // load the puppet mesh early: the canvas may need to grow to fit the animated mesh,
+-    // which affects the quad, the FBO sizes and the local projections below
++    // Load the mesh before creating passes. Its expanded animation bounds are
++    // used only by the final scene-space puppet pass.
+     this->m_hasPuppetMesh = this->loadPuppetMesh (size);
+-    if (this->m_hasPuppetMesh) {
+-	size = this->m_puppetSize;
+-    }
+     this->m_size = size;
+ 
+     glm::vec2 scaledSize = size * glm::vec2 (scale);
+@@ -1078,7 +1075,9 @@ void CImage::setup () {
+ 
+ 	    // create all the fbos for this effect
+ 	    for (const auto& fbo : cur->effect->fbos) {
+-		fboProvider->create (*fbo, this->m_texture->getFlags (), this->getSize ());
++		fboProvider->create (
++		    *fbo, this->m_texture->getFlags (), this->m_hasPuppetMesh ? this->m_size : this->getSize ()
++		);
+ 	    }
+ 
+ 	    // TODO: MAKE USE OF ZIP OPERATOR IN BOOST? WAY OVERKILL JUST FOR THIS...
+@@ -1200,6 +1197,15 @@ void CImage::setup () {
+ 	));
+     }
+ 
++    if (this->m_hasPuppetMesh) {
++	this->m_materials.puppet
++	    = MaterialParser::load (this->getScene ().getScene ().project, "materials/util/effectpassthrough.json");
++	this->m_passes.push_back (new CPass (
++	    *this, std::make_shared<FBOProvider> (this), **this->m_materials.puppet->passes.begin (), std::nullopt,
++	    std::nullopt, std::nullopt
++	));
++    }
++
+     // if there's more than one pass the blendmode has to be moved from the beginning to the end
+     if (this->m_passes.size () > 1) {
+ 	const auto first = this->m_passes.begin ();
+@@ -1232,20 +1238,13 @@ void CImage::setupPasses () {
+ 	std::shared_ptr<const CFBO> prevDrawTo = drawTo;
+ 	bool writesToTarget = false;
+ 	const bool isFirstPass = first;
+-	GLuint spacePosition = (isFirstPass)
+-	    ? (this->m_hasPuppetMesh ? this->m_puppetSpacePosition : this->getCopySpacePosition ())
+-	    : this->getPassSpacePosition ();
++	GLuint spacePosition = (isFirstPass) ? this->getCopySpacePosition () : this->getPassSpacePosition ();
+ 	const glm::mat4* projection
+ 	    = (isFirstPass) ? &this->m_modelViewProjectionCopy : &this->m_modelViewProjectionPass;
+ 	const glm::mat4* inverseProjection
+ 	    = (isFirstPass) ? &this->m_modelViewProjectionCopyInverse : &this->m_modelViewProjectionPassInverse;
+ 	first = false;
+ 
+-	if (isFirstPass && this->m_hasPuppetMesh) {
+-	    pass->setBlendingMode (BlendingMode_Translucent);
+-	    this->setupPuppetGeometryCallback (pass);
+-	}
+-
+ 	pass->setModelMatrix (&this->m_modelMatrix);
+ 	pass->setViewProjectionMatrix (&this->m_viewProjectionMatrix);
+ 
+@@ -1258,6 +1257,16 @@ void CImage::setupPasses () {
+ 	    drawTo = this->getScene ().getFBO ();
+ 	    projection = &this->m_modelViewProjectionScreen;
+ 	    inverseProjection = &this->m_modelViewProjectionScreenInverse;
++
++	    // The dedicated final pass samples the completed effect texture with
++	    // puppet UVs, avoiding interaction with effect vertex shaders or targets.
++	    if (this->m_hasPuppetMesh) {
++		spacePosition = this->m_puppetSpacePosition;
++		texcoord = this->m_puppetTexCoord;
++		projection = &this->m_modelViewProjectionPuppet;
++		inverseProjection = &this->m_modelViewProjectionPuppetInverse;
++		this->setupPuppetGeometryCallback (pass);
++	    }
+ 	}
+ 
+ 	pass->setDestination (drawTo);
+@@ -1398,11 +1407,6 @@ const glm::vec4& CImage::getColor4 () const { return this->m_image.color->value-
+ const glm::vec3& CImage::getCompositeColor () const { return this->m_image.color->value->getVec3 (); }
+ 
+ glm::vec2 CImage::resolveGeometrySize (float sceneWidth, float sceneHeight, glm::vec3& origin) const {
+-    // puppet canvases are expanded to fit the animated mesh (see loadPuppetMesh)
+-    if (this->m_hasPuppetMesh && this->m_puppetSize.x > 0.0f && this->m_puppetSize.y > 0.0f) {
+-	return this->m_puppetSize;
+-    }
+-
+     // Preserve the scene-authored geometry size after texture detection. getSize()
+     // returns the backing texture dimensions once a texture has been loaded.
+     glm::vec2 size = this->getImage ().size;
+@@ -1530,8 +1534,8 @@ CImage::ResolvedTransform CImage::updateGeometryBuffers () {
+     const glm::vec2 previousSize = this->m_size;
+     this->m_size = size;
+     if (this->m_hasPuppetMesh && size != previousSize) {
+-	this->m_puppetSize = size;
+-	this->updatePuppetPositionBuffer (size, this->m_puppetRawPositions);
++	this->m_puppetSize = this->computePuppetCanvasSize (size);
++	this->updatePuppetPositionBuffer (this->m_puppetSize, this->m_puppetRawPositions);
+     }
+ 
+     this->updateScenePosition (origin, size, scale, sceneWidth, sceneHeight);
+@@ -1568,6 +1572,31 @@ void CImage::updateScreenSpacePosition () {
+ 
+     this->m_modelViewProjectionScreen = mvp;
+     this->m_modelViewProjectionScreenInverse = glm::inverse (mvp);
++
++    // Effects render on the authored card. Center the expanded puppet canvas
++    // on that card for the final scene pass so animated vertices may extend
++    // beyond it without stretching the effect texture.
++    glm::mat4 localToScene (1.0f);
++    if (
++	this->m_size.x > 0.0f && this->m_size.y > 0.0f && this->m_puppetSize.x > 0.0f
++	&& this->m_puppetSize.y > 0.0f
++    ) {
++	const glm::vec2 scale {
++	    (this->m_pos.z - this->m_pos.x) / this->m_size.x,
++	    (this->m_pos.y - this->m_pos.w) / this->m_size.y,
++	};
++	const glm::vec2 center {
++	    (this->m_pos.x + this->m_pos.z) / 2.0f,
++	    (this->m_pos.y + this->m_pos.w) / 2.0f,
++	};
++	localToScene = glm::translate (
++	    localToScene, { center.x - this->m_puppetSize.x * scale.x / 2.0f,
++			    center.y - this->m_puppetSize.y * scale.y / 2.0f, 0.0f }
++	);
++	localToScene = glm::scale (localToScene, { scale.x, scale.y, 1.0f });
++    }
++    this->m_modelViewProjectionPuppet = mvp * localToScene;
++    this->m_modelViewProjectionPuppetInverse = glm::inverse (this->m_modelViewProjectionPuppet);
+     if (this->getImage ().model->passthrough) {
+ 	this->m_modelViewProjectionCopy = this->m_modelViewProjectionScreen;
+ 	this->m_modelViewProjectionCopyInverse = this->m_modelViewProjectionScreenInverse;
+diff --git a/src/WallpaperEngine/Render/Objects/CImage.h b/src/WallpaperEngine/Render/Objects/CImage.h
+index 69841fc..f44f853 100644
+--- a/src/WallpaperEngine/Render/Objects/CImage.h
++++ b/src/WallpaperEngine/Render/Objects/CImage.h
+@@ -133,8 +133,10 @@ private:
+     glm::vec2 m_puppetSize = {};
+ 
+     glm::mat4 m_modelViewProjectionScreen = {};
++    glm::mat4 m_modelViewProjectionPuppet = {};
+     glm::mat4 m_modelViewProjectionPass = {};
+     glm::mat4 m_modelViewProjectionCopy = {};
+     glm::mat4 m_modelViewProjectionScreenInverse = {};
++    glm::mat4 m_modelViewProjectionPuppetInverse = {};
+     glm::mat4 m_modelViewProjectionPassInverse = {};
+     glm::mat4 m_modelViewProjectionCopyInverse = {};
+@@ -165,6 +167,7 @@ private:
+ 	    MaterialUniquePtr material;
+ 	    ImageEffectPassOverrideUniquePtr override;
+ 	} colorBlending;
++	MaterialUniquePtr puppet;
+ 	std::vector<MaterialUniquePtr> compatibilityMaterials = {};
+ 	std::vector<ImageEffectPassOverrideUniquePtr> compatibilityOverrides = {};
+     } m_materials;
