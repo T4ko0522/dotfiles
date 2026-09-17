@@ -1,0 +1,14 @@
+diff --git a/src/WallpaperEngine/Render/Objects/CImage.cpp b/src/WallpaperEngine/Render/Objects/CImage.cpp
+--- a/src/WallpaperEngine/Render/Objects/CImage.cpp
++++ b/src/WallpaperEngine/Render/Objects/CImage.cpp
+@@ -1281,7 +1281,9 @@ glm::vec2 CImage::resolveGeometrySize (float sceneWidth, float sceneHeight, glm:
+ 	return this->m_puppetSize;
+     }
+ 
+-    glm::vec2 size = this->getSize ();
++    // Preserve the scene-authored geometry size after texture detection. getSize()
++    // returns the backing texture dimensions once a texture has been loaded.
++    glm::vec2 size = this->getImage ().size;
+ 
+     if ((size.x == 0.0f || size.y == 0.0f) && this->m_texture != nullptr) {
+ 	size.x = static_cast<float> (this->m_texture->getRealWidth ());

@@ -1,16 +1,16 @@
 diff --git a/src/WallpaperEngine/Application/WallpaperApplication.cpp b/src/WallpaperEngine/Application/WallpaperApplication.cpp
-index 50aa230..85d6bb2 100644
+index bfa07ae..f32ada0 100644
 --- a/src/WallpaperEngine/Application/WallpaperApplication.cpp
 +++ b/src/WallpaperEngine/Application/WallpaperApplication.cpp
-@@ -820 +820,3 @@ void WallpaperApplication::render () {
--		if (this->m_fullScreenDetector->anythingFullscreen () && this->m_context.state.general.keepRunning) {
-+		if (this->m_fullScreenDetector->anythingFullscreen ()
-+		    && this->m_context.state.general.keepRunning
-+		    && (!this->m_context.settings.screenshot.take || this->m_screenShotTaken)) {
+@@ -931 +931,3 @@ void WallpaperApplication::render () {
+-	if (this->m_fullScreenDetector->anythingFullscreen () && this->m_context.state.general.keepRunning) {
++	if (this->m_fullScreenDetector->anythingFullscreen ()
++	    && this->m_context.state.general.keepRunning
++	    && (!this->m_context.settings.screenshot.take || this->m_screenShotTaken)) {
 diff --git a/src/WallpaperEngine/Application/ApplicationContext.cpp b/src/WallpaperEngine/Application/ApplicationContext.cpp
 index 1c427c4..ab6a38d 100644
 --- a/src/WallpaperEngine/Application/ApplicationContext.cpp
 +++ b/src/WallpaperEngine/Application/ApplicationContext.cpp
-@@ -534 +534 @@ ApplicationContext::ApplicationContext (int argc, char* argv[]) : m_argc (argc),
+@@ -667 +667 @@ ApplicationContext::ApplicationContext (int argc, char* argv[]) : m_argc (argc),
 -	    = std::max<uint32_t> (0, std::min<uint32_t> (this->settings.screenshot.delay, 5));
 +	    = std::max<uint32_t> (0, std::min<uint32_t> (this->settings.screenshot.delay, 300));
