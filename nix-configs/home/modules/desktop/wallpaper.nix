@@ -109,6 +109,7 @@
     midnight = ./wallpaper/midnight.nix;
     morning = ./wallpaper/morning.nix;
     night = ./wallpaper/night.nix;
+    madomagi = ./wallpaper/madomagi.nix;
   };
   defaultPresets =
     lib.mapAttrs (
@@ -352,7 +353,7 @@ in {
 
     assetsDir = lib.mkOption {
       type = lib.types.str;
-      default = "/home/t4ko/.local/share/Steam/steamapps/common/wallpaper_engine";
+      default = "/home/t4ko/.local/share/Steam/steamapps/common/wallpaper_engine/assets";
       description = "Wallpaper Engine assets directory.";
     };
 
