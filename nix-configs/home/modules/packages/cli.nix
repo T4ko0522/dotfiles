@@ -7,12 +7,11 @@
     doggo
     eza
     gcc
+    gh
     ghq
-    git-lfs
     gnumake
     gping
     gtop
-    git
     git-secrets
     just
     lsd

@@ -5,7 +5,6 @@
     baobab
     brave
     fuzzel
-    gh
     google-chrome
     ghostty
     lazygit
