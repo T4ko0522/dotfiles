@@ -1,10 +1,62 @@
 diff --git a/src/pipeline.rs b/src/pipeline.rs
 --- a/src/pipeline.rs
 +++ b/src/pipeline.rs
-@@ -243,19 +243,56 @@ fn make_videocrop(data: &SelectAreaData) -> Result<gst::Element> {
+@@ -243,19 +243,127 @@ fn make_videocrop(data: &SelectAreaData) -> Result<gst::Element> {
      Ok(crop)
  }
  
++// These Intel Gen12 CCS modifiers need auxiliary planes that pipewiresrc may omit.
++const UNSUPPORTED_DRM_MODIFIERS: [&str; 2] = [
++    "0x0100000000000006",
++    "0x0100000000000008",
++];
++
++fn has_unsupported_drm_modifier(format: &str) -> bool {
++    format
++        .rsplit_once(':')
++        .is_some_and(|(_, modifier)| {
++            UNSUPPORTED_DRM_MODIFIERS
++                .iter()
++                .any(|unsupported| modifier.eq_ignore_ascii_case(unsupported))
++        })
++}
++
++fn remove_unsupported_drm_modifier(caps: &mut gst::CapsRef) {
++    caps.filter_map_in_place(|_, structure| {
++        let std::result::Result::Ok(value) = structure.value("drm-format") else {
++            return gst::CapsFilterMapAction::Keep;
++        };
++
++        if let std::result::Result::Ok(format) = value.get::<String>() {
++            return if has_unsupported_drm_modifier(&format) {
++                gst::CapsFilterMapAction::Remove
++            } else {
++                gst::CapsFilterMapAction::Keep
++            };
++        }
++
++        let std::result::Result::Ok(formats) = value.get::<gst::List>() else {
++            return gst::CapsFilterMapAction::Keep;
++        };
++        let formats = formats
++            .iter()
++            .filter(|format| {
++                format
++                    .get::<String>()
++                    .map_or(true, |format| !has_unsupported_drm_modifier(&format))
++            })
++            .cloned()
++            .collect::<Vec<_>>();
++
++        if formats.is_empty() {
++            gst::CapsFilterMapAction::Remove
++        } else {
++            structure.set("drm-format", gst::List::from_values(formats));
++            gst::CapsFilterMapAction::Keep
++        }
++    });
++}
++
 +fn make_dmabuf_download() -> Result<gst::Bin> {
 +    let bin = gst::Bin::new();
 +    let glupload = gst::ElementFactory::make("glupload").build()?;
@@ -20,23 +72,42 @@ diff --git a/src/pipeline.rs b/src/pipeline.rs
 +        )
 +        .build()?;
 +    let gldownload = gst::ElementFactory::make("gldownload").build()?;
++    // gldownload can expose GLMemory and DMABuf too, while videoflip only accepts
++    // system memory. Constrain the bin's output so linking its ghost pad is unambiguous.
++    let system_memory_capsfilter = gst::ElementFactory::make("capsfilter")
++        .property("caps", gst::Caps::builder("video/x-raw").build())
++        .build()?;
 +
 +    bin.add_many([
 +        &glupload,
 +        &glcolorconvert,
 +        &glcolorconvert_capsfilter,
 +        &gldownload,
++        &system_memory_capsfilter,
 +    ])?;
-+    gst::Element::link_many([
-+        &glupload,
-+        &glcolorconvert,
-+        &glcolorconvert_capsfilter,
-+        &gldownload,
-+    ])?;
++    // Link downstream first so upstream caps do not constrain glcolorconvert's output.
++    gldownload.link(&system_memory_capsfilter)?;
++    glcolorconvert_capsfilter.link(&gldownload)?;
++    glcolorconvert.link(&glcolorconvert_capsfilter)?;
++    glupload.link(&glcolorconvert)?;
 +
 +    let sink_pad = glupload.static_pad("sink").unwrap();
-+    bin.add_pad(&gst::GhostPad::with_target(&sink_pad)?)?;
-+    let src_pad = gldownload.static_pad("src").unwrap();
++    let sink_ghost_pad = gst::GhostPad::builder_with_target(&sink_pad)?
++        .query_function(|pad, parent, query| {
++            let success = gst::Pad::query_default(pad, parent, query);
++            if success {
++                if let gst::QueryViewMut::Caps(query) = query.view_mut() {
++                    if let Some(mut caps) = query.result_owned() {
++                        remove_unsupported_drm_modifier(caps.make_mut());
++                        query.set_result(&caps);
++                    }
++                }
++            }
++            success
++        })
++        .build();
++    bin.add_pad(&sink_ghost_pad)?;
++    let src_pad = system_memory_capsfilter.static_pad("src").unwrap();
 +    bin.add_pad(&gst::GhostPad::with_target(&src_pad)?)?;
 +
 +    Ok(bin)
@@ -64,7 +135,7 @@ diff --git a/src/pipeline.rs b/src/pipeline.rs
  pub fn make_videosrc_bin(
      fd: RawFd,
      streams: &[Stream],
-@@ -281,9 +318,15 @@ pub fn make_videosrc_bin(
+@@ -281,9 +389,15 @@ pub fn make_videosrc_bin(
          [] => bail!("No streams provided"),
          [stream] => {
              let pipewiresrc = make_pipewiresrc(fd, &stream.node_id().to_string())?;
@@ -82,7 +153,7 @@ diff --git a/src/pipeline.rs b/src/pipeline.rs
          }
          streams => {
              let compositor = gst::ElementFactory::make("compositor").build()?;
-@@ -293,9 +336,10 @@ pub fn make_videosrc_bin(
+@@ -293,9 +407,10 @@ pub fn make_videosrc_bin(
              let mut last_pos = 0;
              for stream in streams {
                  let pipewiresrc = make_pipewiresrc(fd, &stream.node_id().to_string())?;
