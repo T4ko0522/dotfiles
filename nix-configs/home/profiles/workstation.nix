@@ -21,6 +21,7 @@
     ../modules/desktop/quick-shell.nix
     ../modules/desktop/eco-mode.nix
     ../modules/desktop/niri.nix
+    ../modules/desktop/app-presets.nix
     ../modules/desktop/niri-popup.nix
     ../modules/desktop/noctalia.nix
     ../modules/desktop/lockscreen.nix

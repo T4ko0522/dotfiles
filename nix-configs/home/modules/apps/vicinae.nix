@@ -1,5 +1,7 @@
 {
+  config,
   homeDirectory,
+  lib,
   pkgs,
   vicinae,
   ...
@@ -8,6 +10,27 @@
     inherit pkgs;
     inherit (vicinae.lib.${pkgs.stdenv.hostPlatform.system}) mkRayCastExtension mkVicinaeExtension;
   };
+  wallpaperPresetScripts =
+    lib.mapAttrs' (
+      presetName: _:
+        lib.nameValuePair "vicinae/scripts/wallpaper-${builtins.hashString "sha256" presetName}.sh" {
+          executable = true;
+          text = ''
+            #!/bin/sh
+            # @vicinae.schemaVersion 1
+            # @vicinae.title Wallpaper: ${presetName}
+            # @vicinae.mode compact
+            # @vicinae.icon 🖼️
+            # @vicinae.keywords ["wallpaper", "preset", "background"]
+
+            set -eu
+
+            ${lib.getExe config.t4ko.wallpaper.presetCommand} ${lib.escapeShellArg presetName} >/dev/null
+            printf 'Applied wallpaper preset: %s\n' ${lib.escapeShellArg presetName}
+          '';
+        }
+    )
+    config.t4ko.wallpaper.presets;
 in {
   programs.vicinae = {
     enable = true;
@@ -42,4 +65,6 @@ in {
       };
     };
   };
+
+  xdg.dataFile = wallpaperPresetScripts;
 }
