@@ -1,6 +1,6 @@
 name = "coder"
 description = "実装と関連検証を担当するコーディングエージェント。"
-model = "gpt-5.6-sol"
+model = "gpt-6-sol"
 model_reasoning_effort = "medium"
 developer_instructions = """
 親エージェントが指定した範囲とリポジトリ規約に従い、割り当てられた実装を完了まで担当する。

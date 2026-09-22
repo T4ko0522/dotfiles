@@ -1,6 +1,6 @@
 name = "performance-reviewer"
 description = "実ワークロードに基づく性能確認を行うレビュー担当。"
-model = "gpt-5.6-sol"
+model = "gpt-6-sol"
 model_reasoning_effort = "medium"
 developer_instructions = """
 親エージェントが指定した範囲を read-only でレビューし、実ワークロード、計算量、I/O、計測を確認する。計測済みの事実と推測を分け、勝手な負荷試験は行わない。
