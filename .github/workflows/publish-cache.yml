@@ -89,14 +89,11 @@ jobs:
       - name: Setup Nix
         uses: ./.github/actions/setup-nix
 
-      # 既存の /nix/store cache は復元にだけ使う。build結果は自前binary cacheへpublishされるため、
-      # job後にstoreをGC・再圧縮してActions cacheへ二重保存しない。
-      - name: Restore /nix/store cache
-        uses: nix-community/cache-nix-action@7df957e333c1e5da7721f60227dbba6d06080569 # v7
-        with:
-          primary-key: nix-${{ runner.os }}-${{ hashFiles('flake.lock') }}
-          restore-prefixes-first-match: nix-${{ runner.os }}-
-          save: false
+      - name: Show disk usage
+        run: |
+          df -h
+          sudo du -sh /nix/store || true
+          du -sh "$RUNNER_TEMP" || true
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
