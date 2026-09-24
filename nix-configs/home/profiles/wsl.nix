@@ -15,6 +15,7 @@
     ../modules/agents/claude.nix
     ../modules/agents/codex.nix
     ../modules/development/go.nix
+    ../modules/development/gh.nix
     ../modules/development/git.nix
   ];
 

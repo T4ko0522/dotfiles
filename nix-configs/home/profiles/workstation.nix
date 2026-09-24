@@ -44,6 +44,7 @@
     ../modules/agents/codex.nix
     ../modules/agents/codex-desktop.nix
     ../modules/development/go.nix
+    ../modules/development/gh.nix
     ../modules/development/git.nix
     ../modules/desktop/user-dirs.nix
     ../modules/desktop/mime-apps.nix
