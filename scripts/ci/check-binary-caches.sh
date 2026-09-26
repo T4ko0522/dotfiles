@@ -33,7 +33,7 @@ if grep -R -q --include='*.yml' --include='*.yaml' -- 'cachix/install-nix-action
   exit 1
 fi
 
-if grep -E -q -- 'https://(nix\.t4ko\.pet|vicinae\.cachix\.org|cache\.numtide\.com|codex-desktop-linux\.cachix\.org|noctalia\.cachix\.org|cache\.nixos\.org)' \
+if grep -E -q -- 'https://(nix\.t4ko\.pet|vicinae\.cachix\.org|cache\.numtide\.com|codex-desktop-linux\.cachix\.org|noctalia\.cachix\.org|nix-community\.cachix\.org|cache\.nixos\.org)' \
   nix-configs/feature/modules/core/nix.nix; then
   printf '%s\n' 'binary cache URLs used by Nix must only be defined in flake.nix' >&2
   exit 1
