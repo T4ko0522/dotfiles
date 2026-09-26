@@ -92,8 +92,16 @@
   },
 
   // テーマとアイコン
-  "icon_theme": "Colored Zed Icons Theme Dark",
-  "theme": "Catppuccin Mocha (Blur)",
+  "icon_theme": {
+    "mode": "light",
+    "light": "Material Icon Theme",
+    "dark": "Colored Zed Icons Theme Dark"
+  },
+  "theme": {
+    "mode": "system",
+    "light": "One Light",
+    "dark": "Catppuccin Mocha (Blur)"
+  },
 
   // テーマの透過・配色調整
   "experimental.theme_overrides": {
