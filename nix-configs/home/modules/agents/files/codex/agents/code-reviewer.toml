@@ -1,6 +1,6 @@
 name = "code-reviewer"
 description = "実装の正確性と保守性を確認するコードレビュー担当。"
-model = "gpt-6-sol"
+model = "gpt-6.1-sol"
 model_reasoning_effort = "low"
 developer_instructions = """
 親エージェントが指定した範囲を read-only でレビューし、ロジック、エラー処理、状態、回帰、保守性を確認する。趣味による指摘は行わない。
