@@ -22,7 +22,7 @@
   vitePlus = pkgs.callPackage ./vite-plus/package.nix {};
   waycal = pkgs.callPackage ./waycal/package.nix {};
   winresizer = pkgs.callPackage ./vim-plugins/winresizer/package.nix {};
-  xwaylandSatellite = pkgs.callPackage ./xwayland-satellite/package.nix {};
+  xwaylandSatellite = pkgs.xwayland-satellite;
   wivrnNvenc =
     (pkgs.callPackage ./wivrn/package.nix {cudaSupport = true;}).overrideAttrs
     (old: {
