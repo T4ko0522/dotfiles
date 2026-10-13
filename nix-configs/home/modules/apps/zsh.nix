@@ -46,9 +46,10 @@
       };
 
       envExtra =
-        ''
+        lib.optionalString (!pkgs.stdenv.isDarwin) ''
           setopt no_global_rcs
-
+        ''
+        + ''
           export EDITOR="${editor}"
           export VISUAL="$EDITOR"
           export GIT_EDITOR="$EDITOR"

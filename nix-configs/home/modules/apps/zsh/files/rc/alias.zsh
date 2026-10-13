@@ -7,8 +7,8 @@ if command -v zeditor >/dev/null 2>&1; then
 fi
 alias yz='yazi'
 alias cls='clear'
-alias cdt='/home/t4ko/Project/github.com/T4ko0522'
-alias cdp='/home/t4ko/Project'
+alias cdt='cd -- "$HOME/Project/github.com/T4ko0522"'
+alias cdp='cd -- "$HOME/Project"'
 alias la='lsd -lah'
 alias ..='../'
 alias ...='../../'
@@ -33,7 +33,13 @@ alias y='yy'
 function open {
   local target="${1:-.}"
 
-  if command -v xdg-open >/dev/null 2>&1; then
+  if [[ "$OSTYPE" == darwin* ]]; then
+    if (( $# == 0 )); then
+      /usr/bin/open .
+    else
+      /usr/bin/open "$@"
+    fi
+  elif command -v xdg-open >/dev/null 2>&1; then
     xdg-open "$target" >/dev/null 2>&1 &!
   elif command -v nautilus >/dev/null 2>&1; then
     nautilus "$target" >/dev/null 2>&1 &!
