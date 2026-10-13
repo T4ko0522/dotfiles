@@ -1,5 +1,5 @@
 {
-  description = "Dotfiles managed NixOS configuration";
+  description = "Dotfiles managed NixOS and macOS configuration";
 
   nixConfig = {
     extra-substituters = [
@@ -22,6 +22,24 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+
+    nixpkgs-darwin.url = "github:NixOS/nixpkgs/nixpkgs-26.05-darwin";
+
+    nix-darwin = {
+      url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
+      inputs.nixpkgs.follows = "nixpkgs-darwin";
+    };
+
+    nix-homebrew.url = "github:zhaofengli/nix-homebrew";
+
+    homebrew-core = {
+      url = "github:Homebrew/homebrew-core";
+      flake = false;
+    };
+    homebrew-cask = {
+      url = "github:Homebrew/homebrew-cask";
+      flake = false;
+    };
 
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
@@ -73,6 +91,11 @@
 
   outputs = {
     nixpkgs,
+    nixpkgs-darwin,
+    nix-darwin,
+    nix-homebrew,
+    homebrew-core,
+    homebrew-cask,
     home-manager,
     nixvim,
     nixos-wsl,
@@ -136,10 +159,31 @@
       editor = "vim";
     };
   in {
+    darwinConfigurations.macmini = nix-darwin.lib.darwinSystem {
+      specialArgs = {
+        username = "t4ko";
+        homeDirectory = "/Users/t4ko";
+        inherit homebrew-core homebrew-cask llm-agents;
+        nixosLoadingPlymouth = nixos-loading-plymouth;
+      };
+      modules = [
+        ./nix-configs/hosts/macmini
+        home-manager.darwinModules.home-manager
+        nix-homebrew.darwinModules.nix-homebrew
+      ];
+    };
+
     nixosConfigurations = {
       inherit laptop desktop wsl;
       default = laptop;
     };
+
+    devShells.aarch64-darwin.default = let
+      darwinPkgs = nixpkgs-darwin.legacyPackages.aarch64-darwin;
+    in
+      darwinPkgs.mkShell {
+        packages = with darwinPkgs; [alejandra deadnix git just statix stylua];
+      };
 
     devShells.${system} = {
       default = pkgs.mkShell {

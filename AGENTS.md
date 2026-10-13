@@ -9,6 +9,8 @@
 - Nix lint: `just lint`
 - laptop の NixOS 構成を build: `just build`
 - CI 相当の確認: `just ci`
+- macmini の構文・整形・build: `just mac-check`（macOS）
+- macmini に適用: `just mac-switch`（sudo が必要）
 
 `just lint` は `statix check .` を実行します。既存の style warning が残っている場合は失敗することがあります。警告修正が目的でない変更では、無関係な大規模修正に広げないでください。
 
@@ -35,13 +37,19 @@ GitHub Actions は `.github/workflows/ci.yml` から各 workflow を呼び出し
 
 ## Flake
 
-現在の flake は `x86_64-linux` 向けです。
+Linux は `x86_64-linux`、macmini は `aarch64-darwin` 向けです。
 
 - `nixosConfigurations.laptop`: laptop ホスト構成
 - `nixosConfigurations.desktop`: desktop ホスト構成
 - `nixosConfigurations.wsl`: NixOS-WSL 用の CLI 構成
 - `nixosConfigurations.default`: `laptop` の alias
 - `devShells.x86_64-linux.default`: QMK/Vial 作業用 shell
+- `darwinConfigurations.macmini`: nix-darwin + Home Manager + nix-homebrew
+- `devShells.aarch64-darwin.default`: dotfiles の整形・検証用 shell
+
+macOS の system module/profile は `nix-configs/darwin/`、Home Manager profile は
+`nix-configs/home/profiles/darwin.nix` に置きます。Homebrew cask の一覧も Nix で管理します。
+初回適用は `docs/macmini.md` を参照してください。
 
 `specialArgs`とHome Managerの`extraSpecialArgs`には`dotfilesPath`、`keyboardLayout`、`username`、`homeDirectory`などが渡されています。これらが必要なmoduleでは、ハードコードを増やさず既存の引数を使ってください。
 

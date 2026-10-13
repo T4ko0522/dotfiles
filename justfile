@@ -7,6 +7,15 @@ os-switch host="laptop":
 wsl-switch:
     sudo nixos-rebuild switch --flake .#wsl
 
+mac-build:
+    nix --extra-experimental-features 'nix-command flakes' build .#darwinConfigurations.macmini.system
+
+mac-switch: mac-build
+    sudo ./result/sw/bin/darwin-rebuild switch --flake .#macmini --option accept-flake-config true
+
+mac-check: syntax fmt-check
+    nix --extra-experimental-features 'nix-command flakes' build .#darwinConfigurations.macmini.system --no-link
+
 fmt:
     git ls-files --cached --others --exclude-standard '*.nix' | while read -r file; do [ ! -f "$file" ] || printf '%s\0' "$file"; done | xargs -0 -r alejandra
     git ls-files --cached --others --exclude-standard '*.lua' | while read -r file; do [ ! -f "$file" ] || printf '%s\0' "$file"; done | xargs -0 -r nix run nixpkgs#stylua --
