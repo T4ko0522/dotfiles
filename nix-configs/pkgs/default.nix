@@ -10,6 +10,7 @@
   codexPetReimu = pkgs.callPackage ./codex-pets/reimu.nix {};
   kooha = pkgs.callPackage ./kooha/package.nix {};
   lineSeedJp = pkgs.callPackage ./line-seed-jp/package.nix {};
+  omniwmOverview = pkgs.callPackage ./omniwm-overview/package.nix {};
   librepods = pkgs.callPackage ./librepods/package.nix {};
   linuxWallpaperengineCapture = pkgs.callPackage ./linux-wallpaperengine/package.nix {};
   plymouthTheme = pkgs.callPackage ./plymouth-theme/package.nix {
