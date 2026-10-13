@@ -5,7 +5,7 @@ local appearance = {
   color_scheme = "Catppuccin Mocha",
 
   -- タイトルバーとウィンドウボタン（最小化・最大化・閉じる）を非表示
-  window_decorations = "NONE",
+  window_decorations = wezterm.target_triple:find("darwin") and "RESIZE" or "NONE",
   integrated_title_buttons = {},
   window_close_confirmation = "NeverPrompt", -- AlwaysPrompt or NeverPrompt
 
@@ -22,7 +22,6 @@ local appearance = {
   hide_tab_bar_if_only_one_tab = false,
   tab_bar_at_bottom = false,
   show_new_tab_button_in_tab_bar = true,
-  show_close_tab_button_in_tabs = true, -- Can only be used in nightly
   tab_max_width = 30,
   use_fancy_tab_bar = true,
   -- タブバー（上部）を透過
