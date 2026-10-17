@@ -25,6 +25,7 @@ in {
           df = ''!git hist | fzf | awk '{print $2}' | xargs -I {} git diff {}^ {}'';
           ps = ''!git push origin $(git rev-parse --abbrev-ref HEAD)'';
           pl = ''!git pull origin $(git rev-parse --abbrev-ref HEAD)'';
+          wt-add = "!${pkgs.bash}/bin/bash ${./files/git-wt-add.sh}";
         };
         push.autoSetupRemote = true;
         commit.gpgSign = true;
