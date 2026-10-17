@@ -20,6 +20,7 @@
     pulseaudio
     qt6Packages.fcitx5-configtool
     rclone
+    rustdesk-flutter
     spotify
     swaybg
     swayidle
