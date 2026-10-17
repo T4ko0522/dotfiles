@@ -29,6 +29,12 @@
     };
     users.users.${username}.home = homeDirectory;
 
+    power.sleep.computer = "never";
+    # Keep this server awake even when sleep is requested manually.
+    system.activationScripts.power.text = lib.mkAfter ''
+      /usr/bin/pmset -a disablesleep 1
+    '';
+
     # Reviewed macOS 27 files with the official Nix installer's shell snippet.
     # nix-darwin backs these up as *.before-nix-darwin during migration.
     environment.etc = {
