@@ -20,7 +20,7 @@ GitHub Actions は次の 3 workflow で実行します。
 
 - `lint.yml`: PR・master push・手動実行で Nix 構文、Nix / Lua 整形、キャッシュ設定、profile 契約を検証します。PR・手動実行では laptop・desktop も build します。
 - `publish-cache.yml`: master へのすべての push・手動実行で laptop・desktop を build・署名・cache publish します。
-- `update-flake-lock.yml`: 毎朝 08:15 JST の予定で全 flake inputs を更新し、更新 PR を作成・更新します。手動実行もできます。
+- `update-flake-lock.yml`: 毎朝 08:15 JST の予定で全 flake inputs を更新し、差分があれば `flake.lock` を master へ直接コミットします。手動実行もできます。
 
 ローカルの `just ci` は構文・整形・設定の検証と laptop の build を行います。
 

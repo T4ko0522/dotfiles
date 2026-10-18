@@ -73,7 +73,7 @@ Linux の `localPackages` を、現在の `nixpkgs.legacyPackages` から構成�
 | --- | --- | --- |
 | `lint.yml` | PR、master への push、手動実行 | Nix 構文、Nix / Lua 整形、キャッシュ設定、profile 契約を検証する。現在の `nixos.yml` の laptop / desktop build は PR・手動実行の job として移管する。Lua のチェックは段階 10 で削除する |
 | `publish-cache.yml` | master への push、手動実行 | laptop / desktop の build・署名・cache publish を行う。push の変更内容による除外を設けない |
-| `update-flake-lock.yml` | 毎朝 08:15 日本時間、手動実行 | 全 flake inputs を更新し、差分があれば既存の更新 PR を作成・更新する |
+| `update-flake-lock.yml` | 毎朝 08:15 日本時間、手動実行 | 全 flake inputs を更新し、差分があれば `flake.lock` を master へ直接コミットする |
 
 ### Nix installer と workflow の移管
 
@@ -89,7 +89,7 @@ installer の置き換え、workflow の移管、起動条件の変更は、そ�
 
 日次更新は cron `15 23 * * *` とし、日本時間の毎朝 08:15 に設定する。GitHub の UTC 基準では前日の 23:15 に相当する。schedule は default branch に配置し、混雑による実行遅延があり得るため、時刻は起動予定時刻として扱う。[GitHub の schedule 仕様](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule)
 
-更新 PR は現在の GitHub App token による作成・更新と手動 merge の運用を維持する。`flake.lock` のみの PR も `lint` と検証 build の対象にし、master へ入った lock 更新も通常の push と同じく publish の起動対象にする。
+日次更新は GitHub App token を使い、`flake.lock` の差分を master へ直接コミットする。更新処理中に master が進んだ場合は上書きせず失敗する。更新コミットは通常の push と同じく `lint` と publish の起動対象にする。
 
 現在の `ci.yml` にある lock-only PR の `paths-ignore`、publish を制限する差分フィルタ、`publish-cache.yml` の成功後 1 時間 cooldown を撤去する。不要になった `changes` / `cooldown` job と `scripts/ci/check-publish-cooldown.sh` も削除する。現状の publish 用差分フィルタ自体には `flake.lock` が含まれているため、実装時は lock 専用の publish 除外があると決めつけず、呼び出し経路と抑止条件全体を整理する。
 
@@ -139,7 +139,7 @@ Raycast は現在 `/usr/bin/open -W -a` 経由で起動するため、起動ジ�
 | 1 | `feature/` を `linux/` へ改名し、参照元・CI・配置ルールを更新する | 旧パスの残存を検索し、移行説明以外の稼働参照を解消する。CI の差分検知が新パスを対象にすることを確認する。`just syntax`、`just profile-check`、`just binary-cache-check` と対象属性の比較で設定値を維持したことを確認する |
 | 2 | Home 共通 CLI profile、package 選択、gaming / VR module を整理する | import 集合と設定値を維持する。Linux は既存 `just profile-check`、Darwin は identity / CLI / GUI 設定の対象属性を評価し、基準と比較する |
 | 3 | キャッシュデータを抽出し、既存検証 script を更新する | flake・Linux・Darwin・CI setup action のキャッシュ値が一致する。`just binary-cache-check` と両 OS の対象設定評価で確認する |
-| 4 | `.github/` を 3 workflow に整理し、Nix installer・起動条件・日次更新時刻を変更する | YAML / actionlint と旧参照の検索で構成を確認する。GitHub 上で通常 PR・lock-only PR・master の lock 更新 push・手動実行を確認し、検証 job の維持、publish の抑止条件撤去、App token による更新 PR の CI 起動を確認する |
+| 4 | `.github/` を 3 workflow に整理し、Nix installer・起動条件・日次更新時刻を変更する | YAML / actionlint と旧参照の検索で構成を確認する。GitHub 上で通常 PR・lock-only PR・master の lock 更新 push・手動実行を確認し、検証 job の維持、publish の抑止条件撤去、App token による直接更新コミットの CI 起動を確認する |
 | 5 | package registry を OS 分離し、builder の入力と配線を整理する | Darwin の Plymouth input 依存を解消し、各 host の package 選択と外部 module の登録を維持する。対象 package の評価・必要な build、既存 profile 検証を行う |
 | 6 | Linux desktop の公開契約を整理する | KDL、Waybar 設定、eco 状態パス、公開コマンドを比較する。対象生成物を build し、実機で起動・省電力・ロック復帰を確認する |
 | 7 | Darwin の mode 管理を実装し、Darwin Home profile へ import して OmniWM / Raycast に接続する | `macos-mode.nix` が `home/profiles/darwin.nix` 経由で有効になる。初回 desktop、desktop → server → desktop、同一モードの再実行、失敗表示、再ログイン、HM 再適用を実機で確認する。SSH・CLI・管理対象外アプリを維持する |
