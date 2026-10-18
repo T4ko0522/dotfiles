@@ -20,6 +20,7 @@
     ../modules/packages/development.nix
     ../modules/packages/language-servers.nix
     ../modules/packages/ai.nix
+    ../modules/agents/agent-skills.nix
     ../modules/agents/claude.nix
     ../modules/agents/codex.nix
     ../modules/development/git.nix

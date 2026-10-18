@@ -138,6 +138,20 @@
         ;
     };
 
+    mkMacos = import ./nix-configs/lib/mk-macos.nix {
+      inherit
+        home-manager
+        homebrew-cask
+        homebrew-core
+        llm-agents
+        nix-darwin
+        nix-homebrew
+        nixos-loading-plymouth
+        personal-skills
+        ;
+      system = "aarch64-darwin";
+    };
+
     laptop = mkNixos {
       configuration = ./nix-configs/hosts/laptop;
       homeConfiguration = ./nix-configs/hosts/laptop/home.nix;
@@ -159,18 +173,9 @@
       editor = "vim";
     };
   in {
-    darwinConfigurations.macmini = nix-darwin.lib.darwinSystem {
-      specialArgs = {
-        username = "t4ko";
-        homeDirectory = "/Users/t4ko";
-        inherit homebrew-core homebrew-cask llm-agents;
-        nixosLoadingPlymouth = nixos-loading-plymouth;
-      };
-      modules = [
-        ./nix-configs/hosts/macmini
-        home-manager.darwinModules.home-manager
-        nix-homebrew.darwinModules.nix-homebrew
-      ];
+    darwinConfigurations.macmini = mkMacos {
+      configuration = ./nix-configs/hosts/macmini;
+      homeConfiguration = ./nix-configs/hosts/macmini/home.nix;
     };
 
     nixosConfigurations = {

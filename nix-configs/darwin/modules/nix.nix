@@ -1,4 +1,4 @@
-{pkgs, ...}: let
+_: let
   flakeConfig = (import ../../../flake.nix).nixConfig;
 in {
   nix = {
@@ -9,7 +9,4 @@ in {
     };
     optimise.automatic = true;
   };
-  nixpkgs.config.allowUnfree = true;
-  programs.zsh.enable = true;
-  environment.shells = [pkgs.zsh];
 }

@@ -2,7 +2,8 @@
   stdenv,
   swift,
   apple-sdk_14,
-}: stdenv.mkDerivation {
+}:
+stdenv.mkDerivation {
   pname = "omniwm-overview";
   version = "0.1.0";
 
