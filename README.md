@@ -51,6 +51,10 @@ sudo ./result/sw/bin/darwin-rebuild switch --flake .#macmini --option accept-fla
 
 適用後は `mac-mode desktop` / `mac-mode server` で管理対象の常駐アプリを切り替え、`mac-mode status` で状態を確認できます。
 
+インフラ構築には `terraform` / `tofu`、`ansible`、`openstack` を利用できます。
+Docker が必要なときは `colima start --runtime docker` で起動し、`docker info` や `docker compose` を使います。Linux VM の管理には `limactl` も利用できます。
+この設定の適用では VM の作成・起動は行いません。OpenStack 本体は、必要に応じて後から Linux VM に構築します。
+
 ## Nix の整形・検証
 
 Nix ファイルの整形は `alejandra .` を使います。macmini では `nix develop` で整形・lint 用のツールを利用できます。
