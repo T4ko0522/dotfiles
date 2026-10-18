@@ -3,6 +3,7 @@
   home-manager,
   handy,
   llm-agents,
+  lanzabooteModule,
   nani-translate-linux,
   nixos-loading-plymouth,
   noctalia,
@@ -15,23 +16,10 @@
 }: {
   configuration,
   editor ? "zeditor --wait",
-  extraModules ? [],
   homeConfiguration,
   homeDirectory ? "/home/${username}",
   dotfilesPath ? "${homeDirectory}/dotfiles",
   keyboardLayout,
-  platformModules ? [
-    vicinae.nixosModules.default
-    nixos-loading-plymouth.nixosModules.default
-    noctalia.nixosModules.default
-  ],
-  sharedHomeModules ? [
-    vicinae.homeManagerModules.default
-    codex-desktop-linux.homeManagerModules.default
-    nani-translate-linux.homeManagerModules.default
-    noctalia.homeModules.default
-  ],
-  systemOverlays ? [spotify-cli.overlays.default],
   userExtraGroups ? [
     "audio"
     "input"
@@ -41,37 +29,43 @@
   ],
   username ? "t4ko",
 }: let
-  localPackages = import ../pkgs {
-    nixosLoadingPlymouth = nixos-loading-plymouth;
-    pkgs = nixpkgs.legacyPackages.${system};
-  };
+  packageSet = nixpkgs.legacyPackages.${system};
+  localPackages =
+    (import ../pkgs {pkgs = packageSet;})
+    // import ../pkgs/linux.nix {
+      nixosLoadingPlymouth = nixos-loading-plymouth;
+      pkgs = packageSet;
+    };
 in
   nixpkgs.lib.nixosSystem {
     inherit system;
     specialArgs = {
-      inherit dotfilesPath homeDirectory keyboardLayout localPackages userExtraGroups username;
-      nixosLoadingPlymouth = nixos-loading-plymouth;
+      inherit dotfilesPath homeDirectory keyboardLayout lanzabooteModule localPackages userExtraGroups username;
     };
-    modules =
-      [
-        home-manager.nixosModules.home-manager
-        configuration
-      ]
-      ++ platformModules
-      ++ extraModules
-      ++ [
-        {
-          nixpkgs.overlays = systemOverlays;
-          home-manager = {
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            backupFileExtension = "hm-backup";
-            extraSpecialArgs = {
-              inherit codex-desktop-linux dotfilesPath editor handy homeDirectory keyboardLayout llm-agents localPackages personal-skills username vicinae;
-            };
-            sharedModules = [nixvim.homeModules.nixvim] ++ sharedHomeModules;
-            users.${username} = import homeConfiguration;
+    modules = [
+      home-manager.nixosModules.home-manager
+      configuration
+      vicinae.nixosModules.default
+      nixos-loading-plymouth.nixosModules.default
+      noctalia.nixosModules.default
+      {
+        nixpkgs.overlays = [spotify-cli.overlays.default];
+        home-manager = {
+          useGlobalPkgs = true;
+          useUserPackages = true;
+          backupFileExtension = "hm-backup";
+          extraSpecialArgs = {
+            inherit codex-desktop-linux dotfilesPath editor handy homeDirectory keyboardLayout llm-agents localPackages personal-skills username vicinae;
           };
-        }
-      ];
+          sharedModules = [
+            nixvim.homeModules.nixvim
+            vicinae.homeManagerModules.default
+            codex-desktop-linux.homeManagerModules.default
+            nani-translate-linux.homeManagerModules.default
+            noctalia.homeModules.default
+          ];
+          users.${username} = import homeConfiguration;
+        };
+      }
+    ];
   }

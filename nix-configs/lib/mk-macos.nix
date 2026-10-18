@@ -5,7 +5,6 @@
   llm-agents,
   nix-darwin,
   nix-homebrew,
-  nixos-loading-plymouth,
   personal-skills,
   system,
 }: {
@@ -39,7 +38,6 @@ nix-darwin.lib.darwinSystem {
           dotfilesPath = config.t4ko.dotfilesPath;
           localPackages = import ../pkgs {
             inherit pkgs;
-            nixosLoadingPlymouth = nixos-loading-plymouth;
           };
         };
         users.${username} = import homeConfiguration;

@@ -6,6 +6,7 @@
   fetchFromGitLab,
   applyPatches,
   autoAddDriverRunpath,
+  addDriverRunpath,
   android-tools,
   avahi,
   boost,
@@ -192,6 +193,16 @@ stdenv.mkDerivation (finalAttrs: {
     wrapQtApp "$out/bin/wivrn-dashboard" \
       --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath [vulkan-loader]} \
       --prefix PATH : ${lib.makeBinPath [android-tools]}
+  '';
+
+  # dlopen and setcap require an absolute driver RUNPATH for NVENC.
+  postFixup = ''
+    driverLib=${addDriverRunpath.driverLink}/lib
+    for f in "$out"/bin/.wivrn-server-wrapped "$out"/lib/wivrn/*.so*; do
+      if [ -f "$f" ] && patchelf --print-rpath "$f" >/dev/null 2>&1; then
+        patchelf --add-rpath "$driverLib" "$f"
+      fi
+    done
   '';
 
   desktopItems = lib.optionals (!clientLibOnly) [

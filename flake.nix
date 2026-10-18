@@ -137,6 +137,7 @@
         system
         vicinae
         ;
+      lanzabooteModule = lanzaboote.nixosModules.lanzaboote;
     };
 
     mkMacos = import ./nix-configs/lib/mk-macos.nix {
@@ -147,7 +148,6 @@
         llm-agents
         nix-darwin
         nix-homebrew
-        nixos-loading-plymouth
         personal-skills
         ;
       system = "aarch64-darwin";
@@ -162,7 +162,6 @@
       configuration = ./nix-configs/hosts/desktop;
       homeConfiguration = ./nix-configs/hosts/desktop/home.nix;
       inherit keyboardLayout;
-      extraModules = [lanzaboote.nixosModules.lanzaboote];
     };
   in {
     darwinConfigurations.macmini = mkMacos {
