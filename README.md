@@ -1,6 +1,6 @@
 # Dotfiles
 
-NixOS と NixOS-WSL の環境を Home Manager とともに管理する dotfiles.
+NixOS、NixOS-WSL、macOS の環境を Home Manager とともに管理する dotfiles.
 
 ## Nix
 
@@ -42,4 +42,18 @@ NixOS-WSL は `t4ko` ユーザー、Windows interop、CLI 用 Home Manager profi
 ```sh
 just wsl-switch
 just wsl-check
+```
+
+## macOS / Mac mini
+
+Apple Silicon の `macmini` を nix-darwin + Home Manager で管理します。
+CLI は Nix、GUI アプリは Homebrew cask を使い、Homebrew 本体と taps も Nix で宣言します。
+クローン先は `~/dotfiles` です。初回導入と管理対象は [macmini の手順](docs/macmini.md) を参照してください。
+
+```sh
+export NIX_CONFIG="${NIX_CONFIG:-}
+experimental-features = nix-command flakes"
+nix develop
+just mac-check
+just mac-switch
 ```

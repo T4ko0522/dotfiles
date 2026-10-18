@@ -1,0 +1,676 @@
+{
+  "profiles": [
+    {
+      "complex_modifications": {
+        "rules": [
+          {
+            "description": "Backtick key or JIS Shift+@: toggle Japanese and English",
+            "manipulators": [
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "grave_accent_and_tilde",
+                  "modifiers": {
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "spacebar",
+                    "modifiers": [
+                      "left_control"
+                    ],
+                    "repeat": false
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "open_bracket",
+                  "modifiers": {
+                    "mandatory": [
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "spacebar",
+                    "modifiers": [
+                      "left_control"
+                    ],
+                    "repeat": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "description": "Ctrl editing shortcuts: copy, paste, cut, select all, save, undo and redo (except WezTerm)",
+            "manipulators": [
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "c",
+                  "modifiers": {
+                    "mandatory": [
+                      "control"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "c",
+                    "modifiers": [
+                      "left_command"
+                    ]
+                  }
+                ],
+                "conditions": [
+                  {
+                    "type": "frontmost_application_unless",
+                    "bundle_identifiers": [
+                      "^com\\.github\\.wez\\.wezterm$"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "v",
+                  "modifiers": {
+                    "mandatory": [
+                      "control"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "v",
+                    "modifiers": [
+                      "left_command"
+                    ]
+                  }
+                ],
+                "conditions": [
+                  {
+                    "type": "frontmost_application_unless",
+                    "bundle_identifiers": [
+                      "^com\\.github\\.wez\\.wezterm$"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "x",
+                  "modifiers": {
+                    "mandatory": [
+                      "control"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "x",
+                    "modifiers": [
+                      "left_command"
+                    ]
+                  }
+                ],
+                "conditions": [
+                  {
+                    "type": "frontmost_application_unless",
+                    "bundle_identifiers": [
+                      "^com\\.github\\.wez\\.wezterm$"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "a",
+                  "modifiers": {
+                    "mandatory": [
+                      "control"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "a",
+                    "modifiers": [
+                      "left_command"
+                    ]
+                  }
+                ],
+                "conditions": [
+                  {
+                    "type": "frontmost_application_unless",
+                    "bundle_identifiers": [
+                      "^com\\.github\\.wez\\.wezterm$"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "s",
+                  "modifiers": {
+                    "mandatory": [
+                      "control"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "s",
+                    "modifiers": [
+                      "left_command"
+                    ]
+                  }
+                ],
+                "conditions": [
+                  {
+                    "type": "frontmost_application_unless",
+                    "bundle_identifiers": [
+                      "^com\\.github\\.wez\\.wezterm$"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "z",
+                  "modifiers": {
+                    "mandatory": [
+                      "control"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "z",
+                    "modifiers": [
+                      "left_command"
+                    ]
+                  }
+                ],
+                "conditions": [
+                  {
+                    "type": "frontmost_application_unless",
+                    "bundle_identifiers": [
+                      "^com\\.github\\.wez\\.wezterm$"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "y",
+                  "modifiers": {
+                    "mandatory": [
+                      "control"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "z",
+                    "modifiers": [
+                      "left_command",
+                      "left_shift"
+                    ]
+                  }
+                ],
+                "conditions": [
+                  {
+                    "type": "frontmost_application_unless",
+                    "bundle_identifiers": [
+                      "^com\\.github\\.wez\\.wezterm$"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "z",
+                  "modifiers": {
+                    "mandatory": [
+                      "control",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "z",
+                    "modifiers": [
+                      "left_command",
+                      "left_shift"
+                    ]
+                  }
+                ],
+                "conditions": [
+                  {
+                    "type": "frontmost_application_unless",
+                    "bundle_identifiers": [
+                      "^com\\.github\\.wez\\.wezterm$"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "s",
+                  "modifiers": {
+                    "mandatory": [
+                      "control",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "s",
+                    "modifiers": [
+                      "left_command",
+                      "left_shift"
+                    ]
+                  }
+                ],
+                "conditions": [
+                  {
+                    "type": "frontmost_application_unless",
+                    "bundle_identifiers": [
+                      "^com\\.github\\.wez\\.wezterm$"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "description": "Niri bindings on macOS: launchers, duplicate movement keys and system controls",
+            "manipulators": [
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "c",
+                  "modifiers": {
+                    "mandatory": [
+                      "command"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "/Applications/OmniWM.app/Contents/MacOS/omniwmctl command center-column"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "left_arrow",
+                  "modifiers": {
+                    "mandatory": [
+                      "command",
+                      "control"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "/Applications/OmniWM.app/Contents/MacOS/omniwmctl command move-column left"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "right_arrow",
+                  "modifiers": {
+                    "mandatory": [
+                      "command",
+                      "control"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "/Applications/OmniWM.app/Contents/MacOS/omniwmctl command move-column right"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "down_arrow",
+                  "modifiers": {
+                    "mandatory": [
+                      "command",
+                      "control"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "/Applications/OmniWM.app/Contents/MacOS/omniwmctl command move-window-down"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "up_arrow",
+                  "modifiers": {
+                    "mandatory": [
+                      "command",
+                      "control"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "/Applications/OmniWM.app/Contents/MacOS/omniwmctl command move-window-up"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "q",
+                  "modifiers": {
+                    "mandatory": [
+                      "command"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "/usr/bin/open -a WezTerm"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "spacebar",
+                  "modifiers": {
+                    "mandatory": [
+                      "option"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "/usr/bin/open -a Raycast"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "tab",
+                  "modifiers": {
+                    "mandatory": [
+                      "option"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "/Applications/OmniWM.app/Contents/MacOS/omniwmctl command open-command-palette windows"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "s",
+                  "modifiers": {
+                    "mandatory": [
+                      "command"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "c",
+                    "modifiers": [
+                      "fn"
+                    ],
+                    "repeat": false
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "l",
+                  "modifiers": {
+                    "mandatory": [
+                      "command",
+                      "option"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "q",
+                    "modifiers": [
+                      "left_control",
+                      "left_command"
+                    ],
+                    "repeat": false
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "print_screen",
+                  "modifiers": {
+                    "mandatory": [],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "4",
+                    "modifiers": [
+                      "left_shift",
+                      "left_command"
+                    ],
+                    "repeat": false
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "print_screen",
+                  "modifiers": {
+                    "mandatory": [
+                      "control"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "3",
+                    "modifiers": [
+                      "left_shift",
+                      "left_command"
+                    ],
+                    "repeat": false
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "print_screen",
+                  "modifiers": {
+                    "mandatory": [
+                      "option"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "key_code": "4",
+                    "modifiers": [
+                      "left_shift",
+                      "left_command"
+                    ],
+                    "repeat": false
+                  },
+                  {
+                    "key_code": "spacebar",
+                    "repeat": false
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "v",
+                  "modifiers": {
+                    "mandatory": [
+                      "command"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "/usr/bin/open 'raycast://extensions/raycast/clipboard-history/clipboard-history'"
+                  }
+                ]
+              },
+              {
+                "type": "basic",
+                "from": {
+                  "key_code": "slash",
+                  "modifiers": {
+                    "mandatory": [
+                      "command",
+                      "shift"
+                    ],
+                    "optional": [
+                      "caps_lock"
+                    ]
+                  }
+                },
+                "to": [
+                  {
+                    "shell_command": "/Applications/OmniWM.app/Contents/MacOS/omniwmctl command open-command-palette commands"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "devices": [
+        {
+          "identifiers": {
+            "vendor_id": 14096,
+            "product_id": 9218,
+            "is_keyboard": true,
+            "is_pointing_device": true
+          },
+          "ignore": false
+        }
+      ],
+      "name": "Default profile",
+      "selected": true,
+      "virtual_hid_keyboard": {
+        "keyboard_type_v2": "jis"
+      }
+    }
+  ]
+}

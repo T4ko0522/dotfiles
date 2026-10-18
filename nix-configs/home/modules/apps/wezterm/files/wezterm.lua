@@ -17,6 +17,10 @@ config.font = wezterm.font_with_fallback({
 })
 config.warn_about_missing_glyphs = false
 
+if wezterm.target_triple:find("darwin") then
+  config.font_dirs = { wezterm.home_dir .. "/Library/Fonts" }
+end
+
 -- GPU レンダラー
 config.front_end = "OpenGL"
 

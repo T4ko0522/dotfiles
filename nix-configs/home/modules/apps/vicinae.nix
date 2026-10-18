@@ -6,6 +6,7 @@
   vicinae,
   ...
 }: let
+  launcher = import ../../../lib/launcher-preferences.nix {inherit homeDirectory;};
   extensions = import ../../../pkgs/vicinae-extensions {
     inherit pkgs;
     inherit (vicinae.lib.${pkgs.stdenv.hostPlatform.system}) mkRayCastExtension mkVicinaeExtension;
@@ -48,19 +49,16 @@ in {
     };
     settings = {
       # ルート検索でファイルも表示する (file search)
-      search_files_in_root = true;
+      search_files_in_root = launcher.searchFilesInRoot;
 
       providers = {
         "@konojunya/ghq" = {
-          preferences.GHQ_ROOT_PATH = "${homeDirectory}/Project";
+          preferences.GHQ_ROOT_PATH = launcher.ghqRootPath;
         };
 
         # クリップボード履歴の監視を有効化 (clipboard history)
         clipboard = {
-          preferences = {
-            monitoring = true;
-            ignorePasswords = true;
-          };
+          preferences = launcher.clipboard;
         };
       };
     };
