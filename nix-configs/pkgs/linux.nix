@@ -14,7 +14,6 @@
     script = ../assets/plymouth/nixos-loading-logs.script;
     sourceTheme = nixosLoadingPlymouth.packages.${pkgs.stdenv.hostPlatform.system}.nixos-loading-default;
   };
-  swaylockLongIdle = pkgs.callPackage ./swaylock-long-idle/package.nix {};
   swaynotificationcenterSlide = pkgs.callPackage ./swaynotificationcenter/package.nix {};
   waycal = pkgs.callPackage ./waycal/package.nix {};
   xwaylandSatellite = pkgs.xwayland-satellite;

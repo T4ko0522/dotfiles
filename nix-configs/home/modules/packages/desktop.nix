@@ -26,7 +26,6 @@
     spotify
     swaybg
     swayidle
-    swaylock
     vesktop
     vial
     wezterm

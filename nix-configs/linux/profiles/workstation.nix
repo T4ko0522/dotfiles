@@ -12,6 +12,7 @@
     ../modules/desktop/audio.nix
     ../modules/desktop/fonts.nix
     ../modules/desktop/input-method.nix
+    ../modules/desktop/lockscreen.nix
     ../modules/desktop/niri.nix
     ../modules/desktop/noctalia.nix
     ../modules/desktop/portal.nix

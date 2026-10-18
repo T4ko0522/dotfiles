@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  localPackages,
   pkgs,
   ...
 }: let
@@ -40,7 +39,7 @@
     name = "lockscreen";
     runtimeInputs = [
       pkgs.niri
-      localPackages.swaylockLongIdle
+      config.programs.hyprlock.package
     ];
     text = ''
       restore_monitors() {
@@ -56,18 +55,7 @@
           monitor: "niri msg output ${lib.escapeShellArg monitor} off || true"
         )
         secondaryMonitors}
-      if swaylock \
-        --color eff1f5 \
-        --image ${lib.escapeShellArg "${mainMonitor}:${background}"} \
-        --scaling fill \
-        --indicator-radius 110 \
-        --indicator-thickness 10 \
-        --inside-color ${lib.removePrefix "#" c.mantle} \
-        --ring-color ${lib.removePrefix "#" c.lavender} \
-        --line-color 00000000 \
-        --text-color ${lib.removePrefix "#" c.fg} \
-        --key-hl-color ${lib.removePrefix "#" c.blue} \
-        --bs-hl-color ${lib.removePrefix "#" c.red}; then
+      if hyprlock --config ${config.xdg.configFile."hypr/hyprlock.conf".source}; then
         lock_status=0
       else
         lock_status=$?
@@ -99,5 +87,48 @@ in {
     ];
 
     t4ko.lockscreen.command = lockscreen;
+
+    programs.hyprlock = {
+      enable = true;
+      settings = {
+        general = {
+          hide_cursor = true;
+          ignore_empty_input = true;
+        };
+        background = [
+          {
+            monitor = "";
+            color = "rgb(eff1f5)";
+            zindex = -2;
+          }
+          {
+            monitor = mainMonitor;
+            path = "${background}";
+            blur_passes = 0;
+          }
+        ];
+        input-field = [
+          {
+            monitor = mainMonitor;
+            size = "220, 220";
+            position = "0, 0";
+            halign = "center";
+            valign = "center";
+            rounding = -1;
+            outline_thickness = 10;
+            inner_color = "rgb(${lib.removePrefix "#" c.mantle})";
+            outer_color = "rgb(${lib.removePrefix "#" c.lavender})";
+            font_color = "rgb(${lib.removePrefix "#" c.fg})";
+            check_color = "rgb(${lib.removePrefix "#" c.blue})";
+            fail_color = "rgb(${lib.removePrefix "#" c.red})";
+            capslock_color = "rgb(${lib.removePrefix "#" c.yellow})";
+            dots_center = true;
+            fade_on_empty = true;
+            fade_timeout = 10000;
+            placeholder_text = "";
+          }
+        ];
+      };
+    };
   };
 }
