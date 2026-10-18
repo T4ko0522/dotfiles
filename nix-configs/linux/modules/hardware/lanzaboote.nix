@@ -1,8 +1,10 @@
 {
   lib,
+  lanzabooteModule,
   pkgs,
   ...
 }: {
+  imports = [lanzabooteModule];
   environment.systemPackages = with pkgs; [
     sbctl
   ];

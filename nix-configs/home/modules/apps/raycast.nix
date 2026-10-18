@@ -35,7 +35,7 @@
     name = "raycast-setup";
     text = ''
       if [[ ! -d /Applications/Raycast.app ]]; then
-        echo "Raycast is not installed yet. Run just mac-switch first." >&2
+        echo "Raycast is not installed yet. Run sudo darwin-rebuild switch --flake ~/dotfiles#macmini --option accept-flake-config true first." >&2
         exit 1
       fi
       if [[ ! -t 0 ]]; then
@@ -55,17 +55,21 @@
       echo "Launcher: Include Files in Root Search = ${lib.boolToString launcher.searchFilesInRoot}."
       echo "Clipboard History: Enabled = ${lib.boolToString launcher.clipboard.monitoring}."
       echo "Clipboard History: keep password managers excluded; add Proton Pass to Disabled Applications."
-      echo "See ~/dotfiles/docs/raycast.md for the Vicinae mappings and remaining settings."
     '';
   };
 in {
   home.packages = [raycastSetup];
 
+  t4ko.macMode.targets.raycast = {
+    agent = "raycast";
+    appPath = "/Applications/Raycast.app";
+  };
+
   launchd.agents.raycast = {
     enable = true;
     config = {
       ProgramArguments = ["/usr/bin/open" "-W" "-a" "/Applications/Raycast.app"];
-      RunAtLoad = true;
+      RunAtLoad = false;
       KeepAlive = false;
       ProcessType = "Interactive";
     };

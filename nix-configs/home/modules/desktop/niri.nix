@@ -3,11 +3,18 @@
   lib,
   keyboardLayout,
   localPackages,
+  pkgs,
   ...
 }: let
   c = import ../../../lib/theme.nix;
   cfg = config.t4ko.niri;
   quickShell = config.t4ko.quickShell;
+  wallpaper = config.t4ko.wallpaper;
+  wallpaperStartupCommands =
+    lib.optionalString (wallpaper.fallbackImage != null) ''
+      spawn-at-startup "${pkgs.swaybg}/bin/swaybg" "--mode" "${wallpaper.fallbackMode}" "--image" "${wallpaper.fallbackImage}"
+    ''
+    + ''spawn-at-startup "${lib.getExe wallpaper.restoreCommand}"'';
   lockscreenCommand = lib.getExe config.t4ko.lockscreen.command;
   quickShellAppIdRegex = lib.replaceStrings ["\\"] ["\\\\"] (lib.escapeRegex quickShell.appId);
 
@@ -252,12 +259,12 @@ in {
 
     spawn-at-startup "sh" "-c" "sleep 2 && fcitx5 -rd"
     spawn-at-startup "noctalia"
-    ${config.t4ko.wallpaper.niriSpawnCommand}
+    ${wallpaperStartupCommands}
 
     binds {
       ${import ./niri-keybind.nix {
-      quickShellCommand = quickShell.command;
-      quickShellModFCommand = quickShell.modFCommand;
+      quickShellCommand = lib.getExe quickShell.command;
+      quickShellModFCommand = lib.getExe quickShell.modFCommand;
       inherit lockscreenCommand;
     }}
     }

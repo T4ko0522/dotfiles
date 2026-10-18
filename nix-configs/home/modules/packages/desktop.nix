@@ -1,6 +1,8 @@
-{pkgs, ...}: {
-  imports = [./core-cli.nix];
-
+{
+  handy,
+  pkgs,
+  ...
+}: {
   home.sessionVariables.PROTON_PASS_LINUX_KEYRING = "dbus";
 
   home.packages = with pkgs; [
@@ -9,7 +11,7 @@
     fuzzel
     google-chrome
     ghostty
-    lazygit
+    handy.packages.${pkgs.stdenv.hostPlatform.system}.handy
     linux-wallpaperengine
     nautilus
     pavucontrol

@@ -58,7 +58,6 @@ in {
           name = "T4ko0522";
           signingKey = signingKey;
         };
-        safe.directory = "%(prefix)///wsl.localhost/NixOS/home/t4ko/dotfiles";
         credential = {
           "https://github.com".helper = [
             ""

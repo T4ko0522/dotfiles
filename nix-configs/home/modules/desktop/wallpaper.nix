@@ -7,7 +7,7 @@
 }: let
   cfg = config.t4ko.wallpaper;
   backdropCacheDir = "${config.xdg.cacheHome}/wallpaper-engine-backdrop";
-  ecoModeStateFile = "${config.t4ko.ecoMode.stateDirectory}/enabled";
+  ecoModeStateFile = config.t4ko.ecoMode.enabledFile;
   noctaliaCommand = lib.getExe config.programs.noctalia.package;
   presetType = lib.types.submodule {
     options = {
@@ -342,7 +342,6 @@
       }
     '';
   };
-  wallpaperStartupCommand = ''spawn-at-startup "${lib.getExe wallpaperRestoreCommand}"'';
 in {
   options.t4ko.wallpaper = {
     wallpaperId = lib.mkOption {
@@ -455,21 +454,6 @@ in {
       type = lib.types.attrsOf presetType;
       default = defaultPresets;
       description = "Named Wallpaper Engine presets.";
-    };
-
-    niriSpawnCommand = lib.mkOption {
-      type = lib.types.lines;
-      readOnly = true;
-      default =
-        lib.optionalString (cfg.fallbackImage != null) ''
-          spawn-at-startup "${pkgs.swaybg}/bin/swaybg" "--mode" "${cfg.fallbackMode}" "--image" "${cfg.fallbackImage}"
-        ''
-        + wallpaperStartupCommand;
-      description = ''
-        Generated niri startup commands. When fallbackImage is set, swaybg is spawned
-        first as a static fallback layer, then the configured wallpaper command is
-        spawned on top of it.
-      '';
     };
 
     presetCommand = lib.mkOption {

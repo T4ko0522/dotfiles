@@ -2,7 +2,7 @@ name: Update flake lock
 
 on:
   schedule:
-    - cron: "15 3 * * *"
+    - cron: "15 23 * * *"
   workflow_dispatch:
 
 permissions:
@@ -20,16 +20,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
+          ref: master
           persist-credentials: false
 
       - name: Setup Nix
         uses: ./.github/actions/setup-nix
 
       - name: Update all flake inputs
-        run: nix flake update
+        id: update
+        run: |
+          nix flake update
+          if git diff --quiet -- flake.lock; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
 
       # Issue the write token only after the untrusted dependency update has finished.
       - name: Create GitHub App token
+        if: steps.update.outputs.changed == 'true'
         id: app-token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
         with:
@@ -38,20 +47,24 @@ jobs:
           owner: ${{ github.repository_owner }}
           repositories: ${{ github.event.repository.name }}
           permission-contents: write
-          permission-pull-requests: write
 
-      - name: Create update pull request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
-        with:
-          token: ${{ steps.app-token.outputs.token }}
-          add-paths: flake.lock
-          branch: automation/update-flake-lock
-          base: master
-          delete-branch: true
-          sign-commits: true
-          commit-message: "chore(deps): flake.lockを更新"
-          title: "chore(deps): flake.lockを更新"
-          body: |
-            `nix flake update`による日次の全flake input更新です。
-
-            PR CIでlaptop、desktop、wslをbuildし、手動でmergeします。
+      - name: Commit updated lock to master
+        if: steps.update.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          jq -n \
+            --arg repository "$GITHUB_REPOSITORY" \
+            --arg head "$(git rev-parse HEAD)" \
+            --rawfile lock flake.lock \
+            '{
+              query: "mutation($input: CreateCommitOnBranchInput!) { createCommitOnBranch(input: $input) { commit { url } } }",
+              variables: {
+                input: {
+                  branch: { repositoryNameWithOwner: $repository, branchName: "master" },
+                  expectedHeadOid: $head,
+                  message: { headline: "🔧 deps: flake.lockを更新" },
+                  fileChanges: { additions: [{ path: "flake.lock", contents: ($lock | @base64) }] }
+                }
+              }
+            }' | gh api graphql --input - --jq '.data.createCommitOnBranch.commit.url'

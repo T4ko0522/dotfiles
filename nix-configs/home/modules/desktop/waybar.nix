@@ -31,7 +31,7 @@
     runtimeInputs = [pkgs.waybar];
     text = ''
       config_file=${normalWaybarConfig}
-      if [ -e ${lib.escapeShellArg "${config.t4ko.ecoMode.stateDirectory}/enabled"} ]; then
+      if [ -e ${lib.escapeShellArg config.t4ko.ecoMode.enabledFile} ]; then
         config_file=${ecoWaybarConfig}
       fi
 

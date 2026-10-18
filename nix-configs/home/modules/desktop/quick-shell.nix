@@ -129,14 +129,14 @@ in {
     };
 
     command = lib.mkOption {
-      type = lib.types.str;
+      type = lib.types.package;
       readOnly = true;
       internal = true;
       description = "Command used by niri to toggle Quick Shell.";
     };
 
     modFCommand = lib.mkOption {
-      type = lib.types.str;
+      type = lib.types.package;
       readOnly = true;
       internal = true;
       description = "Command used by niri for the Quick Shell-aware Mod+F binding.";
@@ -144,8 +144,8 @@ in {
   };
 
   config = {
-    t4ko.quickShell.command = "${quickShell}/bin/quick-shell";
-    t4ko.quickShell.modFCommand = "${quickShellModF}/bin/quick-shell-mod-f";
+    t4ko.quickShell.command = quickShell;
+    t4ko.quickShell.modFCommand = quickShellModF;
 
     home.packages = [
       quickShell

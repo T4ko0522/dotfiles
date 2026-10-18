@@ -1,6 +1,7 @@
 {
   description = "Dotfiles managed NixOS and macOS configuration";
 
+  # Flake settings must be literal; check-binary-caches.sh checks the shared data.
   nixConfig = {
     extra-substituters = [
       "https://nix.t4ko.pet"
@@ -9,6 +10,7 @@
       "https://codex-desktop-linux.cachix.org"
       "https://noctalia.cachix.org"
       "https://nix-community.cachix.org"
+      "https://handy-computer.cachix.org"
     ];
     extra-trusted-public-keys = [
       "nix.t4ko.pet-1:0eRO18L1/5diWYWboKKPTejQGhGCHNITwELiUaX7Kps="
@@ -17,6 +19,7 @@
       "codex-desktop-linux.cachix.org-1:nX/xy6AdK9hQE24A8ALGjkCKj2ObFmcnemiL5Cid4nk="
       "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      "handy-computer.cachix.org-1:Sihzctn6DC0CJM5QeL+9nBEL3CL8c33m777C+eIv748="
     ];
   };
 
@@ -48,15 +51,12 @@
 
     nixvim.url = "github:nix-community/nixvim/nixos-26.05";
 
-    nixos-wsl = {
-      url = "github:nix-community/NixOS-WSL/main";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     vial-qmk = {
       url = "git+https://github.com/vial-kb/vial-qmk?submodules=1";
       flake = false;
     };
+
+    handy.url = "github:cjpais/Handy";
 
     vicinae.url = "github:vicinaehq/vicinae";
 
@@ -97,8 +97,8 @@
     homebrew-core,
     homebrew-cask,
     home-manager,
+    handy,
     nixvim,
-    nixos-wsl,
     vial-qmk,
     vicinae,
     noctalia,
@@ -125,6 +125,7 @@
       inherit
         codex-desktop-linux
         home-manager
+        handy
         llm-agents
         nani-translate-linux
         nixos-loading-plymouth
@@ -136,6 +137,7 @@
         system
         vicinae
         ;
+      lanzabooteModule = lanzaboote.nixosModules.lanzaboote;
     };
 
     mkMacos = import ./nix-configs/lib/mk-macos.nix {
@@ -146,7 +148,6 @@
         llm-agents
         nix-darwin
         nix-homebrew
-        nixos-loading-plymouth
         personal-skills
         ;
       system = "aarch64-darwin";
@@ -161,16 +162,6 @@
       configuration = ./nix-configs/hosts/desktop;
       homeConfiguration = ./nix-configs/hosts/desktop/home.nix;
       inherit keyboardLayout;
-      extraModules = [lanzaboote.nixosModules.lanzaboote];
-    };
-    wsl = mkNixos {
-      configuration = ./nix-configs/hosts/wsl;
-      homeConfiguration = ./nix-configs/hosts/wsl/home.nix;
-      inherit keyboardLayout;
-      platformModules = [nixos-wsl.nixosModules.default];
-      sharedHomeModules = [];
-      userExtraGroups = ["wheel"];
-      editor = "vim";
     };
   in {
     darwinConfigurations.macmini = mkMacos {
@@ -179,7 +170,7 @@
     };
 
     nixosConfigurations = {
-      inherit laptop desktop wsl;
+      inherit laptop desktop;
       default = laptop;
     };
 
@@ -187,7 +178,7 @@
       darwinPkgs = nixpkgs-darwin.legacyPackages.aarch64-darwin;
     in
       darwinPkgs.mkShell {
-        packages = with darwinPkgs; [alejandra deadnix git just statix stylua];
+        packages = with darwinPkgs; [alejandra deadnix git statix];
       };
 
     devShells.${system} = {

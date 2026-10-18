@@ -17,6 +17,7 @@
       pkgs.util-linux
     ];
     text = ''
+      export ECO_MODE_ENABLED_FILE=${lib.escapeShellArg cfg.enabledFile}
       export ECO_MODE_STATE_DIR=${lib.escapeShellArg cfg.stateDirectory}
       export ECO_MODE_TARGET_UNITS=${lib.escapeShellArg (lib.concatStringsSep "\n" cfg.stopUnits)}
       export ECO_MODE_WALLPAPER_UNIT=${lib.escapeShellArg wallpaperUnit}
@@ -48,6 +49,14 @@ in {
       default = "${config.xdg.stateHome}/eco-mode";
       defaultText = lib.literalExpression ''"''${config.xdg.stateHome}/eco-mode"'';
       description = "Persistent state directory used by the desktop eco mode.";
+    };
+
+    enabledFile = lib.mkOption {
+      type = lib.types.str;
+      readOnly = true;
+      default = "${cfg.stateDirectory}/enabled";
+      defaultText = lib.literalExpression ''"''${config.t4ko.ecoMode.stateDirectory}/enabled"'';
+      description = "State file indicating that desktop eco mode is enabled.";
     };
 
     stopUnits = lib.mkOption {

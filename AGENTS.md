@@ -4,34 +4,45 @@
 
 ## コマンド
 
-- Nix ファイルを整形: `just fmt`
-- Nix 構文チェック: `just syntax`
-- Nix lint: `just lint`
-- laptop の NixOS 構成を build: `just build`
-- CI 相当の確認: `just ci`
-- macmini の構文・整形・build: `just mac-check`（macOS）
-- macmini に適用: `just mac-switch`（sudo が必要）
+- Nix ファイルを整形: `nix run nixpkgs#alejandra -- .`
+- Nix 構文チェック: `git ls-files '*.nix' | xargs -n1 nix-instantiate --parse --quiet >/dev/null`
+- Nix 整形チェック: `nix run nixpkgs#alejandra -- --check .`
+- キャッシュ設定の検証: `bash scripts/ci/check-binary-caches.sh`
+- profile 契約の検証: `bash scripts/ci/check-profiles.sh`
+- Nixvim の生成設定・plugin・keymap の確認: `bash scripts/ci/check-nixvim.sh`（Linux、Nixvim 変更時）
 
-`just lint` は `statix check .` を実行します。既存の style warning が残っている場合は失敗することがあります。警告修正が目的でない変更では、無関係な大規模修正に広げないでください。
+ホスト構成の build:
+
+```sh
+nix build --no-link .#nixosConfigurations.laptop.config.system.build.toplevel
+nix build --no-link .#nixosConfigurations.desktop.config.system.build.toplevel
+# macOS 上で実行
+nix build --no-link .#darwinConfigurations.macmini.system
+```
+
+Justfile はありません。追加の Nix lint が必要な場合は `nix run nixpkgs#statix -- check .` を使います。既存の style warning が残っている場合は失敗することがあります。警告修正が目的でない変更では、無関係な大規模修正に広げないでください。
 
 ## CI
 
-GitHub Actions は `.github/workflows/ci.yml` から各 workflow を呼び出し、以下を実行します。
+GitHub Actions は次の 3 workflow で実行します。
 
-- `git ls-files '*.nix' | xargs -r -n1 nix-instantiate --parse --quiet`
-- `alejandra --check .`
-- laptop・desktop・wsl の NixOS 構成を build
+- `lint.yml`: PR・master push・手動実行で Nix 構文・整形、キャッシュ設定、profile 契約を検証します。PR・手動実行では laptop・desktop も build します。
+- `publish-cache.yml`: master へのすべての push で laptop・desktop を build・署名・cache publish します。手動実行では `host` で片方を指定でき、空なら両方が対象です。
+- `update-flake-lock.yml`: 毎朝 08:15 JST の予定で全 flake inputs を更新し、差分があれば GitHub App token で `flake.lock` を master へ直接署名付きコミットします。手動実行もできます。
 
-ローカルでは `just ci` がこれに近い確認です。
+共通の Nix 導入・キャッシュ設定は `.github/actions/setup-nix/action.yml` にあります。flake 更新用 App の設定は `docs/flake-updates.md` を参照してください。
 
 ## 構成
 
-- `flake.nix`: flake inputs と `nixosConfigurations` を定義します。
-- `nix-configs/hosts/`: ホスト別の構成入口です。`laptop/`・`desktop/`・`wsl/`があります。物理ホストの自動生成由来のhardware設定は目的なしに整理しないでください。
-- `nix-configs/feature/modules/`: NixOS の単一機能モジュールです。
-- `nix-configs/feature/profiles/`: base、workstation、gaming など用途別の NixOS profile です。
-- `nix-configs/home/`: Home Manager 設定です。
+- `flake.nix`: flake inputs、Linux / Darwin のホスト構成、dev shell を定義します。
+- `nix-configs/lib/`: Linux / Darwin の構成 builder と共有データを置きます。
+- `nix-configs/hosts/`: `laptop/`・`desktop/`・`macmini/` の system / Home Manager 構成入口です。物理ホストの自動生成由来の hardware 設定は目的なしに整理しないでください。
+- `nix-configs/linux/modules/`: NixOS の単一機能モジュールです。
+- `nix-configs/linux/profiles/`: base、workstation、gaming など用途別の NixOS profile です。
+- `nix-configs/darwin/`: macOS の system module / profile です。Homebrew の設定もここで管理します。
+- `nix-configs/home/`: Home Manager 設定です。`profiles/common.nix` が両 OS 共通、`profiles/linux.nix` が Linux、`profiles/darwin.nix` が macOS の機能をまとめます。
 - `nix-configs/home/modules/packages/`: Home Manager の package group です。
+- `nix-configs/pkgs/`: ローカル package の定義・関連 source と、共通 / Linux 専用の package registry です。
 - `corne/`: Corne キーボード関連の設定、keymap、生成スクリプトです。
 - `docs/`: keybindings などのドキュメントです。
 
@@ -41,33 +52,32 @@ Linux は `x86_64-linux`、macmini は `aarch64-darwin` 向けです。
 
 - `nixosConfigurations.laptop`: laptop ホスト構成
 - `nixosConfigurations.desktop`: desktop ホスト構成
-- `nixosConfigurations.wsl`: NixOS-WSL 用の CLI 構成
 - `nixosConfigurations.default`: `laptop` の alias
 - `devShells.x86_64-linux.default`: QMK/Vial 作業用 shell
 - `darwinConfigurations.macmini`: nix-darwin + Home Manager + nix-homebrew
 - `devShells.aarch64-darwin.default`: dotfiles の整形・検証用 shell
 
-macOS の system module/profile は `nix-configs/darwin/`、Home Manager profile は
-`nix-configs/home/profiles/darwin.nix` に置きます。Homebrew cask の一覧も Nix で管理します。
-初回適用は `docs/macmini.md` を参照してください。
+Linux / Darwin の構成は `nix-configs/lib/mk-nixos.nix` と `mk-macos.nix` で組み立てます。macmini は単一構成で管理し、適用後の desktop / server モードは `mac-mode desktop`・`mac-mode server`・`mac-mode status` で操作します。
 
-`specialArgs`とHome Managerの`extraSpecialArgs`には`dotfilesPath`、`keyboardLayout`、`username`、`homeDirectory`などが渡されています。これらが必要なmoduleでは、ハードコードを増やさず既存の引数を使ってください。
+各 builder の `specialArgs` と Home Manager の `extraSpecialArgs` を確認し、`dotfilesPath`・`username`・`homeDirectory`・`editor`・`localPackages` など必要な既存引数を使ってください。`keyboardLayout` は Linux 向けです。
 
 ## ファイル配置ルール
 
-- `nix-configs/feature/modules/` は複数構成で共有する単一機能の NixOS 設定を置きます。module から profile を import しません。
-- `nix-configs/feature/profiles/` は用途別の機能 bundle です。module の実装を持たず、原則として imports で構成します。
+- `nix-configs/linux/modules/` は複数構成で共有する単一機能の NixOS 設定を置きます。module から profile を import しません。
+- `nix-configs/linux/profiles/` は用途別の機能 bundle です。module の実装を持たず、原則として imports で構成します。
+- `nix-configs/darwin/modules/` と `nix-configs/darwin/profiles/` も同じ責務分担にします。
 - `nix-configs/home/modules/` は単一の Home Manager 機能、`nix-configs/home/profiles/` はその bundle を置きます。
 - 書き戻し不要な静的設定は `nix-configs/home/modules/**/files/` に置き、Home Manager から Nix store 経由で配置します。
 - アプリが書き戻す実体は、担当する Home Manager module の `files/` に置き、`dotfilesPath` を使う `mkOutOfStoreSymlink` で管理します。
 - `nix-configs/home/modules/packages/*.nix` は目的別の `home.packages` group です。CLI、development、gaming など既存分類に合わせてください。
-- `nix-configs/pkgs/` は derivation のみを置き、feature/Home module 内で package を定義しません。
-- 新しい Nix ファイルは、参照元の `imports` に必ず追加してください。flake 評価で使う新規ファイルは Git に track されている必要があります。
+- 共通のローカル package は `nix-configs/pkgs/default.nix`、Linux 専用は `nix-configs/pkgs/linux.nix` に登録し、module から `localPackages` で参照します。Linux / Darwin / Home module 内で package を定義しません。
+- キャッシュの共有データは `nix-configs/lib/binary-caches.nix` に置きます。flake のリテラル値と CI setup action の設定も一致させ、`check-binary-caches.sh` で確認します。
+- 新しい module は参照元の `imports`、package は対応する registry に追加してください。flake 評価で使う新規ファイルは Git に track されている必要があります（評価前は `git add -N <path>` でも可）。
 
 ## Agent Skills
 
 - [`T4ko0522/skills`](https://github.com/T4ko0522/skills) を唯一の直接依存として、選択済み skills と Home Manager module を取り込みます。
-- skill の追加・更新や外部 source の選択は `T4ko0522/skills` 側で管理します。このリポジトリの `agents/agent-skills.nix` は配置先と既存ディレクトリの移行処理だけを設定します。
+- skill の追加・更新や外部 source の選択は `T4ko0522/skills` 側で管理します。このリポジトリの `nix-configs/home/modules/agents/agent-skills.nix` は配置先と既存ディレクトリの移行処理だけを設定します。
 
 ## スタイル
 
@@ -92,17 +102,13 @@ macOS の system module/profile は `nix-configs/darwin/`、Home Manager profile
 
 ## 検証の目安
 
-小さな Nix 変更では最低限以下を確認します。
+作業中は変更対象の構文・評価・必要な実環境の確認に絞ります。CI 相当の包括的な確認は、予定した変更を終え、ユーザーがコミットを指示した時にまとめて行います。
 
-```sh
-just syntax
-just ci
-```
+コミット前は「コマンド」の構文・整形・キャッシュ設定・profile 契約のチェックと、`lint.yml` の laptop / desktop build を確認します。Darwin 固有の変更では macOS 上の build・動作確認を行い、Linux の評価結果とは区別して報告してください。
 
 package 追加や NixOS module 変更では、必要に応じて以下も確認します。
 
 ```sh
 nix eval .#nixosConfigurations.default.config.home-manager.users.t4ko.home.packages --apply 'xs: builtins.length xs'
 nix eval .#nixosConfigurations.default.config.boot.kernelPackages.kernel.version --raw
-just wsl-check
 ```

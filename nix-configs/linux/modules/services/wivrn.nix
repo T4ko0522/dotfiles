@@ -4,7 +4,7 @@
   ...
 }: {
   # WiVRn: Meta Quest を無線で OpenXR ランタイム化する (SteamVR 不要)。
-  # VRChat は OpenComposite 経由で接続する (home/vr.nix を参照)。
+  # VRChat は OpenComposite 経由で接続する (home/modules/apps/vr.nix を参照)。
   #
   # nixpkgs PR #531078 (wivrn: 26.2.3 -> 26.6) の package.nix をローカルに取り込み、
   # サーバーを Store クライアントと同じ 26.6 に揃える。
