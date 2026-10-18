@@ -1,6 +1,7 @@
 {
   imports = [
     ./common.nix
+    ../modules/desktop/macos-mode.nix
     ../modules/apps/wezterm.nix
     ../modules/apps/zed.nix
     ../modules/apps/karabiner.nix

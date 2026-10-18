@@ -3,11 +3,16 @@
   dotfilesPath,
   ...
 }: {
+  t4ko.macMode.targets.omniwm = {
+    agent = "omniwm";
+    appPath = "/Applications/OmniWM.app";
+  };
+
   launchd.agents.omniwm = {
     enable = true;
     config = {
       Program = "/Applications/OmniWM.app/Contents/MacOS/OmniWM";
-      RunAtLoad = true;
+      RunAtLoad = false;
       KeepAlive = false;
       ProcessType = "Interactive";
     };

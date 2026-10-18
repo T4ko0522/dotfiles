@@ -62,3 +62,26 @@ if [[ "$codex_seed" != *'[ -L "$codex_cfg" ] || [ ! -e "$codex_cfg" ]'* ]]; then
   printf '%s\n' 'Codex seed does not preserve an existing regular config file' >&2
   exit 1
 fi
+
+expect darwinConfigurations.macmini.config.networking.hostName macmini
+expect darwinConfigurations.macmini.config.home-manager.users.t4ko.home.username t4ko
+expect darwinConfigurations.macmini.config.home-manager.users.t4ko.home.homeDirectory /Users/t4ko
+expect darwinConfigurations.macmini.config.home-manager.users.t4ko.home.sessionVariables.EDITOR 'zed --wait'
+nix eval "$flake#darwinConfigurations.macmini.config.home-manager.users.t4ko" \
+  --apply 'home: let
+    agents = home.launchd.agents;
+    packageNames = map (p: p.pname or p.name) home.home.packages;
+  in
+    assert builtins.elem "mac-mode" packageNames;
+    assert builtins.elem "raycast-setup" packageNames;
+    assert builtins.elem "codex" packageNames;
+    assert agents.omniwm.enable && !agents.omniwm.config.RunAtLoad && !agents.omniwm.config.KeepAlive;
+    assert agents.raycast.enable && !agents.raycast.config.RunAtLoad && !agents.raycast.config.KeepAlive;
+    assert agents.mac-mode.enable && agents.mac-mode.config.RunAtLoad && !agents.mac-mode.config.KeepAlive;
+    assert builtins.elem "setupLaunchAgents" home.home.activation.reconcileMacMode.after;
+    assert builtins.hasAttr "omniwm/settings.toml" home.xdg.configFile;
+    assert builtins.hasAttr "raycast/vicinae-migration.json" home.xdg.configFile;
+    assert builtins.hasAttr "zed" home.xdg.configFile;
+    assert builtins.hasAttr "vim/vimrc" home.xdg.configFile;
+    assert builtins.hasAttr "git/config" home.xdg.configFile;
+    "ok"' --raw >/dev/null

@@ -61,11 +61,16 @@
 in {
   home.packages = [raycastSetup];
 
+  t4ko.macMode.targets.raycast = {
+    agent = "raycast";
+    appPath = "/Applications/Raycast.app";
+  };
+
   launchd.agents.raycast = {
     enable = true;
     config = {
       ProgramArguments = ["/usr/bin/open" "-W" "-a" "/Applications/Raycast.app"];
-      RunAtLoad = true;
+      RunAtLoad = false;
       KeepAlive = false;
       ProcessType = "Interactive";
     };
