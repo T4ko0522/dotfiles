@@ -228,3 +228,66 @@ sudo ./result/sw/bin/darwin-rebuild switch --flake .#macmini --option accept-fla
 ## 実施記録
 
 段階 0 の基準は `f96a07d12c6947c02e6ce8d92a6ee1866991f971` の独立コピーから記録した。Linux 上の Nix 評価で、3 ホストの identity・editor・package 選択・生成設定・symlink 定義・service/agent 定義、および Linux の WiVRn/OpenXR 設定を取得した。実機の状態を観測した記録ではない。
+
+### 実装後の構成
+
+```mermaid
+flowchart TD
+  flake[flake.nix] --> linuxBuilder[lib/mk-nixos.nix]
+  flake --> darwinBuilder[lib/mk-macos.nix]
+  linuxBuilder --> linuxHosts[hosts/laptop・desktop]
+  darwinBuilder --> darwinHost[hosts/macmini]
+  linuxHosts --> linuxProfiles[linux/profiles]
+  linuxProfiles --> linuxModules[linux/modules]
+  darwinHost --> darwinProfiles[darwin/profiles]
+  darwinProfiles --> darwinModules[darwin/modules]
+  linuxBuilder --> workstation[home/profiles/workstation.nix]
+  darwinBuilder --> darwinHome[home/profiles/darwin.nix]
+  workstation --> common[home/profiles/common.nix]
+  darwinHome --> common
+  common --> cli[CLI・development・agents modules]
+  workstation --> desktop[Linux desktop・GUI modules]
+  darwinHome --> darwinApps[Darwin GUI・mode modules]
+  linuxBuilder --> commonPackages[pkgs/default.nix]
+  darwinBuilder --> commonPackages
+  linuxBuilder --> linuxPackages[pkgs/linux.nix]
+  linuxPackages --> plymouth[Plymouth input]
+  linuxBuilder --> linuxExternal[外部 system・Home modules / overlay]
+  darwinBuilder --> darwinExternal[Home Manager・nix-homebrew modules / Homebrew taps]
+  common --> agentInputs[llm-agents・personal-skills inputs]
+  linuxModules --> caches[lib/binary-caches.nix]
+  darwinModules --> caches
+  flake -. literal値の一致検査 .-> caches
+  setup[CI setup-nix action] -. 設定値の一致検査 .-> caches
+```
+
+builder から Home profile への接続は各 host の `home.nix` を経由する。Linux の `localPackages` は構成中の `pkgs` から生成し、system module には `_module.args`、Home Manager には `extraSpecialArgs` で渡す。Lanzaboote は明示的な module 引数を受け取り、Linux の機能 module が import する。
+
+Darwin は app module が対象 app bundle と launchd agent を定義し、`macos-mode.nix` がその2対象を `mac-mode` へ渡す。`mac-mode` は `xdg.stateHome/mac-mode/mode` の希望値と GUI session の job・アプリ実体を扱う。ログイン agent と Home Manager の `setupLaunchAgents` 後の activation は同じ reconcile を呼ぶ。
+
+### 段階ごとの結果
+
+| 段階 | 実施内容・判断 |
+| --- | --- |
+| 1 | `feature/` → `linux/` と参照更新。設定の移動のみを独立コミットにした |
+| 2 | 共通 CLI profile と gaming / VR module を抽出。GUI・OS 固有設定、desktop の VR 選択を維持し、lazygit の重複を除去した |
+| 3 | OS のキャッシュ設定を共有データへ変更。Nix 2.34.9 が `nixConfig` の import / thunk を拒否するため、flake のリテラルは保持し、共有データ・両 OS・CI との一致を既存 script で検査する |
+| 4 | 3 workflow、v35 の SHA 固定 installer、日次 08:15 JST、lock-only PR の検証、master 全 push の publish に整理した |
+| 5 | 共通 / Linux registry を分離し、WiVRn RUNPATH 処理を package へ移動。Darwin の Plymouth 引数と未使用の builder 上書き口を除去し、Lanzaboote の登録を機能側へまとめた |
+| 6 | 壁紙の KDL 生成を Niri へ移し、省電力状態ファイルを read-only 公開。Quick Shell のコマンドを package 型へ統一した |
+| 7 | `mac-mode desktop/server/status`、原子的保存・直列化・実稼働表示・正常終了・再試行を実装。対象 job の無条件起動を止め、ログイン / HM 再適用時の reconcile に接続した |
+| 8 | Linux の `localPackages` を構成中の `pkgs` へ統一。採用前の候補比較では、laptop / desktop と legacy の全16 derivation が一致した |
+| 9 | 実装と依存図を照合し、検証範囲と未確認事項を記録した |
+| 10 | 未実施。段階9のコミット後に Lua チェックと `justfile` の削除を行う |
+
+### 検証範囲
+
+ユーザーの「build や lint などの check は不要」という後続指示以降、追加のチェックは実行していない。段階ごとにコミットし、push と構成の適用は行っていない。
+
+指示変更前には、段階に応じて構文・整形・既存 profile / binary-cache script、YAML / actionlint、対象限定の lint を実行した。registry 分割前後の全16 derivation、Linux の gaming / VR と package 選択、Darwin の identity・editor・package 選択・GUI / agent 定義を比較した。共通 profile 化による Darwin のフォント marker の store path 変化は、package 順序の変更によるものだった。
+
+Linux desktop の Niri KDL・Waybar 設定と省電力状態パスは、store hash を除いて基準と一致した。laptop の生成設定・symlink・service 定義も同様に一致し、Quick Shell・省電力・壁紙復元の対象コマンドの build と Niri の設定検証を実施した。Linux 全構成の build は完了条件として確認していない。
+
+Darwin mode は対象属性の評価と一時シミュレーションで、初期 desktop、往復・同一モード、部分失敗・希望値保持・再試行、終了拒否時の起動抑止、job とアプリの稼働ずれ、同時操作の直列化を確認した。Darwin の build・実機検証・適用はユーザー指示により行っていない。実際の launchctl / AppKit 制御、再ログイン、HM 再適用の動作は未確認である。
+
+GitHub runner 上の Nix 導入・イベント起動・認証・署名 / publish・schedule と、段階8を組み込んだ最終構成の再評価は未確認である。
