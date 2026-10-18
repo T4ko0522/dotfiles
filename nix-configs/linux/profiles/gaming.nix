@@ -1,12 +1,7 @@
-{pkgs, ...}: {
-  imports = [../modules/hardware/openrazer.nix];
-
-  programs.steam = {
-    enable = true;
-    extraCompatPackages = with pkgs; [proton-ge-bin];
-  };
-
-  programs.gamemode.enable = true;
-
-  hardware.graphics.enable32Bit = true;
+{...}: {
+  imports = [
+    ../modules/gaming/steam.nix
+    ../modules/gaming/gamemode.nix
+    ../modules/hardware/openrazer.nix
+  ];
 }
