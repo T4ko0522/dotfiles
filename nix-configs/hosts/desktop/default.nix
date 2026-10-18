@@ -5,12 +5,12 @@
 }: {
   imports = [
     ./hardware-configuration.nix
-    ../../feature/profiles/workstation.nix
-    ../../feature/modules/hardware/lanzaboote.nix
-    ../../feature/modules/desktop/plymouth.nix
-    ../../feature/modules/hardware/nvidia.nix
-    ../../feature/profiles/gaming.nix
-    ../../feature/profiles/vr.nix
+    ../../linux/profiles/workstation.nix
+    ../../linux/modules/hardware/lanzaboote.nix
+    ../../linux/modules/desktop/plymouth.nix
+    ../../linux/modules/hardware/nvidia.nix
+    ../../linux/profiles/gaming.nix
+    ../../linux/profiles/vr.nix
   ];
 
   networking.hostName = "desktop";

@@ -28,8 +28,8 @@ GitHub Actions は `.github/workflows/ci.yml` から各 workflow を呼び出し
 
 - `flake.nix`: flake inputs と `nixosConfigurations` を定義します。
 - `nix-configs/hosts/`: ホスト別の構成入口です。`laptop/`・`desktop/`があります。物理ホストの自動生成由来のhardware設定は目的なしに整理しないでください。
-- `nix-configs/feature/modules/`: NixOS の単一機能モジュールです。
-- `nix-configs/feature/profiles/`: base、workstation、gaming など用途別の NixOS profile です。
+- `nix-configs/linux/modules/`: NixOS の単一機能モジュールです。
+- `nix-configs/linux/profiles/`: base、workstation、gaming など用途別の NixOS profile です。
 - `nix-configs/home/`: Home Manager 設定です。
 - `nix-configs/home/modules/packages/`: Home Manager の package group です。
 - `corne/`: Corne キーボード関連の設定、keymap、生成スクリプトです。
@@ -54,13 +54,13 @@ macOS の system module/profile は `nix-configs/darwin/`、Home Manager profile
 
 ## ファイル配置ルール
 
-- `nix-configs/feature/modules/` は複数構成で共有する単一機能の NixOS 設定を置きます。module から profile を import しません。
-- `nix-configs/feature/profiles/` は用途別の機能 bundle です。module の実装を持たず、原則として imports で構成します。
+- `nix-configs/linux/modules/` は複数構成で共有する単一機能の NixOS 設定を置きます。module から profile を import しません。
+- `nix-configs/linux/profiles/` は用途別の機能 bundle です。module の実装を持たず、原則として imports で構成します。
 - `nix-configs/home/modules/` は単一の Home Manager 機能、`nix-configs/home/profiles/` はその bundle を置きます。
 - 書き戻し不要な静的設定は `nix-configs/home/modules/**/files/` に置き、Home Manager から Nix store 経由で配置します。
 - アプリが書き戻す実体は、担当する Home Manager module の `files/` に置き、`dotfilesPath` を使う `mkOutOfStoreSymlink` で管理します。
 - `nix-configs/home/modules/packages/*.nix` は目的別の `home.packages` group です。CLI、development、gaming など既存分類に合わせてください。
-- `nix-configs/pkgs/` は derivation のみを置き、feature/Home module 内で package を定義しません。
+- `nix-configs/pkgs/` は derivation のみを置き、Linux/Home module 内で package を定義しません。
 - 新しい Nix ファイルは、参照元の `imports` に必ず追加してください。flake 評価で使う新規ファイルは Git に track されている必要があります。
 
 ## Agent Skills

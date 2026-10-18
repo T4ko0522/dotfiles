@@ -1,11 +1,11 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ../../feature/profiles/workstation.nix
-    ../../feature/modules/desktop/plymouth.nix
-    ../../feature/modules/hardware/nvidia-hybrid.nix
-    ../../feature/profiles/gaming.nix
-    # ../../feature/profiles/vr.nix
+    ../../linux/profiles/workstation.nix
+    ../../linux/modules/desktop/plymouth.nix
+    ../../linux/modules/hardware/nvidia-hybrid.nix
+    ../../linux/profiles/gaming.nix
+    # ../../linux/profiles/vr.nix
   ];
 
   networking.hostName = "laptop";
