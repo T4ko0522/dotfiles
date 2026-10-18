@@ -1,5 +1,5 @@
 _: let
-  flakeConfig = (import ../../../../flake.nix).nixConfig;
+  binaryCaches = import ../../../lib/binary-caches.nix;
 in {
   nix.settings = {
     accept-flake-config = true;
@@ -7,7 +7,7 @@ in {
       "nix-command"
       "flakes"
     ];
-    substituters = flakeConfig.extra-substituters;
-    trusted-public-keys = flakeConfig.extra-trusted-public-keys;
+    substituters = binaryCaches.extra-substituters;
+    trusted-public-keys = binaryCaches.extra-trusted-public-keys;
   };
 }

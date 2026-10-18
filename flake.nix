@@ -1,6 +1,7 @@
 {
   description = "Dotfiles managed NixOS and macOS configuration";
 
+  # Flake settings must be literal; check-binary-caches.sh checks the shared data.
   nixConfig = {
     extra-substituters = [
       "https://nix.t4ko.pet"

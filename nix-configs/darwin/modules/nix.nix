@@ -1,11 +1,11 @@
 _: let
-  flakeConfig = (import ../../../flake.nix).nixConfig;
+  binaryCaches = import ../../lib/binary-caches.nix;
 in {
   nix = {
     enable = true;
     settings = {
       experimental-features = ["nix-command" "flakes"];
-      inherit (flakeConfig) extra-substituters extra-trusted-public-keys;
+      inherit (binaryCaches) extra-substituters extra-trusted-public-keys;
     };
     optimise.automatic = true;
   };
