@@ -20,14 +20,14 @@ GitHub Actions は `.github/workflows/ci.yml` から各 workflow を呼び出し
 
 - `git ls-files '*.nix' | xargs -r -n1 nix-instantiate --parse --quiet`
 - `alejandra --check .`
-- laptop・desktop・wsl の NixOS 構成を build
+- laptop・desktop の NixOS 構成を build
 
 ローカルでは `just ci` がこれに近い確認です。
 
 ## 構成
 
 - `flake.nix`: flake inputs と `nixosConfigurations` を定義します。
-- `nix-configs/hosts/`: ホスト別の構成入口です。`laptop/`・`desktop/`・`wsl/`があります。物理ホストの自動生成由来のhardware設定は目的なしに整理しないでください。
+- `nix-configs/hosts/`: ホスト別の構成入口です。`laptop/`・`desktop/`があります。物理ホストの自動生成由来のhardware設定は目的なしに整理しないでください。
 - `nix-configs/feature/modules/`: NixOS の単一機能モジュールです。
 - `nix-configs/feature/profiles/`: base、workstation、gaming など用途別の NixOS profile です。
 - `nix-configs/home/`: Home Manager 設定です。
@@ -41,7 +41,6 @@ Linux は `x86_64-linux`、macmini は `aarch64-darwin` 向けです。
 
 - `nixosConfigurations.laptop`: laptop ホスト構成
 - `nixosConfigurations.desktop`: desktop ホスト構成
-- `nixosConfigurations.wsl`: NixOS-WSL 用の CLI 構成
 - `nixosConfigurations.default`: `laptop` の alias
 - `devShells.x86_64-linux.default`: QMK/Vial 作業用 shell
 - `darwinConfigurations.macmini`: nix-darwin + Home Manager + nix-homebrew
@@ -104,5 +103,4 @@ package 追加や NixOS module 変更では、必要に応じて以下も確認�
 ```sh
 nix eval .#nixosConfigurations.default.config.home-manager.users.t4ko.home.packages --apply 'xs: builtins.length xs'
 nix eval .#nixosConfigurations.default.config.boot.kernelPackages.kernel.version --raw
-just wsl-check
 ```

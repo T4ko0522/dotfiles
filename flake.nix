@@ -50,11 +50,6 @@
 
     nixvim.url = "github:nix-community/nixvim/nixos-26.05";
 
-    nixos-wsl = {
-      url = "github:nix-community/NixOS-WSL/main";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     vial-qmk = {
       url = "git+https://github.com/vial-kb/vial-qmk?submodules=1";
       flake = false;
@@ -103,7 +98,6 @@
     home-manager,
     handy,
     nixvim,
-    nixos-wsl,
     vial-qmk,
     vicinae,
     noctalia,
@@ -169,15 +163,6 @@
       inherit keyboardLayout;
       extraModules = [lanzaboote.nixosModules.lanzaboote];
     };
-    wsl = mkNixos {
-      configuration = ./nix-configs/hosts/wsl;
-      homeConfiguration = ./nix-configs/hosts/wsl/home.nix;
-      inherit keyboardLayout;
-      platformModules = [nixos-wsl.nixosModules.default];
-      sharedHomeModules = [];
-      userExtraGroups = ["wheel"];
-      editor = "vim";
-    };
   in {
     darwinConfigurations.macmini = mkMacos {
       configuration = ./nix-configs/hosts/macmini;
@@ -185,7 +170,7 @@
     };
 
     nixosConfigurations = {
-      inherit laptop desktop wsl;
+      inherit laptop desktop;
       default = laptop;
     };
 

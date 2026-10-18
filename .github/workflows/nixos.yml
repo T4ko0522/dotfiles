@@ -43,16 +43,3 @@ jobs:
       - name: Build desktop
         if: ${{ !cancelled() }}
         run: nix build --no-link .#nixosConfigurations.desktop.config.system.build.toplevel
-
-  wsl:
-    name: Build WSL
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Nix
-        uses: ./.github/actions/setup-nix
-
-      - name: Build configuration
-        run: nix build .#nixosConfigurations.wsl.config.system.build.toplevel

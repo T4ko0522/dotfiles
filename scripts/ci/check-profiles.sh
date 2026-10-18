@@ -31,20 +31,13 @@ expect_git_setting() {
   fi
 }
 
-expect nixosConfigurations.wsl.config.home-manager.users.t4ko.home.sessionVariables.EDITOR vim
 expect nixosConfigurations.laptop.config.home-manager.users.t4ko.home.sessionVariables.EDITOR "zeditor --wait"
 expect nixosConfigurations.laptop.config.networking.hostName laptop
 expect nixosConfigurations.desktop.config.networking.hostName desktop
-expect nixosConfigurations.wsl.config.networking.hostName nixos-wsl
 expect_git_setting laptop user.signingKey /home/t4ko/.ssh/id_ed25519_signing_laptop.pub
 expect_git_setting desktop user.signingKey /home/t4ko/.ssh/id_ed25519_signing_desktop.pub
-expect_git_setting wsl user.signingKey /home/t4ko/.ssh/id_ed25519_signing_nixos-wsl.pub
 expect_git_setting laptop gpg.format ssh
 expect_git_setting laptop commit.gpgSign true
-
-nix eval "$flake#nixosConfigurations.wsl.config.home-manager.users.t4ko.home.packages" \
-  --apply 'packages: assert builtins.any (package: (package.pname or "") == "vim") packages; assert !builtins.any (package: (package.pname or "") == "chezmoi") packages; "ok"' \
-  --raw >/dev/null
 
 for host in laptop desktop; do
   nix eval "$flake#nixosConfigurations.$host.config.home-manager.users.t4ko.programs.nixvim.enable" \
@@ -59,17 +52,6 @@ for host in laptop desktop; do
     --apply 'files: assert builtins.hasAttr ".claude/CLAUDE.md" files; assert builtins.hasAttr ".claude/settings.json" files; assert builtins.hasAttr ".codex/AGENTS.md" files; assert builtins.hasAttr ".git_template/hooks/pre-commit" files; "ok"' \
     --raw >/dev/null
 done
-
-nix eval "$flake#nixosConfigurations.wsl.config.home-manager.users.t4ko.programs.nixvim.enable" \
-  --apply 'enabled: assert !enabled; "ok"' --raw >/dev/null
-
-nix eval "$flake#nixosConfigurations.wsl.config.home-manager.users.t4ko.xdg.configFile" \
-  --apply 'files: assert builtins.hasAttr "fastfetch" files; assert builtins.hasAttr "git/config" files; assert builtins.hasAttr "lazygit" files; assert builtins.hasAttr "starship.toml" files; assert builtins.hasAttr "vim/vimrc" files; assert builtins.hasAttr "yazi" files; assert !builtins.hasAttr "wezterm" files; assert !builtins.hasAttr "zed" files; "ok"' \
-  --raw >/dev/null
-
-nix eval "$flake#nixosConfigurations.wsl.config.home-manager.users.t4ko.home.file" \
-  --apply 'files: assert builtins.hasAttr ".claude/CLAUDE.md" files; assert builtins.hasAttr ".codex/AGENTS.md" files; assert builtins.hasAttr ".git_template/hooks/pre-commit" files; "ok"' \
-  --raw >/dev/null
 
 codex_seed="$(nix eval "$flake#nixosConfigurations.laptop.config.home-manager.users.t4ko.home.activation.seedCodexConfig.data" --raw)"
 if [[ "$codex_seed" != *'/nix/store/'*'-config.toml'* ]]; then

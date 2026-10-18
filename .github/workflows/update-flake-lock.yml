@@ -54,4 +54,4 @@ jobs:
           body: |
             `nix flake update`による日次の全flake input更新です。
 
-            PR CIでlaptop、desktop、wslをbuildし、手動でmergeします。
+            PR CIでlaptop、desktopをbuildし、手動でmergeします。
