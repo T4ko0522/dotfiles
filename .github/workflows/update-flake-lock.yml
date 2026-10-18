@@ -49,9 +49,7 @@ jobs:
           base: master
           delete-branch: true
           sign-commits: true
-          commit-message: "chore(deps): flake.lockを更新"
-          title: "chore(deps): flake.lockを更新"
+          commit-message: "🔧 deps: flake.lockを更新"
+          title: "🔧deps: flake.lockを更新"
           body: |
             `nix flake update`による日次の全flake input更新です。
-
-            PR CIでlaptop、desktopをbuildし、手動でmergeします。
