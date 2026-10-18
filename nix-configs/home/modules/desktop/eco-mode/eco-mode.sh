@@ -2,6 +2,7 @@
 
 set -euo pipefail
 
+: "${ECO_MODE_ENABLED_FILE:?ECO_MODE_ENABLED_FILE is required}"
 : "${ECO_MODE_STATE_DIR:?ECO_MODE_STATE_DIR is required}"
 : "${ECO_MODE_TARGET_UNITS:?ECO_MODE_TARGET_UNITS is required}"
 : "${ECO_MODE_WALLPAPER_UNIT:?ECO_MODE_WALLPAPER_UNIT is required}"
@@ -11,7 +12,7 @@ set -euo pipefail
 : "${ECO_MODE_POWER_PROFILES_COMMAND:?ECO_MODE_POWER_PROFILES_COMMAND is required}"
 : "${ECO_MODE_LIGHTING_COMMAND:=}"
 
-enabled_file="$ECO_MODE_STATE_DIR/enabled"
+enabled_file="$ECO_MODE_ENABLED_FILE"
 restore_units_file="$ECO_MODE_STATE_DIR/restore-units"
 power_profile_file="$ECO_MODE_STATE_DIR/power-profile"
 lock_file="$ECO_MODE_STATE_DIR/lock"
