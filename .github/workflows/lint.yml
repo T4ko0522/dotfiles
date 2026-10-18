@@ -42,21 +42,6 @@ jobs:
       - name: Check Nix formatting
         run: nix run nixpkgs#alejandra -- --check .
 
-  lua-formatting:
-    name: Lua formatting
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Nix
-        uses: ./.github/actions/setup-nix
-
-      - name: Check Lua formatting
-        run: |
-          git ls-files '*.lua' \
-            | xargs -r nix run nixpkgs#stylua -- --check
-
   contracts:
     name: Profile contracts
     runs-on: ubuntu-latest

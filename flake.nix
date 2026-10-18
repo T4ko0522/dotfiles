@@ -178,7 +178,7 @@
       darwinPkgs = nixpkgs-darwin.legacyPackages.aarch64-darwin;
     in
       darwinPkgs.mkShell {
-        packages = with darwinPkgs; [alejandra deadnix git just statix stylua];
+        packages = with darwinPkgs; [alejandra deadnix git statix];
       };
 
     devShells.${system} = {

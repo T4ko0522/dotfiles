@@ -193,7 +193,6 @@ deadnix --fail .
 Linux:
 
 ```sh
-bash scripts/ci/check-wsl.sh
 bash scripts/ci/check-profiles.sh
 bash scripts/ci/check-binary-caches.sh
 nix build --no-link .#nixosConfigurations.laptop.config.system.build.toplevel
@@ -278,7 +277,7 @@ Darwin は app module が対象 app bundle と launchd agent を定義し、`mac
 | 7 | `mac-mode desktop/server/status`、原子的保存・直列化・実稼働表示・正常終了・再試行を実装。対象 job の無条件起動を止め、ログイン / HM 再適用時の reconcile に接続した |
 | 8 | Linux の `localPackages` を構成中の `pkgs` へ統一。採用前の候補比較では、laptop / desktop と legacy の全16 derivation が一致した |
 | 9 | 実装と依存図を照合し、検証範囲と未確認事項を記録した |
-| 10 | 未実施。段階9のコミット後に Lua チェックと `justfile` の削除を行う |
+| 10 | CI の Lua チェックと `justfile`、Darwin devShell の専用依存を削除し、適用・検証案内を直接コマンドへ更新した。エディタ用 StyLua と汎用 CLI の just は維持した。`AGENTS.md` の最終整備は上記 TODO のままとする |
 
 ### 検証範囲
 
@@ -290,4 +289,4 @@ Linux desktop の Niri KDL・Waybar 設定と省電力状態パスは、store ha
 
 Darwin mode は対象属性の評価と一時シミュレーションで、初期 desktop、往復・同一モード、部分失敗・希望値保持・再試行、終了拒否時の起動抑止、job とアプリの稼働ずれ、同時操作の直列化を確認した。Darwin の build・実機検証・適用はユーザー指示により行っていない。実際の launchctl / AppKit 制御、再ログイン、HM 再適用の動作は未確認である。
 
-GitHub runner 上の Nix 導入・イベント起動・認証・署名 / publish・schedule と、段階8を組み込んだ最終構成の再評価は未確認である。
+GitHub runner 上の Nix 導入・イベント起動・認証・署名 / publish・schedule と、段階8以降を組み込んだ最終構成の再評価は未確認である。
