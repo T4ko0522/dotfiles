@@ -1,6 +1,7 @@
 {
   codex-desktop-linux,
   home-manager,
+  handy,
   llm-agents,
   nani-translate-linux,
   nixos-loading-plymouth,
@@ -66,7 +67,7 @@ in
             useUserPackages = true;
             backupFileExtension = "hm-backup";
             extraSpecialArgs = {
-              inherit codex-desktop-linux dotfilesPath editor homeDirectory keyboardLayout llm-agents localPackages personal-skills username vicinae;
+              inherit codex-desktop-linux dotfilesPath editor handy homeDirectory keyboardLayout llm-agents localPackages personal-skills username vicinae;
             };
             sharedModules = [nixvim.homeModules.nixvim] ++ sharedHomeModules;
             users.${username} = import homeConfiguration;
