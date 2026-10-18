@@ -240,12 +240,12 @@ flowchart TD
   linuxProfiles --> linuxModules[linux/modules]
   darwinHost --> darwinProfiles[darwin/profiles]
   darwinProfiles --> darwinModules[darwin/modules]
-  linuxBuilder --> workstation[home/profiles/workstation.nix]
+  linuxBuilder --> linuxHome[home/profiles/linux.nix]
   darwinBuilder --> darwinHome[home/profiles/darwin.nix]
-  workstation --> common[home/profiles/common.nix]
+  linuxHome --> common[home/profiles/common.nix]
   darwinHome --> common
   common --> cli[CLI・development・agents modules]
-  workstation --> desktop[Linux desktop・GUI modules]
+  linuxHome --> desktop[Linux desktop・GUI modules]
   darwinHome --> darwinApps[Darwin GUI・mode modules]
   linuxBuilder --> commonPackages[pkgs/default.nix]
   darwinBuilder --> commonPackages

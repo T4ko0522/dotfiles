@@ -1,6 +1,6 @@
 {dotfilesPath, ...}: {
   imports = [
-    ../../home/profiles/workstation.nix
+    ../../home/profiles/linux.nix
     ../../home/modules/desktop/galleria-case-lighting.nix
   ];
 

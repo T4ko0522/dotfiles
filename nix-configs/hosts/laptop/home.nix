@@ -1,5 +1,5 @@
 {dotfilesPath, ...}: {
-  imports = [../../home/profiles/workstation.nix];
+  imports = [../../home/profiles/linux.nix];
 
   t4ko.appPresets.startup.apps = [
     {
