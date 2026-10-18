@@ -1,6 +1,6 @@
 # Flake input updates
 
-`.github/workflows/update-flake-lock.yml`は毎週月曜日12:15 JSTに`nix flake update`を実行し、全inputの更新を1つのPRへまとめます。PRは自動mergeせず、通常のPR CIで全NixOS構成を検証します。
+`.github/workflows/update-flake-lock.yml`は毎朝08:15 JST（cronはUTCの`15 23 * * *`）に`nix flake update`を実行し、全inputの更新を1つのPRへまとめます。PRは自動mergeせず、`lint.yml`で構文・整形・設定を検証し、laptop・desktopをbuildします。起動予定時刻はGitHub側の混雑で遅れることがあります。
 
 ## GitHub App
 
@@ -18,3 +18,5 @@ AppのWebhookは不要です。workflowは更新処理が完了した後に、�
 ## Manual run
 
 Actionsの`Update flake lock`から`workflow_dispatch`を実行します。更新がなければPRは作成されません。既存の`automation/update-flake-lock` PRがある場合は同じPRが更新されます。
+
+masterへのすべてのpushは`publish-cache.yml`の対象です。lock更新もbuild・署名・cache publishを起動します。publishは同時実行を防ぎますが、待機中のrunが置き換わることがあるため、各pushの個別完了は保証しません。
