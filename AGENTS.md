@@ -102,9 +102,9 @@ Linux / Darwin の構成は `nix-configs/lib/mk-nixos.nix` と `mk-macos.nix` �
 
 ## 検証の目安
 
-作業中は変更対象の構文・評価・必要な実環境の確認に絞ります。CI 相当の包括的な確認は、予定した変更を終え、ユーザーがコミットを指示した時にまとめて行います。
+lint・整形・型チェックは全体実行して構いません。テスト・build は変更の影響範囲に限定し、全体実行はコミット・push・PR 作成時も GitHub Actions に任せます。明示的に依頼された場合のみローカルで全体実行します。
 
-コミット前は「コマンド」の構文・整形・キャッシュ設定・profile 契約のチェックと、`lint.yml` の laptop / desktop build を確認します。Darwin 固有の変更では macOS 上の build・動作確認を行い、Linux の評価結果とは区別して報告してください。
+Darwin 固有の検証は macOS 上で行い、Linux の評価結果とは区別して報告してください。
 
 package 追加や NixOS module 変更では、必要に応じて以下も確認します。
 
