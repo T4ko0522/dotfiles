@@ -6,10 +6,12 @@
   home.packages = with pkgs;
     [
       bat
+      btop
       delta
       difftastic
       diffnav
       doggo
+      dust
       eza
       gcc
       gh
