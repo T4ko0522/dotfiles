@@ -3,6 +3,7 @@
     ../modules/core/identity.nix
     ../modules/apps/zsh.nix
     ../modules/apps/fzf.nix
+    ../modules/apps/atuin.nix
     ../modules/apps/starship.nix
     ../modules/apps/zoxide.nix
     ../modules/apps/fastfetch.nix
