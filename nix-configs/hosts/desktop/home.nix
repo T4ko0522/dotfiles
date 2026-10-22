@@ -6,13 +6,13 @@
 
   t4ko.appPresets.startup.apps = [
     {
-      name = "Spotify";
-      command = ["spotify"];
-      matcher.appId = "^spotify$";
+      name = "Proton Pass";
+      command = ["proton-pass"];
+      matcher.appId = "^proton-pass$";
       output = "DP-2";
       workspace = 1;
       column = 1;
-      columnWidth = 100;
+      columnWidth = 50;
     }
     {
       name = "Google Chrome";
@@ -24,12 +24,21 @@
       columnWidth = 100;
     }
     {
-      name = "Proton Pass";
-      command = ["proton-pass"];
-      matcher.appId = "^proton-pass$";
+      name = "Spotify";
+      command = ["spotify"];
+      matcher.appId = "^spotify$";
       output = "DP-2";
       workspace = 1;
       column = 3;
+      columnWidth = 50;
+    }
+    {
+      name = "WezTerm";
+      command = ["wezterm"];
+      matcher.appId = "^org\\.wezfurlong\\.wezterm$";
+      output = "DP-2";
+      workspace = 1;
+      column = 4;
       columnWidth = 50;
     }
     {
@@ -42,21 +51,12 @@
       columnWidth = 100;
     }
     {
-      name = "WezTerm";
-      command = ["wezterm"];
-      matcher.appId = "^org\\.wezfurlong\\.wezterm$";
-      output = "DP-2";
-      workspace = 2;
-      column = 2;
-      columnWidth = 100;
-    }
-    {
       name = "Codex";
       command = ["codex-desktop"];
       matcher.appId = "^codex-desktop$";
       output = "DP-2";
-      workspace = 3;
-      column = 1;
+      workspace = 2;
+      column = 2;
       columnWidth = 100;
     }
     {
@@ -64,8 +64,8 @@
       command = ["brave"];
       matcher.appId = "^brave-browser$";
       output = "DP-2";
-      workspace = 3;
-      column = 2;
+      workspace = 2;
+      column = 3;
       columnWidth = 100;
     }
     {
