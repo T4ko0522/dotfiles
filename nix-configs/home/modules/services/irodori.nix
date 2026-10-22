@@ -75,7 +75,7 @@ in {
           "--authority"
           "api.t4ko.com"
           "--cors-origins"
-          ""
+          "https://irodori.t4ko.com"
         ];
         WorkingDirectory = root;
         RunAtLoad = true;
