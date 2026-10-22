@@ -10,6 +10,8 @@ keys/*
 result
 result-*
 
+nix-configs/home/modules/apps/zed/files/prompts/
+
 # lazygit
 nix-configs/home/modules/apps/lazygit/files/state.yml
 
