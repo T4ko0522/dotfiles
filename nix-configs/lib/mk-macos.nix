@@ -6,7 +6,7 @@
   nix-darwin,
   nix-homebrew,
   personal-skills,
-  playwright,
+  playwrightCliFor,
   system,
 }: {
   configuration,
@@ -35,7 +35,7 @@ nix-darwin.lib.darwinSystem {
         useUserPackages = true;
         backupFileExtension = "hm-backup";
         extraSpecialArgs = {
-          playwrightPackages = playwright.packages.${system};
+          playwrightCli = playwrightCliFor system;
           inherit editor homeDirectory llm-agents personal-skills username;
           dotfilesPath = config.t4ko.dotfilesPath;
           localPackages = import ../pkgs {

@@ -121,6 +121,27 @@
   }: let
     system = "x86_64-linux";
     pkgs = nixpkgs.legacyPackages.${system};
+    # Upstream injects --browser into commands that reject it (eval, close, etc.).
+    playwrightCliFor = system:
+      playwright.packages.${system}.playwright-cli.overrideAttrs (old: let
+        browserFlag = "--browser chromium";
+        browserEnv = "export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1";
+      in
+        assert nixpkgs.lib.hasInfix browserFlag old.postFixup;
+        assert nixpkgs.lib.hasInfix browserEnv old.postFixup; {
+          postFixup =
+            nixpkgs.lib.replaceStrings
+            [browserFlag browserEnv]
+            [
+              ""
+              (browserEnv
+                + ''
+
+                  export PLAYWRIGHT_MCP_BROWSER="\''${PLAYWRIGHT_MCP_BROWSER:-chromium}"
+                '')
+            ]
+            old.postFixup;
+        });
     keyboardLayout = {
       xkbLayout = "jp";
       xkbModel = "jp106";
@@ -141,7 +162,7 @@
         nixpkgs
         nixvim
         personal-skills
-        playwright
+        playwrightCliFor
         spotify-cli
         system
         vicinae
@@ -158,7 +179,7 @@
         nix-darwin
         nix-homebrew
         personal-skills
-        playwright
+        playwrightCliFor
         ;
       system = "aarch64-darwin";
     };
