@@ -26,6 +26,13 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
 
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+
+    playwright = {
+      url = "github:halfwhey/nix-playwright-nightly";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
     nixpkgs-darwin.url = "github:NixOS/nixpkgs/nixpkgs-26.05-darwin";
 
     nix-darwin = {
@@ -109,6 +116,7 @@
     spotify-cli,
     codex-desktop-linux,
     personal-skills,
+    playwright,
     ...
   }: let
     system = "x86_64-linux";
@@ -133,6 +141,7 @@
         nixpkgs
         nixvim
         personal-skills
+        playwright
         spotify-cli
         system
         vicinae
@@ -149,6 +158,7 @@
         nix-darwin
         nix-homebrew
         personal-skills
+        playwright
         ;
       system = "aarch64-darwin";
     };

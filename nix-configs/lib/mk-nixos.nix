@@ -10,6 +10,7 @@
   nixpkgs,
   nixvim,
   personal-skills,
+  playwright,
   spotify-cli,
   system,
   vicinae,
@@ -55,6 +56,7 @@ nixpkgs.lib.nixosSystem {
         useUserPackages = true;
         backupFileExtension = "hm-backup";
         extraSpecialArgs = {
+          playwrightPackages = playwright.packages.${system};
           inherit codex-desktop-linux dotfilesPath editor handy homeDirectory keyboardLayout llm-agents localPackages personal-skills username vicinae;
         };
         sharedModules = [

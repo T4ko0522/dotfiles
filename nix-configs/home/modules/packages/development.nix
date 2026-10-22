@@ -1,12 +1,15 @@
 {
   localPackages,
   pkgs,
+  playwrightPackages,
   ...
 }: {
   home.packages = with pkgs; [
     rustup
     nodejs
     localPackages.vitePlus
+    playwrightPackages.playwright-cli
+    playwright-test
     deno
     bun
     python3

@@ -1,4 +1,5 @@
 {pkgs}: {
+  cfCli = pkgs.callPackage ./cf-cli/package.nix {};
   codexPetReimu = pkgs.callPackage ./codex-pets/reimu.nix {};
   lineSeedJp = pkgs.callPackage ./line-seed-jp/package.nix {};
   vimdocJa = pkgs.callPackage ./vim-plugins/vimdoc-ja/package.nix {};

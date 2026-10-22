@@ -1,5 +1,6 @@
 {
   lib,
+  localPackages,
   pkgs,
   ...
 }: {
@@ -7,6 +8,7 @@
     [
       bat
       btop
+      cloudflared
       delta
       difftastic
       diffnav
@@ -25,5 +27,6 @@
       ripgrep
       unzip
     ]
+    ++ [localPackages.cfCli]
     ++ lib.optionals stdenv.hostPlatform.isLinux [spotify-cli];
 }
