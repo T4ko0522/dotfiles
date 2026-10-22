@@ -53,6 +53,7 @@ in {
         };
         http.postBuffer = 524288000;
         ghq.root = "~/Project";
+        ghq.user = "T4ko0522";
         user = {
           email = "tako.renraku1@gmail.com";
           name = "T4ko0522";
