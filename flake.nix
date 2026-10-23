@@ -122,8 +122,20 @@
     system = "x86_64-linux";
     pkgs = nixpkgs.legacyPackages.${system};
     # Upstream injects --browser into commands that reject it (eval, close, etc.).
-    playwrightCliFor = system:
-      playwright.packages.${system}.playwright-cli.overrideAttrs (old: let
+    playwrightCliFor = system: let
+      browserPkgs = playwright.inputs.nixpkgs.legacyPackages.${system}.extend (_: prev: {
+        libjxl = prev.libjxl.overrideAttrs (old: {
+          # Upstream WebKit clears postInstall but retains the benchmark output.
+          preFixup =
+            (old.preFixup or "")
+            + ''
+              moveToOutput "bin/benchmark_xl" "$benchmark"
+            '';
+        });
+      });
+      playwrightPackages = import "${playwright}/packages.nix" {pkgs = browserPkgs;};
+    in
+      playwrightPackages.playwright-cli.overrideAttrs (old: let
         browserFlag = "--browser chromium";
         browserEnv = "export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1";
       in
