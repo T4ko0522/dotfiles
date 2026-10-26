@@ -123,20 +123,37 @@
         "type": "github"
       }
     },
+    "cloudflare-security-audit-skill": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1789414134,
+        "narHash": "sha256-oVVACjotkHvllQGxEP8yWaEt4c3GxT0d909TUM5P3NM=",
+        "owner": "cloudflare",
+        "repo": "security-audit-skill",
+        "rev": "c1c8a8c1471069fb0e188eeaff69b8e8db6564a8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "cloudflare",
+        "repo": "security-audit-skill",
+        "rev": "c1c8a8c1471069fb0e188eeaff69b8e8db6564a8",
+        "type": "github"
+      }
+    },
     "cloudflare-skills": {
       "flake": false,
       "locked": {
-        "lastModified": 1788843119,
-        "narHash": "sha256-eObCxuhTN/mujcUpIzGlX62M5ocFgrUUwEWSrHMbcf8=",
+        "lastModified": 1792099167,
+        "narHash": "sha256-lfrCyTZwnkjW6xn8lpxSw/jyHTZI7YuZIEO+QDDrBIk=",
         "owner": "cloudflare",
         "repo": "skills",
-        "rev": "b052c32bab7dd493513260228a36c88294f343f1",
+        "rev": "86505e44f87d801aa1864a3c4109e9a8ae5c409f",
         "type": "github"
       },
       "original": {
         "owner": "cloudflare",
         "repo": "skills",
-        "rev": "b052c32bab7dd493513260228a36c88294f343f1",
+        "rev": "86505e44f87d801aa1864a3c4109e9a8ae5c409f",
         "type": "github"
       }
     },
@@ -373,11 +390,11 @@
     "homebrew-cask": {
       "flake": false,
       "locked": {
-        "lastModified": 1792967757,
-        "narHash": "sha256-/dI3sAH0wPy0E58m2eE3gcz4lYatIl9h1ZznHcF7Kuc=",
+        "lastModified": 1793012178,
+        "narHash": "sha256-gymLPpQHID3HAq/PTZiW8/lZXRi9uc6CiLZF0dkU4O4=",
         "owner": "Homebrew",
         "repo": "homebrew-cask",
-        "rev": "89c634838219f678bf69fb891f1fec42ffe0cd21",
+        "rev": "0daeaeb4b4d20a9fd443f950009571b5d1733b63",
         "type": "github"
       },
       "original": {
@@ -389,11 +406,11 @@
     "homebrew-core": {
       "flake": false,
       "locked": {
-        "lastModified": 1792969258,
-        "narHash": "sha256-NuO8cNGelqXF3BpxLLZ9EOPZAtL7LDThN796X6/Q/Fs=",
+        "lastModified": 1793012367,
+        "narHash": "sha256-ORq6Jz1cbXgclfs6ady8S3I5t4/FVrJn0PNlFBsV9/8=",
         "owner": "Homebrew",
         "repo": "homebrew-core",
-        "rev": "c48b4ac81d0fd24b6e41c17d7fd570f70c39ea80",
+        "rev": "50302d147c2acb0b75390837e2d50604bd261819",
         "type": "github"
       },
       "original": {
@@ -450,11 +467,11 @@
         "treefmt-nix": "treefmt-nix_2"
       },
       "locked": {
-        "lastModified": 1792970403,
-        "narHash": "sha256-e0owqEa6Dw2oalzIWxG0jIXNTAazXIXHkLDaEAqSHfY=",
+        "lastModified": 1793010890,
+        "narHash": "sha256-ey+//gYH5+xdurdQt3N/xYwTkbRsBni6LEFZuQo7pQk=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "bf4a5ee3e52d4d436bc719f4d9743fe212426ae9",
+        "rev": "1bdd1bf023e9a0974f2b67c7ac1c144fd2702c29",
         "type": "github"
       },
       "original": {
@@ -605,11 +622,11 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1792812153,
-        "narHash": "sha256-T2+XBfNbf9pecLUWS4+RtuVNZ3W8K5taG5QdV71mWlk=",
+        "lastModified": 1792842277,
+        "narHash": "sha256-pGPnZGi8y9d76xNeracniXO3dsYVROEmMkMc8jD0Ihc=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "674a2028661e550a97400c1cc992b9cca9a668a1",
+        "rev": "d3b13ad75cc492690728f9307e443dec9ef9a20e",
         "type": "github"
       },
       "original": {
@@ -754,11 +771,11 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1792968454,
-        "narHash": "sha256-yv/5Cefzi3sYW3dhvClaoJbt7Yfpnkn3DN5yMw76Xvg=",
+        "lastModified": 1792990725,
+        "narHash": "sha256-ro0+LW36/WjKD1MddTnGuHHaxTIyrs7yPx54AYAvKuw=",
         "owner": "noctalia-dev",
         "repo": "noctalia",
-        "rev": "e2ad6e7d87ba0a20f819e3cf4c587c1db1705f5f",
+        "rev": "1af14b8cdb701175bec57ddf27d070b92461024b",
         "type": "github"
       },
       "original": {
@@ -793,6 +810,7 @@
     "personal-skills": {
       "inputs": {
         "agent-skills": "agent-skills",
+        "cloudflare-security-audit-skill": "cloudflare-security-audit-skill",
         "cloudflare-skills": "cloudflare-skills",
         "nixpkgs": [
           "nixpkgs"
@@ -800,11 +818,11 @@
         "yutakobayashidev-skills": "yutakobayashidev-skills"
       },
       "locked": {
-        "lastModified": 1792255328,
-        "narHash": "sha256-UxaT6P1U0xJezQH0rs9GJUPsdYSMNPvH+LxhfKr6rI0=",
+        "lastModified": 1793012652,
+        "narHash": "sha256-p+QaKv2KDG2B9JGoN57AQTzGLE9qwdoJFrvPlHf+aLE=",
         "owner": "T4ko0522",
         "repo": "skills",
-        "rev": "265ea85ad94b715fb00da4fb1701d014c6461783",
+        "rev": "2172e26e72ba5ba5ce3b711e05c867179187798c",
         "type": "github"
       },
       "original": {
