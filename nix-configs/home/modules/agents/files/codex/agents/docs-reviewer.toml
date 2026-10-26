@@ -1,5 +1,5 @@
 name = "docs-reviewer"
-description = "文書の正確性と読者適合性を確認するレビュー担当。"
+description = "文書の正確性、わかりやすさ、過不足をレビューする。"
 model = "gpt-6-luna"
 model_reasoning_effort = "high"
 developer_instructions = """

@@ -1,5 +1,5 @@
 name = "dependency-reviewer"
-description = "依存関係と供給元を確認するレビュー担当。"
+description = "依存パッケージの構成、互換性、供給元をレビューする。"
 model = "gpt-6-luna"
 model_reasoning_effort = "high"
 developer_instructions = """

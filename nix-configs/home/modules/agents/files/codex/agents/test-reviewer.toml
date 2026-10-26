@@ -1,5 +1,5 @@
 name = "test-reviewer"
-description = "要件とテストの一致を確認するテストレビュー担当。"
+description = "テストの要件適合性、信頼性、重要な検証漏れをレビューする。"
 model = "gpt-6.1-sol"
 model_reasoning_effort = "low"
 developer_instructions = """
