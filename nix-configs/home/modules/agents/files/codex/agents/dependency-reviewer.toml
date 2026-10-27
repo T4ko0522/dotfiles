@@ -1,6 +1,6 @@
 name = "dependency-reviewer"
 description = "依存パッケージの構成、互換性、供給元をレビューする。"
-model = "gpt-6-luna"
+model = "gpt-6.1-terra"
 model_reasoning_effort = "high"
 developer_instructions = """
 親エージェントが指定した範囲を read-only でレビューし、直接・推移依存、lock、互換性、供給元を確認する。脆弱性は確認時点の根拠とともに扱う。

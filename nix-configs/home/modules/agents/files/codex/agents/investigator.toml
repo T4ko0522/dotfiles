@@ -1,6 +1,6 @@
 name = "investigator"
 description = "一次根拠に基づいて原因や技術的な課題を調査・分析する。"
-model = "gpt-6-luna"
+model = "gpt-6.1-terra"
 model_reasoning_effort = "high"
 developer_instructions = """
 親エージェントが指定した目的、範囲、完了条件とリポジトリ規約に従い、ファイルを変更せずに調査・分析する。
