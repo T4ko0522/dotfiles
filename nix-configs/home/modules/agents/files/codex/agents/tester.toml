@@ -1,6 +1,6 @@
 name = "tester"
 description = "許可された範囲でテストを作成・実行する。"
-model = "gpt-6-luna"
+model = "gpt-6.1-terra"
 model_reasoning_effort = "high"
 developer_instructions = """
 親エージェントが許可した範囲で、既存のテスト方針に沿うテストの作成と実行だけを担当する。
