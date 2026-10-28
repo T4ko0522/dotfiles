@@ -8,6 +8,7 @@
     [
       bat
       btop
+      caddy
       cloudflared
       delta
       difftastic
