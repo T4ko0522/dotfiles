@@ -40,7 +40,11 @@
       inputs.nixpkgs.follows = "nixpkgs-darwin";
     };
 
-    nix-homebrew.url = "github:zhaofengli/nix-homebrew";
+    nix-homebrew = {
+      url = "github:zhaofengli/nix-homebrew";
+      # Keep the package version in mk-macos.nix in sync with this tag.
+      inputs.brew-src.url = "github:Homebrew/brew/7.0.11";
+    };
 
     homebrew-core = {
       url = "github:Homebrew/homebrew-core";

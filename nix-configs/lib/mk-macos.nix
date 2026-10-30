@@ -30,6 +30,13 @@ nix-darwin.lib.darwinSystem {
       pkgs,
       ...
     }: {
+      # nix-homebrew derives its default version from its own lock file.
+      nix-homebrew.package =
+        nix-homebrew.inputs.brew-src
+        // {
+          name = "brew-7.0.11";
+          version = "7.0.11";
+        };
       home-manager = {
         useGlobalPkgs = true;
         useUserPackages = true;
