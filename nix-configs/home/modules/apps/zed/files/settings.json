@@ -1,6 +1,11 @@
 // Zed settings
 {
   // エディターの基本動作
+  "agent": {
+    "button": false,
+    "favorite_models": [],
+    "model_parameters": []
+  },
   "diff_view_style": "unified",
   "cli_default_open_behavior": "existing_window",
   "format_on_save": "off",
