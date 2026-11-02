@@ -1,56 +1,43 @@
 {
   config,
-  lib,
   pkgs,
   ...
 }: {
   extraPackages = with pkgs; [
-    gofumpt
-    gotools
+    alejandra
+    biome
+    cargo
     nixfmt
+    prettierd
     prettier
-    ruff
+    rustc
     shfmt
-    statix
     stylua
   ];
-
-  extraFiles = {
-    "ftdetect/mdc.lua".source = ../files/ftdetect/mdc.lua;
-    "ftdetect/zsh.lua".source = ../files/ftdetect/zsh.lua;
-    "spell/tech.utf-8.add".source = ../files/spell/tech.utf-8.add;
-  };
 
   plugins = {
     conform-nvim = {
       enable = true;
       settings = {
+        formatters_by_ft = {
+          javascript.__raw = ''{ "biome", "prettierd", "prettier", stop_after_first = true }'';
+          javascriptreact.__raw = ''{ "biome", "prettierd", "prettier", stop_after_first = true }'';
+          typescript.__raw = ''{ "biome", "prettierd", "prettier", stop_after_first = true }'';
+          typescriptreact.__raw = ''{ "biome", "prettierd", "prettier", stop_after_first = true }'';
+          json.__raw = ''{ "biome", "prettierd", "prettier", stop_after_first = true }'';
+          yaml.__raw = ''{ "prettierd", "prettier", stop_after_first = true }'';
+          markdown.__raw = ''{ "prettierd", "prettier", stop_after_first = true }'';
+          lua = ["stylua"];
+          nix.__raw = ''{ "nix_fmt", "alejandra", stop_after_first = true }'';
+          sh = ["shfmt"];
+        };
+        formatters.nix_fmt.command = "nixfmt";
         format_on_save = {
           lsp_format = "fallback";
-          timeout_ms = 3000;
+          timeout_ms = 1000;
         };
-        formatters_by_ft = {
-          bash = ["shfmt"];
-          css = ["prettier"];
-          go = ["gofumpt"];
-          html = ["prettier"];
-          javascript = ["prettier"];
-          javascriptreact = ["prettier"];
-          json = ["prettier"];
-          jsonc = ["prettier"];
-          lua = ["stylua"];
-          markdown = ["prettier"];
-          nix = ["nixfmt"];
-          python = ["ruff_format"];
-          typescript = ["prettier"];
-          typescriptreact = ["prettier"];
-          yaml = ["prettier"];
-          zsh = ["shfmt"];
-        };
-        formatters.prettier.require_cwd = true;
       };
     };
-    emmet.enable = true;
     markdown-preview = {
       enable = true;
       settings = {
@@ -63,15 +50,13 @@
         theme = "dark";
       };
     };
-    render-markdown.enable = true;
-    rustaceanvim.enable = true;
     treesitter = {
       enable = true;
       grammarPackages = with config.plugins.treesitter.package.builtGrammars; [
+        astro
         bash
         c
         css
-        dockerfile
         go
         html
         javascript
@@ -83,94 +68,18 @@
         python
         rust
         scss
+        svelte
         toml
         tsx
         typescript
         vim
         vimdoc
         yaml
-        zsh
       ];
       highlight.enable = true;
       indent.enable = true;
     };
-    treesitter-context = {
-      enable = true;
-      settings = {
-        max_lines = 3;
-        min_window_height = 20;
-        mode = "cursor";
-        multiline_threshold = 1;
-        trim_scope = "outer";
-      };
-    };
+    treesitter-context.enable = true;
     ts-autotag.enable = true;
-    ts-comments.enable = true;
-    venv-selector.enable = true;
   };
-
-  extraConfigLuaPost = lib.mkMerge [
-    (lib.mkOrder 1100 ''
-      local function markdown_fold_provider(buffer)
-        local lines, folds, blocks, headings = vim.api.nvim_buf_get_lines(buffer, 0, -1, false), {}, {}, {}
-        local in_code, code_start = false, nil
-        local function trim_empty(last)
-          while last > 0 and lines[last + 1] and lines[last + 1]:match("^%s*$") do last = last - 1 end
-          return last
-        end
-        local function close_headings(level, last)
-          while #headings > 0 and headings[#headings].level >= level do
-            local heading = table.remove(headings)
-            local finish = trim_empty(last - 1)
-            if finish > heading.line then table.insert(folds, { startLine = heading.line, endLine = finish }) end
-          end
-        end
-        for index, line in ipairs(lines) do
-          local line_number = index - 1
-          if line:match("^```") or line:match("^~~~") then
-            if in_code then
-              in_code = false
-              if line_number > code_start then table.insert(folds, { startLine = code_start, endLine = line_number }) end
-            else
-              in_code, code_start = true, line_number
-            end
-          end
-          if not in_code then
-            if line:match("^:::details") or line:match("^:::message") then
-              table.insert(blocks, line_number)
-            elseif line:match("^:::$") and #blocks > 0 then
-              table.insert(folds, { startLine = table.remove(blocks), endLine = line_number })
-            end
-            local hashes = line:match("^(#+)%s")
-            if hashes then
-              close_headings(#hashes, line_number)
-              table.insert(headings, { line = line_number, level = #hashes })
-            end
-          end
-        end
-        local last = trim_empty(#lines - 1)
-        for _, heading in ipairs(headings) do
-          if last > heading.line then table.insert(folds, { startLine = heading.line, endLine = last }) end
-        end
-        return folds
-      end
-    '')
-    (lib.mkOrder 1140 ''
-      vim.g.user_emmet_leader_key = "<C-y>"
-      vim.g.user_emmet_settings = {
-        variables = { lang = "ja" },
-        html = {
-          indentation = "  ",
-          snippets = {
-            ["html:5"] = "<!DOCTYPE html>\n<html lang=\"''${lang}\">\n<head>\n\t<meta charset=\"''${charset}\">\n\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n\t<title></title>\n</head>\n<body>\n\t''${child}|\n</body>\n</html>",
-          },
-        },
-      }
-
-      local spellfiles = vim.fn.globpath(vim.o.runtimepath, "spell/tech.utf-8.add", false, true)
-      if #spellfiles > 0 then
-        vim.opt.spellfile = { spellfiles[1], vim.fn.stdpath("data") .. "/spell/local.utf-8.add" }
-      end
-    '')
-  ];
 }

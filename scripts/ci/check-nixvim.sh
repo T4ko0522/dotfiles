@@ -28,19 +28,31 @@ assert_true(vim.g.mapleader == ",", "generated init.lua was not loaded")
 for _, module in ipairs({
   "blink.cmp",
   "conform",
-  "dracula",
+  "barbar",
+  "catppuccin",
+  "colorizer",
+  "copilot",
+  "dropbar",
+  "git-conflict",
+  "glance",
+  "ibl",
   "gitsigns",
-  "incline",
-  "luasnip",
+  "lsp_signature",
+  "markview",
+  "neo-tree",
   "neotest",
-  "noice",
+  "nvim-autopairs",
+  "nvim-lightbulb",
+  "scrollbar",
+  "spectre",
   "snacks",
-  "supermaven-nvim",
+  "toggleterm",
   "treesitter-context",
   "trouble",
   "ufo",
   "which-key",
   "yazi",
+  "zen-mode",
 }) do
   local ok, result = pcall(require, module)
   assert_true(ok and result ~= nil, "failed to load Lua module: " .. module)
@@ -54,7 +66,12 @@ for _, command in ipairs({
   "InsertDatetime",
   "Neotest",
   "PasteImage",
-  "SupermavenStart",
+  "Copilot",
+  "Markview",
+  "Neotree",
+  "ToggleTerm",
+  "WakaTimeApiKey",
+  "ZenMode",
   "WinResizerStartResize",
   "Yazi",
 }) do
@@ -84,6 +101,20 @@ for _, lhs in ipairs({ "<C-l>", "<C-g>", "<C-j>", "<C-]>" }) do
 end
 
 assert_true(require("blink.cmp.config").cmdline.enabled == false, "Blink cmdline completion must be disabled")
+assert_true(vim.g.colors_name == "catppuccin-mocha", "Catppuccin must be active")
+assert_true(require("catppuccin").options.transparent_background, "Catppuccin background must be transparent")
+assert_true(vim.o.relativenumber and vim.o.shiftwidth == 2, "reference editor options must be loaded")
+assert_true(vim.fn.exists(":SupermavenStart") == 0, "Supermaven must be replaced by Copilot")
+
+local formatters = require("conform").formatters_by_ft
+assert_true(formatters.typescript[1] == "biome" and formatters.typescript.stop_after_first,
+  "TypeScript must prefer Biome")
+assert_true(formatters.nix[1] == "nix_fmt" and formatters.nix.stop_after_first,
+  "Nix must prefer nixfmt")
+for _, server in ipairs({ "vtsls", "biome", "tailwindcss", "cssls", "jsonls", "yamlls", "lua_ls",
+  "nixd", "rust_analyzer", "svelte", "ty", "ruff", "astro", "gopls" }) do
+  assert_true(vim.lsp.is_enabled(server), "LSP must be enabled: " .. server)
+end
 
 print("Nixvim headless regression checks passed")
 LUA

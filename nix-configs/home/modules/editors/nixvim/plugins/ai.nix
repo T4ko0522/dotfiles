@@ -1,50 +1,37 @@
-{
-  plugins = {
-    supermaven = {
-      enable = true;
-      settings = {
-        color = {
-          suggestion_color = "#6c7086";
-          cterm = 244;
+{localPackages}: {
+  plugins.copilot-lua = {
+    enable = true;
+    package = localPackages.copilotLua;
+    settings = {
+      suggestion = {
+        auto_trigger = true;
+        keymap = {
+          accept = false;
+          accept_word = false;
+          accept_line = false;
+          next = false;
+          prev = false;
+          dismiss = false;
         };
-        disable_inline_completion = false;
-        disable_keymaps = true;
-        ignore_filetypes = {
-          TelescopePrompt = true;
-          neo-tree = true;
-          snacks_picker_input = true;
-        };
-        log_level = "warn";
       };
+      panel.keymap.open = false;
     };
   };
 
   extraConfigLuaPost = ''
-    local function supermaven_preview()
-      local ok, preview = pcall(require, "supermaven-nvim.completion_preview")
-      return ok and preview or nil
-    end
-
-    local function accept_supermaven_suggestion()
-      local preview = supermaven_preview()
-      if preview and preview.has_suggestion() then
-        vim.schedule(preview.on_accept_suggestion)
+    local suggestion = require("copilot.suggestion")
+    local function accept_suggestion()
+      if suggestion.is_visible() then
+        suggestion.accept()
       else
-        vim.notify("No Supermaven suggestion", vim.log.levels.WARN)
+        vim.notify("No Copilot suggestion", vim.log.levels.WARN)
       end
     end
 
     local map = vim.keymap.set
-    map("i", "<C-l>", accept_supermaven_suggestion, { silent = true, desc = "Accept Supermaven suggestion" })
-    map("i", "<C-g>", accept_supermaven_suggestion, { silent = true, desc = "Accept Supermaven suggestion" })
-    map("i", "<C-j>", function()
-      local preview = supermaven_preview()
-      if preview then preview.on_accept_suggestion_word() end
-    end, { silent = true, desc = "Accept Supermaven word" })
-    map("i", "<C-]>", function()
-      local preview = supermaven_preview()
-      if preview then preview.on_dispose_inlay() end
-    end, { silent = true, desc = "Clear Supermaven suggestion" })
-
+    map("i", "<C-l>", accept_suggestion, { silent = true, desc = "Accept Copilot suggestion" })
+    map("i", "<C-g>", accept_suggestion, { silent = true, desc = "Accept Copilot suggestion" })
+    map("i", "<C-j>", suggestion.accept_word, { silent = true, desc = "Accept Copilot word" })
+    map("i", "<C-]>", suggestion.dismiss, { silent = true, desc = "Clear Copilot suggestion" })
   '';
 }

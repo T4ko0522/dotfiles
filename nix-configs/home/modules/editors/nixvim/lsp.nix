@@ -1,32 +1,49 @@
 {
-  lsp = {
-    inlayHints.enable = true;
-    servers = {
-      biome.enable = true;
-      cssls.enable = true;
-      docker_compose_language_service.enable = true;
-      dockerls.enable = true;
-      eslint.enable = true;
-      gopls.enable = true;
-      jsonls.enable = true;
-      marksman.enable = true;
-      nil_ls.enable = true;
-      pyright.enable = true;
-      ruff.enable = true;
-      tailwindcss = {
-        enable = true;
-        config.filetypes = [
-          "css"
-          "html"
-          "javascript"
-          "javascriptreact"
-          "typescript"
-          "typescriptreact"
-          "vue"
+  lsp.servers = {
+    vtsls = {
+      enable = true;
+      packageFallback = true;
+      config = {
+        root_markers = [
+          "pnpm-workspace.yaml"
+          "package.json"
+          "tsconfig.json"
+          "jsconfig.json"
+          ".git"
         ];
+        settings.typescript.locale = "ja";
       };
-      taplo.enable = true;
-      vtsls.enable = true;
+    };
+    biome = {
+      enable = true;
+      packageFallback = true;
+      config.root_markers = [
+        "biome.json"
+        "biome.jsonc"
+        "package.json"
+        "pnpm-workspace.yaml"
+        ".git"
+      ];
+    };
+    tailwindcss.enable = true;
+    cssls.enable = true;
+    jsonls.enable = true;
+    yamlls.enable = true;
+    lua_ls.enable = true;
+    nixd.enable = true;
+    rust_analyzer.enable = true;
+    svelte.enable = true;
+    ty.enable = true;
+    ruff.enable = true;
+    astro.enable = true;
+    gopls.enable = true;
+  };
+
+  diagnostic.settings = {
+    virtual_text = true;
+    float = {
+      border = "rounded";
+      source = true;
     };
   };
 
@@ -36,54 +53,20 @@
       setupLspCapabilities = true;
       settings = {
         cmdline.enabled = false;
-        completion = {
-          documentation.window.border = "rounded";
-          menu.border = "rounded";
-        };
         keymap = {
           preset = "default";
           "<CR>" = ["fallback"];
         };
+        completion.list.selection = {
+          preselect = true;
+          auto_insert = false;
+        };
         sources = {
           cmdline = [];
-          providers.lazydev = {
-            module = "lazydev.integrations.blink";
-            name = "LazyDev";
-            score_offset = 100;
-          };
-          per_filetype.lua = ["lsp" "path" "snippets" "buffer" "lazydev"];
+          default = ["lsp" "path" "buffer"];
         };
       };
     };
-
-    friendly-snippets.enable = true;
-
-    luasnip.enable = true;
-
-    lazydev = {
-      enable = true;
-      settings.library = [
-        {
-          path = "\${3rd}/luv/library";
-          words = ["vim%.uv"];
-        }
-        {
-          path = "snacks.nvim";
-          words = ["Snacks"];
-        }
-      ];
-    };
-
     lsp.enable = true;
   };
-
-  extraConfigLuaPost = ''
-    vim.diagnostic.config({
-      virtual_text = {
-        format = function(diagnostic)
-          return string.format("%s (%s)", diagnostic.message, diagnostic.source or "Unknown")
-        end,
-      },
-    })
-  '';
 }

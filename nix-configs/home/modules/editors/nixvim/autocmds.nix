@@ -1,20 +1,8 @@
 {
   extraConfigLuaPost = ''
     vim.api.nvim_create_autocmd("TextYankPost", {
-      group = vim.api.nvim_create_augroup("yank_to_clipboard", { clear = true }),
-      callback = function()
-        if vim.v.event.operator == "y" then vim.fn.setreg("+", vim.fn.getreg('"')) end
-      end,
-    })
-
-    vim.api.nvim_create_autocmd("QuitPre", {
-      callback = function()
-        local current = vim.api.nvim_get_current_win()
-        for _, window in ipairs(vim.api.nvim_list_wins()) do
-          if window ~= current and vim.bo[vim.api.nvim_win_get_buf(window)].buftype == "" then return end
-        end
-        vim.cmd.only({ bang = true })
-      end,
+      group = vim.api.nvim_create_augroup("highlight_yank", { clear = true }),
+      callback = function() vim.highlight.on_yank() end,
     })
 
     vim.api.nvim_create_user_command("InsertDatetime", function()

@@ -1,6 +1,6 @@
 {localPackages}: {pkgs, ...}: {
   imports = [
-    ./ai.nix
+    (import ./ai.nix {inherit localPackages;})
     ./editor.nix
     ./git.nix
     ./languages.nix
@@ -10,10 +10,10 @@
   ];
 
   extraPlugins = with pkgs.vimPlugins; [
-    dracula-nvim
-    incline-nvim
+    nvim-scrollbar
     nvim-ufo
     promise-async
+    vim-wakatime
     localPackages.vimdocJa
     localPackages.winresizer
   ];

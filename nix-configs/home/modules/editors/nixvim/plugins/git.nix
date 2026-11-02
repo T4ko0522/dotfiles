@@ -1,24 +1,20 @@
 {
   plugins = {
-    diffview = {
+    diffview.enable = true;
+    git-conflict = {
       enable = true;
-      settings = {
-        enhanced_diff_hl = true;
-        file_panel = {
-          listing_style = "tree";
-          win_config = {
-            position = "left";
-            width = 35;
-          };
-        };
-        view.merge_tool = {
-          disable_diagnostics = true;
-          layout = "diff3_mixed";
-        };
-      };
+      settings.default_mappings = false;
     };
+    lazygit.enable = true;
     gitsigns = {
       enable = true;
+      settings.signs = {
+        add.text = "+";
+        change.text = "~";
+        delete.text = "_";
+        topdelete.text = "‾";
+        changedelete.text = "~";
+      };
     };
   };
 
