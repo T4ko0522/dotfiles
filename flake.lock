@@ -390,11 +390,11 @@
     "homebrew-cask": {
       "flake": false,
       "locked": {
-        "lastModified": 1793659676,
-        "narHash": "sha256-E12KsxOHk0TgnDkBKfhofrm8A9vTsQdjKVQTI4KAkKg=",
+        "lastModified": 1793661321,
+        "narHash": "sha256-EADdLgOQ/QZIrxnR1i8riqOdGGZEE+/j6CuVRpx4H8o=",
         "owner": "Homebrew",
         "repo": "homebrew-cask",
-        "rev": "8a10f2fcd812b2399271e1124626b78a18b987b9",
+        "rev": "68468726f72d7e261196c8f2e4a1b72c7c0cde08",
         "type": "github"
       },
       "original": {
@@ -416,6 +416,23 @@
       "original": {
         "owner": "Homebrew",
         "repo": "homebrew-core",
+        "type": "github"
+      }
+    },
+    "hyperframes": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1793658280,
+        "narHash": "sha256-S7qTeSSZ4a1KAkvReO2vdRGit1s1z93iHwVvK4N2s3U=",
+        "owner": "heygen-com",
+        "repo": "hyperframes",
+        "rev": "6feb4bec7aa046a8956efd8a718db55423e2e2ca",
+        "type": "github"
+      },
+      "original": {
+        "owner": "heygen-com",
+        "repo": "hyperframes",
+        "rev": "6feb4bec7aa046a8956efd8a718db55423e2e2ca",
         "type": "github"
       }
     },
@@ -477,6 +494,23 @@
       "original": {
         "owner": "numtide",
         "repo": "llm-agents.nix",
+        "type": "github"
+      }
+    },
+    "mattpocock-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1793456610,
+        "narHash": "sha256-3vhd77xfZjKUYJsIwPFevIZPUAzUgZXr0RYj5NQrBwk=",
+        "owner": "mattpocock",
+        "repo": "skills",
+        "rev": "4ae2317ddb22b046e26455e4f9c9b3aaaf62212d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mattpocock",
+        "repo": "skills",
+        "rev": "4ae2317ddb22b046e26455e4f9c9b3aaaf62212d",
         "type": "github"
       }
     },
@@ -622,11 +656,11 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1793616200,
-        "narHash": "sha256-3t7xlnGR8DYoMIISMPqE4CwjRzw3J/3ympUKMu8pC4o=",
+        "lastModified": 1793645915,
+        "narHash": "sha256-yRzh4uc8uxFv5+5TROEIH1rUL2FF1/cvfc+uq5JGGHY=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "df1e6651c16c38563a164037647a5f00704b3e41",
+        "rev": "f9887a8a434bfba06e20dfc77bc8e0628266af84",
         "type": "github"
       },
       "original": {
@@ -771,11 +805,11 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1793659670,
-        "narHash": "sha256-eKqyW62Kkagl/UhamDYHJwamdjbrsct2pneXwxDw5lo=",
+        "lastModified": 1793661352,
+        "narHash": "sha256-0FsZ02uQBIjQhs32DSA4CcMG57u4IMzFl5e2HUSGoCA=",
         "owner": "noctalia-dev",
         "repo": "noctalia",
-        "rev": "5aa1736b24a78b2388d96f53d5c947fc158142c6",
+        "rev": "ce50059a75b03b07393b8a01c80f15021194a134",
         "type": "github"
       },
       "original": {
@@ -812,17 +846,20 @@
         "agent-skills": "agent-skills",
         "cloudflare-security-audit-skill": "cloudflare-security-audit-skill",
         "cloudflare-skills": "cloudflare-skills",
+        "hyperframes": "hyperframes",
+        "mattpocock-skills": "mattpocock-skills",
         "nixpkgs": [
           "nixpkgs"
         ],
+        "yomiyasu": "yomiyasu",
         "yutakobayashidev-skills": "yutakobayashidev-skills"
       },
       "locked": {
-        "lastModified": 1793012652,
-        "narHash": "sha256-p+QaKv2KDG2B9JGoN57AQTzGLE9qwdoJFrvPlHf+aLE=",
+        "lastModified": 1793663840,
+        "narHash": "sha256-ORDR3L7mBczIRP3kQDPRZbSPks1LjKsN8JtLTYetvTo=",
         "owner": "T4ko0522",
         "repo": "skills",
-        "rev": "2172e26e72ba5ba5ce3b711e05c867179187798c",
+        "rev": "ef57ae2d4074c23ec0fbdf77733d90a8f3de44b7",
         "type": "github"
       },
       "original": {
@@ -1147,6 +1184,23 @@
       "original": {
         "owner": "vicinaehq",
         "repo": "vicinae",
+        "type": "github"
+      }
+    },
+    "yomiyasu": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1793326902,
+        "narHash": "sha256-9cGUSvLgc1+996i3lWQuQm1aTWOxSY6fbS9+vn5aElw=",
+        "owner": "nanaism",
+        "repo": "yomiyasu",
+        "rev": "29d67ccb05e370b5958d72920a9cd1aa829dee80",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nanaism",
+        "repo": "yomiyasu",
+        "rev": "29d67ccb05e370b5958d72920a9cd1aa829dee80",
         "type": "github"
       }
     },
