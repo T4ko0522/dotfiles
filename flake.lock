@@ -163,11 +163,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1794463428,
-        "narHash": "sha256-jtkGc23LsrgpgBQ0ijtMioT3K2/yanssxYqg2+Tf+CA=",
+        "lastModified": 1794587654,
+        "narHash": "sha256-xBb6cuSwjW/A5P4jFtI8Ge7meESqkWMrwU3f+vjg3yk=",
         "owner": "ilysenko",
         "repo": "codex-desktop-linux",
-        "rev": "685ef54d05ae054bce932566399a79fa8282b43d",
+        "rev": "952d165bb76227672078bc0310c7e18b2616d9d1",
         "type": "github"
       },
       "original": {
@@ -331,11 +331,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1794486780,
-        "narHash": "sha256-wERfRIHDUDok/3aaJ6vj/5vvN2l7FuEcrd2hHgKCc9A=",
+        "lastModified": 1794557358,
+        "narHash": "sha256-vKQRMzKP7KHhbuNNTrIUay4qHqeKGrjV5F3DAQflHFk=",
         "owner": "cjpais",
         "repo": "Handy",
-        "rev": "1472087b7b17d44b6b344658ba7d3a8321214d6f",
+        "rev": "bd4b02714ec243c5f92b98d8cdcad083a36e3dfe",
         "type": "github"
       },
       "original": {
@@ -390,11 +390,11 @@
     "homebrew-cask": {
       "flake": false,
       "locked": {
-        "lastModified": 1794524651,
-        "narHash": "sha256-sTA+BUKsbLAjz/h2zT85O9qobED4/pqVDUaogltWzgY=",
+        "lastModified": 1794610916,
+        "narHash": "sha256-w+aWUIyyXqCNcutt1hqydxKa56RenBCzugdSCih5gds=",
         "owner": "Homebrew",
         "repo": "homebrew-cask",
-        "rev": "e387b98460b0fd1e75c9909d96173e9c25f8ad9d",
+        "rev": "3da97e4e1ec882ee6f55c4cdd146bb55381baa80",
         "type": "github"
       },
       "original": {
@@ -406,11 +406,11 @@
     "homebrew-core": {
       "flake": false,
       "locked": {
-        "lastModified": 1794518498,
-        "narHash": "sha256-tJKoH04hB3Q/ueyvxnwxoAQUaMtX0Em0DEhErlSceNg=",
+        "lastModified": 1794610904,
+        "narHash": "sha256-RQlm5CjTa1B1Oga0s2CbK2yy+SbphFh2MXsBq0F0tMc=",
         "owner": "Homebrew",
         "repo": "homebrew-core",
-        "rev": "741d3bc575c7a7ad3725db76ba03da930b2225cd",
+        "rev": "09decf8499ee17b985ee29d9767e099b5df2588e",
         "type": "github"
       },
       "original": {
@@ -501,11 +501,11 @@
         "treefmt-nix": "treefmt-nix_2"
       },
       "locked": {
-        "lastModified": 1794493589,
-        "narHash": "sha256-XeiAGbzjdC0D7ekQZbufWyqeY8x8UItxjCP335lh4Eg=",
+        "lastModified": 1794609480,
+        "narHash": "sha256-9qlvVShdBto+WLjeKrkm+YGZ2YS/x1HD04DA3LrAXbs=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "90011236663d4116738fc2d63de6ab64523387b6",
+        "rev": "39d9b99e6c38249374dbdea137c7621b75fa3c34",
         "type": "github"
       },
       "original": {
@@ -536,11 +536,11 @@
         "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "lastModified": 1794162337,
-        "narHash": "sha256-/FcGJMTnMg5nzp/PO2jAvlmu0x3Pl7BPN6wEAiFnpYs=",
+        "lastModified": 1794564149,
+        "narHash": "sha256-U5pd+9fwi5RoScVb5C4ESmqyq+3qYw8xGXui7tU4svY=",
         "ref": "refs/heads/main",
-        "rev": "41665994a96478c77cb77e886a9882ab86669d4f",
-        "revCount": 13,
+        "rev": "2231530c6887d2512d8e9cec0d47ff5bfb725b92",
+        "revCount": 14,
         "type": "git",
         "url": "https://github.com/zunoser/nani-translate-linux.git"
       },
@@ -822,11 +822,11 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1794513704,
-        "narHash": "sha256-rgw5jkoReu1cu3+UInQD0FhaBS8QWNxa2CckYT+9DQQ=",
+        "lastModified": 1794590380,
+        "narHash": "sha256-OX/wLeTXNZpUW3dtaLFYQvmbxgCdE9TXKOaxewUco6g=",
         "owner": "noctalia-dev",
         "repo": "noctalia",
-        "rev": "02af15624075bcb6093f7f55ab3cc89e1ebb934e",
+        "rev": "6ba9c46a227c11ddf513edb27323a1629fc3bd18",
         "type": "github"
       },
       "original": {
@@ -1192,11 +1192,11 @@
         "systems": "systems_7"
       },
       "locked": {
-        "lastModified": 1794348084,
-        "narHash": "sha256-kmBjKvYQIu8LfQt51Sow0H75lUsZfcRPCPB/3X8WRN8=",
+        "lastModified": 1794600927,
+        "narHash": "sha256-5qkN3C6rCmMhkLO7wonlo4a4RGyvaiUGXL/0z2g1Tzo=",
         "owner": "vicinaehq",
         "repo": "vicinae",
-        "rev": "479026e394808340f3a31505e78bfea8851e9ac9",
+        "rev": "e354e9c11715195fde457f2bb5252fa71d38eed5",
         "type": "github"
       },
       "original": {
