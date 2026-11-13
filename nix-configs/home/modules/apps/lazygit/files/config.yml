@@ -48,14 +48,14 @@ gui:
       - "#f38ba8"
     defaultFgColor:
       - "#cdd6f4"
-  authorColors:
-    "*": "#b4befe"
+    authorColors:
+      "*": "#b4befe"
 # log customize
 git:
   branchLogCmd: "git log --graph --color=always --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' {{branchName}} --"
-  pagers:
+  diffRenderers:
     - colorArg: always
-      pager: delta --dark --paging=never
+      command: delta --dark --paging=never
   allBranchesLogCmds:
     - git log --graph --color=always --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --all
   overrideGpg: true
