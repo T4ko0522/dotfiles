@@ -8,6 +8,7 @@
     ../../linux/profiles/workstation.nix
     ../../linux/modules/hardware/lanzaboote.nix
     ../../linux/modules/desktop/plymouth.nix
+    ../../linux/modules/hardware/limine-lanzaboote.nix
     ../../linux/modules/hardware/nvidia.nix
     ../../linux/profiles/gaming.nix
     ../../linux/profiles/vr.nix
@@ -18,7 +19,6 @@
 
   t4ko.regreet.mainOutput = "DP-2";
 
-  boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   services.hardware.openrgb = {
