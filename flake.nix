@@ -89,11 +89,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixos-loading-plymouth = {
-      url = "github:qboileau/nixos-load-plymouth";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     lanzaboote = {
       url = "github:nix-community/lanzaboote/v1.1.0";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -115,7 +110,6 @@
     noctalia,
     lanzaboote,
     llm-agents,
-    nixos-loading-plymouth,
     nani-translate-linux,
     spotify-cli,
     codex-desktop-linux,
@@ -173,7 +167,6 @@
         handy
         llm-agents
         nani-translate-linux
-        nixos-loading-plymouth
         noctalia
         nixpkgs
         nixvim

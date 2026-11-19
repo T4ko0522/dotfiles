@@ -2,7 +2,6 @@
   imports = [
     ./hardware-configuration.nix
     ../../linux/profiles/workstation.nix
-    ../../linux/modules/desktop/plymouth.nix
     ../../linux/modules/hardware/nvidia-hybrid.nix
     ../../linux/profiles/gaming.nix
     # ../../linux/profiles/vr.nix

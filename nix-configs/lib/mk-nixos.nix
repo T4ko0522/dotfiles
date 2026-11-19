@@ -5,7 +5,6 @@
   llm-agents,
   lanzabooteModule,
   nani-translate-linux,
-  nixos-loading-plymouth,
   noctalia,
   nixpkgs,
   nixvim,
@@ -39,15 +38,11 @@ nixpkgs.lib.nixosSystem {
     home-manager.nixosModules.home-manager
     configuration
     vicinae.nixosModules.default
-    nixos-loading-plymouth.nixosModules.default
     noctalia.nixosModules.default
     ({pkgs, ...}: let
       localPackages =
         (import ../pkgs {inherit pkgs;})
-        // import ../pkgs/linux.nix {
-          inherit pkgs;
-          nixosLoadingPlymouth = nixos-loading-plymouth;
-        };
+        // import ../pkgs/linux.nix {inherit pkgs;};
     in {
       _module.args.localPackages = localPackages;
       nixpkgs.overlays = [spotify-cli.overlays.default];

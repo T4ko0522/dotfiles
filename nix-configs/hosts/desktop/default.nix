@@ -7,7 +7,6 @@
     ./hardware-configuration.nix
     ../../linux/profiles/workstation.nix
     ../../linux/modules/hardware/lanzaboote.nix
-    ../../linux/modules/desktop/plymouth.nix
     ../../linux/modules/hardware/limine-lanzaboote.nix
     ../../linux/modules/hardware/nvidia.nix
     ../../linux/profiles/gaming.nix
