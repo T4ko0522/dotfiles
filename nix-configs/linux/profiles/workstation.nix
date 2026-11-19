@@ -16,6 +16,6 @@
     ../modules/desktop/niri.nix
     ../modules/desktop/noctalia.nix
     ../modules/desktop/portal.nix
-    ../modules/desktop/regreet.nix
+    ../modules/desktop/sddm.nix
   ];
 }

@@ -1,14 +1,24 @@
-{pkgs, ...}: {
-  services.xserver.xkb.extraLayouts.corne-jp = {
-    description = "Japanese layout for Corne with US grave/tilde key";
-    languages = ["jpn"];
-    symbolsFile = pkgs.writeText "corne-jp.xkb" ''
-      default partial alphanumeric_keys
-      xkb_symbols "basic" {
-          include "jp"
+{
+  keyboardLayout,
+  pkgs,
+  ...
+}: {
+  services.xserver.xkb = {
+    layout = keyboardLayout.xkbLayout;
+    model = keyboardLayout.xkbModel;
+    options = keyboardLayout.xkbOptions;
 
-          replace key <HZTG> { [ grave, asciitilde ] };
-      };
-    '';
+    extraLayouts.corne-jp = {
+      description = "Japanese layout for Corne with US grave/tilde key";
+      languages = ["jpn"];
+      symbolsFile = pkgs.writeText "corne-jp.xkb" ''
+        default partial alphanumeric_keys
+        xkb_symbols "basic" {
+            include "jp"
+
+            replace key <HZTG> { [ grave, asciitilde ] };
+        };
+      '';
+    };
   };
 }

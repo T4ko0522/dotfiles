@@ -16,8 +16,6 @@
   networking.hostName = "desktop";
   system.stateVersion = "26.05";
 
-  t4ko.regreet.mainOutput = "DP-2";
-
   boot.loader.efi.canTouchEfiVariables = true;
 
   services.hardware.openrgb = {
