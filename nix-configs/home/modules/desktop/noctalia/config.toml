@@ -73,38 +73,7 @@ rotation = 0.0
 type = "weather"
 
 [dock]
-active_monitor_only = true
-active_opacity = 1.0
-active_scale = 1.0
-auto_hide = true
-background_opacity = 0.55
-border = "outline"
-border_width = 1.0
-concave_edge_corners = false
-cross_axis_padding = 8
-enabled = true
-icon_size = 38
-inactive_opacity = 0.78
-inactive_scale = 0.9
-item_spacing = 8
-launcher_position = "start"
-layer = "overlay"
-magnification = true
-magnification_scale = 1.35
-main_axis_padding = 12
-margin_edge = 12
-margin_ends = 16
-monitors = ["DP-2"]
-position = "left"
-radius = 24
-radius_bottom_left = 24
-radius_bottom_right = 24
-radius_top_left = 24
-radius_top_right = 24
-reserve_space = false
-shadow = true
-show_dots = true
-smart_auto_hide = false
+enabled = false
 
 [hot_corners]
 enabled = true

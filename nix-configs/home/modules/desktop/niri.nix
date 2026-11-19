@@ -240,13 +240,6 @@ in {
         place-within-backdrop true
     }
 
-    layer-rule {
-        match namespace="^noctalia-dock$"
-        background-effect {
-            xray false
-        }
-    }
-
     window-rule {
         match app-id="^steam_app_3548580$"
         open-fullscreen false
@@ -259,6 +252,7 @@ in {
 
     spawn-at-startup "sh" "-c" "sleep 2 && fcitx5 -rd"
     spawn-at-startup "noctalia"
+    spawn-at-startup "${lib.getExe config.t4ko.pensoDock.package}"
     ${wallpaperStartupCommands}
 
     binds {

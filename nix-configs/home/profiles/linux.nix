@@ -13,6 +13,7 @@
     ../modules/desktop/app-presets.nix
     ../modules/desktop/niri-popup.nix
     ../modules/desktop/noctalia.nix
+    ../modules/desktop/penso-dock.nix
     ../modules/desktop/lockscreen.nix
     ../modules/desktop/wallpaper.nix
     ../modules/desktop/swaync.nix
