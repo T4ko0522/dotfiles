@@ -331,11 +331,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1795244049,
-        "narHash": "sha256-ZLlJxlo4y9xc2FJFAgPHDs48zht3Vygmc/3nxtEb+SM=",
+        "lastModified": 1795513598,
+        "narHash": "sha256-kt+vomSthSvH20w64hege0oBNyJwkLOUb1BOl/QdcGs=",
         "owner": "cjpais",
         "repo": "Handy",
-        "rev": "939c9573a346859016de1f9d87369a9765af1671",
+        "rev": "ca2334c9099c53a2c4fd9bad63073f11baaa8dbd",
         "type": "github"
       },
       "original": {
@@ -390,11 +390,11 @@
     "homebrew-cask": {
       "flake": false,
       "locked": {
-        "lastModified": 1795475029,
-        "narHash": "sha256-wnlGCJt+SmyViHtFXYGdyIqua2LrRllG2mIOTadUiP4=",
+        "lastModified": 1795561641,
+        "narHash": "sha256-nn5wMxATTqDKv4hhJRr8FiEzCYQXnHdMOgo2zhERPpk=",
         "owner": "Homebrew",
         "repo": "homebrew-cask",
-        "rev": "6e954bd5ed8b32ee74c4201f8b830f571dc8e295",
+        "rev": "038b9a583cc7581008a092aa6a20eb6f042b9b02",
         "type": "github"
       },
       "original": {
@@ -406,11 +406,11 @@
     "homebrew-core": {
       "flake": false,
       "locked": {
-        "lastModified": 1795471953,
-        "narHash": "sha256-laG4FksRqan+WoBrFInEJhAw4KJlWg4jIR45BJjXa3g=",
+        "lastModified": 1795561455,
+        "narHash": "sha256-rdD7+sq8D6EOX7jtOin2irKL5RdUZ+e9wDktixUwW4M=",
         "owner": "Homebrew",
         "repo": "homebrew-core",
-        "rev": "c860a8c0044ee0f48c56181a6c55fcb2b3bb1cdd",
+        "rev": "c1320faf90eecbe1e6cf85ff517a1911117a5a4e",
         "type": "github"
       },
       "original": {
@@ -501,11 +501,11 @@
         "treefmt-nix": "treefmt-nix_2"
       },
       "locked": {
-        "lastModified": 1795416666,
-        "narHash": "sha256-b1GmfrMPoZ2ANkR0we9Q9KQN6n1e+vNyDqt1p4CNEAY=",
+        "lastModified": 1795534330,
+        "narHash": "sha256-HUVg1F7c3btLD++JDjdTsSAwp50NvrciqTMFdCKEfAg=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "5330ee115c06d2b43f49e902130125eab579b22f",
+        "rev": "d70dfebdbd4616aa852fdb47c16588ec1ba8fc6f",
         "type": "github"
       },
       "original": {
@@ -536,11 +536,11 @@
         "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "lastModified": 1794564149,
-        "narHash": "sha256-U5pd+9fwi5RoScVb5C4ESmqyq+3qYw8xGXui7tU4svY=",
+        "lastModified": 1795545255,
+        "narHash": "sha256-iIav3FjpKyRZelddNAPmHouWi8LwA7EIc2aJdOhyOMs=",
         "ref": "refs/heads/main",
-        "rev": "2231530c6887d2512d8e9cec0d47ff5bfb725b92",
-        "revCount": 14,
+        "rev": "c6736d9a6297cbe06b1584638eb29bcda9c490a4",
+        "revCount": 16,
         "type": "git",
         "url": "https://github.com/zunoser/nani-translate-linux.git"
       },
@@ -802,11 +802,11 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1795472103,
-        "narHash": "sha256-Xws5YZ/9XhQUvNMCfht2f6iGibnb2OoKzhsGEyoETWs=",
+        "lastModified": 1795553236,
+        "narHash": "sha256-s2qdPZwHuZDxaNK+dqyIjdzZ7pEYKNgMApztRg87cuo=",
         "owner": "noctalia-dev",
         "repo": "noctalia",
-        "rev": "455d753c5f9bf4d067bd346ebf41e4d46738042d",
+        "rev": "0cec648e15d84977fd27f8dd5ff3d84897c73c91",
         "type": "github"
       },
       "original": {
@@ -1171,11 +1171,11 @@
         "systems": "systems_7"
       },
       "locked": {
-        "lastModified": 1795468054,
-        "narHash": "sha256-a2UVpAMdImnGjWuRERpIypALULCmOZDn7iFtyxVQbXw=",
+        "lastModified": 1795510169,
+        "narHash": "sha256-CkAToCMlCqeVjTmy0O9qrzs7jpQd2yjpwDVsNwvists=",
         "owner": "vicinaehq",
         "repo": "vicinae",
-        "rev": "8d9997bf6b0f8db43af0d8eca35b46ecebe72ac8",
+        "rev": "c5f8389b2abad24cbed58f8abf4b2230adc3f285",
         "type": "github"
       },
       "original": {
