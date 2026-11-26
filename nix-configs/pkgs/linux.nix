@@ -1,9 +1,13 @@
-{pkgs}: {
+{
+  inirPackage,
+  pkgs,
+}: {
   chiffonCursor = import ./chiffon-cursor/package.nix {
     inherit pkgs;
     inherit (pkgs) lib;
   };
   codexbar = pkgs.callPackage ./codexbar/package.nix {};
+  inir = pkgs.callPackage ./inir/package.nix {inherit inirPackage;};
   kooha = pkgs.callPackage ./kooha/package.nix {};
   librepods = pkgs.callPackage ./librepods/package.nix {};
   linuxWallpaperengineCapture = pkgs.callPackage ./linux-wallpaperengine/package.nix {};

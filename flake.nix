@@ -73,6 +73,12 @@
 
     noctalia.url = "github:noctalia-dev/noctalia/cachix";
 
+    arto.url = "github:arto-app/Arto";
+
+    inir.url = "github:snowarch/inir";
+
+    serpantinum.url = "github:ilyamiro/serpantinum";
+
     llm-agents.url = "github:numtide/llm-agents.nix";
 
     personal-skills = {
@@ -108,6 +114,9 @@
     vial-qmk,
     vicinae,
     noctalia,
+    arto,
+    inir,
+    serpantinum,
     lanzaboote,
     llm-agents,
     nani-translate-linux,
@@ -162,9 +171,11 @@
 
     mkNixos = import ./nix-configs/lib/mk-nixos.nix {
       inherit
+        arto
         codex-desktop-linux
         home-manager
         handy
+        inir
         llm-agents
         nani-translate-linux
         noctalia
@@ -172,6 +183,7 @@
         nixvim
         personal-skills
         playwrightCliFor
+        serpantinum
         spotify-cli
         system
         vicinae
@@ -181,6 +193,7 @@
 
     mkMacos = import ./nix-configs/lib/mk-macos.nix {
       inherit
+        arto
         home-manager
         homebrew-cask
         homebrew-core

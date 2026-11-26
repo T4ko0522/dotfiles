@@ -1,6 +1,7 @@
 {...}: {
   imports = [
     ../modules/core/identity.nix
+    ../modules/apps/arto.nix
     ../modules/apps/zsh.nix
     ../modules/apps/fzf.nix
     ../modules/apps/atuin.nix

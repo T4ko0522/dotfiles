@@ -1,7 +1,9 @@
 {
+  arto,
   codex-desktop-linux,
   home-manager,
   handy,
+  inir,
   llm-agents,
   lanzabooteModule,
   nani-translate-linux,
@@ -10,6 +12,7 @@
   nixvim,
   personal-skills,
   playwrightCliFor,
+  serpantinum,
   spotify-cli,
   system,
   vicinae,
@@ -42,7 +45,10 @@ nixpkgs.lib.nixosSystem {
     ({pkgs, ...}: let
       localPackages =
         (import ../pkgs {inherit pkgs;})
-        // import ../pkgs/linux.nix {inherit pkgs;};
+        // import ../pkgs/linux.nix {
+          inherit pkgs;
+          inirPackage = inir.packages.${system}.default;
+        };
     in {
       _module.args.localPackages = localPackages;
       nixpkgs.overlays = [spotify-cli.overlays.default];
@@ -52,7 +58,7 @@ nixpkgs.lib.nixosSystem {
         backupFileExtension = "hm-backup";
         extraSpecialArgs = {
           playwrightCli = playwrightCliFor system;
-          inherit codex-desktop-linux dotfilesPath editor handy homeDirectory keyboardLayout llm-agents localPackages personal-skills username vicinae;
+          inherit arto codex-desktop-linux dotfilesPath editor handy homeDirectory keyboardLayout llm-agents localPackages personal-skills serpantinum username vicinae;
         };
         sharedModules = [
           nixvim.homeModules.nixvim

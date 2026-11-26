@@ -1,4 +1,5 @@
 {
+  arto,
   home-manager,
   homebrew-cask,
   homebrew-core,
@@ -43,7 +44,7 @@ nix-darwin.lib.darwinSystem {
         backupFileExtension = "hm-backup";
         extraSpecialArgs = {
           playwrightCli = playwrightCliFor system;
-          inherit editor homeDirectory llm-agents personal-skills username;
+          inherit arto editor homeDirectory llm-agents personal-skills username;
           dotfilesPath = config.t4ko.dotfilesPath;
           localPackages = import ../pkgs {
             inherit pkgs;
