@@ -23,17 +23,17 @@ in {
     animation = {
       showDelayMs = lib.mkOption {
         type = milliseconds;
-        default = 100;
+        default = 120;
         description = "Milliseconds to wait at the screen edge before showing the dock.";
       };
       hideDelayMs = lib.mkOption {
         type = milliseconds;
-        default = 550;
+        default = 220;
         description = "Milliseconds to wait after the pointer leaves before hiding the dock.";
       };
       slideDurationMs = lib.mkOption {
         type = milliseconds;
-        default = 320;
+        default = 240;
         description = "Slide animation duration in milliseconds for showing and hiding the dock.";
       };
     };
