@@ -1,0 +1,52 @@
+--- a/qml/DockShelf.qml
++++ b/qml/DockShelf.qml
+@@ -9,6 +9,7 @@
+     required property var host
+     property var iconCache: null
+     signal launcherMenu(var anchor)
++    signal applicationsRequested()
+     signal appMenu(var item, var anchor)
+     signal trashMenu(var anchor)
+     readonly property bool vertical: controller.vertical
+@@ -283,7 +284,7 @@
+             MouseArea {
+                 id: launcherMouse; anchors.fill: parent; hoverEnabled: true
+                 acceptedButtons: Qt.LeftButton | Qt.RightButton
+-                onClicked: function(mouse) { if (mouse.button === Qt.RightButton) shelf.launcherMenu(launcherIcon); else controller.appsOpen = !controller.appsOpen }
++                onClicked: function(mouse) { if (mouse.button === Qt.RightButton) shelf.launcherMenu(launcherIcon); else shelf.applicationsRequested() }
+             }
+         }
+         Repeater {
+--- a/qml/shell.qml
++++ b/qml/shell.qml
+@@ -224,6 +224,13 @@
+             Behavior on reveal { NumberAnimation { duration: 240; easing.type: Easing.InOutCubic } }
+             function keepPreview() { previewClose.stop() }
+             function dismissPreview() { previewClose.restart() }
++            function openApplications() {
++                Quickshell.execDetached([
++                    "sh", "-c",
++                    'if vicinae state open; then vicinae close || exit; fi; niri msg action focus-monitor "$1" && exec vicinae open',
++                    "dock-open-applications", screen.name
++                ])
++            }
+             readonly property var previewItem: root.items.find(function(i) { return i.key === dock.previewKey })
+             readonly property bool overlapping: {
+                 if (!monitor || !root.backend || !root.backend.capabilities.overlap) return false
+@@ -307,6 +314,7 @@
+                     x: root.vertical ? (1 - dock.reveal) * (root.edge === "right" ? root.dockDepth : -root.dockDepth) : 0
+                     y: root.vertical ? 0 : (1 - dock.reveal) * (root.edge === "bottom" ? root.dockDepth : -root.dockDepth)
+                 }
++                onApplicationsRequested: dock.openApplications()
+                 onLauncherMenu: function(anchor) { dockMenu.popupFor(anchor, root.edge, dock.contentItem) }
+                 onAppMenu: function(item, anchor) { root.menuItem = item; appMenu.popupFor(anchor, root.edge, dock.contentItem) }
+                 onTrashMenu: function(anchor) { trashMenu.popupFor(anchor, root.edge, dock.contentItem) }
+@@ -406,7 +414,7 @@
+                 preferredWidth: 236
+                 colors: root.palette
+                 DockMenuItem { text: "Dock Settings…"; glyph: "⚙"; onTriggered: root.dockSettingsOpen = true }
+-                DockMenuItem { text: "Applications"; glyph: "⠿"; onTriggered: root.appsOpen = true }
++                DockMenuItem { text: "Applications"; glyph: "⠿"; onTriggered: dock.openApplications() }
+                 DockMenuSeparator {}
+                 DockMenu {
+                     colors: root.palette

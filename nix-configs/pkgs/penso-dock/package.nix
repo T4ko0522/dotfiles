@@ -45,6 +45,7 @@ in
       ./bottom-edge-hotspot.patch
       ./disable-hover-previews.patch
       ./liquid-glass.patch
+      ./vicinae-launcher.patch
     ];
 
     nativeBuildInputs = [gobject-introspection makeWrapper qt6.qtshadertools];
