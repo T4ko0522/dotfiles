@@ -1,0 +1,41 @@
+--- a/qml/DockShelf.qml
++++ b/qml/DockShelf.qml
+@@ -357,19 +357,13 @@
+                     visible: mouse.containsMouse && !!slot.app && shelf.labelReady && !shelf.dragging && !host.contextMenuOpen && host.previewKey !== slot.modelData
+                     text: controller.name(slot.modelData)
+                 }
+-                Timer {
+-                    id: previewDelay; interval: host.previewKey ? 110 : 450
+-                    onTriggered: if (mouse.containsMouse && slot.app && slot.app.windows.length && !shelf.dragging && !host.contextMenuOpen) {
+-                        host.previewAnchor = slot; host.previewKey = slot.modelData
+-                    }
+-                }
+                 MouseArea {
+                     id: mouse; anchors.fill: parent; hoverEnabled: true; preventStealing: true
+                     acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
+                     property real pressAxis: 0
+                     property bool wasDragged: false
+-                    onEntered: { host.keepPreview(); previewDelay.restart() }
+-                    onExited: { previewDelay.stop(); host.dismissPreview() }
++                    onEntered: host.keepPreview()
++                    onExited: host.dismissPreview()
+                     onPressed: function(event) {
+                         var point = mapToItem(viewport.contentItem, event.x, event.y)
+                         pressAxis = vertical ? point.y : point.x; wasDragged = false
+@@ -379,7 +373,7 @@
+                         var point = mapToItem(viewport.contentItem, event.x, event.y)
+                         var axis = vertical ? point.y : point.x
+                         if (!wasDragged && Math.abs(axis - pressAxis) < 8) return
+-                        wasDragged = true; previewDelay.stop(); host.previewKey = ""
++                        wasDragged = true; host.previewKey = ""
+                         shelf.dragKey = slot.modelData
+                         shelf.dragPosition = Math.max(62 * unit, Math.min(shelf.naturalLength - 26 * unit, axis))
+                         var normalized = axis - 10 * unit - shelf.cell - (shelf.divided && axis > (shelf.pinCount + 1) * shelf.cell + 10 * unit ? 16 * unit : 0)
+@@ -389,7 +383,6 @@
+                     onCanceled: shelf.finishDrag(false)
+                     onClicked: function(event) {
+                         if (wasDragged || !slot.app) return
+-                        previewDelay.stop()
+                         host.previewKey = ""
+                         if (event.button === Qt.RightButton) shelf.appMenu(slot.app, icon)
+                         else if (event.button === Qt.MiddleButton) controller.launch(slot.modelData)

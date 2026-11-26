@@ -40,7 +40,10 @@ in
       hash = "sha256-0ScTbX4DomA7sZhJj8CuXzsDY7n7RpsyoRKpfDrhNjE=";
     };
 
-    patches = [./bottom-edge-hotspot.patch];
+    patches = [
+      ./bottom-edge-hotspot.patch
+      ./disable-hover-previews.patch
+    ];
 
     nativeBuildInputs = [gobject-introspection makeWrapper];
     buildInputs = [gdk-pixbuf glib gtk3];
