@@ -11,6 +11,7 @@
   librsvg,
   makeWrapper,
   python3,
+  qt6,
   quickshell,
   stdenvNoCC,
   showDelayMs ? 130,
@@ -43,17 +44,23 @@ in
     patches = [
       ./bottom-edge-hotspot.patch
       ./disable-hover-previews.patch
+      ./liquid-glass.patch
     ];
 
-    nativeBuildInputs = [gobject-introspection makeWrapper];
+    nativeBuildInputs = [gobject-introspection makeWrapper qt6.qtshadertools];
     buildInputs = [gdk-pixbuf glib gtk3];
     dontBuild = true;
+    dontWrapQtApps = true;
 
     postPatch = ''
       substituteInPlace qml/shell.qml \
         --replace-fail 'id: revealDelay; interval: 130' 'id: revealDelay; interval: ${toString showDelayMs}' \
         --replace-fail 'id: hideDelay; interval: 650' 'id: hideDelay; interval: ${toString hideDelayMs}' \
         --replace-fail 'duration: 240; easing.type: Easing.OutCubic' 'duration: ${toString slideDurationMs}; easing.type: Easing.InOutCubic'
+    '';
+
+    preInstall = ''
+      qsb --glsl "100 es,120,150" -o qml/shaders/liquid-glass.frag.qsb ${./liquid-glass.frag}
     '';
 
     installPhase = ''

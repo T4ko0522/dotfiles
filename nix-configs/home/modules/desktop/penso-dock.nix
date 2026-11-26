@@ -9,10 +9,10 @@
   milliseconds = lib.types.ints.between 0 2147483647;
   glass = {
     theme = "glass";
-    opacity = 60;
+    opacity = 55;
     backgroundColor = "";
-    indicator = "rails";
-    ambient = true;
+    indicator = "dots";
+    ambient = false;
     spotlight = false;
     activeLabel = false;
     raised = false;
@@ -57,7 +57,7 @@ in {
         export DOCK_CONFIG_DIR=${lib.escapeShellArg "${config.xdg.configHome}/dock"}
         run ${dock} ctl position bottom
         run ${dock} ctl autohide on
-        run ${dock} ctl appearance 52 172 --style ${lib.escapeShellArg (builtins.toJSON glass)}
+        run ${dock} ctl appearance 34 155 --style ${lib.escapeShellArg (builtins.toJSON glass)}
       )
     '';
   };

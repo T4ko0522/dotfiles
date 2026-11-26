@@ -240,6 +240,13 @@ in {
         place-within-backdrop true
     }
 
+    layer-rule {
+        match namespace="^dock$"
+        background-effect {
+            xray false
+        }
+    }
+
     window-rule {
         match app-id="^steam_app_3548580$"
         open-fullscreen false
