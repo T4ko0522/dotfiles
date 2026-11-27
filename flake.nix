@@ -11,6 +11,7 @@
       "https://noctalia.cachix.org"
       "https://nix-community.cachix.org"
       "https://handy-computer.cachix.org"
+      "https://cache.lantian.pub/lantian"
     ];
     extra-trusted-public-keys = [
       "nix.t4ko.pet-1:0eRO18L1/5diWYWboKKPTejQGhGCHNITwELiUaX7Kps="
@@ -20,6 +21,7 @@
       "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "handy-computer.cachix.org-1:Sihzctn6DC0CJM5QeL+9nBEL3CL8c33m777C+eIv748="
+      "lantian:WVGO7vsRMSEN+h7Lp7kv6SAmrkEXgUGbbXm7jMDjBuQ="
     ];
   };
 
