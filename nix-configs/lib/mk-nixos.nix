@@ -4,6 +4,7 @@
   home-manager,
   handy,
   inir,
+  kernelPackages,
   llm-agents,
   lanzabooteModule,
   nani-translate-linux,
@@ -35,7 +36,7 @@
 nixpkgs.lib.nixosSystem {
   inherit system;
   specialArgs = {
-    inherit dotfilesPath homeDirectory keyboardLayout lanzabooteModule userExtraGroups username;
+    inherit dotfilesPath homeDirectory kernelPackages keyboardLayout lanzabooteModule userExtraGroups username;
   };
   modules = [
     home-manager.nixosModules.home-manager

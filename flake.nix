@@ -28,6 +28,8 @@
 
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
+    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/2294a3b7da84c589792b586e66d9989400977977";
+
     playwright = {
       url = "github:halfwhey/nix-playwright-nightly";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -102,6 +104,7 @@
   };
 
   outputs = {
+    nix-cachyos-kernel,
     nixpkgs,
     nixpkgs-darwin,
     nix-darwin,
@@ -189,6 +192,7 @@
         vicinae
         ;
       lanzabooteModule = lanzaboote.nixosModules.lanzaboote;
+      kernelPackages = nix-cachyos-kernel.legacyPackages.${system}.linuxPackages-cachyos-rc;
     };
 
     mkMacos = import ./nix-configs/lib/mk-macos.nix {
